@@ -52,7 +52,7 @@ export default function StepsInformation() {
   return (
     <>
       <StepsHeader />
-      <div className={`${inter.className} min-h-screen flex flex-col bg-green-50 text-center px-4 py-12`}>
+      <div className={`${inter.className} flex flex-col bg-green-50 text-center px-4 py-12`}>
         <motion.h1 initial="hidden" animate="visible" variants={textVariant} className="text-2xl md:text-3xl font-semibold text-gray-800 mb-6">
           You are proceeding with Wegovy
         </motion.h1>
@@ -66,8 +66,8 @@ export default function StepsInformation() {
           <Image
             src="/images/wegovy.png"
             alt="Wegovy Image"
-            width={200}
-            height={200}
+            width={250}
+            height={250}
             priority
             loading="eager"
             onLoad={() => setImageLoaded(true)} // ✅ sets flag when image fully loaded
@@ -85,7 +85,7 @@ export default function StepsInformation() {
             </div>
 
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2, duration: 0.5 }} className="mt-8">
-              <div className="w-50 m-auto">
+            <div className="w-sm m-auto">
                 <NextButton label="Next" onClick={() => router.push("/step1")} />
               </div>
             </motion.div>

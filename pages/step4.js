@@ -52,7 +52,7 @@ export default function Step4() {
       handleSubmit(async (data) => {
         console.log(data);
         setShowLoader(true);
-        await new Promise((resolve) => setTimeout(resolve, 1000)); // Wait 1s
+        await new Promise((resolve) => setTimeout(resolve, 500)); // Wait 1s
         router.push("/step5");
       })();
     } else {
