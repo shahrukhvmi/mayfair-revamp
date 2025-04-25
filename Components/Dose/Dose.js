@@ -52,7 +52,7 @@ const Dose = ({ dose }) => {
           doseStatus === 0
             ? "border-gray-300 opacity-70 cursor-not-allowed bg-white"
             : isSelected || dose?.isSelected
-            ? "border-blue-500 bg-blue-100 hover:bg-blue-200"
+            ? "border-violet-700 bg-violet-200 hover:bg-violet-200"
             : "border-gray-300 bg-white hover:bg-gray-50"
         }`}
       >
@@ -69,9 +69,9 @@ const Dose = ({ dose }) => {
             type="checkbox"
             checked={isSelected}
             onChange={handleSelected}
-            className="appearance-none w-5 h-5 border-2 border-gray-300 rounded-full bg-white checked:border-blue-500 checked:bg-blue-500 transition-all duration-300 cursor-pointer"
+            className="appearance-none w-5 h-5 border-2 border-gray-300 rounded-full bg-white checked:border-violet-700 checked:bg-violet-700 transition-all duration-300 cursor-pointer"
           />
-          <span className={`font-med text-sm sm:text-md lowercase ${isSelected ? "text-blue-600" : "text-gray-800"} text-lg`}>
+          <span className={`font-med text-sm sm:text-md lowercase ${isSelected ? "text-violet-700" : "text-gray-800"} text-lg`}>
             <span className="capitalize">{dose?.mediName}</span> <br />
             <span className="font-bold">{dose.name}</span>
             <br />
@@ -80,7 +80,7 @@ const Dose = ({ dose }) => {
         </div>
 
         <div className="flex items-center space-x-3">
-          <span className={`font-bold ${isSelected ? "text-blue-600" : "text-gray-700"}`}>£{parseFloat(dose?.price).toFixed(2)}</span>
+          <span className={`font-bold ${isSelected ? "text-violet-700" : "text-gray-700"}`}>£{parseFloat(dose?.price).toFixed(2)}</span>
 
           {isSelected && (
             <>

@@ -12,7 +12,6 @@ export default function Checkout() {
 
     return (
         <>
-        <
 
 
             <form onSubmit={handleSubmit(onSubmit)} className="bg-[#fdfcf5]">

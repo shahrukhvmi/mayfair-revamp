@@ -6,10 +6,12 @@ import { useForm } from "react-hook-form";
 import NextButton from "@/Components/NextButton/NextButton";
 import Dose from "@/Components/Dose/Dose";
 import AddOn from "@/Components/AddOn/AddOn";
+import { useRouter } from "next/router";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 
 export default function DosageSelection() {
+  const router = useRouter();
   useEffect(() => {
     window.scrollTo({
       top: 0,
@@ -31,6 +33,7 @@ export default function DosageSelection() {
 
   const onSubmit = (data) => {
     console.log("Submit");
+    router.push("/checkout");
   };
 
   const variations = [
@@ -318,7 +321,7 @@ export default function DosageSelection() {
   return (
     <>
       <StepsHeader />
-      <div className={`${inter.className} min-h-screen flex items-center justify-center bg-[#FAFAF0] px-4 sm:px-6 lg:px-8 `}>
+      <div className={`${inter.className} min-h-screen flex items-center justify-center bg-green-50 px-4 sm:px-6 lg:px-8 `}>
         <div className="rounded-xl w-full max-w-2xl my-20">
           <div className="w-full mx-auto sm:px-8 my-6 rounded-md">
             <div className="flex justify-center">
@@ -330,7 +333,7 @@ export default function DosageSelection() {
                 <div className="col-span-12 sm:col-span-6 md:px-4 py-10">
                   {/* Product Info */}
                   <div className="bg-white rounded-lg shadow-lg overflow-hidden mb-6">
-                    <div className="bg-[#4565BF] p-6">
+                    <div className="bg-violet-700 p-6">
                       <img src="/images/wegovy.png" alt="" className="w-full h-40 object-contain" />
                     </div>
                     <div className="p-6">
@@ -362,12 +365,12 @@ export default function DosageSelection() {
         </div>
       </div>
 
-      <div className="fixed bottom-0 left-0 right-0 z-50 bg-[#0F3C25] px-4 py-3 shadow-[0_-2px_10px_rgba(0,0,0,0.1)] ">
+      <div className="fixed bottom-0 left-0 right-0 z-50 bg-violet-300 px-4 py-3 shadow-[0_-2px_10px_rgba(0,0,0,0.1)] ">
         <div className="max-w-6xl mx-auto flex items-center justify-center">
           {/* Product Info */}
           <div className="flex items-center space-x-3 me-5">
             <img src="/images/wegovy.png" alt="Mounjaro" className="w-10 h-10 rounded-md object-contain" />
-            <div className="text-white leading-tight">
+            <div className="text-black leading-tight">
               <div className="text-sm font-semibold">Mounjaro</div>
               <div className="text-base font-bold">
                 £189 <span className="text-sm font-normal">/month</span>
@@ -378,7 +381,7 @@ export default function DosageSelection() {
           {/* Continue Button */}
           <button
             onClick={handleSubmit(onSubmit)}
-            className="w-80 bg-[#B9FF69] text-black font-semibold text-base px-10 py-2.5 rounded-md hover:opacity-90 transition-all duration-200"
+            className="w-80 bg-violet-800 text-white font-semibold text-base px-10 py-2.5 rounded-md hover:opacity-90 transition-all duration-200 cursor-pointer"
           >
             Next
           </button>
