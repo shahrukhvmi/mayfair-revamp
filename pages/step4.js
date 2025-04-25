@@ -5,6 +5,7 @@ import ProgressBar from "@/Components/ProgressBar/ProgressBar";
 import NextButton from "@/Components/NextButton/NextButton";
 import TextField from "@/Components/TextField/TextField";
 import { useRouter } from "next/navigation";
+import StepsHeader from "@/layout/stepsHeader";
 
 export default function Step4() {
   const [localStep, setLocalStep] = useState(1);
@@ -53,6 +54,10 @@ export default function Step4() {
   };
 
   return (
+
+    <>
+    <StepsHeader/>
+   
     <div className="min-h-screen flex items-center justify-center bg-[#FAFAF0] px-6 py-12">
       <FormWrapper>
         <ProgressBar percentage={localStep === 1 ? 50 : 70} />
@@ -190,5 +195,6 @@ export default function Step4() {
         </div>
       </FormWrapper>
     </div>
+    </>
   );
 }

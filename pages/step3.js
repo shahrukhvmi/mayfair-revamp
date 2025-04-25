@@ -5,6 +5,7 @@ import NextButton from "@/Components/NextButton/NextButton";
 import ProgressBar from "@/Components/ProgressBar/ProgressBar";
 import { FiCheck } from "react-icons/fi";
 import { useRouter } from "next/navigation";
+import StepsHeader from "@/layout/stepsHeader";
 
 const options = ["Yes", "No", "None of the above"];
 
@@ -31,6 +32,10 @@ export default function Step3() {
     };
 
     return (
+        <>
+        
+         <StepsHeader />
+        
         <div className="min-h-screen flex items-center justify-center bg-[#FAFAF0] px-4 sm:px-6 lg:px-8">
             <FormWrapper width="my-32">
                 <ProgressBar percentage={35} />
@@ -103,5 +108,7 @@ export default function Step3() {
                 </div>
             </FormWrapper>
         </div>
+
+        </>
     );
 }
