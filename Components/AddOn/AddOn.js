@@ -45,16 +45,16 @@ const AddOn = ({ addon }) => {
         onClick={handleSelected}
         checked={isSelected}
         className={`flex items-center justify-between p-4 border rounded-lg cursor-pointer mb-3 transition-all duration-300 ease-in-out
-            ${isSelected || addon.isSelected ? "border-blue-500 bg-blue-100 hover:bg-blue-200" : "border-gray-300 bg-white hover:bg-gray-50"}`}
+            ${isSelected || addon.isSelected ? "bg-violet-200 bg-blue-100 hover:bg-violet-200" : "border-gray-300 bg-white hover:bg-gray-50"}`}
       >
         <div className="flex items-center space-x-3">
           <input
             type="checkbox"
             onChange={handleSelected}
             checked={isSelected}
-            className="appearance-none w-5 h-5 border-2 border-gray-300 rounded-full bg-white checked:border-blue-500 checked:bg-blue-500 transition-all duration-300 cursor-pointer"
+            className="appearance-none w-5 h-5 border-2 border-gray-300 rounded-full bg-white checked:border-violet-700 checked:bg-violet-700 transition-all duration-300 cursor-pointer"
           />
-          <span className={`font-med text-sm sm:text-md capitalize ${isSelected || addon?.isSelected ? "text-blue-600" : "text-gray-800"} text-lg`}>
+          <span className={`font-med text-sm sm:text-md capitalize ${isSelected || addon?.isSelected ? "text-violet-700" : "text-gray-800"} text-lg`}>
             {addon?.name}
           </span>
         </div>
@@ -62,7 +62,7 @@ const AddOn = ({ addon }) => {
         <div className="flex items-center space-x-3">
           <span
             className={`font-bold text-sm sm:text-md ${
-              isSelected || addon?.isSelected ? "text-blue-600" : "text-gray-700"
+              isSelected || addon?.isSelected ? "text-violet-700" : "text-gray-700"
             } font-bold text-sm sm:text-md`}
           >
             £{parseFloat(addon?.price).toFixed(2)}
@@ -73,7 +73,7 @@ const AddOn = ({ addon }) => {
               <button
                 type="button"
                 onClick={handleDecrement}
-                className="bg-gray-200 text-gray-700 hover:bg-gray-300 px-2 py-2 rounded-full shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-300"
+                className="bg-gray-200 text-gray-700 hover:bg-gray-300 px-2 py-2 rounded-full shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-violet-700 transition-all duration-300"
               >
                 <FaMinus size={10} />
               </button>
@@ -81,7 +81,7 @@ const AddOn = ({ addon }) => {
               <button
                 type="button"
                 onClick={handleIncrement}
-                className={`bg-gray-200 text-gray-700 hover:bg-gray-300 px-2 py-2 rounded-full shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-300 ${
+                className={`bg-gray-200 text-gray-700 hover:bg-gray-300 px-2 py-2 rounded-full shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-violet-700 transition-all duration-300 ${
                   qty >= allowed ? "cursor-not-allowed opacity-60" : ""
                 }`}
                 disabled={qty >= allowed}

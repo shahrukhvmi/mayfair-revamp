@@ -52,7 +52,7 @@ const Dose = ({ dose }) => {
           doseStatus === 0
             ? "border-gray-300 opacity-70 cursor-not-allowed bg-white"
             : isSelected || dose?.isSelected
-            ? "border-violet-700 bg-blue-100 hover:bg-blue-200"
+            ? "border-violet-700 bg-violet-200 hover:bg-violet-200"
             : "border-gray-300 bg-white hover:bg-gray-50"
         }`}
       >
