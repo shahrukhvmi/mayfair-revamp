@@ -71,7 +71,7 @@ const Dose = ({ dose }) => {
             onChange={handleSelected}
             className="appearance-none w-5 h-5 border-2 border-gray-300 rounded-full bg-white checked:border-violet-700 checked:bg-violet-700 transition-all duration-300 cursor-pointer"
           />
-          <span className={`font-med text-sm sm:text-md lowercase ${isSelected ? "text-violet-700" : "text-gray-800"} text-lg`}>
+          <span className={`font-med text-sm sm:text-md ${isSelected ? "text-violet-700" : "text-gray-800"} text-lg`}>
             <span className="capitalize">{dose?.mediName}</span> <br />
             <span className="font-bold">{dose.name}</span>
             <br />

@@ -22,12 +22,7 @@ const Checkout = () => {
   const paymentRef = useRef(null);
 
   const personalDetailsFilled =
-    watch("firstName") &&
-    watch("lastName") &&
-    watch("email") &&
-    watch("mobile") &&
-    watch("password") &&
-    watch("confirmPassword");
+    watch("firstName") && watch("lastName") && watch("email") && watch("mobile") && watch("password") && watch("confirmPassword");
 
   const addressFilled = watch("postalCode"); // or watch("address") if manual
 
@@ -61,7 +56,7 @@ const Checkout = () => {
     <>
       <StepsHeader />
 
-      <form onSubmit={handleSubmit(onSubmit)} className="bg-[#fdfcf5] w-full">
+      <form onSubmit={handleSubmit(onSubmit)} className="bg-green-50 w-full">
         <div className="max-w-2xl mx-auto px-4 py-10 space-y-10">
           {step >= 1 && (
             <div ref={personalRef}>
@@ -84,10 +79,7 @@ const Checkout = () => {
           {step < 3 ? (
             <NextButton
               onClick={handleNextStep}
-              disabled={
-                (step === 1 && !personalDetailsFilled) ||
-                (step === 2 && !addressFilled)
-              }
+              disabled={(step === 1 && !personalDetailsFilled) || (step === 2 && !addressFilled)}
               label="Continue"
             />
           ) : (

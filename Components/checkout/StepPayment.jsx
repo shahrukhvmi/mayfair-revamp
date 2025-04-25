@@ -9,9 +9,7 @@ const StepPayment = ({ register, errors }) => {
 
       {/* Discount Code + Apply */}
       <div className="mb-6">
-        <label className="block text-sm font-medium text-gray-700 mb-1">
-          Discount code
-        </label>
+        <label className="block text-sm font-medium text-gray-700 mb-1">Discount code</label>
 
         <div className="flex gap-2 items-center">
           <input
@@ -23,7 +21,7 @@ const StepPayment = ({ register, errors }) => {
 
           <button
             type="button"
-            className="px-4 py-2 text-sm font-medium text-white bg-violet-600 hover:bg-violet-700 rounded-md transition"
+            className="px-4 py-4 text-sm font-medium text-white bg-violet-600 hover:bg-violet-700 rounded-md transition cursor-pointer"
           >
             Apply
           </button>
@@ -33,11 +31,7 @@ const StepPayment = ({ register, errors }) => {
       {/* Terms Agreement */}
       <div className="mt-6 space-y-2">
         <label className="flex items-start gap-2 text-sm text-gray-800">
-          <input
-            type="checkbox"
-            {...register("terms", { required: true })}
-            className="mt-1 accent-violet-600"
-          />
+          <input type="checkbox" {...register("terms", { required: true })} className="mt-1 accent-violet-600" />
           <span>
             I have read and agree to the{" "}
             <a href="#" className="text-violet-700 underline">
@@ -51,9 +45,7 @@ const StepPayment = ({ register, errors }) => {
           </span>
         </label>
 
-        {errors.terms && (
-          <p className="text-sm text-red-600">You must accept the terms.</p>
-        )}
+        {errors.terms && <p className="text-sm text-red-600">You must accept the terms.</p>}
       </div>
     </SectionWrapper>
   );

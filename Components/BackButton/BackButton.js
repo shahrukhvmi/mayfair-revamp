@@ -1,20 +1,13 @@
 import React from "react";
 
-const BackButton = ({
-  label = "Back",
-  loading = false,
-  disabled = false,
-  type = "button",
-  onClick,
-  className = "",
-}) => {
+const BackButton = ({ label = "Back", loading = false, disabled = false, type = "button", onClick, className = "" }) => {
   return (
     <div className={`${className}`}>
       <button
         type={type}
         onClick={onClick}
         disabled={disabled || loading}
-        className={`w-full py-3 px-12 rounded-xl border-2 border-violet-700 text-violet-700 text-sm font-medium transition-all duration-150
+        className={`cursor-pointer w-full py-3 px-12 rounded-xl border-2 border-violet-700 text-violet-700 text-sm font-medium transition-all duration-150
         hover:bg-violet-50 disabled:opacity-50 disabled:cursor-not-allowed flex justify-center items-center`}
       >
         {loading ? (
@@ -29,6 +22,5 @@ const BackButton = ({
     </div>
   );
 };
-
 
 export default BackButton;
