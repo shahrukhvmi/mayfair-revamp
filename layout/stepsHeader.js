@@ -1,45 +1,119 @@
-import ApplicationLogo from '@/config/ApplicationLogo';
-import React, { useState } from 'react';
-import { FaArrowLeft } from 'react-icons/fa';
+import React, { useState, useEffect } from "react";
+import { FiMenu, FiX } from "react-icons/fi";
+import ApplicationLogo from "@/config/ApplicationLogo";
+import ApplicationUser from "@/config/ApplicationUser";
+import Link from "next/link";
 
-const StepsHeader = () => {
-    const [menuOpen, setMenuOpen] = useState(false);
+const stepsHeader = ({ isOpen, toggleSidebar }) => {
+  const [isOpenDrop, setIsOpenDrop] = useState(false);
 
-    return (
-        <div className="relative">
-            {/* Header */}
-            <div className="flex justify-between items-start bg-white text-white px-4 py-3">
-              
+  const [name, setUserData] = useState("");
 
-                <ApplicationLogo width={120} height={60} />
+  // RTk Query Fetch user /GetUserData 🔥🔥
+  // const { data } = useProfileUserDataQuery();
+  const data = [];
+  useEffect(() => {
+    if (data) {
+      const userName = data.profile?.user ?? "";
+      setUserData(userName);
+    }
+  }, [data]);
 
-                <div className="relative">
-                    <button
-                        onClick={() => setMenuOpen(!menuOpen)}
-                        className="flex items-center gap-2 text-white focus:outline-none"
-                    >
-                        <div className="w-8 h-8 bg-purple-300 text-xs rounded-full flex items-center justify-center text-white">S</div>
-                        <span className="hidden sm:block">Jack</span>
-                    </button>
 
-                    {/* Sidebar Dropdown */}
-                    {menuOpen && (
-                        <div className="absolute right-0 mt-2 w-48 bg-ivory border border-gray-200 rounded-md shadow-lg z-50">
-                            <div className="p-4 bg-violet-700 text-white flex items-center gap-2">
-                                <div className="w-8 h-8 bg-purple-300 text-xs rounded-full flex items-center justify-center">S</div>
-                                <span>Shelly</span>
-                            </div>
-                            <ul className="bg-[#fdfcf5] text-viobg-violet-700 px-4 py-2 space-y-2 font-serif">
-                                <li className="border-b border-gray-300 pb-2"><a href="#">• Treatment plans</a></li>
-                                <li className="border-b border-gray-300 pb-2"><a href="#">• Account settings</a></li>
-                                <li><a href="#">• Logout</a></li>
-                            </ul>
-                        </div>
-                    )}
-                </div>
-            </div>
+  const toggleDropdown = () => {
+    setIsOpenDrop((prev) => !prev);
+  };
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      const dropdownMenu = document.querySelector(".dropdown-menu");
+      if (dropdownMenu && !dropdownMenu.contains(event.target)) {
+        setIsOpenDrop(false);
+      }
+    };
+
+    if (isOpenDrop) {
+      document.addEventListener("mousedown", handleClickOutside);
+    } else {
+      document.removeEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isOpenDrop]);
+  const handleLogout = () => {
+    setIsOpenDrop(false); // Close the dropdown
+    // logout();
+    alert("logout")
+
+  };
+  const handleRemovePid = () => {
+    localStorage.removeItem("previous_id")
+  }
+  const [impersonat, setImpersonat] = useState(null);
+
+  useEffect(() => {
+    const impersonateEmail = localStorage.getItem("impersonate_email");
+    setImpersonat(impersonateEmail);
+  }, []);
+
+  const handleRemovedImpersonate = () => {
+    setImpersonat(null);
+    logout();
+
+  };
+  return (
+
+    <>
+
+
+      <div className="bg-white px-4 sm:px-6 lg:px-6 flex items-center justify-between relative">
+        {/* Hamburger Button (only visible on mobile) */}
+        <button onClick={toggleSidebar} className="text-2xl text-violet-700 sm:hidden">
+          {isOpen ? <FiX /> : <FiMenu />}
+        </button>
+
+        {/* Logo */}
+        <div className="w-32 sm:w-40">
+          <Link href="/dashboard" onClick={handleRemovePid}>
+            <ApplicationLogo width={120} height={60} />
+
+          </Link>
         </div>
-    );
+
+        {/* User Info */}
+        <div className="relative">
+          {/* Dropdown Trigger */}
+          <div className="flex items-center space-x-2 cursor-pointer" onClick={toggleDropdown}>
+            {/* <img src="/images/user.png" alt="User Avatar" className="w-10 h-10 rounded-full" /> */}
+            <ApplicationUser className="w-10 h-10 rounded-full" />
+            <span className="reg-font text-[#1C1C29] truncate">{name && name.fname && name.lname ? `${name.fname} ${name.lname}` : ""}</span>
+          </div>
+
+          {/* Dropdown Menu */}
+          {isOpenDrop && (
+            <div className="dropdown-menu absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-md shadow-lg z-50">
+              <ul className="py-1">
+                <li className="ligt-font px-4 py-2 text-[#1C1C29] hover:bg-gray-100 cursor-pointer">
+                  <Link href="/dashboard/" onClick={toggleDropdown}>My Account</Link>
+                </li>
+                <li className="ligt-font px-4 py-2 text-[#1C1C29] hover:bg-gray-100 cursor-pointer">
+                  <Link href="/my-profile/" onClick={toggleDropdown}>
+                    My Profile
+                  </Link>
+                </li>
+                <li className="ligt-font px-4 py-2 hover:bg-gray-100 cursor-pointer" onClick={handleLogout}>
+                  Logout
+                </li>
+              </ul>
+            </div>
+          )}
+        </div>
+      </div>
+    </>
+  );
 };
 
-export default StepsHeader;
+export default stepsHeader;
