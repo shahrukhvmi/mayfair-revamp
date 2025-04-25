@@ -6,6 +6,7 @@ import PageLoader from "@/Components/PageLoader/PageLoader";
 import { useState } from "react";
 import FormWrapper from "@/Components/FormWrapper/FormWrapper";
 import PageAnimationWrapper from "@/Components/PageAnimationWrapper/PageAnimationWrapper";
+import StepsHeader from "@/layout/stepsHeader";
 export default function Home() {
   const [showLoader, setShowLoader] = useState(false);
 
@@ -25,31 +26,21 @@ export default function Home() {
     router.push("/steps-information");
   };
 
-
   return (
     <>
-    
-      <PageAnimationWrapper>
-        <FormWrapper
-          heading={"Set up your account"}
-          description={"If you are registering someone other than yourself, please enter their information."}
-          percentage={"0"}
-        >
+      <StepsHeader />
+      <FormWrapper
+        heading={"Set up your account"}
+        description={"If you are registering someone other than yourself, please enter their information."}
+        percentage={"0"}
+      >
+        <PageAnimationWrapper>
           <div className="p-6">
-
             <div className={`relative ${showLoader ? "pointer-events-none cursor-not-allowed" : ""}`}>
               <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
                 <TextField label="First name" name="firstName" placeholder="First name" register={register} required errors={errors} />
                 <TextField label="Last Name" name="lastname" placeholder="Last Name" register={register} required errors={errors} />
-                <TextField
-                  label="Email address"
-                  name="email"
-                  placeholder="Email address"
-                  type="email"
-                  register={register}
-                  required
-                  errors={errors}
-                />
+                <TextField label="Email address" name="email" placeholder="Email address" type="email" register={register} required errors={errors} />
 
                 <NextButton
                   label="Next"
@@ -65,11 +56,8 @@ export default function Home() {
               )}
             </div>
           </div>
-
-
-        </FormWrapper>
-
-      </PageAnimationWrapper>
+        </PageAnimationWrapper>
+      </FormWrapper>
     </>
   );
 }

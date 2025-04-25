@@ -37,15 +37,11 @@ export default function Step1() {
 
   return (
     <>
-      <PageAnimationWrapper>
-        <FormWrapper
-          heading={"What is your date of birth?"}
-          description={"Please ensure that this matches your ID."}
-          percentage={"15"}
-        >
+      <StepsHeader />
 
+      <FormWrapper heading={"What is your date of birth?"} description={"Please ensure that this matches your ID."} percentage={"15"}>
+        <PageAnimationWrapper>
           <div className="p-6">
-
             <div className={`relative ${showLoader ? "pointer-events-none cursor-not-allowed" : ""}`}>
               <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
                 <div>
@@ -67,9 +63,10 @@ export default function Step1() {
                         <label
                           key={option}
                           className={`relative block w-full border text-center py-3 rounded-md cursor-pointer transition-all duration-150 font-medium
-                            ${selected
-                              ? "bg-green-100 border-green-800 text-green-900 scale-[1.01] shadow-sm"
-                              : "bg-white border-green-800 text-green-800 hover:bg-green-50"
+                            ${
+                              selected
+                                ? "bg-green-100 border-green-800 text-green-900 scale-[1.01] shadow-sm"
+                                : "bg-white border-green-800 text-green-800 hover:bg-green-50"
                             }`}
                         >
                           <input type="radio" value={option} {...register("gender", { required: true })} className="hidden" />
@@ -97,9 +94,8 @@ export default function Step1() {
               )}
             </div>
           </div>
-        </FormWrapper>
-
-      </PageAnimationWrapper >
+        </PageAnimationWrapper>
+      </FormWrapper>
     </>
   );
 }

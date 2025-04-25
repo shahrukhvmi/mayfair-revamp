@@ -6,6 +6,7 @@ import { FiCheck } from "react-icons/fi";
 import { useRouter } from "next/navigation";
 import PageAnimationWrapper from "@/Components/PageAnimationWrapper/PageAnimationWrapper";
 import PageLoader from "@/Components/PageLoader/PageLoader";
+import StepsHeader from "@/layout/stepsHeader";
 
 const options = ["Yes", "No", "None of the above"];
 
@@ -36,16 +37,16 @@ export default function Step3() {
 
   return (
     <>
-      <PageAnimationWrapper>
-
-        <FormWrapper
-          heading={"Confirm Ethnicity for BMI"}
-          description={"People of certain ethnicities may be suitable for treatment at a lower BMI than others, if appropriate. Does one of the following options describe your ethnic group or background?"}
-          percentage={"45"}
-        >
+      <StepsHeader />
+      <FormWrapper
+        heading={"Confirm Ethnicity for BMI"}
+        description={
+          "People of certain ethnicities may be suitable for treatment at a lower BMI than others, if appropriate. Does one of the following options describe your ethnic group or background?"
+        }
+        percentage={"45"}
+      >
+        <PageAnimationWrapper>
           <div className="p-6">
-           
-
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
               {["South Asian", "Chinese", "Other Asian", "Middle Eastern", "Black African", "African-Caribbean"].map((ethnicity, index) => (
                 <div
@@ -55,7 +56,7 @@ export default function Step3() {
                 >
                   {/* w-2.5 h-2.5 */}
                   <div className=" mt-2 bg-violet-700 rounded-full"></div>
-                  <p className="text-xs text-gray-800">{ethnicity}</p>
+                  <p className="text-sm text-gray-800">{ethnicity}</p>
                 </div>
               ))}
             </div>
@@ -67,7 +68,7 @@ export default function Step3() {
                     return (
                       <label
                         key={option}
-                        className={`flex items-center gap-3 px-4 py-3 border rounded-lg transition-all cursor-pointer text-xs
+                        className={`flex items-center gap-3 px-4 py-3 border rounded-lg transition-all cursor-pointer text-sm
                       ${isSelected ? "bg-green-50 border-black text-black font-medium" : "border-gray-300 text-gray-900 hover:bg-gray-50"}`}
                       >
                         <div
@@ -92,8 +93,8 @@ export default function Step3() {
               )}
             </div>
           </div>
-        </FormWrapper>
-    </PageAnimationWrapper >
+        </PageAnimationWrapper>
+      </FormWrapper>
     </>
   );
 }

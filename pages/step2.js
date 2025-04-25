@@ -43,13 +43,9 @@ export default function Step2() {
 
   return (
     <>
-      <PageAnimationWrapper>
-
-        <FormWrapper
-          heading={"Residential Address"}
-          description={"Require for age verification purpose"}
-          percentage={"30"}
-        >
+      <StepsHeader />
+      <FormWrapper heading={"Residential Address"} description={"Require for age verification purpose"} percentage={"30"}>
+        <PageAnimationWrapper>
           <div className="p-6">
             <div className={`relative ${showLoader ? "pointer-events-none cursor-not-allowed" : ""}`}>
               <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
@@ -63,11 +59,10 @@ export default function Step2() {
                         required: "Postal code is required",
                         onChange: (e) => setPostalValue(e.target.value),
                       })}
-
                       placeholder="Enter postal code"
                       className="text-black w-full border border-gray-300 rounded-md px-3 py-2 pr-10 focus:outline-none focus:ring-2 focus:ring-green-200 focus:border-green-700"
                     />
-                
+
                     {postalValue && <FaSearch className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 text-sm" />}
                   </div>
                   {errors.postalCode && <p className="text-red-500 text-sm mt-1">{errors.postalCode.message}</p>}
@@ -91,9 +86,8 @@ export default function Step2() {
               )}
             </div>
           </div>
-        </FormWrapper>
-
-      </PageAnimationWrapper>
+        </PageAnimationWrapper>
+      </FormWrapper>
     </>
   );
 }

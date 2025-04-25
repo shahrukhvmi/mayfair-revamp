@@ -10,6 +10,7 @@ import StepsHeader from "@/layout/stepsHeader";
 
 // ✅ Initialize Inter font here
 import { Inter } from "next/font/google";
+import PageAnimationWrapper from "@/Components/PageAnimationWrapper/PageAnimationWrapper";
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 
 const Step6 = () => {
@@ -50,33 +51,28 @@ const Step6 = () => {
             <label
               key={option}
               className={`flex items-center px-4 py-2 rounded-md border w-fit min-w-[100px] justify-center cursor-pointer transition-all duration-200
-                ${isSelected
-                  ? option === "yes"
-                    ? "bg-violet-100 border-violet-600 text-violet-700"
-                    : "bg-red-100 border-red-600 text-red-700"
-                  : "bg-white border-gray-300 hover:border-gray-400 text-gray-800"
+                ${
+                  isSelected
+                    ? option === "yes"
+                      ? "bg-violet-100 border-violet-600 text-violet-700"
+                      : "bg-red-100 border-red-600 text-red-700"
+                    : "bg-white border-gray-300 hover:border-gray-400 text-gray-800"
                 }`}
             >
-              <input
-                type="radio"
-                value={option}
-                {...register(fieldName, { required: true })}
-                className="hidden"
-              />
+              <input type="radio" value={option} {...register(fieldName, { required: true })} className="hidden" />
               <div
                 className={`w-5 h-5 mr-2 rounded-md border flex items-center justify-center
-                  ${isSelected
-                    ? option === "yes"
-                      ? "bg-violet-600 border-violet-600 text-white"
-                      : "bg-red-600 border-red-600 text-white"
-                    : "border-gray-400 bg-white"
+                  ${
+                    isSelected
+                      ? option === "yes"
+                        ? "bg-violet-600 border-violet-600 text-white"
+                        : "bg-red-600 border-red-600 text-white"
+                      : "border-gray-400 bg-white"
                   }`}
               >
                 {isSelected && <FiCheck className="text-xs" />}
               </div>
-              <span className="text-sm font-medium capitalize">
-                {option}
-              </span>
+              <span className="text-sm font-medium capitalize">{option}</span>
             </label>
           );
         })}
@@ -86,68 +82,63 @@ const Step6 = () => {
 
   return (
     <>
-      <FormWrapper
-        heading={"Patient Acknowledgment"}
-        description={""}
-        percentage={"60"}
-      >
-
-        <div className="bg-white px-6 sm:p-7 mt-6">
-
-
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
-            {/* Questions */}
-            <div className="space-y-6 max-h-[400px] overflow-auto">
-              <div className="space-y-2">
-                <p className="text-sm font-medium text-gray-800">
-                  Are you purchasing this medication for yourself, of your own free will and the medicine is for your personal use only?
-                </p>
-                {renderYesNo("personalUse", personalUse)}
-              </div>
-
-              <div className="space-y-2">
-                <p className="text-sm font-medium text-gray-800">
-                  Do you believe you have the ability to make healthcare decisions for yourself?
-                </p>
-                {renderYesNo("decisionCapacity", decisionCapacity)}
-              </div>
-
-              {showConsentBox && (
-                <div className="bg-white space-y-4 py-4">
-                  <label className="flex items-center gap-3 text-sm font-semibold text-gray-800 cursor-pointer">
-                    <input
-                      type="checkbox"
-                      {...register("confirmConsent", { required: true })}
-                      className="hidden"
-                    />
-                    <div
-                      className={`w-5 h-5 rounded-full flex items-center justify-center border transition-all duration-200
-                          ${confirmConsent
-                          ? "bg-violet-600 border-violet-600 text-white"
-                          : "bg-white border-gray-400"
-                        }`}
-                    >
-                      {confirmConsent && <FiCheck className="w-3 h-3" />}
-                    </div>
-                    Do you confirm that:
-                  </label>
-
-                  <ul className="list-disc list-inside text-sm text-gray-700 space-y-2">
-                    <li>You consent for your medical information to be assessed by the clinical team at Mayfair Weight Loss Clinic and its pharmacy and to be prescribed medication.</li>
-                    <li>You consent to an age and ID check when placing your first order.</li>
-                    <li>You will answer all questions honestly and accurately, and understand that it is an offence to provide false information.</li>
-                    <li>You have capacity to understand all about the condition and medication information we have provided and that you give fully informed consent to the treatment option provided.</li>
-                    <li>You understand that the treatment or medical advice provided is based on the information you have provided.</li>
-                  </ul>
+      <StepsHeader />
+      <FormWrapper heading={"Patient Acknowledgment"} description={""} percentage={"60"}>
+        <PageAnimationWrapper>
+          <div className="bg-white px-6 sm:p-7 mt-6">
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
+              {/* Questions */}
+              <div className="space-y-6 max-h-[400px] overflow-auto">
+                <div className="space-y-2">
+                  <p className="text-sm font-medium text-gray-800">
+                    Are you purchasing this medication for yourself, of your own free will and the medicine is for your personal use only?
+                  </p>
+                  {renderYesNo("personalUse", personalUse)}
                 </div>
-              )}
-            </div>
 
-            <div className="my-5">
-              <NextButton disabled={!isValid || isNoSelected} label="I Confirm" />
-            </div>
-          </form>
-        </div>
+                <div className="space-y-2">
+                  <p className="text-sm font-medium text-gray-800">Do you believe you have the ability to make healthcare decisions for yourself?</p>
+                  {renderYesNo("decisionCapacity", decisionCapacity)}
+                </div>
+
+                {showConsentBox && (
+                  <div className="bg-white space-y-4 py-4">
+                    <label className="flex items-center gap-3 text-sm font-semibold text-gray-800 cursor-pointer">
+                      <input type="checkbox" {...register("confirmConsent", { required: true })} className="hidden" />
+                      <div
+                        className={`w-5 h-5 rounded-full flex items-center justify-center border transition-all duration-200
+                          ${confirmConsent ? "bg-violet-600 border-violet-600 text-white" : "bg-white border-gray-400"}`}
+                      >
+                        {confirmConsent && <FiCheck className="w-3 h-3" />}
+                      </div>
+                      Do you confirm that:
+                    </label>
+
+                    <ul className="list-disc list-inside text-sm text-gray-700 space-y-2">
+                      <li>
+                        You consent for your medical information to be assessed by the clinical team at Mayfair Weight Loss Clinic and its pharmacy
+                        and to be prescribed medication.
+                      </li>
+                      <li>You consent to an age and ID check when placing your first order.</li>
+                      <li>
+                        You will answer all questions honestly and accurately, and understand that it is an offence to provide false information.
+                      </li>
+                      <li>
+                        You have capacity to understand all about the condition and medication information we have provided and that you give fully
+                        informed consent to the treatment option provided.
+                      </li>
+                      <li>You understand that the treatment or medical advice provided is based on the information you have provided.</li>
+                    </ul>
+                  </div>
+                )}
+              </div>
+
+              <div className="my-5">
+                <NextButton disabled={!isValid || isNoSelected} label="I Confirm" />
+              </div>
+            </form>
+          </div>
+        </PageAnimationWrapper>
       </FormWrapper>
     </>
   );
