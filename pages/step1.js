@@ -1,5 +1,4 @@
 import { useForm } from "react-hook-form";
-import { Inter } from "next/font/google";
 import FormWrapper from "@/Components/FormWrapper/FormWrapper";
 import ProgressBar from "@/Components/ProgressBar/ProgressBar";
 import NextButton from "@/Components/NextButton/NextButton";
@@ -11,7 +10,6 @@ import PageAnimationWrapper from "@/Components/PageAnimationWrapper/PageAnimatio
 import { useState } from "react";
 import PageLoader from "@/Components/PageLoader/PageLoader";
 
-const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 
 export default function Step1() {
   const [showLoader, setShowLoader] = useState(false);

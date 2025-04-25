@@ -4,7 +4,7 @@ import ApplicationLogo from "@/config/ApplicationLogo";
 import ApplicationUser from "@/config/ApplicationUser";
 import Link from "next/link";
 
-const stepsHeader = ({ isOpen, toggleSidebar }) => {
+const StepsHeader = ({ isOpen, toggleSidebar }) => {
   const [isOpenDrop, setIsOpenDrop] = useState(false);
 
   const [name, setUserData] = useState("");
@@ -116,4 +116,4 @@ const stepsHeader = ({ isOpen, toggleSidebar }) => {
   );
 };
 
-export default stepsHeader;
+export default StepsHeader;

@@ -2,9 +2,31 @@ import { useForm } from "react-hook-form";
 import StepPersonalDetails from "@/components/checkout/StepPersonalDetails";
 import StepPayment from "@/components/checkout/StepPayment";
 import StepAddress from "@/Components/checkout/StepAddress";
+import NextButton from "@/Components/NextButton/NextButton";
+import StepsHeader from "@/layout/stepsHeader";
+import { useState } from "react";
 
-export default function Checkout() {
-    const { register, handleSubmit, formState: { errors } } = useForm({ mode: "onChange" });
+const Checkout = () => {
+    const {
+        register,
+        handleSubmit,
+        watch,
+        formState: { errors, isValid },
+    } = useForm({ mode: "onChange" });
+
+    const [step, setStep] = useState(1);
+
+    const personalDetailsFilled = watch("firstName") && watch("lastName") && watch("email") && watch("mobile") && watch("password") && watch("confirmPassword");
+    const addressFilled = watch("address");
+
+    const handleNextStep = () => {
+        if (step === 1 && personalDetailsFilled) setStep(2);
+        else if (step === 2 && addressFilled) setStep(3);
+    };
+
+    const handleCheckOut = () => {
+        alert("Thank You ✔");
+    };
 
     const onSubmit = (data) => {
         console.log("Collected Data:", data);
@@ -12,22 +34,33 @@ export default function Checkout() {
 
     return (
         <>
+            <StepsHeader />
 
+            <form onSubmit={handleSubmit(onSubmit)} className="bg-[#fdfcf5] w-full">
+                <div className="max-w-2xl mx-auto px-4 py-10 space-y-10">
+                    {step >= 1 && (
+                        <StepPersonalDetails register={register} errors={errors} />
+                    )}
+                    {step >= 2 && (
+                        <StepAddress register={register} errors={errors} />
+                    )}
+                    {step >= 3 && (
+                        <StepPayment register={register} errors={errors} />
+                    )}
 
-            <form onSubmit={handleSubmit(onSubmit)} className="bg-[#fdfcf5]">
-                <div className="max-w-2xl mx-auto px-4 py-10">
-
-
-                    <StepPersonalDetails register={register} errors={errors} />
-                    <StepAddress register={register} errors={errors} />
-                    <StepPayment register={register} errors={errors} />
-
-                    <button type="submit" className="mt-4 bg-green-700 text-white w-full py-3 rounded-md font-semibold">
-                        Confirm £189 payment
-                    </button>
+                    {step < 3 ? (
+                        <NextButton
+                            onClick={handleNextStep}
+                            disabled={(step === 1 && !personalDetailsFilled) || (step === 2 && !addressFilled)}
+                            label="Continue"
+                        />
+                    ) : (
+                        <NextButton onClick={handleCheckOut} label="Confirm payment" />
+                    )}
                 </div>
             </form>
-
         </>
     );
-}
+};
+
+export default Checkout;
