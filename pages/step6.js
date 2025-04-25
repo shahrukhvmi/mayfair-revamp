@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import { FiCheck } from "react-icons/fi";
@@ -11,10 +11,12 @@ import StepsHeader from "@/layout/stepsHeader";
 // ✅ Initialize Inter font here
 import { Inter } from "next/font/google";
 import PageAnimationWrapper from "@/Components/PageAnimationWrapper/PageAnimationWrapper";
+import PageLoader from "@/Components/PageLoader/PageLoader";
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 
 const Step6 = () => {
   const router = useRouter();
+  const [showLoader, setShowLoader] = useState(false);
 
   const {
     register,
@@ -37,8 +39,10 @@ const Step6 = () => {
   const isNoSelected = personalUse === "no" || decisionCapacity === "no";
   const showConsentBox = personalUse === "yes" && decisionCapacity === "yes";
 
-  const onSubmit = (data) => {
+  const onSubmit = async (data) => {
     console.log("Form Data:", data);
+    setShowLoader(true);
+    await new Promise((resolve) => setTimeout(resolve, 500)); // Wait 2s
     router.push("/step7");
   };
 
@@ -137,6 +141,12 @@ const Step6 = () => {
                 <NextButton disabled={!isValid || isNoSelected} label="I Confirm" />
               </div>
             </form>
+
+            {showLoader && (
+              <div className="absolute inset-0 z-20 flex justify-center items-center bg-white/60 rounded-lg cursor-not-allowed">
+                <PageLoader />
+              </div>
+            )}
           </div>
         </PageAnimationWrapper>
       </FormWrapper>

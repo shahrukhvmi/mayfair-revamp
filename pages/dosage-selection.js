@@ -321,7 +321,7 @@ export default function DosageSelection() {
   return (
     <>
       <StepsHeader />
-      <div className={`${inter.className} min-h-screen flex items-center justify-center bg-green-50 px-4 sm:px-6 lg:px-8 `}>
+      <div className={`${inter.className} flex items-center justify-center bg-green-50 px-4 sm:px-6 lg:px-8 `}>
         <div className="rounded-xl w-full max-w-2xl my-20">
           <div className="w-full mx-auto sm:px-8 my-6 rounded-md">
             <div className="flex justify-center">

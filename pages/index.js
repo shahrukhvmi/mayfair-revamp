@@ -22,7 +22,7 @@ export default function Home() {
   const onSubmit = async (data) => {
     console.log("Form Data:", data);
     setShowLoader(true);
-    await new Promise((resolve) => setTimeout(resolve, 1000)); // Wait 2s
+    await new Promise((resolve) => setTimeout(resolve, 500)); // Wait 2s
     router.push("/steps-information");
   };
 
@@ -38,9 +38,9 @@ export default function Home() {
           <div className="p-6">
             <div className={`relative ${showLoader ? "pointer-events-none cursor-not-allowed" : ""}`}>
               <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-                <TextField label="First name" name="firstName" placeholder="First name" register={register} required errors={errors} />
+                <TextField label="First Name" name="firstName" placeholder="First name" register={register} required errors={errors} />
                 <TextField label="Last Name" name="lastname" placeholder="Last Name" register={register} required errors={errors} />
-                <TextField label="Email address" name="email" placeholder="Email address" type="email" register={register} required errors={errors} />
+                <TextField label="Email Address" name="email" placeholder="Email address" type="email" register={register} required errors={errors} />
 
                 <NextButton
                   label="Next"

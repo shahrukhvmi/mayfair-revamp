@@ -31,7 +31,7 @@ export default function Step3() {
   const onSubmit = async (data) => {
     console.log("Form Data:", data);
     setShowLoader(true);
-    await new Promise((resolve) => setTimeout(resolve, 1000)); // Wait 2s
+    await new Promise((resolve) => setTimeout(resolve, 500)); // Wait 2s
     router.push("/step4");
   };
 

@@ -37,7 +37,7 @@ export default function Step2() {
   const onSubmit = async (data) => {
     console.log("Form Data:", data);
     setShowLoader(true);
-    await new Promise((resolve) => setTimeout(resolve, 1000)); // Wait 2s
+    await new Promise((resolve) => setTimeout(resolve, 500)); // Wait 2s
     router.push("/step3");
   };
 
@@ -60,7 +60,7 @@ export default function Step2() {
                         onChange: (e) => setPostalValue(e.target.value),
                       })}
                       placeholder="Enter postal code"
-                      className="text-black w-full border border-gray-300 rounded-md px-3 py-2 pr-10 focus:outline-none focus:ring-2 focus:ring-green-200 focus:border-green-700"
+                      className="text-black w-full border border-black rounded-md px-3 py-4 pr-10 focus:outline-none focus:ring-2 focus:ring-violet-300 focus:border-violet-800"
                     />
 
                     {postalValue && <FaSearch className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 text-sm" />}

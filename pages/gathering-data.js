@@ -60,7 +60,7 @@ export default function GatherData() {
   return (
     <>
       <StepsHeader />
-      <div className="min-h-screen flex flex-col bg-green-50 text-center px-4 py-12">
+      <div className="flex flex-col bg-green-50 text-center px-4 py-12">
         <motion.div
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}

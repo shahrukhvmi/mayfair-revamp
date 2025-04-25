@@ -3,13 +3,17 @@ import FormWrapper from "@/Components/FormWrapper/FormWrapper";
 import NextButton from "@/Components/NextButton/NextButton";
 import PageAnimationWrapper from "@/Components/PageAnimationWrapper/PageAnimationWrapper";
 import { useRouter } from "next/router";
-import React from "react";
+import React, { useState } from "react";
 import StepsHeader from "@/layout/stepsHeader";
+import PageLoader from "@/Components/PageLoader/PageLoader";
 
 const step7 = () => {
   const router = useRouter();
+  const [showLoader, setShowLoader] = useState(false);
 
-  const hanldeConfirm = () => {
+  const hanldeConfirm = async () => {
+    setShowLoader(true);
+    await new Promise((resolve) => setTimeout(resolve, 500)); // Wait 2s
     router.push("/gathering-data");
   };
   const reviewAll = () => {
@@ -50,6 +54,11 @@ const step7 = () => {
               <NextButton label="Confirm answers" className="!bg-lime-200 !text-black !font-semibold hover:!bg-lime-300" onClick={hanldeConfirm} />
               <BackButton label="Review all" onClick={reviewAll} />
             </div>
+            {showLoader && (
+              <div className="absolute inset-0 z-20 flex justify-center items-center bg-white/60 rounded-lg cursor-not-allowed">
+                <PageLoader />
+              </div>
+            )}
           </div>
         </PageAnimationWrapper>
       </FormWrapper>

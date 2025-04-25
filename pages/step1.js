@@ -10,7 +10,6 @@ import PageAnimationWrapper from "@/Components/PageAnimationWrapper/PageAnimatio
 import { useState } from "react";
 import PageLoader from "@/Components/PageLoader/PageLoader";
 
-
 export default function Step1() {
   const [showLoader, setShowLoader] = useState(false);
   const {
@@ -31,7 +30,7 @@ export default function Step1() {
   const onSubmit = async (data) => {
     console.log("Form Data:", data);
     setShowLoader(true);
-    await new Promise((resolve) => setTimeout(resolve, 1000)); // Wait 2s
+    await new Promise((resolve) => setTimeout(resolve, 500)); // Wait 2s
     router.push("/step2");
   };
 
@@ -45,13 +44,13 @@ export default function Step1() {
             <div className={`relative ${showLoader ? "pointer-events-none cursor-not-allowed" : ""}`}>
               <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
                 <div>
-                  <TextField label="date of birth" name="dob" type="date" placeholder="DD/MM/YYYY" register={register} required errors={errors} />
+                  <TextField label="Date Of Birth" name="dob" type="date" placeholder="DD/MM/YYYY" register={register} required errors={errors} />
 
                   {errors.dob && <p className="text-red-500 text-sm mt-1">Date of birth is required</p>}
                 </div>
 
                 <div className="space-y-4">
-                  <h1 className="text-lg font-semibold text-center mb-2 text-green-900">What sex were you assigned at birth?</h1>
+                  <h1 className="text-lg font-semibold text-center mb-2 text-black">What is your gender</h1>
                   {/* <p className="text-sm text-green-900 text-center mb-6">
                                 Why do we ask about your sex at birth?
                             </p> */}
