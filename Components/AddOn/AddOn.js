@@ -43,19 +43,30 @@ const AddOn = ({ addon }) => {
     <>
       <div
         onClick={handleSelected}
-        className={`flex items-center justify-between p-4 border rounded-lg cursor-pointer mb-3 transition-all duration-300 ease-in-out border-gray-300 bg-white hover:bg-gray-50`}
+        checked={isSelected}
+        className={`flex items-center justify-between p-4 border rounded-lg cursor-pointer mb-3 transition-all duration-300 ease-in-out
+            ${isSelected || addon.isSelected ? "border-blue-500 bg-blue-100 hover:bg-blue-200" : "border-gray-300 bg-white hover:bg-gray-50"}`}
       >
         <div className="flex items-center space-x-3">
           <input
             type="checkbox"
             onChange={handleSelected}
+            checked={isSelected}
             className="appearance-none w-5 h-5 border-2 border-gray-300 rounded-full bg-white checked:border-blue-500 checked:bg-blue-500 transition-all duration-300 cursor-pointer"
           />
-          <span className={`font-med text-sm sm:text-md capitalize text-gray-800 text-lg`}>{addon?.name}</span>
+          <span className={`font-med text-sm sm:text-md capitalize ${isSelected || addon?.isSelected ? "text-blue-600" : "text-gray-800"} text-lg`}>
+            {addon?.name}
+          </span>
         </div>
 
         <div className="flex items-center space-x-3">
-          <span className={`sm:text-md text-gray-700 font-bold text-sm sm:text-md`}>£{parseFloat(addon.price).toFixed(2)}</span>
+          <span
+            className={`font-bold text-sm sm:text-md ${
+              isSelected || addon?.isSelected ? "text-blue-600" : "text-gray-700"
+            } font-bold text-sm sm:text-md`}
+          >
+            £{parseFloat(addon?.price).toFixed(2)}
+          </span>
 
           {isSelected && (
             <div className="flex items-center space-x-1">

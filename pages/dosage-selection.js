@@ -330,7 +330,7 @@ export default function DosageSelection() {
                 <div className="col-span-12 sm:col-span-6 md:px-4 py-10">
                   {/* Product Info */}
                   <div className="bg-white rounded-lg shadow-lg overflow-hidden mb-6">
-                    <div className="bg-[#4565BF] p-6">
+                    <div className="bg-violet-700 p-6">
                       <img src="/images/wegovy.png" alt="" className="w-full h-40 object-contain" />
                     </div>
                     <div className="p-6">
