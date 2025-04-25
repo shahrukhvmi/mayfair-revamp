@@ -1,16 +1,21 @@
 const ProgressBar = ({ percentage = 0 }) => {
-    return (
-      <div className="w-full">
-        <div className="h-1 bg-gray-200">
-          <div
-            className="h-1 bg-green-600 transition-all duration-300 ease-in-out"
-            style={{ width: `${percentage}%` }}
-          ></div>
-        </div>
-        <p className="text-sm text-green-700 font-medium text-center mt-2">{percentage}% Complete</p>
+  return (
+    <div className="w-full">
+      {/* Outer container with rounded top corners only */}
+      <div className="h-3 bg-gray-200 rounded-t-md overflow-hidden">
+        {/* Inner fill, square edges */}
+        <div
+          className="h-3 bg-green-700 transition-all duration-300 ease-in-out"
+          style={{ width: `${percentage}%` }}
+        ></div>
       </div>
-    );
-  };
-  
-  export default ProgressBar;
-  
+
+      {/* Progress text */}
+      <p className="text-sm text-green-700 font-medium text-center mt-2">
+        {percentage}% Complete
+      </p>
+    </div>
+  );
+};
+
+export default ProgressBar;
