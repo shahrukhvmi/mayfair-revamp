@@ -1,4 +1,4 @@
-import Navbar from "@/layout/Dashboard/navbar";
+import StepsHeader from "@/layout/stepsHeader";
 import { motion } from "framer-motion";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
@@ -55,7 +55,7 @@ export default function GatherData() {
 
   return (
     <>
-      <Navbar />
+      <StepsHeader />
       <div className="min-h-screen flex flex-col bg-[#DACFFF] text-center px-4 py-12">
         <motion.div
           initial={{ opacity: 0, y: -10 }}
