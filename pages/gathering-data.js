@@ -47,6 +47,10 @@ export default function GatherData() {
     }),
   };
 
+  setTimeout(() => {
+    router.push("/dosage-selection");
+  }, 4000);
+
   const details = [
     "Wegovy is used for weight management.",
     "The typical dose is 2.4 mg once weekly.",
@@ -56,7 +60,7 @@ export default function GatherData() {
   return (
     <>
       <StepsHeader />
-      <div className="min-h-screen flex flex-col bg-[#DACFFF] text-center px-4 py-12">
+      <div className="min-h-screen flex flex-col bg-green-50 text-center px-4 py-12">
         <motion.div
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
@@ -81,7 +85,10 @@ export default function GatherData() {
             </div>
 
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2, duration: 0.5 }} className="mt-8">
-              <button className="bg-primary text-white px-6 py-2 rounded hover:bg-primary-dark transition" onClick={() => router.push("/next-step")}>
+              <button
+                className="bg-violet-700 w-sm text-white px-6 py-2 rounded hover:bg-primary-dark transition cursor-pointer"
+                onClick={() => router.push("/dosage-selection")}
+              >
                 Continue
               </button>
             </motion.div>

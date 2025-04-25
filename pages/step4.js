@@ -42,8 +42,8 @@ export default function Step4() {
           ? ["heightFt", "heightIn"]
           : ["heightCm"]
         : weightUnit === "stlb"
-          ? ["weightSt", "weightLbs"]
-          : ["weightKg"];
+        ? ["weightSt", "weightLbs"]
+        : ["weightKg"];
 
     const isValid = await trigger(fields);
     if (!isValid) return;
@@ -69,14 +69,16 @@ export default function Step4() {
 
   return (
     <>
-      <PageAnimationWrapper>
-        <FormWrapper
-          heading={localStep === 1 ? "What is your height?" : "What is your current weight?"}
-          description={"People of certain ethnicities may be suitable for treatment at a lower BMI than others, if appropriate. Does one of the following options describe your ethnic group or background?"}
-          percentage={"45"}
-        >
+      <StepsHeader />
+      <FormWrapper
+        heading={localStep === 1 ? "What is your height?" : "What is your current weight?"}
+        description={
+          "People of certain ethnicities may be suitable for treatment at a lower BMI than others, if appropriate. Does one of the following options describe your ethnic group or background?"
+        }
+        percentage={"45"}
+      >
+        <PageAnimationWrapper>
           <div className="p-6">
-
             {/* Tab Toggle */}
             <div className="flex justify-center mb-6">
               <div className="w-full max-w-md grid grid-cols-2 rounded-md overflow-hidden border border-green-700">
@@ -133,15 +135,7 @@ export default function Step4() {
                 <NextButton label={localStep === 2 ? "Next" : "Next"} onClick={handleNext} type="button" />
 
                 {/* Back Button */}
-                {localStep === 2 && (
-                  <BackButton
-                    type="button"
-                    label="Back"
-                    onClick={() => setLocalStep(1)}
-                  />
-
-
-                )}
+                {localStep === 2 && <BackButton type="button" label="Back" onClick={() => setLocalStep(1)} />}
               </form>
 
               {showLoader && (
@@ -151,9 +145,8 @@ export default function Step4() {
               )}
             </div>
           </div>
-        </FormWrapper>
-
-      </PageAnimationWrapper >
+        </PageAnimationWrapper>
+      </FormWrapper>
     </>
   );
 }

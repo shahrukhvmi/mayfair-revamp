@@ -6,6 +6,9 @@ import { motion } from "framer-motion";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
+import { Inter } from "next/font/google";
+
+const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 
 export default function StepsInformation() {
   const [imageLoaded, setImageLoaded] = useState(false);
@@ -49,7 +52,7 @@ export default function StepsInformation() {
   return (
     <>
       <StepsHeader />
-      <div className="min-h-screen flex flex-col bg-[#DACFFF] text-center px-4 py-12">
+      <div className={`${inter.className} min-h-screen flex flex-col bg-green-50 text-center px-4 py-12`}>
         <motion.h1 initial="hidden" animate="visible" variants={textVariant} className="text-2xl md:text-3xl font-semibold text-gray-800 mb-6">
           You are proceeding with Wegovy
         </motion.h1>
