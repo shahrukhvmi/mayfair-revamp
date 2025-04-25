@@ -1,6 +1,5 @@
 import { useForm } from "react-hook-form";
-
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import StepsHeader from "@/layout/stepsHeader";
 import NextButton from "@/Components/NextButton/NextButton";
 import StepPersonalDetails from "@/Components/checkout/StepPersonalDetails";
@@ -17,9 +16,33 @@ const Checkout = () => {
 
   const [step, setStep] = useState(1);
 
+  // Refs for each step section
+  const personalRef = useRef(null);
+  const addressRef = useRef(null);
+  const paymentRef = useRef(null);
+
   const personalDetailsFilled =
-    watch("firstName") && watch("lastName") && watch("email") && watch("mobile") && watch("password") && watch("confirmPassword");
-  const addressFilled = watch("address");
+    watch("firstName") &&
+    watch("lastName") &&
+    watch("email") &&
+    watch("mobile") &&
+    watch("password") &&
+    watch("confirmPassword");
+
+  const addressFilled = watch("postalCode"); // or watch("address") if manual
+
+  // Scroll to the current step
+  useEffect(() => {
+    const scrollToRef = (ref) => {
+      if (ref?.current) {
+        ref.current.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    };
+
+    if (step === 1) scrollToRef(personalRef);
+    else if (step === 2) scrollToRef(addressRef);
+    else if (step === 3) scrollToRef(paymentRef);
+  }, [step]);
 
   const handleNextStep = () => {
     if (step === 1 && personalDetailsFilled) setStep(2);
@@ -38,16 +61,33 @@ const Checkout = () => {
     <>
       <StepsHeader />
 
-      <form onSubmit={handleSubmit(onSubmit)} className="bg-green-50 w-full">
+      <form onSubmit={handleSubmit(onSubmit)} className="bg-[#fdfcf5] w-full">
         <div className="max-w-2xl mx-auto px-4 py-10 space-y-10">
-          {step >= 1 && <StepPersonalDetails register={register} errors={errors} />}
-          {step >= 2 && <StepAddress register={register} errors={errors} />}
-          {step >= 3 && <StepPayment register={register} errors={errors} />}
+          {step >= 1 && (
+            <div ref={personalRef}>
+              <StepPersonalDetails register={register} errors={errors} />
+            </div>
+          )}
+
+          {step >= 2 && (
+            <div ref={addressRef}>
+              <StepAddress register={register} errors={errors} />
+            </div>
+          )}
+
+          {step >= 3 && (
+            <div ref={paymentRef}>
+              <StepPayment register={register} errors={errors} />
+            </div>
+          )}
 
           {step < 3 ? (
             <NextButton
               onClick={handleNextStep}
-              disabled={(step === 1 && !personalDetailsFilled) || (step === 2 && !addressFilled)}
+              disabled={
+                (step === 1 && !personalDetailsFilled) ||
+                (step === 2 && !addressFilled)
+              }
               label="Continue"
             />
           ) : (
