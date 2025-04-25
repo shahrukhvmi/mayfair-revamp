@@ -18,7 +18,7 @@ const StepPayment = ({ register, errors }) => {
             type="text"
             {...register("discountCode")}
             placeholder="Enter code"
-            className="flex-1 px-4 py-2 border border-violet-500 rounded-md text-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-violet-600 transition"
+            className="flex-1 px-4 py-4 border border-black rounded-md text-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-violet-600 transition"
           />
 
           <button

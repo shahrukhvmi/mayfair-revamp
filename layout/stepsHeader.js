@@ -77,7 +77,7 @@ const StepsHeader = ({ isOpen, toggleSidebar }) => {
 
         {/* Logo */}
         <div className="w-32 sm:w-40">
-          <Link href="/dashboard" onClick={handleRemovePid}>
+          <Link href="/" onClick={handleRemovePid}>
             <ApplicationLogo width={120} height={60} />
 
           </Link>
@@ -97,14 +97,14 @@ const StepsHeader = ({ isOpen, toggleSidebar }) => {
             <div className="dropdown-menu absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-md shadow-lg z-50">
               <ul className="py-1">
                 <li className="ligt-font px-4 py-2 text-[#1C1C29] hover:bg-gray-100 cursor-pointer">
-                  <Link href="/dashboard/" onClick={toggleDropdown}>My Account</Link>
+                  <Link href="/" onClick={toggleDropdown}>My Account</Link>
                 </li>
                 <li className="ligt-font px-4 py-2 text-[#1C1C29] hover:bg-gray-100 cursor-pointer">
-                  <Link href="/my-profile/" onClick={toggleDropdown}>
+                  <Link href="" onClick={toggleDropdown}>
                     My Profile
                   </Link>
                 </li>
-                <li className="ligt-font px-4 py-2 hover:bg-gray-100 cursor-pointer" onClick={handleLogout}>
+                <li className="ligt-font px-4 py-2 text-[#1C1C29] hover:bg-gray-100 cursor-pointer" onClick={handleLogout}>
                   Logout
                 </li>
               </ul>
