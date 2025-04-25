@@ -1,10 +1,11 @@
 import { useForm } from "react-hook-form";
-import StepPersonalDetails from "@/components/checkout/StepPersonalDetails";
-import StepPayment from "@/components/checkout/StepPayment";
-import StepAddress from "@/Components/checkout/StepAddress";
-import NextButton from "@/Components/NextButton/NextButton";
-import StepsHeader from "@/layout/stepsHeader";
+
 import { useState } from "react";
+import StepsHeader from "@/layout/stepsHeader";
+import NextButton from "@/Components/NextButton/NextButton";
+import StepPersonalDetails from "@/Components/checkout/StepPersonalDetails";
+import StepAddress from "@/Components/checkout/StepAddress";
+import StepPayment from "@/Components/checkout/StepPayment";
 
 const Checkout = () => {
     const {
