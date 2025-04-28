@@ -4,7 +4,7 @@ import SectionHeader from "./SectionHeader";
 import TextField from "@/Components/TextField/TextField";
 import SectionWrapper from "./SectionWrapper";
 
-const ShippingAddress = ({ register, errors, control }) => {
+const ShippingAddress = ({ register, errors, control,isComp }) => {
   const [manual, setManual] = useState(false);
 
   const postalCode = useWatch({ control, name: "postalCode" }) || "";
@@ -31,7 +31,7 @@ const ShippingAddress = ({ register, errors, control }) => {
         stepNumber={2}
         title="Shipping Address"
         description=""
-        completed={isCompleted}
+        completed={isComp}
       />
 
       <div className="space-y-6">

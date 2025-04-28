@@ -4,7 +4,7 @@ import SectionWrapper from "./SectionWrapper";
 import SectionHeader from "./SectionHeader";
 import { FiCheck, FiX, FiEye, FiEyeOff } from "react-icons/fi";
 
-const SetAPassword = ({ register, control, setIsPasswordValid }) => {
+const SetAPassword = ({ register, control, setIsPasswordValid ,isCompleted}) => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
@@ -33,7 +33,7 @@ const SetAPassword = ({ register, control, setIsPasswordValid }) => {
         stepNumber={1}
         title="Set a Password"
         description="Please create a strong password for your account."
-        completed={isPasswordStrongAndMatch}
+        completed={isCompleted}
       />
 
       {/* Password Field */}

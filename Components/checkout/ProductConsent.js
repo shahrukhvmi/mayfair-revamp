@@ -4,7 +4,7 @@ import { FiCheck } from "react-icons/fi";
 import SectionWrapper from "./SectionWrapper";
 import SectionHeader from "./SectionHeader";
 
-const ProductConsent = ({ register, errors, control }) => {
+const ProductConsent = ({ register, errors, control, isCompleted }) => {
   const termsAccepted = useWatch({ control, name: "terms" }) || false;
 
   return (
@@ -13,7 +13,7 @@ const ProductConsent = ({ register, errors, control }) => {
         stepNumber={3}
         title="Product Consent"
         description="Please review the important information below regarding your treatment."
-        completed={termsAccepted}
+        completed={isCompleted}
       />
 
       <div className="px-3">
