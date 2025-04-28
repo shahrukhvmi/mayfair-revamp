@@ -14,17 +14,17 @@ const mockAnswers = [
   { question: "Do you have any other conditions your practitioner should be aware of?", answer: "None" },
 ];
 
-const Step8 = () => {
+const ReviewAnswers = () => {
   const router = useRouter();
 
   const handleRestart = () => {
-    router.push("/step1");
+    router.push("/personal-details");
   };
 
   return (
     <>
       <StepsHeader />
-      <FormWrapper percentage={"75"} heading="Your Answers">
+      <FormWrapper percentage={"95"} heading="Your Answers">
         <PageAnimationWrapper>
           <div className="py-12 px-4 sm:px-6 lg:px-8">
             <div className="max-w-2xl mx-auto">
@@ -41,7 +41,7 @@ const Step8 = () => {
 
               {/* Bottom Action Buttons */}
               <div className="mt-8 space-y-3">
-                <BackButton label="Go back" onClick={() => router.push("/step7")} />
+                <BackButton label="Go back" onClick={() => router.push("/confirmation-summary")} />
 
                 <NextButton label="Restart quiz" onClick={handleRestart} />
               </div>
@@ -53,4 +53,4 @@ const Step8 = () => {
   );
 };
 
-export default Step8;
+export default ReviewAnswers;

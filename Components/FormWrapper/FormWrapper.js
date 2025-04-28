@@ -13,10 +13,10 @@ const FormWrapper = ({ children, width = "", heading = "", description = "", per
 
           <div className="px-6 pt-6 pb-8">
             {/* Title */}
-            <h1 className="text-xl font-semibold text-center mb-2 text-gray-900">{heading}</h1>
+            <h1 className="px-6 text-2xl font-semibold mb-2 text-gray-900">{heading}</h1>
 
             {/* Description */}
-            <p className="text-sm text-gray-600 text-center mb-6">{description}</p>
+            <p className="text-sm px-6 text-gray-600 mb-6">{description}</p>
 
             {/* Slot: Form Fields and Buttons */}
             <div className={`${showLoader ? "pointer-events-none opacity-50" : ""}`}>{children}</div>

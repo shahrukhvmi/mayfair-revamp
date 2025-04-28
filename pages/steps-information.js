@@ -85,8 +85,8 @@ export default function StepsInformation() {
             </div>
 
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2, duration: 0.5 }} className="mt-8">
-            <div className="w-sm m-auto">
-                <NextButton label="Next" onClick={() => router.push("/step1")} />
+              <div className="w-sm m-auto">
+                <NextButton label="Next" onClick={() => router.push("/personal-details")} />
               </div>
             </motion.div>
           </>

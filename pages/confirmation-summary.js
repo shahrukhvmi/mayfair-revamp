@@ -7,7 +7,7 @@ import React, { useState } from "react";
 import StepsHeader from "@/layout/stepsHeader";
 import PageLoader from "@/Components/PageLoader/PageLoader";
 
-const step7 = () => {
+const ConfirmationSummary = () => {
   const router = useRouter();
   const [showLoader, setShowLoader] = useState(false);
 
@@ -17,12 +17,16 @@ const step7 = () => {
     router.push("/gathering-data");
   };
   const reviewAll = () => {
-    router.push("/step8");
+    router.push("/review-answers");
   };
   return (
     <>
       <StepsHeader />
-      <FormWrapper heading="Have we got this right?" description="" percentage={75}>
+      <FormWrapper
+        heading="Confirm your answers"
+        description="It’s important your answers are accurate, as we’ll use them to determine your suitability for the Weight Reset Program."
+        percentage={95}
+      >
         <PageAnimationWrapper>
           <div className="p-6 space-y-6">
             {/* Summary Box */}
@@ -52,7 +56,7 @@ const step7 = () => {
             {/* Confirm & Review Buttons */}
             <div className="space-y-3">
               <NextButton label="Confirm answers" className="!bg-lime-200 !text-black !font-semibold hover:!bg-lime-300" onClick={hanldeConfirm} />
-              <BackButton label="Review all" onClick={reviewAll} />
+              <BackButton label="Review all" className="mt-2" onClick={reviewAll} />
             </div>
             {showLoader && (
               <div className="absolute inset-0 z-20 flex justify-center items-center bg-white/60 rounded-lg cursor-not-allowed">
@@ -66,4 +70,4 @@ const step7 = () => {
   );
 };
 
-export default step7;
+export default ConfirmationSummary;

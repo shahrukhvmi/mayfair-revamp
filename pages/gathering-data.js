@@ -4,6 +4,10 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
 import doctorAnimation from "@/public/images/dr-animation.json";
+import NextButton from "@/Components/NextButton/NextButton";
+import { Inter } from "next/font/google";
+
+const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 
 // Dynamically import Lottie with SSR disabled
 const Lottie = dynamic(() => import("lottie-react"), { ssr: false });
@@ -60,7 +64,7 @@ export default function GatherData() {
   return (
     <>
       <StepsHeader />
-      <div className="flex flex-col bg-green-50 text-center px-4 py-12">
+      <div className={`${inter.className} flex flex-col bg-green-50 text-center px-4 py-12`}>
         <motion.div
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
@@ -85,12 +89,13 @@ export default function GatherData() {
             </div>
 
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2, duration: 0.5 }} className="mt-8">
-              <button
-                className="bg-violet-700 w-sm text-white px-6 py-2 rounded hover:bg-primary-dark transition cursor-pointer"
-                onClick={() => router.push("/dosage-selection")}
-              >
-                Continue
-              </button>
+              <div className="w-md m-auto">
+                <NextButton
+                  label="Continue"
+                  className="!bg-lime-200 !text-black !font-semibold hover:!bg-lime-300"
+                  onClick={() => router.push("/dosage-selection")}
+                />
+              </div>
             </motion.div>
           </>
         )}

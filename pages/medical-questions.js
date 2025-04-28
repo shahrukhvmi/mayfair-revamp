@@ -12,7 +12,7 @@ const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 import PageAnimationWrapper from "@/Components/PageAnimationWrapper/PageAnimationWrapper";
 import PageLoader from "@/Components/PageLoader/PageLoader";
 
-const Step5 = () => {
+const MedicalQuestions = () => {
   const router = useRouter();
   const [questions, setQuestions] = useState([]);
   const [responses, setResponses] = useState({});
@@ -88,13 +88,13 @@ const Step5 = () => {
   const onSubmit = async () => {
     setShowLoader(true);
     await new Promise((resolve) => setTimeout(resolve, 500)); // Wait 2s
-    router.push("/step6");
+    router.push("/patient-consent");
   };
 
   return (
     <>
       <StepsHeader />
-      <FormWrapper heading={"Medical Questions"} description={""} percentage={"60"}>
+      <FormWrapper heading={"Medical Questions"} description={""} percentage={"80"}>
         <PageAnimationWrapper>
           <div className={`relative ${showLoader ? "pointer-events-none cursor-not-allowed" : ""}`}>
             <form onSubmit={handleSubmit(onSubmit)} className="mt-8 space-y-8">
@@ -107,15 +107,6 @@ const Step5 = () => {
                     className={`p-5 shadow-sm border-1 rounded-md m-3 bg-white ${errorMessages[q.id] ? "border-red-400" : "border-gray-200"}`}
                   >
                     <p className="text-base text-[#1C1C29] font-inter mb-4">{q.question}</p>
-
-                    {q.has_sub_field && selectedAnswer === "yes" && (
-                      <textarea
-                        className="text-black w-full p-3 mt-2 border border-violet-300 focus:ring-2 focus:ring-violet-600 rounded-md text-sm"
-                        placeholder={q.sub_field_prompt}
-                        value={responses[q.id]?.subfield_response}
-                        onChange={(e) => handleChange(q.id, e.target.value, true)}
-                      />
-                    )}
 
                     {errorMessages[q.id] && <p className="text-sm text-red-500 mt-2">{errorMessages[q.id]}</p>}
 
@@ -155,6 +146,15 @@ const Step5 = () => {
                         );
                       })}
                     </div>
+
+                    {q.has_sub_field && selectedAnswer === "yes" && (
+                      <textarea
+                        className="text-black w-full p-3 mt-4 border border-violet-300 focus:ring-2 focus:ring-violet-600 rounded-md text-sm"
+                        placeholder={q.sub_field_prompt}
+                        value={responses[q.id]?.subfield_response}
+                        onChange={(e) => handleChange(q.id, e.target.value, true)}
+                      />
+                    )}
                   </div>
                 );
               })}
@@ -162,6 +162,7 @@ const Step5 = () => {
               {/* <BackButton label="Back" onClick={() => router.back()} /> */}
               <div className="m-6">
                 <NextButton disabled={!isNextEnabled} label="Next" />
+                <BackButton label="Back" className="mt-2" onClick={() => router.back()} />
               </div>
             </form>
 
@@ -177,4 +178,4 @@ const Step5 = () => {
   );
 };
 
-export default Step5;
+export default MedicalQuestions;

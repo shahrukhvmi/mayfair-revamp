@@ -1,60 +1,152 @@
-import TextField from "@/Components/TextField/TextField";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
-import NextButton from "@/Components/NextButton/NextButton";
 import { useRouter } from "next/navigation";
-import PageLoader from "@/Components/PageLoader/PageLoader";
-import { useState } from "react";
+import { FiCheck } from "react-icons/fi";
+
 import FormWrapper from "@/Components/FormWrapper/FormWrapper";
-import PageAnimationWrapper from "@/Components/PageAnimationWrapper/PageAnimationWrapper";
+import NextButton from "@/Components/NextButton/NextButton";
+import ProgressBar from "@/Components/ProgressBar/ProgressBar";
 import StepsHeader from "@/layout/stepsHeader";
-export default function Home() {
+
+// ✅ Initialize Inter font here
+import { Inter } from "next/font/google";
+import PageAnimationWrapper from "@/Components/PageAnimationWrapper/PageAnimationWrapper";
+import PageLoader from "@/Components/PageLoader/PageLoader";
+const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
+
+export default function SignUp() {
+  const router = useRouter();
   const [showLoader, setShowLoader] = useState(false);
 
   const {
     register,
     handleSubmit,
-    formState: { errors, isValid },
+    watch,
+    formState: { isValid },
   } = useForm({
     mode: "onChange",
+    defaultValues: {
+      personalUse: "",
+      decisionCapacity: "",
+      confirmConsent: false,
+    },
   });
-  const router = useRouter();
+
+  const personalUse = watch("personalUse");
+  const decisionCapacity = watch("decisionCapacity");
+  const confirmConsent = watch("confirmConsent");
+
+  const isNoSelected = personalUse === "no" || decisionCapacity === "no";
+  const showConsentBox = personalUse === "yes" && decisionCapacity === "yes";
 
   const onSubmit = async (data) => {
     console.log("Form Data:", data);
     setShowLoader(true);
     await new Promise((resolve) => setTimeout(resolve, 500)); // Wait 2s
-    router.push("/steps-information");
+    router.push("/signup");
+  };
+
+  const renderYesNo = (fieldName, value) => {
+    return (
+      <div className="flex gap-4 mt-4 flex-wrap sm:flex-nowrap">
+        {["yes", "no"].map((option) => {
+          const isSelected = value === option;
+          return (
+            <label
+              key={option}
+              className={`flex items-center px-4 py-2 rounded-md border w-fit min-w-[100px] justify-center cursor-pointer transition-all duration-200
+                ${
+                  isSelected
+                    ? option === "yes"
+                      ? "bg-violet-100 border-violet-600 text-violet-700"
+                      : "bg-red-100 border-red-600 text-red-700"
+                    : "bg-white border-gray-300 hover:border-gray-400 text-gray-800"
+                }`}
+            >
+              <input type="radio" value={option} {...register(fieldName, { required: true })} className="hidden" />
+              <div
+                className={`w-5 h-5 mr-2 rounded-md border flex items-center justify-center
+                  ${
+                    isSelected
+                      ? option === "yes"
+                        ? "bg-violet-600 border-violet-600 text-white"
+                        : "bg-red-600 border-red-600 text-white"
+                      : "border-gray-400 bg-white"
+                  }`}
+              >
+                {isSelected && <FiCheck className="text-xs" />}
+              </div>
+              <span className="text-sm font-medium capitalize">{option}</span>
+            </label>
+          );
+        })}
+      </div>
+    );
   };
 
   return (
     <>
       <StepsHeader />
-      <FormWrapper
-        heading={"Set up your account"}
-        description={"If you are registering someone other than yourself, please enter their information."}
-        percentage={"0"}
-      >
+      <FormWrapper heading={"Patient Acknowledgment"} description={""} percentage={"0"}>
         <PageAnimationWrapper>
-          <div className="p-6">
-            <div className={`relative ${showLoader ? "pointer-events-none cursor-not-allowed" : ""}`}>
-              <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-                <TextField label="First Name" name="firstName" placeholder="First Name" register={register} required errors={errors} />
-                <TextField label="Last Name" name="lastname" placeholder="Last Name" register={register} required errors={errors} />
-                <TextField label="Email Address" name="email" placeholder="Email Address" type="email" register={register} required errors={errors} />
-
-                <NextButton
-                  label="Next"
-                  disabled={!isValid} // ✅ disables until valid
-                  type="submit"
-                />
-              </form>
-
-              {showLoader && (
-                <div className="absolute inset-0 z-20 flex justify-center items-center bg-white/60 rounded-lg cursor-not-allowed">
-                  <PageLoader />
+          <div className="bg-white px-6 sm:p-7 mt-6">
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
+              {/* Questions */}
+              <div className="space-y-6">
+                <div className="space-y-2">
+                  <p className="text-sm font-medium text-gray-800">
+                    Are you purchasing this medication for yourself, of your own free will and the medicine is for your personal use only?
+                  </p>
+                  {renderYesNo("personalUse", personalUse)}
                 </div>
-              )}
-            </div>
+
+                <div className="space-y-2">
+                  <p className="text-sm font-medium text-gray-800">Do you believe you have the ability to make healthcare decisions for yourself?</p>
+                  {renderYesNo("decisionCapacity", decisionCapacity)}
+                </div>
+
+                {showConsentBox && (
+                  <div className="bg-white space-y-4 py-4 max-h-[200px] overflow-auto">
+                    <label className="flex items-center gap-3 text-sm font-semibold text-gray-800 cursor-pointer">
+                      <input type="checkbox" {...register("confirmConsent", { required: true })} className="hidden" />
+                      <div
+                        className={`w-5 h-5 rounded-full flex items-center justify-center border transition-all duration-200
+                          ${confirmConsent ? "bg-violet-600 border-violet-600 text-white" : "bg-white border-gray-400"}`}
+                      >
+                        {confirmConsent && <FiCheck className="w-3 h-3" />}
+                      </div>
+                      Do you confirm that:
+                    </label>
+
+                    <ul className="list-disc list-inside text-sm text-gray-700 space-y-2">
+                      <li>
+                        You consent for your medical information to be assessed by the clinical team at Mayfair Weight Loss Clinic and its pharmacy
+                        and to be prescribed medication.
+                      </li>
+                      <li>You consent to an age and ID check when placing your first order.</li>
+                      <li>
+                        You will answer all questions honestly and accurately, and understand that it is an offence to provide false information.
+                      </li>
+                      <li>
+                        You have capacity to understand all about the condition and medication information we have provided and that you give fully
+                        informed consent to the treatment option provided.
+                      </li>
+                      <li>You understand that the treatment or medical advice provided is based on the information you have provided.</li>
+                    </ul>
+                  </div>
+                )}
+              </div>
+
+              <div className="my-5">
+                <NextButton disabled={!isValid || isNoSelected} label="I Confirm" />
+              </div>
+            </form>
+
+            {showLoader && (
+              <div className="absolute inset-0 z-20 flex justify-center items-center bg-white/60 rounded-lg cursor-not-allowed">
+                <PageLoader />
+              </div>
+            )}
           </div>
         </PageAnimationWrapper>
       </FormWrapper>

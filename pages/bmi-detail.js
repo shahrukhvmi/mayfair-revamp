@@ -11,7 +11,8 @@ import PageLoader from "@/Components/PageLoader/PageLoader";
 import { Inter } from "next/font/google";
 import BackButton from "@/Components/BackButton/BackButton";
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
-export default function Step4() {
+
+export default function BmiDetail() {
   const [localStep, setLocalStep] = useState(1);
   const [heightUnit, setHeightUnit] = useState("metric");
   const [weightUnit, setWeightUnit] = useState("kg");
@@ -53,7 +54,7 @@ export default function Step4() {
         console.log(data);
         setShowLoader(true);
         await new Promise((resolve) => setTimeout(resolve, 500)); // Wait 1s
-        router.push("/step5");
+        router.push("/medical-questions");
       })();
     } else {
       setLocalStep(2);
@@ -73,9 +74,9 @@ export default function Step4() {
       <FormWrapper
         heading={localStep === 1 ? "What is your height?" : "What is your current weight?"}
         description={
-          "People of certain ethnicities may be suitable for treatment at a lower BMI than others, if appropriate. Does one of the following options describe your ethnic group or background?"
+          "Your Body Mass Index (BMI) is an important factor in assessing your eligibility for treatment. Please enter your height and weight below to allow us to calculate your BMI."
         }
-        percentage={"45"}
+        percentage={"70"}
       >
         <PageAnimationWrapper>
           <div className="p-6">
@@ -135,7 +136,11 @@ export default function Step4() {
                 <NextButton label={localStep === 2 ? "Next" : "Next"} onClick={handleNext} type="button" />
 
                 {/* Back Button */}
-                {localStep === 2 && <BackButton type="button" label="Back" onClick={() => setLocalStep(1)} />}
+                {localStep === 2 ? (
+                  <BackButton type="button" label="Back" className="mt-3" onClick={() => setLocalStep(1)} />
+                ) : (
+                  <BackButton label="Back" className="mt-2" onClick={() => router.back()} />
+                )}
               </form>
 
               {showLoader && (

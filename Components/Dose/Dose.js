@@ -48,12 +48,12 @@ const Dose = ({ dose }) => {
           if (doseStatus === 0) return;
           handleSelected(e);
         }}
-        className={`flex items-center justify-between p-4 border rounded-lg cursor-pointer mt-3 transition-all duration-300 ease-in-out relative ${
+        className={`flex items-center justify-between p-4 border cursor-pointer mt-3 transition-all duration-300 ease-in-out relative ${
           doseStatus === 0
-            ? "border-gray-300 opacity-70 cursor-not-allowed bg-white"
+            ? "opacity-70 cursor-not-allowed bg-white mt-8 border-1 border-black"
             : isSelected || dose?.isSelected
-            ? "border-violet-700 bg-violet-200 hover:bg-violet-200"
-            : "border-gray-300 bg-white hover:bg-gray-50"
+            ? "border-violet-700 bg-violet-200 hover:bg-violet-200 rounded-lg"
+            : "border-gray-300 bg-white hover:bg-gray-50 rounded-lg"
         }`}
       >
         {/* Out of Stock Overlay */}
@@ -61,7 +61,7 @@ const Dose = ({ dose }) => {
 
         {/* Out of Stock Ribbon */}
         {doseStatus === 0 && (
-          <div className="absolute -right-[-5px] top-2 bg-red-500 text-white px-[10px] text-xs py-1 rounded-tr z-20">Out of stock</div>
+          <div className="absolute -left-[1px] top-[-25px] bg-black text-white px-[10px] text-xs py-1 rounded-t z-20">Out of stock</div>
         )}
 
         <div className="flex items-center space-x-3">
@@ -71,11 +71,11 @@ const Dose = ({ dose }) => {
             onChange={handleSelected}
             className="appearance-none w-5 h-5 border-2 border-gray-300 rounded-full bg-white checked:border-violet-700 checked:bg-violet-700 transition-all duration-300 cursor-pointer"
           />
-          <span className={`font-med text-sm sm:text-md ${isSelected ? "text-violet-700" : "text-gray-800"} text-lg`}>
-            <span className="capitalize">{dose?.mediName}</span> <br />
-            <span className="font-bold">{dose.name}</span>
+          <span className={`font-med text-sm sm:text-md  ${isSelected ? "text-violet-700" : "text-gray-800"} text-lg`}>
+            <span className="capitalize font-bold">{dose?.mediName}</span> <br />
+            <span className="">{dose.name}</span>
             <br />
-            <h5 className="text-red-600 text-sm mt-2">{dose?.expiry ? `Expiry: ${moment(dose?.expiry).format("DD/MM/YYYY")}` : ""}</h5>
+            <h5 className="text-gray-800 text-sm mt-0">{dose?.expiry ? `Expiry: ${moment(dose?.expiry).format("DD/MM/YYYY")}` : ""}</h5>
           </span>
         </div>
 
