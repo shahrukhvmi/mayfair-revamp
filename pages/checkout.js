@@ -83,6 +83,8 @@ const Checkout = () => {
     <>
 
       <StepsHeader />
+
+
       <form onSubmit={handleSubmit(handleCheckOut)} className={`bg-green-50 w-full ${inter.className} `}>
 
         {/* Thank You Modal */}
@@ -123,7 +125,14 @@ const Checkout = () => {
 
 
         <div className="max-w-2xl mx-auto px-4 py-10 space-y-10">
+          <div className="px-6 text-center">
+            <h1 className="px-6 text-2xl font-semibold mb-2 text-gray-900">Checkout to kick-start your weight loss journey
 
+            </h1>
+            <p className="text-sm px-6 text-gray-600 mb-6">Complete your details below to secure your consultation. If you decide not to proceed after your consult for any reason, you will be fully refunded.</p>
+            {/* Slot: Form Fields and Buttons */}
+
+          </div>
           {/* Step 1 - Password */}
           <div ref={personalRef} className="relative">
             <SetAPassword
