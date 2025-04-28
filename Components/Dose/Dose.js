@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import toast from "react-hot-toast";
-import { FaMinus, FaPlus, FaInfoCircle } from "react-icons/fa";
+import { FaMinus, FaPlus, FaInfoCircle, FaDotCircle, FaRegCircle } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
 import moment from "moment/moment";
 import ConfirmationModal from "../Modal/ConfirmationModal";
@@ -69,8 +69,9 @@ const Dose = ({ dose }) => {
             type="checkbox"
             checked={isSelected}
             onChange={handleSelected}
-            className="appearance-none w-5 h-5 border-2 border-gray-300 rounded-full bg-white checked:border-violet-700 checked:bg-violet-700 transition-all duration-300 cursor-pointer"
-          />
+            className="appearance-none w-5 h-5 border-2 border-gray-300 rounded-full bg-white checked:border-violet-700 checked:bg-violet-700 transition-all duration-300 cursor-pointer hidden"
+          />{" "}
+          {isSelected ? <FaDotCircle className="text-violet-700 w-4 h-4 mt-1" /> : <FaRegCircle className="text-gray-800 w-4 h-4 mt-1" />}
           <span className={`font-med text-sm sm:text-md  ${isSelected ? "text-violet-700" : "text-gray-800"} text-lg`}>
             <span className="capitalize font-bold">{dose?.mediName}</span> <br />
             <span className="">{dose.name}</span>
