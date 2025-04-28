@@ -40,7 +40,7 @@ export default function DosageSelection() {
     {
       id: 19,
       name: "2.5 mg",
-      mediName: "Mounjaro (Tirzepatide)",
+      mediName: "Mounjaro",
       status: 1,
       allowed: "4",
       multiple: 0,
@@ -71,7 +71,7 @@ export default function DosageSelection() {
     {
       id: 20,
       name: "5 mg",
-      mediName: "Mounjaro (Tirzepatide)",
+      mediName: "Mounjaro",
       status: 1,
       allowed: "2",
       multiple: 0,
@@ -102,7 +102,7 @@ export default function DosageSelection() {
     {
       id: 21,
       name: "7.5 mg",
-      mediName: "Mounjaro (Tirzepatide)",
+      mediName: "Mounjaro",
       status: 1,
       allowed: "3",
       multiple: 0,
@@ -117,7 +117,7 @@ export default function DosageSelection() {
       expiry: "2025-12-01 00:00:00",
       stock: {
         id: 25,
-        status: 0,
+        status: 1,
         quantity: 10,
         taggable_type: "App\\Models\\Extra",
         taggable_id: 21,
@@ -133,7 +133,7 @@ export default function DosageSelection() {
     {
       id: 22,
       name: "10 mg",
-      mediName: "Mounjaro (Tirzepatide)",
+      mediName: "Mounjaro",
       status: 1,
       allowed: "3",
       multiple: 0,
@@ -164,7 +164,7 @@ export default function DosageSelection() {
     {
       id: 23,
       name: "12.5 mg",
-      mediName: "Mounjaro (Tirzepatide)",
+      mediName: "Mounjaro",
       status: 1,
       allowed: "3",
       multiple: 0,
@@ -179,7 +179,7 @@ export default function DosageSelection() {
       expiry: "2025-12-01 00:00:00",
       stock: {
         id: 27,
-        status: 1,
+        status: 0,
         quantity: 10,
         taggable_type: "App\\Models\\Extra",
         taggable_id: 23,
@@ -195,7 +195,7 @@ export default function DosageSelection() {
     {
       id: 24,
       name: "15 mg",
-      mediName: "Mounjaro (Tirzepatide)",
+      mediName: "Mounjaro",
       status: 1,
       allowed: "3",
       multiple: 0,

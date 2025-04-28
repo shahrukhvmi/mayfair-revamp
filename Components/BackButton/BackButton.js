@@ -7,8 +7,8 @@ const BackButton = ({ label = "Back", loading = false, disabled = false, type = 
         type={type}
         onClick={onClick}
         disabled={disabled || loading}
-        className={`cursor-pointer w-full py-3 px-12 rounded-xl border-2 border-violet-700 text-violet-700 text-sm font-medium transition-all duration-150
-        hover:bg-violet-50 disabled:opacity-50 disabled:cursor-not-allowed flex justify-center items-center`}
+        className={`cursor-pointer w-full px-12 underline rounded-xl  text-violet-700 text-sm font-medium transition-all duration-150
+         disabled:opacity-50 disabled:cursor-not-allowed flex justify-center items-center`}
       >
         {loading ? (
           <div className="flex items-center gap-2">
