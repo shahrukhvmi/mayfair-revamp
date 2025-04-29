@@ -337,7 +337,7 @@ export default function DosageSelection() {
                       <img src="/images/wegovy.png" alt="" className="w-full h-40 object-contain" />
                     </div>
                     <div className="p-6">
-                      <h2 className="text-2xl mb-4 bold-font text-gray-800">Wegovy (Semaglutide)</h2>
+                      <h2 className="text-2xl mb-4 bold-font text-gray-800">Mounjaro (Tirzepatide)</h2>
                       <span className="bold-font text-black">From £168.00</span>
                     </div>
                   </div>
