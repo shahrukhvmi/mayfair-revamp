@@ -44,10 +44,10 @@ export default function PatientConsent() {
 
       <FormWrapper heading={"Patient Consent"} percentage={"85"}>
         <PageAnimationWrapper>
-          <div className="pt-2 pb-6 px-2">
+          <div className="pt-2 pb-6">
             <div className={`relative ${showLoader ? "pointer-events-none cursor-not-allowed" : ""}`}>
               <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-                <div className="space-y-4">
+                <div className="space-y-4 border rounded-md border-gray-700 p-5">
                   {/* Top Consent with Custom Circle */}
                   <div className="flex items-start">
                     {/* Hidden Checkbox */}
@@ -63,7 +63,7 @@ export default function PatientConsent() {
                       )}
 
                       {/* Text */}
-                      <span className="text-sm font-semibold text-gray-700">
+                      <span className="bold-font text-gray-700 ">
                         Please confirm you have read and understand the below information related to the treatment prescribed. I confirm and
                         understand that:
                       </span>
@@ -71,7 +71,8 @@ export default function PatientConsent() {
                   </div>
 
                   {/* Consent Bullet Points */}
-                  <ul className="list-disc list-inside space-y-2 text-sm text-gray-700 mt-4">
+                  <ul className="list-disc list-outside pl-5 text-sm text-gray-700 space-y-2 reg-font paragraph">
+
                     <li>Treatments are sub-cutaneous injections and I feel comfortable administering this medication myself.</li>
                     <li>
                       Treatments are prescription-only medication and therefore you must inform your GP/doctor that you have been prescribed this and

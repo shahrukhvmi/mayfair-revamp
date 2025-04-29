@@ -37,7 +37,7 @@ export default function EmailConfirmation() {
         percentage={"20"}
       >
         <PageAnimationWrapper>
-          <div className="p-6">
+          <div className="">
             <div className={`relative ${showLoader ? "pointer-events-none cursor-not-allowed" : ""}`}>
               <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
                 {/* <TextField label="First Name" name="firstName" placeholder="First Name" register={register} required errors={errors} />

@@ -50,7 +50,7 @@ export default function ResidendialAddress() {
       <StepsHeader />
       <FormWrapper heading={"Patient Residential Address"} description={"Require for age verification purpose"} percentage={"40"}>
         <PageAnimationWrapper>
-          <div className="p-6">
+          <div>
             <div className={`relative ${showLoader ? "pointer-events-none cursor-not-allowed" : ""}`}>
               <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
                 {/* Postal Code + Search Button */}
@@ -64,7 +64,7 @@ export default function ResidendialAddress() {
                     <button
                       type="button"
                       onClick={() => console.log("Searching for postal code:", watch("postalCode"))}
-                      className={`absolute right-3 transform -translate-y-1/2  cursor-pointer flex items-center bg-violet-700 text-white px-2 py-1 rounded ${
+                      className={`bold-medium-font absolute right-3 transform -translate-y-1/2  cursor-pointer flex items-center bg-violet-700 text-white px-2 py-1 rounded ${
                         errors.postalCode ? "top-2/4" : "top-2/3"
                       }`}
                     >
@@ -74,7 +74,7 @@ export default function ResidendialAddress() {
 
                   {/* Toggle Button */}
                   <div className="text-sm text-right">
-                    <button type="button" onClick={() => setManual(!manual)} className="text-black font-bold underline transition cursor-pointer">
+                    <button type="button" onClick={() => setManual(!manual)} className="bold-font paragraph underline transition cursor-pointer">
                       {manual ? "Hide manual address entry" : "Enter your address manually"}
                     </button>
                   </div>

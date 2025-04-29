@@ -24,7 +24,7 @@ const GenderSelector = ({ register, selected, setValue, errors }) => {
               ${
                 selected === option
                   ? "border-green-800 bg-green-700 text-white"
-                  : "border-green-700 text-green-800 hover:bg-green-50"
+                  : "border-green-700 text-green-800 hover:bg-[#DACFFF]"
               }`}
           >
             {option}

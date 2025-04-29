@@ -40,7 +40,7 @@ const SectionHeader = ({ stepNumber, title, description, completed = false }) =>
         </div>
 
         {/* Title */}
-        <h2 className="text-black font-semibold text-base">
+        <h2 className="text-black bold-font text-base">
           {title}
         </h2>
       </div>
@@ -50,7 +50,7 @@ const SectionHeader = ({ stepNumber, title, description, completed = false }) =>
 
       {/* Description */}
       {description && (
-        <p className="text-sm text-black mt-1 font-normal">
+        <p className="text-sm text-black mt-1 reg-font paragraph">
           {description}
         </p>
       )}

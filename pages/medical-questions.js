@@ -3,7 +3,6 @@ import { useForm, Controller } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import { FaCheck } from "react-icons/fa";
 import FormWrapper from "@/Components/FormWrapper/FormWrapper";
-import ProgressBar from "@/Components/ProgressBar/ProgressBar";
 import StepsHeader from "@/layout/stepsHeader";
 import BackButton from "@/Components/BackButton/BackButton";
 import NextButton from "@/Components/NextButton/NextButton";
@@ -104,9 +103,9 @@ const MedicalQuestions = () => {
                 return (
                   <div
                     key={q.id}
-                    className={`p-5 shadow-sm border-1 rounded-md m-3 bg-white ${errorMessages[q.id] ? "border-red-400" : "border-gray-200"}`}
+                    className={`p-5 shadow-sm border-1 rounded-md bg-white ${errorMessages[q.id] ? "border-red-400" : "border-gray-200"}`}
                   >
-                    <p className="text-base text-[#1C1C29] font-inter mb-4">{q.question}</p>
+                    <p className="text-base text-[#1C1C29] reg-font paragraph mb-4">{q.question}</p>
 
                     {errorMessages[q.id] && <p className="text-sm text-red-500 mt-2">{errorMessages[q.id]}</p>}
 
@@ -116,8 +115,8 @@ const MedicalQuestions = () => {
                         return (
                           <label
                             key={option}
-                            className={`flex items-center justify-start border px-6 py-2 transition-all cursor-pointer w-full sm:w-auto rounded-md
-                                ${isSelected ? "bg-green-50 border-violet-700" : "border-gray-300 bg-white hover:bg-gray-50"}`}
+                            className={`bold-font paragraph flex items-center justify-start border px-6 py-2 transition-all cursor-pointer w-full sm:w-auto rounded-md
+                                ${isSelected ? "bg-[#DACFFF] border-violet-700" : "border-gray-300 bg-white hover:bg-gray-50"}`}
                           >
                             <Controller
                               name={`responses[${q.id}].answer`}
@@ -139,7 +138,7 @@ const MedicalQuestions = () => {
                             >
                               {isSelected && <FaCheck className="text-xs" />}
                             </div>
-                            <span className={`text-sm font-medium ${isSelected ? "text-violet-700" : "text-gray-700"}`}>
+                            <span className={`reg-font paragraph ${isSelected ? "text-violet-700" : "text-gray-700"}`}>
                               {option.charAt(0).toUpperCase() + option.slice(1)}
                             </span>
                           </label>
@@ -160,7 +159,7 @@ const MedicalQuestions = () => {
               })}
 
               {/* <BackButton label="Back" onClick={() => router.back()} /> */}
-              <div className="m-6">
+              <div className="">
                 <NextButton disabled={!isNextEnabled} label="Next" />
                 <BackButton label="Back" className="mt-2" onClick={() => router.back()} />
               </div>

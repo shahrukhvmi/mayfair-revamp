@@ -53,7 +53,7 @@ export default function GatherData() {
 
   setTimeout(() => {
     router.push("/dosage-selection");
-  }, 4000);
+  }, 2000);
 
   const details = [
     "Wegovy is used for weight management.",
@@ -64,7 +64,7 @@ export default function GatherData() {
   return (
     <>
       <StepsHeader />
-      <div className={`${inter.className} flex flex-col bg-green-50 text-center px-4 py-12`}>
+      <div className={`${inter.className} flex flex-col bg-[#DACFFF] text-center px-4 py-12`}>
         <motion.div
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
@@ -76,18 +76,18 @@ export default function GatherData() {
 
         {showContent && (
           <>
-            <motion.h1 initial="hidden" animate="visible" variants={textVariant} className="text-2xl md:text-3xl font-semibold text-gray-800 mt-6">
+            <motion.h1 initial="hidden" animate="visible" variants={textVariant} className="text-2xl md:text-3xl niba-reg-font heading mt-6">
               Gathering your details
             </motion.h1>
 
             <div className="space-y-4 mt-6">
               {details.map((line, index) => (
-                <motion.p key={index} custom={index} initial="hidden" animate="visible" variants={detailVariant} className="text-gray-700 text-md">
+                <motion.p key={index} custom={index} initial="hidden" animate="visible" variants={detailVariant} className="reg-font paragraph">
                   {line}
                 </motion.p>
               ))}
             </div>
-
+{/* 
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2, duration: 0.5 }} className="mt-8">
               <div className="w-md m-auto">
                 <NextButton
@@ -96,7 +96,7 @@ export default function GatherData() {
                   onClick={() => router.push("/dosage-selection")}
                 />
               </div>
-            </motion.div>
+            </motion.div> */}
           </>
         )}
       </div>

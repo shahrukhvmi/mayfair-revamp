@@ -33,7 +33,7 @@ export default function SignUp() {
       <StepsHeader />
       <FormWrapper heading={"What is your preferred phone number?"} description={""} percentage={"50"}>
         <PageAnimationWrapper>
-          <div className="p-6">
+          <div>
             <div className={`relative ${showLoader ? "pointer-events-none cursor-not-allowed" : ""}`}>
               <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
                 <TextField

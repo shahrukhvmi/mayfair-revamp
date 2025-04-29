@@ -48,7 +48,7 @@ export default function ConfirmEthnicity() {
         percentage={"60"}
       >
         <PageAnimationWrapper>
-          <div className="p-6">
+          <div className="">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
               {["South Asian", "Chinese", "Other Asian", "Middle Eastern", "Black African", "African-Caribbean"].map((ethnicity, index) => (
                 <div key={index} className="flex items-start gap-3">
@@ -56,7 +56,7 @@ export default function ConfirmEthnicity() {
                   <div className=" mt-2 bg-violet-700 rounded-full"></div>
                   <div className="flex items-center">
                     <GoDotFill className="me-2 text-gray-800 text-xs" />
-                    <p className="text-sm text-gray-800">{ethnicity}</p>
+                    <p className="niba-bold-font text-gray-700">{ethnicity}</p>
                   </div>
                 </div>
               ))}
@@ -70,7 +70,7 @@ export default function ConfirmEthnicity() {
                       <label
                         key={option}
                         className={`flex items-center gap-3 px-4 py-3 border rounded-lg transition-all cursor-pointer text-sm
-                      ${isSelected ? "bg-green-50 border-black text-black font-medium" : "border-gray-300 text-gray-900 hover:bg-gray-50"}`}
+                      ${isSelected ? "bg-[#DACFFF] border-black bold-font paragraph" : "border-gray-300 bold-font paragraph hover:bg-gray-50"}`}
                       >
                         <div
                           className={`w-5 h-5 rounded-sm flex items-center justify-center border transition

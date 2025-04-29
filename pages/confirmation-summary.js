@@ -30,32 +30,32 @@ const ConfirmationSummary = () => {
         <PageAnimationWrapper>
           <div className="p-6 space-y-6">
             {/* Summary Box */}
-            <div className="bg-green-50 border border-green-100 rounded-md p-5 text-sm text-gray-800">
-              <p className="font-semibold text-lg mb-3">Json Brown</p>
+            <div className="bg-[#DACFFF] border border-green-100 rounded-md p-5 text-sm text-gray-800">
+              <p className="bold-font text-black  mb-3">Json Brown</p>
               <hr className="border-gray-300 mb-3" />
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-2 gap-x-8">
-                <p>
-                  <span className="font-semibold">Age:</span> 25
+                <p className="bold-font text-black">
+                  <span className="bold-font paragraph">Age:</span> 25
                 </p>
-                <p>
-                  <span className="font-semibold">Height:</span> 125 cm
+                <p className="bold-font text-black">
+                  <span className="bold-font paragraph">Height:</span> 125 cm
                 </p>
-                <p>
-                  <span className="font-semibold">Sex at birth:</span> Male
+                <p className="bold-font text-black">
+                  <span className="bold-font paragraph">Sex at birth:</span> Male
                 </p>
-                <p>
-                  <span className="font-semibold">Weight:</span> 78 kg
+                <p className="bold-font text-black">
+                  <span className="bold-font paragraph">Weight:</span> 78 kg
                 </p>
-                <p className="sm:col-span-2">
-                  <span className="font-semibold">Ethnicity:</span> Aboriginal or Torres Strait Islander
+                <p className="sm:col-span-2 bold-font text-black">
+                  <span className="bold-font paragraph">Ethnicity:</span> Yes
                 </p>
               </div>
             </div>
 
             {/* Confirm & Review Buttons */}
             <div className="space-y-3">
-              <NextButton label="Confirm answers" className="!bg-lime-200 !text-black !font-semibold hover:!bg-lime-300" onClick={hanldeConfirm} />
+              <NextButton label="Confirm answers" className="!bg-lime-200 !text-black !bold-font paragraph hover:!bg-lime-300" onClick={hanldeConfirm} />
               <BackButton label="Review all" className="mt-2" onClick={reviewAll} />
             </div>
             {showLoader && (

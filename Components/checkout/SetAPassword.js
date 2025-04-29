@@ -87,7 +87,7 @@ const SetAPassword = ({ register, control, setIsPasswordValid ,isCompleted}) => 
 };
 
 const PasswordCheck = ({ valid, label }) => (
-  <div className="flex items-center justify-between text-sm text-gray-900">
+  <div className="flex items-center justify-between  reg-font paragraph">
     <span>{label}</span>
     {valid ? (
       <FiCheck className="text-green-600 w-4 h-4" />
