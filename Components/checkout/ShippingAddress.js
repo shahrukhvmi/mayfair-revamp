@@ -86,7 +86,7 @@ const ShippingAddress = ({ register, errors, control,isComp }) => {
                 <label className="block mb-1 text-sm font-medium text-black">Country</label>
                 <select
                   {...register("country", { required: manual })}
-                  className="w-full border rounded-lg p-3 text-sm text-black"
+                  className="w-full border rounded-lg p-3 text-sm text-black py-4"
                 >
                   <option value="">Select your country</option>
                   <option value="United Kingdom">United Kingdom</option>
