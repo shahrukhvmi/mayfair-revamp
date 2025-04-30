@@ -68,8 +68,8 @@ export default function GpDetail() {
                     htmlFor="yes"
                     className={
                       gpDetails === "yes"
-                        ? "w-1/2 flex items-center gap-3 px-4 py-3 border rounded-lg transition-all cursor-pointer text-sm bg-green-50 border-black text-black font-medium"
-                        : "w-1/2 flex items-center gap-3 px-4 py-3 border rounded-lg transition-all cursor-pointer text-sm border-gray-300 text-gray-900 hover:bg-gray-50"
+                        ? "w-1/2 flex items-center gap-3 px-4 py-3 border rounded-lg transition-all cursor-pointer text-sm bg-[#DACFFF] border-black bold-font paragraph"
+                        : "w-1/2 flex items-center gap-3 px-4 py-3 border rounded-lg transition-all cursor-pointer text-sm border-gray-300 bold-font paragraph hover:bg-gray-50"
                     }
                   >
                     <div
@@ -86,8 +86,8 @@ export default function GpDetail() {
                   <label
                     className={
                       gpDetails === "no"
-                        ? "w-1/2 flex items-center gap-3 px-4 py-3 border rounded-lg transition-all cursor-pointer text-sm bg-green-50 border-black text-black font-medium"
-                        : "w-1/2 flex items-center gap-3 px-4 py-3 border rounded-lg transition-all cursor-pointer text-sm border-gray-300 text-gray-900 hover:bg-gray-50"
+                        ? "w-1/2 flex items-center gap-3 px-4 py-3 border rounded-lg transition-all cursor-pointer text-sm bg-[#DACFFF] border-black bold-font paragraph"
+                        : "w-1/2 flex items-center gap-3 px-4 py-3 border rounded-lg transition-all cursor-pointer text-sm border-gray-300 bold-font paragraph hover:bg-gray-50"
                     }
                   >
                     <div
@@ -115,8 +115,8 @@ export default function GpDetail() {
                     <label
                       className={
                         gepTreatMent === "yes"
-                          ? "w-1/2 flex items-center gap-3 px-4 py-3 border rounded-lg transition-all cursor-pointer text-sm bg-green-50 border-black text-black font-medium"
-                          : "w-1/2 flex items-center gap-3 px-4 py-3 border rounded-lg transition-all cursor-pointer text-sm border-gray-300 text-gray-900 hover:bg-gray-50"
+                          ? "w-1/2 flex items-center gap-3 px-4 py-3 border rounded-lg transition-all cursor-pointer text-sm bg-[#DACFFF] border-black bold-font paragraph"
+                          : "w-1/2 flex items-center gap-3 px-4 py-3 border rounded-lg transition-all cursor-pointer text-sm border-gray-300 bold-font paragraph hover:bg-gray-50"
                       }
                     >
                       <div
@@ -132,8 +132,8 @@ export default function GpDetail() {
                     <label
                       className={
                         gepTreatMent === "no"
-                          ? "w-1/2 flex items-center gap-3 px-4 py-3 border rounded-lg transition-all cursor-pointer text-sm bg-green-50 border-black text-black font-medium"
-                          : "w-1/2 flex items-center gap-3 px-4 py-3 border rounded-lg transition-all cursor-pointer text-sm border-gray-300 text-gray-900 hover:bg-gray-50"
+                          ? "w-1/2 flex items-center gap-3 px-4 py-3 border rounded-lg transition-all cursor-pointer text-sm bg-[#DACFFF] border-black bold-font paragraph"
+                          : "w-1/2 flex items-center gap-3 px-4 py-3 border rounded-lg transition-all cursor-pointer text-sm border-gray-300 bold-font paragraph hover:bg-gray-50"
                       }
                     >
                       <div
@@ -155,7 +155,7 @@ export default function GpDetail() {
               {/* Conditional Rendering for No */}
               {gpDetails === "no" && (
                 <div className="bg-[#FFF3CD] px-4 py-4 mt-6 text-gray-700 rounded shadow-md transform transition-all ease-in-out duration-500 hover:scale-105 hover:bg-[#FFEBB5]">
-                  <p className="text-sm md:text-base">
+                  <p className="reg-font paragraph">
                     You should inform your doctor of any medication you take. If you would like us to email you a letter to forward onto your doctor,
                     please contact us.
                   </p>

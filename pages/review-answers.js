@@ -26,7 +26,7 @@ const ReviewAnswers = () => {
       <StepsHeader />
       <FormWrapper percentage={"95"} heading="Your Answers">
         <PageAnimationWrapper>
-          <div className="py-12 px-4 sm:px-6 lg:px-8">
+          <div className="py-12">
             <div className="max-w-2xl mx-auto">
               {/* Q&A Summary */}
               <div className="space-y-6">
@@ -43,7 +43,7 @@ const ReviewAnswers = () => {
               <div className="mt-8 space-y-3">
                 <BackButton label="Go back" onClick={() => router.push("/confirmation-summary")} />
 
-                <NextButton label="Restart quiz" onClick={handleRestart} />
+                <NextButton label="Restart consultation" onClick={handleRestart} />
               </div>
             </div>
           </div>

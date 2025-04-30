@@ -3,8 +3,9 @@ import { useWatch } from "react-hook-form";
 import SectionHeader from "./SectionHeader";
 import TextField from "@/Components/TextField/TextField";
 import SectionWrapper from "./SectionWrapper";
+import { FiChevronDown } from "react-icons/fi";
 
-const ShippingAddress = ({ register, errors, control }) => {
+const ShippingAddress = ({ register, errors, control, isComp }) => {
   const [manual, setManual] = useState(false);
 
   const postalCode = useWatch({ control, name: "postalCode" }) || "";
@@ -31,7 +32,7 @@ const ShippingAddress = ({ register, errors, control }) => {
         stepNumber={2}
         title="Shipping Address"
         description=""
-        completed={isCompleted}
+        completed={isComp}
       />
 
       <div className="space-y-6">
@@ -50,7 +51,7 @@ const ShippingAddress = ({ register, errors, control }) => {
           <button
             type="button"
             onClick={() => setManual(!manual)}
-            className="text-black font-bold underline transition"
+            className="bold-font paragraph underline transition"
           >
             {manual ? "Hide manual address entry" : "Enter your address manually"}
           </button>
@@ -81,24 +82,39 @@ const ShippingAddress = ({ register, errors, control }) => {
             </div>
 
             {/* Country + Address Line 1 */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label className="block mb-1 text-sm font-medium text-black">Country</label>
+            <div className="grid grid-cols-12 md:grid-cols-1 gap-4">
+
+              <div className="relative w-full">
+                <label className="block mb-2 bold-font paragraph">Country</label>
+
                 <select
                   {...register("country", { required: manual })}
-                  className="w-full border rounded-lg p-3 text-sm text-black"
+                  className="w-full appearance-none bg-white border border-black text-gray-900 text-sm rounded-md focus:ring-violet-500 focus:border-violet-500  py-5 px-3 pr-12 transition duration-300 ease-in-out mb-3"
                 >
                   <option value="">Select your country</option>
-                  <option value="United Kingdom">United Kingdom</option>
-                  <option value="United States">United States</option>
-                  <option value="Canada">Canada</option>
-                  <option value="Australia">Australia</option>
+                  <option value="United Kingdom">United Kingdom (Mainland)</option>
+                  <option value="United States">Channel Islands</option>
+                  <option value="Canada">Northern Ireland</option>
                 </select>
+
+                {/* Custom React Icon Dropdown Arrow */}
+                <div className="pointer-events-none absolute top-16 right-3 transform -translate-y-1/2">
+                  <FiChevronDown className="w-5 h-5 text-gray-500" />
+                </div>
+
                 {errors.country && (
-                  <p className="text-red-500 text-xs mt-1">Country is required.</p>
+                  <p className="text-red-500 text-xs mt-2">Country is required.</p>
                 )}
               </div>
 
+
+
+
+            </div>
+
+            {/* Address Line 2 (optional) */}
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <TextField
                 label="Address Line 1"
                 name="addressLine1"
@@ -107,17 +123,15 @@ const ShippingAddress = ({ register, errors, control }) => {
                 required={manual}
                 errors={errors}
               />
+              <TextField
+                label="Address Line 2"
+                name="addressLine2"
+                placeholder="Apartment, suite, etc. (optional)"
+                register={register}
+                required={false}
+                errors={errors}
+              />
             </div>
-
-            {/* Address Line 2 (optional) */}
-            <TextField
-              label="Address Line 2 (Optional)"
-              name="addressLine2"
-              placeholder="Apartment, suite, etc. (optional)"
-              register={register}
-              required={false}
-              errors={errors}
-            />
 
             {/* City + State */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

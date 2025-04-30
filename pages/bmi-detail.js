@@ -79,10 +79,10 @@ export default function BmiDetail() {
         percentage={"70"}
       >
         <PageAnimationWrapper>
-          <div className="p-6">
+          <div>
             {/* Tab Toggle */}
             <div className="flex justify-center mb-6">
-              <div className="w-full max-w-md grid grid-cols-2 rounded-md overflow-hidden border border-green-700">
+              <div className="w-full flex rounded-md overflow-hidden border border-green-700">
                 {(localStep === 1 ? ["metric", "imperial"] : ["kg", "stlb"]).map((unit) => {
                   const isActive = localStep === 1 ? heightUnit === unit : weightUnit === unit;
                   return (

@@ -72,8 +72,8 @@ const Dose = ({ dose }) => {
             className="appearance-none w-5 h-5 border-2 border-gray-300 rounded-full bg-white checked:border-violet-700 checked:bg-violet-700 transition-all duration-300 cursor-pointer hidden"
           />{" "}
           {isSelected ? <FaDotCircle className="text-violet-700 w-4 h-4 mt-1" /> : <FaRegCircle className="text-gray-800 w-4 h-4 mt-1" />}
-          <span className={`font-med text-sm sm:text-md  ${isSelected ? "text-violet-700" : "text-gray-800"} text-lg`}>
-            <span className="capitalize font-bold">{dose?.mediName}</span> <br />
+          <span className={`reg-font text-black text-sm sm:text-md  ${isSelected ? "text-violet-700" : "text-gray-800"} text-lg`}>
+            <span className="capitalize bold-font">{dose?.mediName}</span> <br />
             <span className="">{dose.name}</span>
             <br />
             <h5 className="text-gray-800 text-sm mt-0">{dose?.expiry ? `Expiry: ${moment(dose?.expiry).format("DD/MM/YYYY")}` : ""}</h5>

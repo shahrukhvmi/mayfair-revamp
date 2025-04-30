@@ -321,11 +321,11 @@ export default function DosageSelection() {
   return (
     <>
       <StepsHeader />
-      <div className={`${inter.className} flex items-center justify-center bg-green-50 px-4 sm:px-6 lg:px-8 `}>
+      <div className={`${inter.className} flex items-center justify-center bg-[#DACFFF] px-4 sm:px-6 lg:px-8 `}>
         <div className="rounded-xl w-full max-w-2xl my-20">
           <div className="w-full mx-auto sm:px-8 my-6 rounded-md">
             <div className="flex justify-center">
-              <h1 className="text-2xl md:text-4xl text-center my-3 text-black">You’re ready to start your personal weight loss journey</h1>
+              <h1 className="niba-reg-font heading text-center my-3">You’re ready to start your personal weight loss journey</h1>
             </div>
             <form onSubmit={handleSubmit(onSubmit)}>
               <div className="grid gap-4 px-4">
@@ -337,12 +337,12 @@ export default function DosageSelection() {
                       <img src="/images/wegovy.png" alt="" className="w-full h-40 object-contain" />
                     </div>
                     <div className="p-6">
-                      <h2 className="text-2xl mb-4 text-gray-800">Wegovy (Semaglutide)</h2>
-                      <span className="text-gray-800">From £168.00</span>
+                      <h2 className="text-2xl mb-4 bold-font text-gray-800">Mounjaro (Tirzepatide)</h2>
+                      <span className="bold-font text-black">From £168.00</span>
                     </div>
                   </div>
 
-                  <h1 className="my-4 font-reg text-2xl text-gray-800">
+                  <h1 className="my-4 niba-reg-font text-2xl text-gray-800">
                     Select <span className="font-bold text-2xl">Dosage</span>
                   </h1>
 
@@ -350,7 +350,7 @@ export default function DosageSelection() {
 
                   {addons?.length > 0 && (
                     <>
-                      <h1 className="my-4 font-reg text-2xl text-gray-800">
+                      <h1 className="my-4 niba-reg-font text-2xl text-gray-800">
                         Select <span className="font-bold text-2xl">Addons</span>
                       </h1>
                       {addons.map((addon, index) => (
@@ -371,9 +371,9 @@ export default function DosageSelection() {
           <div className="flex items-center space-x-3 me-5">
             <img src="/images/wegovy.png" alt="Mounjaro" className="w-10 h-10 rounded-md object-contain" />
             <div className="text-black leading-tight">
-              <div className="text-sm font-semibold">Mounjaro</div>
-              <div className="text-base font-bold">
-                £189 <span className="text-sm font-normal">/month</span>
+              <div className="text-lg bold-font">Mounjaro</div>
+              <div className="text-lg bold-font">
+                £189 <span className="text-lg reg-font">/month</span>
               </div>
             </div>
           </div>
@@ -381,7 +381,7 @@ export default function DosageSelection() {
           {/* Continue Button */}
           <button
             onClick={handleSubmit(onSubmit)}
-            className="w-80 bg-violet-800 text-white font-semibold text-base px-10 py-2.5 rounded-md hover:opacity-90 transition-all duration-200 cursor-pointer"
+            className="w-80 bg-violet-800 text-white bold-font text-base px-10 py-2.5 rounded-md hover:opacity-90 transition-all duration-200 cursor-pointer"
           >
             Next
           </button>

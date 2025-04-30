@@ -1,0 +1,126 @@
+/* Regular Font */
+@font-face {
+  font-family: "NibPro-Regular";
+  src: url("../public/fonts/NibPro/NibPro-Regular.ttf") format("opentype");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "NibPro-Bold";
+  src: url("../public/fonts/NibPro/NibPro-Bold.ttf") format("opentype");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "NibPro-light";
+  src: url("../public/fonts/NibPro/NibPro-Light.ttf") format("opentype");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "NibPro-SemiBold";
+  src: url("../public/fonts/NibPro/NibPro-SemiBold.ttf") format("opentype");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+
+@font-face {
+  font-family: "AtlasGrotesk-Regular";
+  src: url("../public/fonts/AtlasGrotesk/AtlasGrotesk-Regular.otf") format("opentype");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "AtlasGrotesk-Thin";
+  src: url("../public/fonts/AtlasGrotesk/AtlasGrotesk-Thin.otf") format("opentype");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "AtlasGrotesk-Bold";
+  src: url("../public/fonts/AtlasGrotesk/AtlasGrotesk-Bold.otf") format("opentype");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "AtlasGrotesk-Black";
+  src: url("../public/fonts/AtlasGrotesk/AtlasGrotesk-Black.otf") format("opentype");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "AtlasGrotesk-Medium";
+  src: url("../public/fonts/AtlasGrotesk/AtlasGrotesk-Medium.otf") format("opentype");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+/* Define a CSS variable for the font */
+:root {
+  --reg-font: "NibPro-Regular";
+  --bold-font: "NibPro-bold";
+  --light-font: "NibPro-light";
+  --semibold-font: "NibPro-SemiBold";
+  --font-reg: "AtlasGrotesk-Regular";
+  --font-thin: "AtlasGrotesk-Thin";
+  --font-bold: "AtlasGrotesk-Bold";
+  --font-black: "AtlasGrotesk-Black";
+  --font-medium: "AtlasGrotesk-Medium";
+}
+
+/* Global class */
+.niba-reg-font {
+  font-family: var(--reg-font) !important;
+}
+
+.thin-font {
+  font-family: var(--font-thin) !important;
+
+}
+
+.bold-font {
+  font-family: var(--font-bold) !important;
+
+}
+
+.black-font {
+  font-family: var(--font-black) !important;
+
+}
+.medium-font {
+  font-family: var(--font-medium) !important;
+
+}
+
+.niba-bold-font {
+  font-family: var(--bold-font) !important;
+}
+
+
+.niba-light-font {
+  font-family: var(--light-font) !important;
+}
+
+.niba-semibold-font {
+  font-family: var(--semibold-font);
+}
+
+body {
+  font-family: var(--reg-font);
+}

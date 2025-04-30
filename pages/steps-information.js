@@ -52,8 +52,8 @@ export default function StepsInformation() {
   return (
     <>
       <StepsHeader />
-      <div className={`${inter.className} flex flex-col bg-green-50 text-center px-4 py-12`}>
-        <motion.h1 initial="hidden" animate="visible" variants={textVariant} className="text-2xl md:text-3xl font-semibold text-gray-800 mb-6">
+      <div className={`${inter.className} flex flex-col bg-[#DACFFF] text-center px-4 py-12`}>
+        <motion.h1 initial="hidden" animate="visible" variants={textVariant} className="text-2xl md:text-3xl niba-bold-font heading text-gray-800 mb-6">
           You are proceeding with Wegovy
         </motion.h1>
 
@@ -76,16 +76,16 @@ export default function StepsInformation() {
 
         {showContent && (
           <>
-            <div className="space-y-4 mt-4">
+            <div className="space-y-4 mt-4 reg-font paragraph">
               {details.map((line, index) => (
-                <motion.p key={index} custom={index} initial="hidden" animate="visible" variants={detailVariant} className="text-gray-700 text-md">
+                <motion.p key={index} custom={index} initial="hidden" animate="visible" variants={detailVariant} className="reg-font paragraph">
                   {line}
                 </motion.p>
               ))}
             </div>
 
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2, duration: 0.5 }} className="mt-8">
-              <div className="w-sm m-auto">
+              <div className="w-sm m-auto reg-font paragraph">
                 <NextButton label="Next" onClick={() => router.push("/personal-details")} />
               </div>
             </motion.div>

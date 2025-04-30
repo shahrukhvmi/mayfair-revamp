@@ -9,7 +9,7 @@ const NextButton = ({ label = "Next", loading = false, disabled = false, type = 
         type={type}
         onClick={onClick}
         disabled={disabled || loading}
-        className={`${inter.className} w-full px-12  py-3 rounded-xl text-white font-bold text-sm transition-all duration-150 ease-in-out
+        className={`${inter.className} w-full px-12  py-3 rounded-full text-white bold-font text-sm transition-all duration-150 ease-in-out
             flex justify-center items-center cursor-pointer
             ${disabled || loading ? "bg-gray-400 opacity-50 cursor-not-allowed" : "bg-violet-700 hover:bg-violet-950"}`}
       >

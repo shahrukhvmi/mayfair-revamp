@@ -47,7 +47,7 @@ export default function PersonalDetails() {
         percentage={"30"}
       >
         <PageAnimationWrapper>
-          <div className="p-6">
+          <div >
             <div className={`relative ${showLoader ? "pointer-events-none cursor-not-allowed" : ""}`}>
               <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
                 <div className="space-y-4">
@@ -63,7 +63,7 @@ export default function PersonalDetails() {
                         <label
                           key={option}
                           className={`flex items-center gap-3 px-4 py-3 border rounded-lg transition-all cursor-pointer text-sm
-                            ${selected ? "bg-green-50 border-black text-black font-medium" : "border-gray-300 text-gray-900 hover:bg-gray-50"}`}
+                            ${selected ? "bg-[#DACFFF] border-black text-black bold-font paragraph" : "border-gray-300 text-gray-900 hover:bg-gray-50"} bold-font paragraph`}
                         >
                           <div
                             className={`w-5 h-5 rounded-sm flex items-center justify-center border transition

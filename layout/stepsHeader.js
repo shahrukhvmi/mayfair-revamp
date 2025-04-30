@@ -11,13 +11,13 @@ const StepsHeader = ({ isOpen, toggleSidebar }) => {
 
   // RTk Query Fetch user /GetUserData 🔥🔥
   // const { data } = useProfileUserDataQuery();
-  const data = [];
-  useEffect(() => {
-    if (data) {
-      const userName = data.profile?.user ?? "";
-      setUserData(userName);
-    }
-  }, [data]);
+  // const data = [];
+  // useEffect(() => {
+  //   if (data) {
+  //     const userName = data.profile?.user ?? "";
+  //     setUserData(userName);
+  //   }
+  // }, [data]);
 
 
   const toggleDropdown = () => {
@@ -74,7 +74,10 @@ const StepsHeader = ({ isOpen, toggleSidebar }) => {
         <button onClick={toggleSidebar} className="text-2xl text-violet-700 sm:hidden">
           {isOpen ? <FiX /> : <FiMenu />}
         </button>
+        <div className="ms-16">
 
+
+        </div>
         {/* Logo */}
         <div className="w-32 sm:w-40">
           <Link href="/" onClick={handleRemovePid}>

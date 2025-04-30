@@ -1,23 +1,38 @@
 import React, { useState } from 'react';
 import { HiOutlinePencilAlt } from 'react-icons/hi';
 import SectionHeader from './SectionHeader';
-
+import { Imprima } from 'next/font/google';
+import { useRouter } from 'next/router';
 const OrderSummary = () => {
+  const router = useRouter()
   const [discountCode, setDiscountCode] = useState("");
 
   const isApplyEnabled = discountCode.trim().length > 0;
-
+  const handleEdit = () => {
+    router.push("dosage-selection")
+  }
   return (
     <div className="col-span-12 sm:col-span-4 mb-3">
       <div className="mb-24 sm:mb-0">
-        <div className="bg-white p-6 rounded-2xl shadow-lg mt-6 sm:mt-[110px] font-inter">
-          <div className="overflow-y-auto">
+        <div className="bg-white p-6 rounded-2xl shadow-lg mt-6 sm:mt-[110px] font-inter ">
+          <div className='relative'>
+
+
+
             <SectionHeader
               stepNumber={4}
               title="Order Summary"
               description=""
               completed={true}
             />
+            <div className='absolute right-0 top-0'>
+
+              <button type='button' onClick={handleEdit} className="ml-2 p-2 rounded-full bg-white hover:bg-gray-100 text-violet-700 shadow transition">
+                <HiOutlinePencilAlt className="w-4 h-4" />
+              </button>
+            </div>
+          </div>
+          <div className="overflow-y-auto ">
 
             {/* Scrollable Items */}
             <ul className="space-y-4 overflow-y-auto max-h-[250px] pr-1 pb-4">
@@ -25,26 +40,24 @@ const OrderSummary = () => {
 
               <li className="flex items-center justify-between bg-violet-100 rounded-xl p-3 shadow-sm hover:shadow-md transition">
                 <div className="flex flex-col flex-1 overflow-hidden">
-                  <span className="text-sm font-semibold truncate text-gray-800">
+                  <span className="bold-font paragraph truncate ">
                     Mounjaro (Tirzepatide) 5mg
                   </span>
-                  <div className="flex items-center text-xs text-gray-600 mt-1 gap-2">
+                  <div className="flex items-center text-xs bold-font text-gray-800 mt-1 gap-2">
                     <span>(x1)</span>
                     <span>£250.00</span>
                   </div>
                 </div>
-                <button className="ml-2 p-2 rounded-full bg-white hover:bg-gray-100 text-violet-700 shadow transition">
-                  <HiOutlinePencilAlt className="w-4 h-4" />
-                </button>
+
               </li>
 
               {/* Needle Pack Static */}
               <li className="flex items-center justify-between bg-violet-100 rounded-xl p-3 shadow-sm">
                 <div className="flex flex-col flex-1 overflow-hidden">
-                  <span className="text-sm font-semibold truncate text-gray-800">
+                  <span className="bold-font paragraph truncate text-gray-800">
                     Pack of 5 Needle
                   </span>
-                  <div className="flex items-center text-xs text-gray-600 mt-1">
+                  <div className="flex items-center text-xs bold-font text-gray-600 mt-1">
                     <span>(x1)</span>
                     <span className="ml-2">£0.00</span>
                   </div>
@@ -57,18 +70,16 @@ const OrderSummary = () => {
                   <span className="text-sm font-semibold truncate text-gray-800">
                     Sharps Bin
                   </span>
-                  <div className="flex items-center text-xs text-gray-600 mt-1 gap-2">
+                  <div className="flex items-center text-xs bold-font text-gray-600 mt-1 gap-2">
                     <span>(x1)</span>
                     <span>£5.00</span>
                   </div>
                 </div>
-                <button className="ml-2 p-2 rounded-full bg-white hover:bg-gray-100 text-violet-700 shadow transition">
-                  <HiOutlinePencilAlt className="w-4 h-4" />
-                </button>
+
               </li>
 
               {/* Shipping */}
-              <li className="flex items-center justify-between bg-violet-100 rounded-xl p-3 shadow-sm">
+              {/* <li className="flex items-center justify-between bg-violet-100 rounded-xl p-3 shadow-sm">
                 <div className="flex flex-col flex-1 overflow-hidden">
                   <span className="text-sm font-semibold truncate text-gray-800">
                     Shipping
@@ -77,23 +88,34 @@ const OrderSummary = () => {
                     <span>£9.99</span>
                   </div>
                 </div>
-              </li>
+              </li> */}
 
 
             </ul>
 
             {/* Subtotal */}
             <div className="flex justify-between items-center mt-8">
-              <p className="text-sm text-gray-600 font-medium">Subtotal</p>
-              <p className="text-sm text-gray-800 font-semibold">£264.99</p>
+              <p className=" bold-font paragraph">Subtotal</p>
+              <p className="bold-font text-black">£264.99</p>
             </div>
 
+            {/* Shiping */}
+            <div className="flex justify-between items-center mt-8">
+              <p className="bold-font paragraph">Shiping</p>
+              <p className="bold-font text-black">£9.99</p>
+            </div>
+
+            {/* Coupon */}
+            <div className="flex justify-between items-center mt-8">
+              <p className="text-sm text-green-700 font-bold">Discount</p>
+              <p className="text-sm text-green-700 font-semibold">-£26.50</p>
+            </div>
             <hr className="my-4 border-gray-200" />
 
             {/* Total */}
             <div className="flex justify-between items-center">
               <p className="text-lg text-gray-900 font-bold">Total</p>
-              <p className="text-lg text-gray-900 font-bold">£264.99</p>
+              <p className="text-lg text-gray-900 font-bold">£248.48</p>
             </div>
 
             <hr className="my-4 border-gray-200" />
@@ -123,7 +145,7 @@ const OrderSummary = () => {
               </div>
 
               {/* Coupon Applied Static */}
-              <div className="flex justify-between items-center bg-green-50 border border-green-400 rounded-xl p-4 shadow-sm">
+              <div className="flex justify-between items-center bg-[#DACFFF] border border-green-400 rounded-xl p-4 shadow-sm">
                 <div>
                   <p className="text-green-800 font-semibold">
                     WELCOME10 applied
@@ -139,11 +161,7 @@ const OrderSummary = () => {
                 </button>
               </div>
 
-              {/* Discount Row */}
-              <div className="flex justify-between items-center text-green-700 font-semibold">
-                <p>Discount</p>
-                <p>-£26.50</p>
-              </div>
+
             </div>
 
           </div>

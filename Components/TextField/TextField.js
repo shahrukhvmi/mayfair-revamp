@@ -15,7 +15,7 @@ const TextField = ({
             {label && (
                 <label
                     htmlFor={name}
-                    className="block text-sm font-medium text-black mb-1"
+                    className="bold-font paragraph  mb-2"
                 >
                     {label}
                     {/* {required && <span className="text-red-500">*</span>} */}
