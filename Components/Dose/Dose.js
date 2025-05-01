@@ -9,15 +9,17 @@ const Dose = ({ dose }) => {
   const [showModal, setShowModal] = useState(false);
   const [itemToRemove, setItemToRemove] = useState(null);
   const [isSelected, setIsSelected] = useState(false);
-  const [qty, setQty] = useState(1); // initialize quantity
+  const [qty, setQty] = useState(1);
   const allowed = 100;
   const doseStatus = dose?.stock?.status;
 
   const handleSelected = (e) => {
     e.stopPropagation();
-    setIsSelected(!isSelected);
-    if (!isSelected) setQty(1); // reset to 1 when selecting
+    if (isSelected) return; // ⛔ Prevent unselect
+    setIsSelected(true);
+    setQty(1); 
   };
+  
 
   const handleIncrement = (e) => {
     e.stopPropagation();

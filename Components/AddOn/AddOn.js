@@ -15,8 +15,9 @@ const Dose = ({ addon }) => {
 
   const handleSelected = (e) => {
     e.stopPropagation();
-    setIsSelected(!isSelected);
-    if (!isSelected) setQty(1); // reset to 1 when selecting
+    if (isSelected) return;
+    setIsSelected(true);
+    setQty(1); 
   };
 
   const handleIncrement = (e) => {
