@@ -7,32 +7,65 @@ import { FaRegCheckCircle } from "react-icons/fa";
 import TextField from "@/Components/TextField/TextField";
 import StepsHeader from "@/layout/stepsHeader";
 import PageAnimationWrapper from "@/Components/PageAnimationWrapper/PageAnimationWrapper";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import PageLoader from "@/Components/PageLoader/PageLoader";
 import { FiCheck } from "react-icons/fi";
+import MuiDatePickerField from "@/Components/DatePicker/DatePicker";
+import { format, parse } from "date-fns";
+import usePatientInfoStore from "@/store/patientInfoStore";
 
 export default function PersonalDetails() {
   const [showLoader, setShowLoader] = useState(false);
+
+  const router = useRouter();
+  const { patientInfo, setPatientInfo } = usePatientInfoStore();
+
+  console.log(patientInfo, "patientInfo");
+
   const {
     register,
     handleSubmit,
     watch,
+    control,
+    setValue,
+    trigger,
     formState: { errors, isValid },
   } = useForm({
     mode: "onChange",
     defaultValues: {
-      dob: "",
-      gender: "",
+      dob: patientInfo?.dob,
+      gender: patientInfo?.gender,
     },
   });
 
-  const router = useRouter();
+  useEffect(() => {
+    setValue("gender", patientInfo?.gender);
+    if (patientInfo?.dob) {
+      const parsedDate = parse(patientInfo.dob, "dd-MM-yyyy", new Date());
+      setValue("dob", parsedDate);
+    }
+
+    if (patientInfo?.dob) {
+      trigger(["dob"]);
+    }
+  }, [patientInfo, setValue, patientInfo?.dob]);
 
   const onSubmit = async (data) => {
-    console.log("Form Data:", data);
+    const formattedDOB = format(data.dob, "dd-MM-yyyy");
+
+    setPatientInfo({
+      ...patientInfo, // 🧠 keep old data
+      dob: formattedDOB,
+      gender: data.gender,
+    });
+
     setShowLoader(true);
     await new Promise((resolve) => setTimeout(resolve, 500)); // Wait 2s
-    router.push("/residential-address");
+    if (data.gender == "Male") {
+      router.push("/residential-address");
+    } else {
+      router.push("/pregnancy-check");
+    }
   };
 
   return (
@@ -47,7 +80,7 @@ export default function PersonalDetails() {
         percentage={"30"}
       >
         <PageAnimationWrapper>
-          <div >
+          <div>
             <div className={`relative ${showLoader ? "pointer-events-none cursor-not-allowed" : ""}`}>
               <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
                 <div className="space-y-4">
@@ -63,7 +96,9 @@ export default function PersonalDetails() {
                         <label
                           key={option}
                           className={`flex items-center gap-3 px-4 py-3 border rounded-lg transition-all cursor-pointer text-sm
-                            ${selected ? "bg-[#DACFFF] border-black text-black bold-font paragraph" : "border-gray-300 text-gray-900 hover:bg-gray-50"} bold-font paragraph`}
+                            ${
+                              selected ? "bg-[#DACFFF] border-black text-black bold-font paragraph" : "border-gray-300 text-gray-900 hover:bg-gray-50"
+                            } bold-font paragraph`}
                         >
                           <div
                             className={`w-5 h-5 rounded-sm flex items-center justify-center border transition
@@ -82,9 +117,9 @@ export default function PersonalDetails() {
                   {errors.gender && <p className="text-red-500 text-sm mt-1 text-center">Please select your gender</p>}
                 </div>
                 <div>
-                  <TextField label="Date Of Birth" name="dob" type="date" placeholder="DD/MM/YYYY" register={register} required errors={errors} />
+                  <MuiDatePickerField name="dob" label="Date of Birth" control={control} errors={errors} />
 
-                  {errors.dob && <p className="text-red-500 text-sm mt-1">Date of birth is required</p>}
+                  {/* {errors.dob && <p className="text-red-500 text-sm mt-1">Date of birth is required</p>} */}
                 </div>
 
                 <NextButton label="Next" disabled={!isValid} />
