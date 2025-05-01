@@ -9,10 +9,9 @@ import { Inter } from "next/font/google";
 import { useMutation } from "@tanstack/react-query";
 import getVariationsApi from "@/api/getVariationsApi";
 import toast from "react-hot-toast";
-
+import Fetcher from "@/library/Fetcher";
+import useVariationStore from "@/store/useVariationStore";
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
-
-// Dynamically import Lottie with SSR disabled
 const Lottie = dynamic(() => import("lottie-react"), { ssr: false });
 
 export default function GatherData() {
@@ -21,30 +20,62 @@ export default function GatherData() {
   const [showContent, setShowContent] = useState(false);
   const router = useRouter();
 
-  // Wait for both animation and a minimum timeout
+  // store addons or dose here 🔥🔥
+  const { setVariation } = useVariationStore();
+
+  // Animation ready handler
   useEffect(() => {
-    const minimumWait = setTimeout(() => {
+    const timeout = setTimeout(() => {
       if (isLottieReady) setReady(true);
     }, 500);
-
-    return () => clearTimeout(minimumWait);
+    return () => clearTimeout(timeout);
   }, [isLottieReady]);
 
+  // Show text after animation ready
   useEffect(() => {
     if (!ready) return;
-    const timeout = setTimeout(() => setShowContent(true), 0); // animation buffer
+    const timeout = setTimeout(() => setShowContent(true), 0);
     return () => clearTimeout(timeout);
   }, [ready]);
 
+  // Variations fetch mutation
+  const variationMutation = useMutation(getVariationsApi, {
+    onSuccess: (data) => {
+      console.log(data, "ckdsjksdkjsd")
+      if (data) {
+        toast.success("User registered successfully!");
+        const token = data?.data?.data?.token;
+        const variations = data?.data?.data || [];
+        setVariation(variations);
+        Fetcher.axiosSetup.defaults.headers.common.Authorization = `Bearer ${token}`;
+
+        // Redirect
+        router.push("/steps-information");
+      }
+    },
+    onError: (error) => {
+
+      if (error?.response?.data?.errors) {
+        toast.error(error?.response?.data?.errors);
+      }
+    },
+  });
+
+  // Call mutation on mount
+  useEffect(() => {
+    variationMutation.mutate({ id: 4, data: {} });
+  }, []);
+
+  const details = [
+    "Wegovy is used for weight management.",
+    "The typical dose is 2.4 mg once weekly.",
+    "Common side effects include nausea, diarrhea, and headache.",
+  ];
+
   const textVariant = {
     hidden: { y: -50, opacity: 0 },
-    visible: {
-      y: 0,
-      opacity: 1,
-      transition: { duration: 1, ease: "easeOut" },
-    },
+    visible: { y: 0, opacity: 1, transition: { duration: 1, ease: "easeOut" } },
   };
-
 
   const detailVariant = {
     hidden: { opacity: 0, y: 10 },
@@ -54,53 +85,6 @@ export default function GatherData() {
       transition: { delay: i * 0.4, duration: 0.6 },
     }),
   };
-
-  // setTimeout(() => {
-  //   router.push("/dosage-selection");
-  // }, 2000);
-
-  const details = [
-    "Wegovy is used for weight management.",
-    "The typical dose is 2.4 mg once weekly.",
-    "Common side effects include nausea, diarrhea, and headache.",
-  ];
-
-
-
-// Mutation function to get variations
-const productId = 1; 
-
- // Variation Mutation Function
- const variationMutation = useMutation(getVariationsApi, {
-  onSuccess: (data) => {
-    console.log(data, "Dataaaaaaaaaa");
-
-    if (data) {
-      toast.success("User Register successfully!");
-      setUserData(data?.data?.data);
-      setToken(data?.data?.data?.token);
-
-      Fetcher.axiosSetup.defaults.headers.common.Authorization = `Bearer ${token}`;
-      router.push("/steps-information");
-    }
-
-    return;
-  },
-  onError: (error) => {
-    // setLoading(false);
-    console.log("error", error?.response?.data?.errors?.email);
-    if (error?.response?.data?.errors?.email) {
-      toast.error(error?.response?.data?.errors?.email);
-    }
-    setShowLoader(false);
-  },
-});
-
-
-useEffect(() => {
-  variationMutation.mutate(productId);
-}, []);
-
 
   return (
     <>
@@ -112,32 +96,27 @@ useEffect(() => {
           transition={{ duration: 0.5 }}
           className="flex justify-center min-h-[200px]"
         >
-          <Lottie animationData={doctorAnimation} loop={true} style={{ width: 200, height: 200 }} onDOMLoaded={() => setIsLottieReady(true)} />
+          <Lottie
+            animationData={doctorAnimation}
+            loop={true}
+            style={{ width: 200, height: 200 }}
+            onDOMLoaded={() => setIsLottieReady(true)}
+          />
         </motion.div>
 
         {showContent && (
           <>
-            <motion.h1 initial="hidden" animate="visible" variants={textVariant} className="text-2xl md:text-3xl niba-reg-font heading mt-6">
+            <motion.h1 initial="hidden" animate="visible" variants={textVariant} className="text-2xl md:text-3xl mt-6">
               Gathering your details
             </motion.h1>
 
             <div className="space-y-4 mt-6">
               {details.map((line, index) => (
-                <motion.p key={index} custom={index} initial="hidden" animate="visible" variants={detailVariant} className="reg-font paragraph">
+                <motion.p key={index} custom={index} initial="hidden" animate="visible" variants={detailVariant} className="text-md text-gray-700">
                   {line}
                 </motion.p>
               ))}
             </div>
-            {/* 
-            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2, duration: 0.5 }} className="mt-8">
-              <div className="w-md m-auto">
-                <NextButton
-                  label="Continue"
-                  className="!bg-lime-200 !text-black !font-semibold hover:!bg-lime-300"
-                  onClick={() => router.push("/dosage-selection")}
-                />
-              </div>
-            </motion.div> */}
           </>
         )}
       </div>

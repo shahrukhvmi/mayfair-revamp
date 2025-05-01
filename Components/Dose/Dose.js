@@ -1,89 +1,79 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import toast from "react-hot-toast";
-import { FaMinus, FaPlus, FaInfoCircle, FaDotCircle, FaRegCircle } from "react-icons/fa";
+import { FaMinus, FaPlus, FaRegCircle, FaDotCircle } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
 import moment from "moment/moment";
 import ConfirmationModal from "../Modal/ConfirmationModal";
 
-const Dose = ({ dose }) => {
-  const [showModal, setShowModal] = useState(false);
-  const [itemToRemove, setItemToRemove] = useState(null);
-  const [isSelected, setIsSelected] = useState(false);
-  const [qty, setQty] = useState(1);
-  const allowed = 100;
-  const doseStatus = dose?.stock?.status;
+const Dose = ({ doseData, onAdd, onIncrement, onDecrement, isSelected, qty }) => {
+  const [showModal, setShowModal] = React.useState(false);
 
-  const handleSelected = (e) => {
+  const allowed = parseInt(doseData?.allowed || 100);
+  const doseStatus = doseData?.stock?.status;
+
+  const handleAdd = (e) => {
     e.stopPropagation();
-    if (isSelected) return; // ⛔ Prevent unselect
-    setIsSelected(true);
-    setQty(1); 
+    if (!isSelected) {
+      onAdd();
+    }
   };
-  
 
   const handleIncrement = (e) => {
     e.stopPropagation();
-    if (qty < allowed) {
-      setQty((prev) => prev + 1);
-    } else {
+    if (qty >= allowed) {
       toast.error(`You can only select up to ${allowed} doses.`);
+      return;
     }
+    onIncrement();
   };
 
   const handleDecrement = (e) => {
     e.stopPropagation();
     if (qty > 1) {
-      setQty((prev) => prev - 1);
+      onDecrement();
+    } else {
+      // Qty 1 → delete
+      setShowModal(true);
     }
   };
 
   const handleDelete = () => {
     setShowModal(false);
-    setQty(0);
-    setIsSelected(false);
+    onDecrement(); // Qty 1 case → remove
   };
 
   return (
     <>
       <div
-        onClick={(e) => {
-          if (doseStatus === 0) return;
-          handleSelected(e);
-        }}
+        onClick={handleAdd}
         className={`flex items-center justify-between p-4 border cursor-pointer mt-3 transition-all duration-300 ease-in-out relative ${
           doseStatus === 0
             ? "opacity-70 cursor-not-allowed bg-white mt-8 border-1 border-black"
-            : isSelected || dose?.isSelected
+            : isSelected
             ? "border-violet-700 bg-violet-200 hover:bg-violet-200 rounded-lg"
             : "border-gray-300 bg-white hover:bg-gray-50 rounded-lg"
         }`}
       >
-        {/* Out of Stock Overlay */}
         {doseStatus === 0 && <div className="h-full w-full top-0 left-0 absolute cursor-not-allowed z-10"></div>}
 
-        {/* Out of Stock Ribbon */}
         {doseStatus === 0 && (
           <div className="absolute -left-[1px] top-[-25px] bg-black text-white px-[10px] text-xs py-1 rounded-t z-20">Out of stock</div>
         )}
 
         <div className="flex items-center space-x-3">
-          <input
-            type="checkbox"
-            checked={isSelected}
-            onChange={handleSelected}
-            className="appearance-none w-5 h-5 border-2 border-gray-300 rounded-full bg-white checked:border-violet-700 checked:bg-violet-700 transition-all duration-300 cursor-pointer hidden"
-          />{" "}
           {isSelected ? <FaDotCircle className="text-violet-700 w-4 h-4 mt-1" /> : <FaRegCircle className="text-gray-800 w-4 h-4 mt-1" />}
-          <span className={`reg-font text-black text-sm sm:text-md  ${isSelected ? "text-violet-700" : "text-gray-800"} text-lg`}>
-            <span className="capitalize bold-font">{dose?.mediName}</span> <br />
-            <span className="">{dose.name}</span>
+          <span className={`reg-font text-black text-sm sm:text-md ${isSelected ? "text-violet-700" : "text-gray-800"} text-lg`}>
+            <span className="capitalize bold-font">{doseData?.product_name}</span> <br />
+            <span>{doseData.name}</span>
             <br />
-            <h5 className="text-gray-800 text-sm mt-0">{dose?.expiry ? `Expiry: ${moment(dose?.expiry).format("DD/MM/YYYY")}` : ""}</h5>
+            <h5 className="text-gray-800 text-sm mt-0">
+              {doseData?.expiry ? `Expiry: ${moment(doseData?.expiry).format("DD/MM/YYYY")}` : ""}
+            </h5>
           </span>
         </div>
 
         <div className="flex items-center space-x-3">
-          <span className={`font-bold ${isSelected ? "text-violet-700" : "text-gray-700"}`}>£{parseFloat(dose?.price).toFixed(2)}</span>
+          <span className={`font-bold ${isSelected ? "text-violet-700" : "text-gray-700"}`}>£{parseFloat(doseData?.price).toFixed(2)}</span>
 
           {isSelected && (
             <>
@@ -119,7 +109,7 @@ const Dose = ({ dose }) => {
         </div>
       </div>
 
-      <ConfirmationModal showModal={showModal} onConfirm={() => handleDelete()} onCancel={() => setShowModal(false)} />
+      <ConfirmationModal showModal={showModal} onConfirm={handleDelete} onCancel={() => setShowModal(false)} />
     </>
   );
 };
