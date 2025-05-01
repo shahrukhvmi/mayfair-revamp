@@ -1,35 +1,105 @@
+import useSignupStore from "@/store/signupStore";
 import TextField from "@/Components/TextField/TextField";
 import { useForm } from "react-hook-form";
 import NextButton from "@/Components/NextButton/NextButton";
 import { useRouter } from "next/navigation";
 import PageLoader from "@/Components/PageLoader/PageLoader";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import FormWrapper from "@/Components/FormWrapper/FormWrapper";
 import PageAnimationWrapper from "@/Components/PageAnimationWrapper/PageAnimationWrapper";
 import StepsHeader from "@/layout/stepsHeader";
 import BackButton from "@/Components/BackButton/BackButton";
+import { registerUser } from "@/api/authApi";
+import { useMutation } from "@tanstack/react-query";
+import toast, { Toaster } from "react-hot-toast";
+import useUserDataStore from "@/store/userDataStore";
+import useAuthStore from "@/store/authStore";
+import Fetcher from "@/library/Fetcher";
+// import toast from "react-hot-toast";
 
 export default function EmailConfirmation() {
   const [showLoader, setShowLoader] = useState(false);
 
+  const { firstName, lastName, email, confirmationEmail, setEmail, setConfirmationEmail } = useSignupStore();
+  const { userData, setUserData } = useUserDataStore();
+  const { token, setToken } = useAuthStore();
+
   const {
     register,
     handleSubmit,
+    setValue,
+    getValues,
+    trigger, // ⭐️ to get live form values
     formState: { errors, isValid },
   } = useForm({
     mode: "onChange",
+    defaultValues: {
+      email: "",
+      confirmationEmail: "",
+    },
   });
+
   const router = useRouter();
+
+  // Register Mutation Function
+  const registerMutation = useMutation(registerUser, {
+    onSuccess: (data) => {
+      console.log(data?.data?.data, "Dataaaaaaaaaa");
+
+      if (data) {
+        toast.success("User Register successfully!");
+        setUserData(data?.data?.data);
+        setToken(data?.data?.data?.token);
+
+        Fetcher.axiosSetup.defaults.headers.common.Authorization = `Bearer ${token}`;
+        router.push("/steps-information");
+      }
+
+      return;
+    },
+    onError: (error) => {
+      // setLoading(false);
+      console.log("error", error?.response?.data?.errors?.email);
+      if (error?.response?.data?.errors?.email) {
+        toast.error(error?.response?.data?.errors?.email);
+      }
+      setShowLoader(false);
+    },
+  });
+
+  useEffect(() => {
+    setValue("email", email);
+    setValue("confirmationEmail", confirmationEmail);
+
+    if (email) {
+      trigger(["email", "confirmationEmail"]);
+    }
+
+    // trigger(["email", "confirmationEmail"]);
+  }, [email, confirmationEmail, setValue, trigger]);
 
   const onSubmit = async (data) => {
     console.log("Form Data:", data);
+    setEmail(data.email);
+    setConfirmationEmail(data.confirmationEmail);
     setShowLoader(true);
-    await new Promise((resolve) => setTimeout(resolve, 500)); // Wait 2s
-    router.push("/steps-information");
+    const formData = {
+      email: data.email,
+      email_confirmation: data.confirmationEmail,
+      fname: firstName,
+      lname: lastName,
+      company_id: 1,
+    };
+
+    console.log(formData, "formData");
+    registerMutation.mutate(formData);
+
+    // await new Promise((resolve) => setTimeout(resolve, 500));
   };
 
   return (
     <>
+      <Toaster position="top-center" reverseOrder={false} />
       <StepsHeader />
       <FormWrapper
         heading={"And your email?"}
@@ -40,25 +110,32 @@ export default function EmailConfirmation() {
           <div className="">
             <div className={`relative ${showLoader ? "pointer-events-none cursor-not-allowed" : ""}`}>
               <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-                {/* <TextField label="First Name" name="firstName" placeholder="First Name" register={register} required errors={errors} />
-                <TextField label="Last Name" name="lastname" placeholder="Last Name" register={register} required errors={errors} /> */}
-                <TextField label="Email Address" name="email" placeholder="Email Address" type="email" register={register} required errors={errors} />
-
                 <TextField
-                  label="Confirm Email Address"
+                  label="Email Address"
                   name="email"
-                  placeholder="Confirm Email Address"
+                  placeholder="Email Address"
                   type="email"
                   register={register}
                   required
                   errors={errors}
+                  disablePaste={true}
                 />
 
-                <NextButton
-                  label="Next"
-                  disabled={!isValid} // ✅ disables until valid
-                  type="submit"
+                <TextField
+                  label="Confirm Email Address"
+                  name="confirmationEmail"
+                  placeholder="Confirm Email Address"
+                  type="email"
+                  register={register}
+                  required
+                  validation={{
+                    validate: (value) => value === getValues("email") || "Email addresses must match.",
+                  }}
+                  errors={errors}
+                  disablePaste={true}
                 />
+
+                <NextButton label="Next" disabled={!isValid} type="submit" />
                 <BackButton label="Back" className="mt-2" onClick={() => router.back()} />
               </form>
 

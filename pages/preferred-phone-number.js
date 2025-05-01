@@ -3,26 +3,44 @@ import { useForm } from "react-hook-form";
 import NextButton from "@/Components/NextButton/NextButton";
 import { useRouter } from "next/navigation";
 import PageLoader from "@/Components/PageLoader/PageLoader";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import FormWrapper from "@/Components/FormWrapper/FormWrapper";
 import PageAnimationWrapper from "@/Components/PageAnimationWrapper/PageAnimationWrapper";
 import StepsHeader from "@/layout/stepsHeader";
 import BackButton from "@/Components/BackButton/BackButton";
+import usePatientInfoStore from "@/store/patientInfoStore";
 
 export default function SignUp() {
   const [showLoader, setShowLoader] = useState(false);
 
+  const { patientInfo, setPatientInfo } = usePatientInfoStore();
+
+  console.log(patientInfo?.phoneNo, "patientInfo");
+
   const {
     register,
     handleSubmit,
+    setValue,
+    watch,
     formState: { errors, isValid },
   } = useForm({
     mode: "onChange",
+    defaultValues: {
+      phoneNo: patientInfo?.phoneNo,
+    },
   });
   const router = useRouter();
 
+  useEffect(() => {
+    setValue("phoneNo", patientInfo?.phoneNo);
+  }, [patientInfo]);
+
   const onSubmit = async (data) => {
     console.log("Form Data:", data);
+    setPatientInfo({
+      ...patientInfo, // 🧠 keep old data
+      phoneNo: data?.phoneNo, // 🆕 update or add phoneNo
+    });
     setShowLoader(true);
     await new Promise((resolve) => setTimeout(resolve, 500)); // Wait 2s
     router.push("/confirm-ethnicity");
@@ -38,12 +56,13 @@ export default function SignUp() {
               <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
                 <TextField
                   label="Phone Number"
-                  name="firstName"
+                  name="phoneNo"
                   placeholder="Enter phone number"
-                  type="number"
+                  type="text"
                   register={register}
                   required
                   errors={errors}
+                  value={watch("phoneNo")}
                 />
 
                 <NextButton

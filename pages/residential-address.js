@@ -1,8 +1,7 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Inter } from "next/font/google";
 import FormWrapper from "@/Components/FormWrapper/FormWrapper";
-import ProgressBar from "@/Components/ProgressBar/ProgressBar";
 import NextButton from "@/Components/NextButton/NextButton";
 import { useRouter } from "next/navigation";
 import { FaSearch } from "react-icons/fa";
@@ -11,16 +10,26 @@ import StepsHeader from "@/layout/stepsHeader";
 import PageAnimationWrapper from "@/Components/PageAnimationWrapper/PageAnimationWrapper";
 import PageLoader from "@/Components/PageLoader/PageLoader";
 import BackButton from "@/Components/BackButton/BackButton";
+import usePatientInfoStore from "@/store/patientInfoStore";
+import { Client } from "getaddress-api";
+import { FormControl, InputLabel, Select, MenuItem, FormHelperText } from "@mui/material";
+import MUISelectField from "@/Components/SelectField/SelectField";
 
+const api = new Client("_UFb05P76EyMidU1VHIQ_A42976");
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 
-export default function ResidendialAddress() {
+export default function ResidentialAddress() {
   const [showLoader, setShowLoader] = useState(false);
   const [manual, setManual] = useState(false);
-  const [postalValue, setPostalValue] = useState("");
+  const [addressOptions, setAddressOptions] = useState([]);
+  const [selectedIndex, setSelectedIndex] = useState("");
+  const [searching, setSearching] = useState(false);
+
+  const { patientInfo, setPatientInfo } = usePatientInfoStore();
   const {
     register,
     handleSubmit,
+    setValue,
     watch,
     formState: { errors, isValid },
   } = useForm({
@@ -34,37 +43,68 @@ export default function ResidendialAddress() {
     },
   });
 
-  const postalCode = watch("postalCode");
-
   const router = useRouter();
 
+  const handleSearch = async () => {
+    const postal = watch("postalCode");
+    if (!postal) return alert("Please enter a postal code.");
+
+    try {
+      const result = await api.find(postal);
+      if (result && result.addresses?.addresses?.length) {
+        setAddressOptions(result.addresses.addresses);
+        setManual(true);
+      }
+    } catch (error) {
+      console.error("API error:", error);
+      alert("Something went wrong while fetching addresses.");
+    }
+  };
+
+  useEffect(() => {
+    if (patientInfo?.address) {
+      setValue("postalCode", patientInfo.address.postalcode || "");
+      setValue("address1", patientInfo.address.addressone || "");
+      setValue("address2", patientInfo.address.addresstwo || "");
+      setValue("city", patientInfo.address.city || "");
+      setValue("state", patientInfo.address.state || "");
+
+      if (patientInfo.address.addressone || patientInfo.address.addresstwo || patientInfo.address.city || patientInfo.address.state) {
+        setManual(true);
+      }
+    }
+  }, [patientInfo]);
+
   const onSubmit = async (data) => {
-    console.log("Form Data:", data);
+    const fullAddress = {
+      postalcode: data.postalCode,
+      addressone: data.address1,
+      addresstwo: data.address2,
+      city: data.city,
+      state: data.state,
+    };
+
+    setPatientInfo({ ...patientInfo, address: fullAddress });
     setShowLoader(true);
-    await new Promise((resolve) => setTimeout(resolve, 500)); // Wait 2s
+    await new Promise((resolve) => setTimeout(resolve, 500));
     router.push("/preferred-phone-number");
   };
 
   return (
     <>
       <StepsHeader />
-      <FormWrapper heading={"Patient Residential Address"} description={"Require for age verification purpose"} percentage={"40"}>
+      <FormWrapper heading="Patient Residential Address" description="Require for age verification purpose" percentage="40">
         <PageAnimationWrapper>
           <div>
             <div className={`relative ${showLoader ? "pointer-events-none cursor-not-allowed" : ""}`}>
               <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-                {/* Postal Code + Search Button */}
                 <div className="space-y-6">
-                  {/* Postal Code Field with Search Button inside */}
                   <div className="relative">
-                    {/* Postal Code Field */}
                     <TextField label="Postal Code" name="postalCode" placeholder="W1A 1AA" register={register} required errors={errors} />
-
-                    {/* Search Button (Inside the Field) */}
                     <button
                       type="button"
-                      onClick={() => console.log("Searching for postal code:", watch("postalCode"))}
-                      className={`bold-medium-font absolute right-3 transform -translate-y-1/2  cursor-pointer flex items-center bg-violet-700 text-white px-2 py-1 rounded ${
+                      onClick={handleSearch}
+                      className={`bold-medium-font absolute right-3 transform -translate-y-1/2 cursor-pointer flex items-center bg-violet-700 text-white px-2 py-1 rounded ${
                         errors.postalCode ? "top-2/4" : "top-2/3"
                       }`}
                     >
@@ -72,18 +112,40 @@ export default function ResidendialAddress() {
                     </button>
                   </div>
 
-                  {/* Toggle Button */}
+                  {addressOptions.length > 0 && (
+                    <MUISelectField
+                      label="Select Your Address"
+                      name="addressSelect"
+                      value={selectedIndex}
+                      onChange={(e) => {
+                        const idx = e.target.value;
+                        const selected = addressOptions[idx];
+                        setSelectedIndex(idx);
+
+                        // ✅ Set values and revalidate to clear any existing errors
+                        setValue("address1", selected.line_1 || "", { shouldValidate: true });
+                        setValue("address2", selected.line_2 || "", { shouldValidate: true }); // optional but still validate
+                        setValue("city", selected.town_or_city || "", { shouldValidate: true });
+                        setValue("state", selected.county || "", { shouldValidate: true });
+                      }}
+                      options={addressOptions.map((addr, idx) => ({
+                        value: idx,
+                        label: addr.formatted_address.join(", "),
+                      }))}
+                      error={errors?.addressSelect?.message}
+                    />
+                  )}
+
                   <div className="text-sm text-right">
                     <button type="button" onClick={() => setManual(!manual)} className="bold-font paragraph underline transition cursor-pointer">
                       {manual ? "Hide manual address entry" : "Enter your address manually"}
                     </button>
                   </div>
 
-                  {/* Manual Address Fields */}
                   {manual && (
                     <div className="space-y-4">
-                      <TextField label="Address 1" name="address" placeholder="123 Main Street" register={register} required errors={errors} />
-                      <TextField label="Address 2" name="address" placeholder="Flat 14" register={register} required errors={errors} />
+                      <TextField label="Address 1" name="address1" placeholder="123 Main Street" register={register} required errors={errors} />
+                      <TextField label="Address 2" name="address2" placeholder="Flat 14" register={register} errors={errors} />
                       <TextField label="City" name="city" placeholder="e.g., London" register={register} required errors={errors} />
                       <TextField label="State" name="state" placeholder="Essex" register={register} required errors={errors} />
                     </div>
