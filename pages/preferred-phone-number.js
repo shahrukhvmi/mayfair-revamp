@@ -1,5 +1,5 @@
 import TextField from "@/Components/TextField/TextField";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import NextButton from "@/Components/NextButton/NextButton";
 import { useRouter } from "next/navigation";
 import PageLoader from "@/Components/PageLoader/PageLoader";
@@ -9,6 +9,8 @@ import PageAnimationWrapper from "@/Components/PageAnimationWrapper/PageAnimatio
 import StepsHeader from "@/layout/stepsHeader";
 import BackButton from "@/Components/BackButton/BackButton";
 import usePatientInfoStore from "@/store/patientInfoStore";
+import PhoneInput from "react-phone-input-2";
+import "react-phone-input-2/lib/style.css";
 
 export default function SignUp() {
   const [showLoader, setShowLoader] = useState(false);
@@ -22,6 +24,7 @@ export default function SignUp() {
     handleSubmit,
     setValue,
     watch,
+    control,
     formState: { errors, isValid },
   } = useForm({
     mode: "onChange",
@@ -54,15 +57,35 @@ export default function SignUp() {
           <div>
             <div className={`relative ${showLoader ? "pointer-events-none cursor-not-allowed" : ""}`}>
               <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-                <TextField
-                  label="Phone Number"
+                {/* Phone Number */}
+
+                <Controller
                   name="phoneNo"
-                  placeholder="Enter phone number"
-                  type="text"
-                  register={register}
-                  required
-                  errors={errors}
-                  value={watch("phoneNo")}
+                  control={control}
+                  rules={{ required: "Phone number is required" }}
+                  render={({ field }) => (
+                    <div className="mb-4">
+                      <label htmlFor="phoneNo" className="bold-font paragraph mb-2">
+                        Phone Number
+                      </label>
+
+                      <div
+                        className={`w-full text-black px-3 py-4 border rounded-sm placeholder-gray-400 
+          focus-within:ring-2 focus-within:ring-violet-300 focus-within:border-violet-800
+          ${errors.phoneNo ? "border-red-500" : "border-black"}
+        `}
+                      >
+                        <PhoneInput
+                          {...field}
+                          country="gb"
+                          placeholder="Enter your number"
+                          inputStyle={{ border: "none", width: "100%" }} // remove PhoneInput own border
+                        />
+                      </div>
+
+                      {errors.phoneNo && <p className="text-red-500 text-sm mt-1">{errors.phoneNo.message}</p>}
+                    </div>
+                  )}
                 />
 
                 <NextButton
