@@ -6,6 +6,9 @@ import dynamic from "next/dynamic";
 import doctorAnimation from "@/public/images/dr-animation.json";
 import NextButton from "@/Components/NextButton/NextButton";
 import { Inter } from "next/font/google";
+import { useMutation } from "@tanstack/react-query";
+import getVariationsApi from "@/api/getVariationsApi";
+import toast from "react-hot-toast";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 
@@ -13,9 +16,9 @@ const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 const Lottie = dynamic(() => import("lottie-react"), { ssr: false });
 
 export default function GatherData() {
-  const [ready, setReady] = useState(false); // 🔑 unified flag for everything
+  const [ready, setReady] = useState(false);
   const [isLottieReady, setIsLottieReady] = useState(false);
-  const [showContent, setShowContent] = useState(false); // shows text/details/buttons
+  const [showContent, setShowContent] = useState(false);
   const router = useRouter();
 
   // Wait for both animation and a minimum timeout
@@ -42,7 +45,7 @@ export default function GatherData() {
     },
   };
 
-  
+
   const detailVariant = {
     hidden: { opacity: 0, y: 10 },
     visible: (i) => ({
@@ -52,15 +55,52 @@ export default function GatherData() {
     }),
   };
 
-  setTimeout(() => {
-    router.push("/dosage-selection");
-  }, 2000);
+  // setTimeout(() => {
+  //   router.push("/dosage-selection");
+  // }, 2000);
 
   const details = [
     "Wegovy is used for weight management.",
     "The typical dose is 2.4 mg once weekly.",
     "Common side effects include nausea, diarrhea, and headache.",
   ];
+
+
+
+// Mutation function to get variations
+const productId = 1; 
+
+ // Variation Mutation Function
+ const variationMutation = useMutation(getVariationsApi, {
+  onSuccess: (data) => {
+    console.log(data, "Dataaaaaaaaaa");
+
+    if (data) {
+      toast.success("User Register successfully!");
+      setUserData(data?.data?.data);
+      setToken(data?.data?.data?.token);
+
+      Fetcher.axiosSetup.defaults.headers.common.Authorization = `Bearer ${token}`;
+      router.push("/steps-information");
+    }
+
+    return;
+  },
+  onError: (error) => {
+    // setLoading(false);
+    console.log("error", error?.response?.data?.errors?.email);
+    if (error?.response?.data?.errors?.email) {
+      toast.error(error?.response?.data?.errors?.email);
+    }
+    setShowLoader(false);
+  },
+});
+
+
+useEffect(() => {
+  variationMutation.mutate(productId);
+}, []);
+
 
   return (
     <>
@@ -88,7 +128,7 @@ export default function GatherData() {
                 </motion.p>
               ))}
             </div>
-{/* 
+            {/* 
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2, duration: 0.5 }} className="mt-8">
               <div className="w-md m-auto">
                 <NextButton

@@ -379,6 +379,7 @@ export default function DosageSelection() {
           </div>
 
           {/* Continue Button */}
+          
           <button
             onClick={handleSubmit(onSubmit)}
             className="w-80 bg-violet-800 text-white bold-font text-base px-10 py-2.5 rounded-md hover:opacity-90 transition-all duration-200 cursor-pointer"
