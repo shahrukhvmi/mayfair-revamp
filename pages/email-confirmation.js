@@ -102,7 +102,7 @@ export default function EmailConfirmation() {
       <Toaster position="top-center" reverseOrder={false} />
       <StepsHeader />
       <FormWrapper
-        heading={"And your email?"}
+        heading={"Please enter your email"}
         description={"This is where we'll send information from your prescriber and pharmacy."}
         percentage={"20"}
       >

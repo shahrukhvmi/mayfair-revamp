@@ -28,7 +28,7 @@ const ConfirmationSummary = () => {
         percentage={95}
       >
         <PageAnimationWrapper>
-          <div className="p-6 space-y-6">
+          <div className="space-y-6">
             {/* Summary Box */}
             <div className="bg-[#DACFFF] border border-green-100 rounded-md p-5 text-sm text-gray-800">
               <p className="bold-font text-black  mb-3">Json Brown</p>

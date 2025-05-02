@@ -9,49 +9,51 @@ const useCartStore = create(
                 doses: [],
                 addons: [],
             },
-            totalQuantity: 0,
+            totalDoses: 0,
+            totalAddons: 0,
             totalAmount: 0,
 
             // Add to cart
             addToCart: (product) => {
                 const state = get();
-                const type = getCartType(product.type);
+                const type = getCartType(product.type); // 'doses' or 'addons'
                 const currentItems = state.items[type] || [];
 
                 const existingItem = currentItems.find(item => item.id === product.id);
+
+                const newItems = [...currentItems];
+                let updatedItem;
+                let quantityIncrement = 1;
+                let priceIncrement = product.price;
 
                 if (existingItem) {
                     if (existingItem.qty < product.allowed) {
                         existingItem.qty++;
                         existingItem.totalPrice += product.price;
-
-                        set({
-                            items: {
-                                ...state.items,
-                                [type]: [...currentItems],
-                            },
-                            totalQuantity: state.totalQuantity + 1,
-                            totalAmount: state.totalAmount + product.price,
-                        });
+                    } else {
+                        return;
                     }
                 } else {
-                    const newItem = {
+                    updatedItem = {
                         ...product,
                         qty: 1,
                         totalPrice: product.price,
                         isSelected: true,
                     };
-
-                    set({
-                        items: {
-                            ...state.items,
-                            [type]: [...currentItems, newItem],
-                        },
-                        totalQuantity: state.totalQuantity + 1,
-                        totalAmount: state.totalAmount + product.price,
-                    });
+                    newItems.push(updatedItem);
                 }
+
+                set({
+                    items: {
+                        ...state.items,
+                        [type]: newItems,
+                    },
+                    totalDoses: type === "doses" ? state.totalDoses + quantityIncrement : state.totalDoses,
+                    totalAddons: type === "addons" ? state.totalAddons + quantityIncrement : state.totalAddons,
+                    totalAmount: state.totalAmount + priceIncrement,
+                });
             },
+
 
             // Remove from cart
             removeFromCart: (id, typeRaw) => {
@@ -62,29 +64,27 @@ const useCartStore = create(
                 const existingItem = currentItems.find(item => item.id === id);
                 if (!existingItem) return;
 
-                if (existingItem.qty === 1) {
-                    set({
-                        items: {
-                            ...state.items,
-                            [type]: currentItems.filter(item => item.id !== id),
-                        },
-                        totalQuantity: state.totalQuantity - 1,
-                        totalAmount: state.totalAmount - existingItem.price,
+                const updatedItems = existingItem.qty === 1
+                    ? currentItems.filter(item => item.id !== id)
+                    : currentItems.map(item => {
+                        if (item.id === id) {
+                            item.qty--;
+                            item.totalPrice -= item.price;
+                        }
+                        return item;
                     });
-                } else {
-                    existingItem.qty--;
-                    existingItem.totalPrice -= existingItem.price;
 
-                    set({
-                        items: {
-                            ...state.items,
-                            [type]: [...currentItems],
-                        },
-                        totalQuantity: state.totalQuantity - 1,
-                        totalAmount: state.totalAmount - existingItem.price,
-                    });
-                }
+                set({
+                    items: {
+                        ...state.items,
+                        [type]: updatedItems,
+                    },
+                    totalDoses: type === "doses" ? state.totalDoses - 1 : state.totalDoses,
+                    totalAddons: type === "addons" ? state.totalAddons - 1 : state.totalAddons,
+                    totalAmount: state.totalAmount - existingItem.price,
+                });
             },
+
 
             // Increase quantity
             increaseQuantity: (id, typeRaw) => {
@@ -148,10 +148,12 @@ const useCartStore = create(
                         doses: [],
                         addons: [],
                     },
-                    totalQuantity: 0,
+                    totalDoses: 0,
+                    totalAddons: 0,
                     totalAmount: 0,
                 });
             },
+
         }),
         {
             name: "cart-storage",

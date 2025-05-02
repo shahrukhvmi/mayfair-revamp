@@ -10,7 +10,7 @@ import StepsHeader from "@/layout/stepsHeader";
 import { GoDotFill } from "react-icons/go";
 import BackButton from "@/Components/BackButton/BackButton";
 
-const options = ["Yes", "No", "None of the above"];
+const options = ["Yes", "No", "Prefer not to say"];
 
 export default function ConfirmEthnicity() {
   const [showLoader, setShowLoader] = useState(false);

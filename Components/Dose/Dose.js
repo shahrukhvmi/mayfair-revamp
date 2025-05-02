@@ -5,10 +5,10 @@ import { MdDelete } from "react-icons/md";
 import moment from "moment/moment";
 import ConfirmationModal from "../Modal/ConfirmationModal";
 
-const Dose = ({ doseData, onAdd, onIncrement, onDecrement, isSelected, qty }) => {
+const Dose = ({ doseData, onAdd, onIncrement, onDecrement, isSelected, qty, allow, totalSelectedQty }) => {
   const [showModal, setShowModal] = React.useState(false);
 
-  const allowed = parseInt(doseData?.allowed || 100);
+  const allowed = parseInt(allow || 100);
   const doseStatus = doseData?.stock?.status;
 
   const handleAdd = (e) => {
@@ -20,12 +20,17 @@ const Dose = ({ doseData, onAdd, onIncrement, onDecrement, isSelected, qty }) =>
 
   const handleIncrement = (e) => {
     e.stopPropagation();
-    if (qty >= allowed) {
-      toast.error(`You can only select up to ${allowed} doses.`);
-      return;
+    const totalQty = totalSelectedQty() + 1; 
+  
+    if (totalQty > allowed) {
+      toast.error(`You can only select up to ${allowed} units in total.`);
+    } else if (doseData.qty >= doseData.stock.quantity) {
+      toast.error(`Only ${doseData.stock.quantity} units are available.`);
+    } else {
+      onIncrement(doseData?.id);
     }
-    onIncrement();
   };
+  
 
   const handleDecrement = (e) => {
     e.stopPropagation();
@@ -46,13 +51,12 @@ const Dose = ({ doseData, onAdd, onIncrement, onDecrement, isSelected, qty }) =>
     <>
       <div
         onClick={handleAdd}
-        className={`flex items-center justify-between p-4 border cursor-pointer mt-3 transition-all duration-300 ease-in-out relative ${
-          doseStatus === 0
+        className={`flex items-center justify-between p-4 border cursor-pointer mt-3 transition-all duration-300 ease-in-out relative ${doseStatus === 0
             ? "opacity-70 cursor-not-allowed bg-white mt-8 border-1 border-black"
             : isSelected
-            ? "border-violet-700 bg-violet-200 hover:bg-violet-200 rounded-lg"
-            : "border-gray-300 bg-white hover:bg-gray-50 rounded-lg"
-        }`}
+              ? "border-violet-700 bg-violet-200 hover:bg-violet-200 rounded-lg"
+              : "border-gray-300 bg-white hover:bg-gray-50 rounded-lg"
+          }`}
       >
         {doseStatus === 0 && <div className="h-full w-full top-0 left-0 absolute cursor-not-allowed z-10"></div>}
 
@@ -85,9 +89,8 @@ const Dose = ({ doseData, onAdd, onIncrement, onDecrement, isSelected, qty }) =>
                 <button
                   type="button"
                   onClick={handleIncrement}
-                  className={`bg-gray-200 text-gray-700 hover:bg-gray-300 px-2 py-2 rounded-full ${
-                    qty >= allowed ? "cursor-not-allowed opacity-60" : ""
-                  }`}
+                  className={`bg-gray-200 text-gray-700 hover:bg-gray-300 px-2 py-2 rounded-full ${qty >= allowed ? "cursor-not-allowed opacity-60" : ""
+                    }`}
                   disabled={qty >= allowed}
                 >
                   <FaPlus size={10} />
