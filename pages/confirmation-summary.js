@@ -55,7 +55,7 @@ const ConfirmationSummary = () => {
 
             {/* Confirm & Review Buttons */}
             <div className="space-y-3">
-              <NextButton label="Confirm and proceed" className=" !text-black !bold-font paragraph " onClick={hanldeConfirm} />
+              <NextButton label="Confirm and proceed" onClick={hanldeConfirm} />
               <BackButton label="Review all" className="mt-2" onClick={reviewAll} />
             </div>
             {showLoader && (

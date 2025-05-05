@@ -14,7 +14,7 @@ const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 
 export default function DosageSelection() {
   const router = useRouter();
-
+  // const {  } = useCartStore();
   const {
     addToCart,
     removeFromCart,
@@ -138,7 +138,7 @@ export default function DosageSelection() {
                   <div className="bg-white rounded-lg shadow-lg  px-4 py-6">
 
                     <h1 className="my-4 bold-font text-2xl text-black text-center">
-                      Choose your doses
+                      Choose your dosage
                     </h1>
 
                     {variation?.variations &&
@@ -196,8 +196,8 @@ export default function DosageSelection() {
         </div>
       </div>
 
-      <div className="fixed bottom-0 left-0 right-0 z-50 bg-violet-300 px-4 py-3 shadow-[0_-2px_10px_rgba(0,0,0,0.1)] ">
-        <div className="max-w-6xl mx-auto flex items-center justify-center">
+      <div className="fixed bottom-0 left-0 right-0 z-50 bg-[#ffffff] px-4 py-3 shadow-[0_-2px_10px_rgba(0,0,0,0.1)] ">
+        <div className="max-w-xl mx-auto flex items-center justify-between">
           <div className="flex items-center space-x-3 me-5">
             <img src="/images/wegovy.png" alt="Mounjaro" className="w-10 h-10 rounded-md object-contain" />
             <div className="text-black leading-tight">
@@ -207,8 +207,11 @@ export default function DosageSelection() {
               </div>
             </div>
           </div>
+          <div>
 
-          <NextButton onClick={handleSubmit(onSubmit)} label="Next" />
+            <NextButton onClick={handleSubmit(onSubmit)} label="Next" />
+          </div>
+
         </div>
       </div>
     </>
