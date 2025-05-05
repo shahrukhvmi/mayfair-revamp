@@ -137,8 +137,8 @@ export default function DosageSelection() {
 
                   <div className="bg-white rounded-lg shadow-lg  px-4 py-6">
 
-                    <h1 className="my-4 medium-font text-2xl text-black text-center">
-                      Choose your plan
+                    <h1 className="my-4 bold-font text-2xl text-black text-center">
+                      Choose your doses
                     </h1>
 
                     {variation?.variations &&

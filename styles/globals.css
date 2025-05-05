@@ -45,7 +45,18 @@ body {
   font-size: 1rem;
   color: darkslategray;
 }
-
+.subHeading {
+  line-height: 150%;
+  font-weight: 300;
+  white-space: pre-line;
+  word-break: break-word;
+  font-style: normal;
+  font-size: 20px;
+  color: darkslategray;
+}
 .darkGrayColor {
   color: darkslategray;
+}
+.bg-secondary{
+  background-color: #4DB581;
 }

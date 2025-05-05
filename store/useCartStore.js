@@ -54,6 +54,29 @@ const useCartStore = create(
                 });
             },
 
+            // Completely remove item regardless of qty
+            removeItemCompletely: (id, typeRaw) => {
+                const state = get();
+                const type = typeRaw?.toLowerCase() === "addon" ? "addons" : "doses";
+                const currentItems = state.items[type] || [];
+
+                const existingItem = currentItems.find(item => item.id === id);
+                if (!existingItem) return;
+
+                const updatedItems = currentItems.filter(item => item.id !== id);
+                const quantityToRemove = existingItem.qty;
+                const amountToRemove = existingItem.totalPrice;
+
+                set({
+                    items: {
+                        ...state.items,
+                        [type]: updatedItems,
+                    },
+                    totalDoses: type === "doses" ? state.totalDoses - quantityToRemove : state.totalDoses,
+                    totalAddons: type === "addons" ? state.totalAddons - quantityToRemove : state.totalAddons,
+                    totalAmount: state.totalAmount - amountToRemove,
+                });
+            },
 
             // Remove from cart
             removeFromCart: (id, typeRaw) => {

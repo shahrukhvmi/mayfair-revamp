@@ -93,7 +93,9 @@
   font-family: var(--font-thin) !important;
 
 }
-
+.reg-font{
+  font-family: var( --font-reg) !important;
+}
 .bold-font {
   font-family: var(--font-bold) !important;
 

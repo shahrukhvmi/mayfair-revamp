@@ -4,10 +4,14 @@ import { FaMinus, FaPlus, FaRegCircle, FaDotCircle } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
 import moment from "moment/moment";
 import ConfirmationModal from "../Modal/ConfirmationModal";
+import useCartStore from "@/store/useCartStore";
 
 const Dose = ({ doseData, onAdd, onIncrement, onDecrement, isSelected, qty, allow, totalSelectedQty }) => {
   const [showModal, setShowModal] = React.useState(false);
+  const {
+    removeItemCompletely,
 
+  } = useCartStore();
   const allowed = parseInt(allow || 100);
   const doseStatus = doseData?.stock?.status;
 
@@ -20,8 +24,8 @@ const Dose = ({ doseData, onAdd, onIncrement, onDecrement, isSelected, qty, allo
 
   const handleIncrement = (e) => {
     e.stopPropagation();
-    const totalQty = totalSelectedQty() + 1; 
-  
+    const totalQty = totalSelectedQty() + 1;
+
     if (totalQty > allowed) {
       toast.error(`You can only select up to ${allowed} units in total.`);
     } else if (doseData.qty >= doseData.stock.quantity) {
@@ -30,21 +34,20 @@ const Dose = ({ doseData, onAdd, onIncrement, onDecrement, isSelected, qty, allo
       onIncrement(doseData?.id);
     }
   };
-  
+
 
   const handleDecrement = (e) => {
     e.stopPropagation();
     if (qty > 1) {
       onDecrement();
     } else {
-      // Qty 1 → delete
       setShowModal(true);
     }
   };
 
   const handleDelete = () => {
     setShowModal(false);
-    onDecrement(); // Qty 1 case → remove
+    removeItemCompletely(doseData?.id);
   };
 
   return (
@@ -52,10 +55,10 @@ const Dose = ({ doseData, onAdd, onIncrement, onDecrement, isSelected, qty, allo
       <div
         onClick={handleAdd}
         className={`flex items-center justify-between p-4 border cursor-pointer mt-3 transition-all duration-300 ease-in-out relative ${doseStatus === 0
-            ? "opacity-70 cursor-not-allowed bg-white mt-8 border-1 border-black"
-            : isSelected
-              ? "border-violet-700 bg-violet-200 hover:bg-violet-200 rounded-lg"
-              : "border-gray-300 bg-white hover:bg-gray-50 rounded-lg"
+          ? "opacity-70 cursor-not-allowed bg-white mt-8 border-1 border-black"
+          : isSelected
+            ? "border-violet-700 bg-violet-200 hover:bg-violet-200 rounded-lg"
+            : "border-gray-300 bg-white hover:bg-gray-50 rounded-lg"
           }`}
       >
         {doseStatus === 0 && <div className="h-full w-full top-0 left-0 absolute cursor-not-allowed z-10"></div>}

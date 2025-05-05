@@ -1,155 +1,103 @@
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
-import { FiCheck } from "react-icons/fi";
-
-import FormWrapper from "@/Components/FormWrapper/FormWrapper";
-import NextButton from "@/Components/NextButton/NextButton";
-import ProgressBar from "@/Components/ProgressBar/ProgressBar";
-import StepsHeader from "@/layout/stepsHeader";
-
-// ✅ Initialize Inter font here
-import { Inter } from "next/font/google";
-import PageAnimationWrapper from "@/Components/PageAnimationWrapper/PageAnimationWrapper";
 import PageLoader from "@/Components/PageLoader/PageLoader";
-const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
+import StepsHeader from "@/layout/stepsHeader";
+import NextButton from "@/Components/NextButton/NextButton";
+import Image from "next/image";
 
-export default function SignUp() {
+export default function Index() {
   const router = useRouter();
   const [showLoader, setShowLoader] = useState(false);
 
   const {
     register,
     handleSubmit,
-    watch,
     formState: { isValid },
   } = useForm({
     mode: "onChange",
-    defaultValues: {
-      personalUse: "",
-      decisionCapacity: "",
-      confirmConsent: false,
-    },
+    defaultValues: {},
   });
 
-  const personalUse = watch("personalUse");
-  const decisionCapacity = watch("decisionCapacity");
-  const confirmConsent = watch("confirmConsent");
+  const onSubmit = async (data, e) => {
+    const action = e.nativeEvent.submitter.value;
 
-  const isNoSelected = personalUse === "no" || decisionCapacity === "no";
-  const showConsentBox = personalUse === "yes" && decisionCapacity === "yes";
+    console.log("Clicked Button: ", action);
 
-  const onSubmit = async (data) => {
-    console.log("Form Data:", data);
+    // Save action to localStorage (optional)
+    localStorage.setItem("selectedAction", action);
+
     setShowLoader(true);
-    await new Promise((resolve) => setTimeout(resolve, 500)); // Wait 2s
-    router.push("/signup");
-  };
+    await new Promise((resolve) => setTimeout(resolve, 500));
 
-  const renderYesNo = (fieldName, value) => {
-    return (
-      <div className="flex gap-4 mt-4 w-full">
-        {["yes", "no"].map((option) => {
-          const isSelected = value === option;
-          return (
-            <label
-              key={option}
-              className={`reg-font flex items-center px-4 py-4 rounded-md border justify-start cursor-pointer transition-all duration-200 flex-1
-                ${isSelected
-                  ? option === "yes"
-                    ? "bg-violet-100 border-violet-600 text-violet-700"
-                    : "bg-red-100 border-red-600 text-red-700"
-                  : "bg-white border-gray-300 hover:border-gray-400 text-gray-800"
-                }`}
-            >
-              <input type="radio" value={option} {...register(fieldName, { required: true })} className="hidden" />
-              <div
-                className={`w-5 h-5 mr-2 rounded-md border flex items-center justify-start
-                  ${isSelected
-                    ? option === "yes"
-                      ? "bg-violet-600 border-violet-600 text-white"
-                      : "bg-red-600 border-red-600 text-white"
-                    : "border-gray-400 bg-white"
-                  }`}
-              >
-                {isSelected && <FiCheck className="text-md"  />}
-              </div>
-              <span className="text-md bold-font paragraph capitalize">{option}</span>
-            </label>
-          );
-        })}
-      </div>
-    );
+    router.push("/acknowledgment");
   };
-
 
   return (
     <>
       <StepsHeader />
-      <FormWrapper heading={"Acknowledgment"} description={""} percentage={"0"}>
-        <PageAnimationWrapper>
-          <div className="bg-white">
-            <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
-              {/* Questions */}
-              <div className="space-y-6">
-                <div className="space-y-2">
-                  {/* className="block text-sm font-medium text-black mb-1" */}
-                  <p className="text-sm reg-font  paragraph" >
-                    Are you purchasing this medication for yourself, of your own free will and the medicine is for your personal use only?
-                  </p>
-                  {renderYesNo("personalUse", personalUse)}
-                </div>
 
-                <div className="space-y-2">
-                  <p className="text-sm reg-font paragraph">
-                    Do you believe you have the ability to make healthcare decisions for yourself?</p>
-                  {renderYesNo("decisionCapacity", decisionCapacity)}
-                </div>
+      <section className="my-8">
+        <div className="bg-white max-w-xl mx-auto rounded-3xl p-10 shadow-lg border border-gray-100 relative">
 
-                {showConsentBox && (
-                  <div className="bg-white space-y-4 py-4 max-h-[200px] overflow-auto">
-                    <label className="flex items-center gap-3 text-sm bold-font text-gray-800 cursor-pointer paragraph">
-                      <input type="checkbox" {...register("confirmConsent", { required: true })} className="hidden" />
-                      <div
-                        className={`w-5 h-5 rounded-full flex items-center justify-center border transition-all duration-200
-                          ${confirmConsent ? "bg-violet-600 border-violet-600 text-white" : "bg-white border-gray-400"}`}
-                      >
-                        {confirmConsent && <FiCheck className="w-3 h-3" />}
-                      </div>
-                      Do you confirm that:
-                    </label>
-
-                    <ul className="list-disc list-outside pl-5 text-sm text-gray-700 space-y-2 reg-font paragraph">
-                      <li>
-                        You consent for your medical information to be assessed by the clinical team at Mayfair Weight Loss Clinic and its pharmacy and to be prescribed medication.
-                      </li>
-                      <li>You consent to an age and ID check when placing your first order.</li>
-                      <li>
-                        You will answer all questions honestly and accurately, and understand that it is an offence to provide false information.
-                      </li>
-                      <li>
-                        You have capacity to understand all about the condition and medication information we have provided and that you give fully informed consent to the treatment option provided.
-                      </li>
-                      <li>You understand that the treatment or medical advice provided is based on the information you have provided.</li>
-                    </ul>
-
-                  </div>
-                )}
-              </div>
-
-              <div className="my-5">
-                <NextButton disabled={!isValid || isNoSelected} label="I Confirm" />
-              </div>
-            </form>
-
-            {showLoader && (
-              <div className="absolute inset-0 z-20 flex justify-center items-center bg-white/60 rounded-lg cursor-not-allowed">
-                <PageLoader />
-              </div>
-            )}
+          {/* Icon */}
+          <div className="flex justify-center mb-8">
+            <Image
+              src="https://a.storyblok.com/f/263052/120x150/9bfb6f4c97/pod-conditions-icons__weight-loss_new.svg"
+              alt="Weight Loss Icon"
+              width={100}
+              height={125}
+              className="rounded-lg"
+            />
           </div>
-        </PageAnimationWrapper>
-      </FormWrapper>
+
+          {/* Heading */}
+          <h2 className=" bold-font text-black text-xl text-center mb-3 p-0">
+            Let's get you started on your weight loss journey.
+          </h2>
+
+          <p className="reg-font text-start text-sm text-black mb-8">
+            We’ll now ask a few questions about you and your health.
+          </p>
+
+          {/* Good to know */}
+          <div className="mb-10">
+            <p className="bold-font text-black mb-4">Good to know:</p>
+            <ul className="reg-font list-disc list-inside space-y-3 text-black text-[15px] leading-relaxed">
+              <li>Your consultation will take about five minutes to complete.</li>
+              <li>All your responses are confidential and securely stored.</li>
+              <li>We’ll show suitable treatment options based on the information you provide.</li>
+            </ul>
+          </div>
+
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+            <NextButton
+              type="submit"
+              label="Accept and continue"
+              disabled={!isValid}
+
+
+            />
+
+
+            <button
+              type="submit"
+              name="action"
+              value="Accept and re-order"
+              disabled={!isValid}
+              className="bg-[#8363b8] hover:bg-[#8363b8] text-white w-full py-3 rounded-full bold-font text-sm  transition my-3"
+            >
+              Accept and re-order
+            </button>
+          </form>
+
+          {showLoader && (
+            <div className="absolute inset-0 z-20 flex justify-center items-center bg-white/60 rounded-lg cursor-not-allowed">
+              <PageLoader />
+            </div>
+          )}
+        </div>
+      </section>
     </>
   );
 }
