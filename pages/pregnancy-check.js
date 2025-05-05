@@ -66,7 +66,7 @@ export default function PregnancyCheck() {
           return (
             <label
               key={option}
-              className={`reg-font flex items-center px-4 py-2 rounded-md border justify-start cursor-pointer transition-all duration-200 flex-1
+              className={`reg-font flex items-center px-4 py-4 rounded-md border justify-start cursor-pointer transition-all duration-200 flex-1
                 ${
                   isSelected
                     ? option === "yes"
@@ -88,7 +88,7 @@ export default function PregnancyCheck() {
               >
                 {isSelected && <FiCheck className="text-md" />}
               </div>
-              <span className="text-sm font-medium capitalize">{option}</span>
+              <span className="text-black bold-font paragraph capitalize">{option}</span>
             </label>
           );
         })}
