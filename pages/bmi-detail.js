@@ -120,10 +120,10 @@ export default function BmiDetail() {
 
     console.log("Form Submitted:", consent);
 
-    // setShowLoader(true);
-    // setTimeout(() => {
-    //   router.push("/medical-questions");
-    // }, 500);
+    setShowLoader(true);
+    setTimeout(() => {
+      router.push("/medical-questions");
+    }, 500);
   };
 
   return (
