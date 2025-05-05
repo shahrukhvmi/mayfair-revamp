@@ -47,13 +47,13 @@ export default function EmailConfirmation() {
       console.log(data?.data?.data, "Dataaaaaaaaaa");
 
       if (data) {
-        toast.success("User Register successfully!");
+        // toast.success("User Register successfully!");
         setUserData(data?.data?.data);
         setToken(data?.data?.data?.token);
         setShowLoader(false)
         Fetcher.axiosSetup.defaults.headers.common.Authorization = `Bearer ${token}`;
         router.push("/steps-information");
-        
+
       }
 
       return;
