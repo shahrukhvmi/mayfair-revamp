@@ -1,5 +1,3 @@
-import React from "react";
-
 const TextField = ({
   label,
   name,
@@ -10,9 +8,12 @@ const TextField = ({
   validation = {},
   errors = {},
   disabled = false,
-  disablePaste = false, // ⭐️ optional
+  disablePaste = false,
+  value, // <-- Controller se jab aayega
+  onChange, // <-- Controller se jab aayega
+  multiline = false,
+  rows = 4,
 }) => {
-  // ⭐ Handle paste blocking only if disablePaste is true
   const handlePaste = (e) => {
     if (disablePaste) {
       e.preventDefault();
@@ -22,26 +23,46 @@ const TextField = ({
   return (
     <div className="mb-4">
       {label && (
-        <label htmlFor={name} className="bold-font paragraph  mb-2">
+        <label htmlFor={name} className="bold-font paragraph mb-2">
           {label}
-          {/* {required && <span className="text-red-500">*</span>} */}
         </label>
       )}
-      <input
-        id={name}
-        type={type}
-        placeholder={placeholder}
-        disabled={disabled}
-        onPaste={handlePaste} // ⭐️ Attach paste event
-        {...register(name, {
-          required: required && "This field is required",
-          ...validation,
-        })}
-        className={`w-full text-black px-3 py-4 border rounded-sm placeholder-gray-400 
-            focus:outline-none focus:ring-2 focus:ring-violet-300 focus:border-violet-800 
+
+      {multiline ? (
+        <textarea
+          id={name}
+          name={name}
+          placeholder={placeholder}
+          disabled={disabled}
+          onPaste={handlePaste}
+          value={value}
+          onChange={onChange}
+          rows={rows}
+          className={`w-full text-black px-3 py-4 border rounded-sm placeholder-gray-400 
+            focus:outline-none focus:ring-2 focus:ring-violet-300 focus:border-violet-800
             ${errors[name] ? "border-red-500" : "border-black"}
           `}
-      />
+        />
+      ) : (
+        <input
+          id={name}
+          type={type}
+          placeholder={placeholder}
+          disabled={disabled}
+          onPaste={handlePaste}
+          {...(register
+            ? register(name, {
+                required: required && "This field is required",
+                ...validation,
+              })
+            : { value, onChange })}
+          className={`w-full text-black px-3 py-4 border rounded-sm placeholder-gray-400 
+            focus:outline-none focus:ring-2 focus:ring-violet-300 focus:border-violet-800
+            ${errors[name] ? "border-red-500" : "border-black"}
+          `}
+        />
+      )}
+
       {errors[name] && <p className="text-red-500 text-sm mt-1">{errors[name]?.message || "This field is required"}</p>}
     </div>
   );

@@ -1,155 +1,247 @@
-import React, { useState } from "react";
-import { useForm } from "react-hook-form";
-import FormWrapper from "@/Components/FormWrapper/FormWrapper";
-import ProgressBar from "@/Components/ProgressBar/ProgressBar";
-import NextButton from "@/Components/NextButton/NextButton";
-import TextField from "@/Components/TextField/TextField";
+import React, { useState, useEffect } from "react";
+import { useForm, Controller } from "react-hook-form";
+import { Box, Checkbox, FormControlLabel } from "@mui/material";
+import useBmiStore from "@/store/bmiStore";
+import usePatientInfoStore from "@/store/patientInfoStore";
 import { useRouter } from "next/navigation";
-import StepsHeader from "@/layout/stepsHeader";
-import PageAnimationWrapper from "@/Components/PageAnimationWrapper/PageAnimationWrapper";
 import PageLoader from "@/Components/PageLoader/PageLoader";
-import { Inter } from "next/font/google";
+import StepsHeader from "@/layout/stepsHeader";
+import FormWrapper from "@/Components/FormWrapper/FormWrapper";
+import PageAnimationWrapper from "@/Components/PageAnimationWrapper/PageAnimationWrapper";
+import TextField from "@/Components/TextField/TextField";
+import NextButton from "@/Components/NextButton/NextButton";
 import BackButton from "@/Components/BackButton/BackButton";
-const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 
 export default function BmiDetail() {
-  const [localStep, setLocalStep] = useState(1);
-  const [heightUnit, setHeightUnit] = useState("metric");
-  const [weightUnit, setWeightUnit] = useState("kg");
   const [showLoader, setShowLoader] = useState(false);
+  const { bmi, setBmi } = useBmiStore();
+  const { patientInfo } = usePatientInfoStore();
   const router = useRouter();
 
   const {
-    register,
+    control,
     handleSubmit,
-    trigger,
+    watch,
+    setValue,
     formState: { errors },
   } = useForm({
     mode: "onChange",
     defaultValues: {
-      heightFt: "",
-      heightIn: "",
-      heightCm: "",
-      weightSt: "",
-      weightLbs: "",
-      weightKg: "",
+      checkbox1: false,
+      checkbox2: false,
+      noneOfTheAbove: false,
+      weight_related_comorbidity_explanation: "",
     },
   });
 
-  const handleNext = async () => {
-    const fields =
-      localStep === 1
-        ? heightUnit === "imperial"
-          ? ["heightFt", "heightIn"]
-          : ["heightCm"]
-        : weightUnit === "stlb"
-        ? ["weightSt", "weightLbs"]
-        : ["weightKg"];
+  const checkbox1 = watch("checkbox1");
+  const checkbox2 = watch("checkbox2");
+  const noneOfTheAbove = watch("noneOfTheAbove");
+  const explanation = watch("weight_related_comorbidity_explanation");
 
-    const isValid = await trigger(fields);
-    if (!isValid) return;
+  const bmiValue = parseFloat(Number(bmi?.bmi).toFixed(2));
+  const shouldShowCheckboxes = patientInfo?.ethnicity === "Yes" ? bmiValue >= 25.5 && bmiValue <= 27.4 : bmiValue >= 27.5 && bmiValue <= 29.9;
+  const shouldShowInfoMessage = patientInfo?.ethnicity === "Yes" && bmiValue >= 27.5 && bmiValue <= 29.9;
 
-    if (localStep === 2) {
-      handleSubmit(async (data) => {
-        console.log(data);
-        setShowLoader(true);
-        await new Promise((resolve) => setTimeout(resolve, 500)); // Wait 1s
-        router.push("/medical-questions");
-      })();
-    } else {
-      setLocalStep(2);
-    }
+  const isNextDisabled = shouldShowCheckboxes && (noneOfTheAbove || (!checkbox1 && !checkbox2) || (checkbox2 && !explanation?.trim()));
+
+  const getCheckbox1Label = () => {
+    return patientInfo?.ethnicity === "Yes" && bmiValue >= 25.5 && bmiValue <= 27.4
+      ? "You have previously taken weight loss medication your starting (baseline) BMI was above 27.5"
+      : "You have previously taken weight loss medication your starting (baseline) BMI was above 30";
   };
 
-  // const onSubmit = async (data) => {
-  //   console.log("Form Data:", data);
-  //   setShowLoader(true);
-  //   await new Promise((resolve) => setTimeout(resolve, 1000)); // Wait 2s
-  //   router.push("/steps-information");
-  // };
+  // Pre-fill from bmiStore
+  useEffect(() => {
+    const consent = bmi?.bmiConsent;
+
+    if (consent) {
+      if (consent.previously_taking_medicine?.length) {
+        setValue("checkbox1", true);
+      }
+      if (consent.weight_related_comorbidity?.length) {
+        setValue("checkbox2", true);
+      }
+      if (consent.weight_related_comorbidity_explanation) {
+        setValue("weight_related_comorbidity_explanation", consent.weight_related_comorbidity_explanation);
+      }
+      if (consent.assian_message) {
+        setValue("noneOfTheAbove", true);
+      }
+    }
+  }, [bmi, setValue]);
+
+  // Checkbox 1 or 2 → Uncheck none of the above
+  useEffect(() => {
+    if ((checkbox1 || checkbox2) && noneOfTheAbove) {
+      setValue("noneOfTheAbove", false);
+    }
+  }, [checkbox1, checkbox2, noneOfTheAbove, setValue]);
+
+  // Checkbox 2 → Uncheck → Clear textarea
+  useEffect(() => {
+    if (!checkbox2) {
+      setValue("weight_related_comorbidity_explanation", "");
+    }
+  }, [checkbox2, setValue]);
+
+  const onSubmit = (data) => {
+    const consent = {
+      previously_taking_medicine: [],
+      weight_related_comorbidity: [],
+      weight_related_comorbidity_explanation: "",
+      assian_message: shouldShowInfoMessage
+        ? "As you have confirmed that you are from one of the following family backgrounds: South Asian, Chinese, Other Asian, Middle Eastern, Black African or African-Caribbean, your cardiometabolic risk occurs at a lower BMI. You are, therefore, able to proceed with a lower BMI."
+        : "",
+    };
+
+    // Check if checkboxes are visible
+    if (shouldShowCheckboxes) {
+      // Checkbox 1 (medicine)
+      if (data.checkbox1) {
+        consent.previously_taking_medicine.push(getCheckbox1Label());
+      }
+
+      // Checkbox 2 (comorbidity)
+      if (data.checkbox2) {
+        consent.weight_related_comorbidity.push("You have at least one weight-related comorbidity (e.g. PCOS, diabetes, etc.)");
+
+        if (data.weight_related_comorbidity_explanation) {
+          consent.weight_related_comorbidity_explanation = data.weight_related_comorbidity_explanation;
+        }
+      }
+    }
+
+    // ✅ Save final consent state
+    setBmi({
+      ...bmi,
+      bmiConsent: consent,
+    });
+
+    console.log("Form Submitted:", consent);
+
+    // setShowLoader(true);
+    // setTimeout(() => {
+    //   router.push("/medical-questions");
+    // }, 500);
+  };
 
   return (
     <>
       <StepsHeader />
-      <FormWrapper
-        heading={localStep === 1 ? "What is your height?" : "What is your current weight?"}
-        description={
-          "Your Body Mass Index (BMI) is an important factor in assessing your eligibility for treatment. Please enter your height and weight below to allow us to calculate your BMI."
-        }
-        percentage={"70"}
-      >
+      <FormWrapper heading={"Your BMI details"} percentage={"70"}>
         <PageAnimationWrapper>
-          <div>
-            {/* Tab Toggle */}
-            <div className="flex justify-center mb-6">
-              <div className="w-full flex rounded-md overflow-hidden border border-green-700">
-                {(localStep === 1 ? ["metric", "imperial"] : ["kg", "stlb"]).map((unit) => {
-                  const isActive = localStep === 1 ? heightUnit === unit : weightUnit === unit;
-                  return (
-                    <button
-                      key={unit}
-                      type="button"
-                      onClick={() => (localStep === 1 ? setHeightUnit(unit) : setWeightUnit(unit))}
-                      className={`w-full py-2 text-sm font-semibold border-r border-green-700 last:border-none transition-all
-                    ${isActive ? "bg-green-100 text-green-900" : "bg-white text-green-900 hover:bg-gray-100"}`}
-                    >
-                      {unit === "metric" ? "cm" : unit === "imperial" ? "ft/inch" : unit === "stlb" ? "st/lb" : "kg"}
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-            <div className={`relative ${showLoader ? "pointer-events-none cursor-not-allowed" : ""}`}>
-              <form onSubmit={(e) => e.preventDefault()} className="space-y-6">
-                {/* Step 1: Height */}
-                {localStep === 1 &&
-                  (heightUnit === "imperial" ? (
-                    <div className="grid grid-cols-2 gap-4">
-                      <TextField label="Feet (ft)" name="heightFt" type="number" register={register} required errors={errors} />
-                      <TextField label="Inches (in)" name="heightIn" type="number" register={register} required errors={errors} />
-                    </div>
-                  ) : (
-                    <TextField label="Centimetres (cm)" name="heightCm" type="number" register={register} required errors={errors} />
-                  ))}
-
-                {/* Step 2: Weight */}
-                {localStep === 2 &&
-                  (weightUnit === "stlb" ? (
-                    <div className="grid grid-cols-2 gap-4">
-                      <TextField label="Stone (st)" name="weightSt" type="number" register={register} required errors={errors} />
-                      <TextField label="Pounds (lb)" name="weightLbs" type="number" register={register} required errors={errors} />
-                    </div>
-                  ) : (
-                    <TextField label="Kilograms (kg)" name="weightKg" type="number" register={register} required errors={errors} />
-                  ))}
-
-                {/* Info Box */}
-                {localStep === 2 && (
-                  <div className="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-800 p-4 text-sm rounded-md">
-                    <p>
-                      <strong>ℹ</strong> Your previous recorded weight was <strong>80 st & 20 lbs</strong>
-                    </p>
-                  </div>
-                )}
-
-                {/* Next / Submit */}
-                <NextButton label={localStep === 2 ? "Next" : "Next"} onClick={handleNext} type="button" />
-
-                {/* Back Button */}
-                {localStep === 2 ? (
-                  <BackButton type="button" label="Back" className="mt-3" onClick={() => setLocalStep(1)} />
-                ) : (
-                  <BackButton label="Back" className="mt-2" onClick={() => router.back()} />
-                )}
-              </form>
-
-              {showLoader && (
-                <div className="absolute inset-0 z-20 flex justify-center items-center bg-white/60 rounded-lg cursor-not-allowed">
-                  <PageLoader />
-                </div>
-              )}
-            </div>
+          <div className="py-12 mb-5 border text-center bg-violet-200 rounded">
+            <h1 className="text-black text-2xl bold-font">BMI: {bmi?.bmi}</h1>
           </div>
+
+          {shouldShowInfoMessage && (
+            <div className="bg-[#FFF3CD] px-4 py-4 mt-6 mb-6 text-gray-700 rounded shadow-md">
+              <p>
+                As you have confirmed that you are from one of the following family backgrounds: South Asian, Chinese, Other Asian, Middle Eastern,
+                Black African or African-Caribbean, your cardiometabolic risk occurs at a lower BMI. You are, therefore, able to proceed with a lower
+                BMI.
+              </p>
+            </div>
+          )}
+
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 relative">
+            {shouldShowCheckboxes && (
+              <>
+                {patientInfo?.ethnicity === "No" || patientInfo?.ethnicity === "Prefer not to say" ? (
+                  <p className="text-gray-800 font-normal">Your BMI is between 27-29.9 which indicates you are overweight.</p>
+                ) : null}
+                <p className="text-gray-800 font-normal">
+                  You should only continue with the consultation if you have tried losing weight through a reduced-calorie diet and increased physical
+                  activity but are still struggling to lose weight and confirm that either:
+                </p>
+
+                <Box mb={1}>
+                  <Controller
+                    name="checkbox1"
+                    control={control}
+                    render={({ field }) => (
+                      <FormControlLabel
+                        control={<Checkbox {...field} checked={field.value} />}
+                        label={getCheckbox1Label()}
+                        classes={{ label: "font-medium text-gray-800" }}
+                      />
+                    )}
+                  />
+                </Box>
+
+                <Box mb={1}>
+                  <Controller
+                    name="checkbox2"
+                    control={control}
+                    render={({ field }) => (
+                      <FormControlLabel
+                        control={<Checkbox {...field} checked={field.value} />}
+                        label="You have at least one weight-related comorbidity (e.g. PCOS, diabetes, etc.)"
+                        classes={{ label: "font-medium text-gray-800" }}
+                      />
+                    )}
+                  />
+                </Box>
+
+                {checkbox2 && (
+                  <Box mb={1}>
+                    <Controller
+                      name="weight_related_comorbidity_explanation"
+                      control={control}
+                      rules={{ required: "Explanation is required" }}
+                      render={({ field }) => (
+                        <TextField {...field} label="Explanation" name="weight_related_comorbidity_explanation" errors={errors} multiline rows={4} />
+                      )}
+                    />
+                  </Box>
+                )}
+
+                <Box mb={3}>
+                  <Controller
+                    name="noneOfTheAbove"
+                    control={control}
+                    render={({ field }) => (
+                      <FormControlLabel
+                        control={
+                          <Checkbox
+                            {...field}
+                            checked={field.value}
+                            onChange={(e) => {
+                              const checked = e.target.checked;
+                              field.onChange(checked);
+                              if (checked) {
+                                setValue("checkbox1", false);
+                                setValue("checkbox2", false);
+                                setValue("weight_related_comorbidity_explanation", "");
+                              }
+                            }}
+                          />
+                        }
+                        label="None of the above"
+                        classes={{ label: "font-medium text-gray-800" }}
+                      />
+                    )}
+                  />
+                  {noneOfTheAbove && (
+                    <p className="text-red-600 font-normal mt-2">
+                      Your BMI in this range, weight loss treatment can only be prescribed if you have either previously taken weight loss medication,
+                      or you have at least one weight-related medical condition.
+                    </p>
+                  )}
+                </Box>
+              </>
+            )}
+
+            <NextButton label="Next" type="submit" disabled={isNextDisabled} />
+            <BackButton label="Back" className="mt-3" onClick={() => router.back()} />
+
+            {showLoader && (
+              <div className="absolute inset-0 z-20 flex justify-center items-center bg-white/60 rounded-lg">
+                <PageLoader />
+              </div>
+            )}
+          </form>
         </PageAnimationWrapper>
       </FormWrapper>
     </>
