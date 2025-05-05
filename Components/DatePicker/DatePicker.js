@@ -27,6 +27,7 @@ const MuiDatePickerField = ({ name, label = "Date of Birth", control, required =
             value={field.value || null}
             onChange={(date) => field.onChange(date)}
             maxDate={new Date()}
+            format="dd/MM/yyyy"
             slotProps={{
               textField: {
                 fullWidth: true,

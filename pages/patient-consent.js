@@ -1,40 +1,71 @@
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import FormWrapper from "@/Components/FormWrapper/FormWrapper";
-import ProgressBar from "@/Components/ProgressBar/ProgressBar";
-import NextButton from "@/Components/NextButton/NextButton";
-import { useRouter } from "next/navigation";
-import { FaRegCheckCircle } from "react-icons/fa";
-import TextField from "@/Components/TextField/TextField";
-import StepsHeader from "@/layout/stepsHeader";
 import PageAnimationWrapper from "@/Components/PageAnimationWrapper/PageAnimationWrapper";
-import { useState } from "react";
+import StepsHeader from "@/layout/stepsHeader";
 import PageLoader from "@/Components/PageLoader/PageLoader";
-import { FiCheck } from "react-icons/fi";
-import { FaRegCircle } from "react-icons/fa";
-import { FaDotCircle } from "react-icons/fa";
+import NextButton from "@/Components/NextButton/NextButton";
 import BackButton from "@/Components/BackButton/BackButton";
+import { useRouter } from "next/navigation";
+import { FaRegCircle, FaDotCircle } from "react-icons/fa";
+import useConfirmationQuestionsStore from "@/store/confirmationQuestionStore";
+import useConfirmationInfoStore from "@/store/confirmationInfoStore";
 
 export default function PatientConsent() {
+  const router = useRouter();
   const [showLoader, setShowLoader] = useState(false);
+
+  const { confirmationQuestions } = useConfirmationQuestionsStore();
+  const { confirmationInfo, setConfirmationInfo } = useConfirmationInfoStore();
+  const [questions, setQuestions] = useState([]);
+
   const {
     register,
     handleSubmit,
-    watch,
     setValue,
+    watch,
     formState: { errors, isValid },
   } = useForm({
     mode: "onChange",
-    defaultValues: {
-      consent: "",
-    },
   });
 
-  const router = useRouter();
+  // Load questions → prefer confirmationInfo
+  useEffect(() => {
+    if (confirmationInfo && confirmationInfo.length) {
+      console.log("✅ Loading from confirmationInfo (user answers)");
+      setQuestions(confirmationInfo);
+    } else if (confirmationQuestions && confirmationQuestions.length) {
+      console.log("🟡 Loading from confirmationQuestions (API fallback)");
+      const initialized = confirmationQuestions.map((q) => ({
+        ...q,
+        answer: false, // default unchecked
+      }));
+      setQuestions(initialized);
+    } else {
+      console.log("❌ No questions found");
+    }
+  }, [confirmationInfo, confirmationQuestions]);
 
-  const onSubmit = async (data) => {
-    console.log("Form Data:", data);
+  // Prefill form fields
+  useEffect(() => {
+    questions.forEach((q) => {
+      setValue(`responses[${q.id}].answer`, q.answer ?? false);
+    });
+  }, [questions]);
+
+  const handleCheckboxChange = (id, value) => {
+    const updated = questions.map((q) => (q.id === id ? { ...q, answer: value } : q));
+    setQuestions(updated);
+    setValue(`responses[${id}].answer`, value);
+  };
+
+  const isNextEnabled = questions.every((q) => watch(`responses[${q.id}].answer`) === true);
+
+  const onSubmit = async () => {
+    setConfirmationInfo(questions);
+
     setShowLoader(true);
-    await new Promise((resolve) => setTimeout(resolve, 500)); // Wait 2s
+    await new Promise((resolve) => setTimeout(resolve, 500));
     router.push("/gp-detail");
   };
 
@@ -47,82 +78,48 @@ export default function PatientConsent() {
           <div className="pt-2 pb-6">
             <div className={`relative ${showLoader ? "pointer-events-none cursor-not-allowed" : ""}`}>
               <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-                <div className="space-y-4 border rounded-md border-gray-700 p-5">
-                  {/* Top Consent with Custom Circle */}
-                  <div className="flex items-start">
-                    {/* Hidden Checkbox */}
-                    <input type="checkbox" id="consent" value="confirmed" {...register("consent", { required: true })} className="hidden" />
+                {questions.map((q) => {
+                  const selectedAnswer = watch(`responses[${q.id}].answer`);
 
-                    {/* Custom Circle + Text */}
-                    <label htmlFor="consent" className="flex items-start gap-2 cursor-pointer">
-                      {/* Circle Icon */}
-                      {watch("consent") ? (
-                        <FaDotCircle className="text-violet-700 w-9 h-9 mt-1" />
-                      ) : (
-                        <FaRegCircle className="text-violet-700 w-9 h-9 mt-1" />
+                  return (
+                    <div key={q.id} className="space-y-4 border rounded-md border-gray-700 p-5">
+                      {/* Question and Checkbox */}
+                      <div className="flex items-start">
+                        <input
+                          type="checkbox"
+                          id={`question-${q.id}`}
+                          checked={selectedAnswer}
+                          onChange={(e) => handleCheckboxChange(q.id, e.target.checked)}
+                          className="hidden"
+                        />
+                        <label htmlFor={`question-${q.id}`} className="flex items-start gap-2 cursor-pointer">
+                          {selectedAnswer ? (
+                            <FaDotCircle className="text-violet-700 w-9 h-9 mt-1" />
+                          ) : (
+                            <FaRegCircle className="text-violet-700 w-9 h-9 mt-1" />
+                          )}
+                          <span className="bold-font text-gray-700">{q.question}</span>
+                        </label>
+                      </div>
+
+                      {/* Checklist (if exists) */}
+                      {q.has_checklist && (
+                        <div
+                          className="list-disc list-outside pl-5 text-sm text-gray-700 space-y-2 reg-font paragraph [&>ul]:list-disc [&>ul]:ml-6 [&>li]:mt-0.5"
+                          dangerouslySetInnerHTML={{ __html: q.checklist }}
+                        ></div>
                       )}
+                    </div>
+                  );
+                })}
 
-                      {/* Text */}
-                      <span className="bold-font text-gray-700 ">
-                        Please confirm you have read and understand the below information related to the treatment prescribed. I confirm and
-                        understand that:
-                      </span>
-                    </label>
-                  </div>
+                {/* Show error if not accepted */}
+                {!isNextEnabled && <p className="text-sm text-red-500 mt-2">You must confirm before proceeding.</p>}
 
-                  {/* Consent Bullet Points */}
-                  <ul className="list-disc list-outside pl-5 text-sm text-gray-700 space-y-2 reg-font paragraph">
-
-                    <li>Treatments are sub-cutaneous injections and I feel comfortable administering this medication myself.</li>
-                    <li>
-                      Treatments are prescription-only medication and therefore you must inform your GP/doctor that you have been prescribed this and
-                      that you are taking it.
-                    </li>
-                    <li>I confirm that I understand how to store the medication and dispose of the needles responsibly.</li>
-                    <li>
-                      I confirm that I have tried to lose weight by diet, exercise and lifestyle changes. I understand that the weight loss injections
-                      must be used with a healthy diet and exercise regime.
-                    </li>
-                    <li>
-                      I confirm that I will seek medical attention and/or inform my GP if I develop any adverse reactions or symptoms, including but
-                      not limited to the following: abdominal pain, swelling or a lump in the throat, difficulty swallowing, symptoms of low blood
-                      sugar (such as sweating, shakiness, feeling weak), nausea and vomiting which does not settle, an allergic reaction, palpitations
-                      or changes to my mood.
-                    </li>
-                    <li>
-                      I confirm I understand that Prescription Only Medication cannot be returned, unless there is a manufacturer recall on the
-                      product or if you have received it faulty. I agree that a faulty product, as per our terms and conditions, will be returned to
-                      Mayfair Weight Loss Clinic’s pharmacy in its received form for manufacturer testing.
-                    </li>
-                    <li>
-                      I confirm that no guarantees have been given for weight loss and I understand that results will vary from individual to
-                      individual.
-                    </li>
-                    <li>
-                      I confirm that I understand that prescribed medication may cause side effects such as, but not limited to nausea, diarrhoea,
-                      headaches, lack of appetite, bloating, constipation, and abdominal pain.
-                    </li>
-                    <li>
-                      I understand that if the weight loss injections are ever frozen or stored in temperatures above 30 °C then they must be
-                      discarded.
-                    </li>
-                    <li>
-                      I confirm that I have read, understood and accept Mayfair Weight Loss Clinic’s{" "}
-                      <a href="#" className="text-blue-600 underline">
-                        Terms and Conditions
-                      </a>
-                      .
-                    </li>
-                  </ul>
-
-                  {/* Show error if not accepted */}
-                  {errors.consent && <p className="text-sm text-red-500 mt-2">You must confirm before proceeding.</p>}
-                </div>
-
-                {/* Submit Button */}
-                <NextButton label="Next" disabled={!isValid} />
+                <NextButton label="Next" disabled={!isNextEnabled} />
                 <BackButton label="Back" className="mt-2" onClick={() => router.back()} />
               </form>
+
               {showLoader && (
                 <div className="absolute inset-0 z-20 flex justify-center items-center bg-white/60 rounded-lg cursor-not-allowed">
                   <PageLoader />
