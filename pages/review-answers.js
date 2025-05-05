@@ -18,7 +18,7 @@ const ReviewAnswers = () => {
   const router = useRouter();
 
   const handleRestart = () => {
-    router.push("/personal-details");
+    router.push("/gathering-data");
   };
 
   return (
@@ -41,9 +41,9 @@ const ReviewAnswers = () => {
 
               {/* Bottom Action Buttons */}
               <div className="mt-8 space-y-3">
-                <BackButton label="Go back" onClick={() => router.push("/confirmation-summary")} />
+                <NextButton label="Confirm and proceed" onClick={handleRestart} />
+                <BackButton label="Edit answers" className="mt-2" onClick={() => router.push("/confirmation-summary")} />
 
-                <NextButton label="Restart consultation" onClick={handleRestart} />
               </div>
             </div>
           </div>

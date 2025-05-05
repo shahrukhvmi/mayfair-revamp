@@ -50,7 +50,7 @@ export default function GatherData() {
         Fetcher.axiosSetup.defaults.headers.common.Authorization = `Bearer ${token}`;
 
         // Redirect
-        router.push("/steps-information");
+        router.push("/dosage-selection");
       }
     },
     onError: (error) => {
