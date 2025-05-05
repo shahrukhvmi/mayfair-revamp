@@ -54,13 +54,15 @@ export default function GpDetail() {
     <>
       <StepsHeader />
 
-      <FormWrapper heading={"GP Details"} percentage={"90"}>
+      <FormWrapper heading={"GP Details"} description="If you are registered with a GP in the UK then we can inform them on your behalf." percentage={"90"}>
         <PageAnimationWrapper>
-          <div className="pt-2 pb-6 px-2">
+          <div className="pt-2 pb-6 ">
             <div className={`relative ${showLoader ? "pointer-events-none cursor-not-allowed" : ""}`}>
               <div>
-                <h1 className="text-gray-500 text-base">
-                  Would you like us to inform your GP about this consultation and any prescribed treatments?
+                {/* <h1 className="reg-font text-black text-md">If you are registered with a GP in the UK then we can inform them on your behalf.
+                </h1> */}
+                <h1 className="text-black reg-font ">
+                  Are you registered with a GP in the UK?
                 </h1>
                 <div className="flex mt-4 gap-2">
                   {/* GP DETAIL Yes */}
@@ -111,12 +113,12 @@ export default function GpDetail() {
                   </p>
 
                   {/* Options */}
-                  <div className="flex flex-col sm:flex-row gap-3 mt-3 sm:mt-4">
+                  <div className="flex  my-3 sm:mt-4">
                     <label
                       className={
                         gepTreatMent === "yes"
-                          ? "w-1/2 flex items-center gap-3 px-4 py-3 border rounded-lg transition-all cursor-pointer text-sm bg-[#DACFFF] border-black bold-font paragraph"
-                          : "w-1/2 flex items-center gap-3 px-4 py-3 border rounded-lg transition-all cursor-pointer text-sm border-gray-300 bold-font paragraph hover:bg-gray-50"
+                          ? "w-full flex items-center gap-3 px-4 py-4 border rounded-lg transition-all cursor-pointer text-sm bg-[#DACFFF] border-black bold-font paragraph"
+                          : "w-full flex items-center gap-3 px-4 py-4 border rounded-lg transition-all cursor-pointer text-sm border-gray-300 bold-font paragraph hover:bg-gray-50"
                       }
                     >
                       <div
@@ -125,15 +127,19 @@ export default function GpDetail() {
                       >
                         {gepTreatMent === "yes" && <FiCheck className="w-4 h-4" />}
                       </div>
-                      Yes
+                      Yes - Please inform my GP
                       <input type="radio" value="yes" {...register("gepTreatMent", { required: true })} className="hidden" />
                     </label>
 
+
+                  </div>
+
+                  <div className="flex my-3 sm:mt-4">
                     <label
                       className={
                         gepTreatMent === "no"
-                          ? "w-1/2 flex items-center gap-3 px-4 py-3 border rounded-lg transition-all cursor-pointer text-sm bg-[#DACFFF] border-black bold-font paragraph"
-                          : "w-1/2 flex items-center gap-3 px-4 py-3 border rounded-lg transition-all cursor-pointer text-sm border-gray-300 bold-font paragraph hover:bg-gray-50"
+                          ? "w-full flex items-center gap-3 px-4 py-4 border rounded-lg transition-all cursor-pointer text-sm bg-[#DACFFF] border-black bold-font paragraph"
+                          : "w-full flex items-center gap-3 px-4 py-4 border rounded-lg transition-all cursor-pointer text-sm border-gray-300 bold-font paragraph hover:bg-gray-50"
                       }
                     >
                       <div
@@ -142,7 +148,7 @@ export default function GpDetail() {
                       >
                         {gepTreatMent === "no" && <FiCheck className="w-4 h-4" />}
                       </div>
-                      No
+                      No – I will inform my GP prior to starting treatment
                       <input type="radio" value="no" {...register("gepTreatMent", { required: true })} className="hidden" />
                     </label>
                   </div>
@@ -164,48 +170,72 @@ export default function GpDetail() {
 
               {/* Conditional Rendering for Additional Fields */}
               {gpDetails === "yes" && gepTreatMent === "yes" && (
-                <div className="space-y-6 mt-6">
-                  {/* Postal Code Field with Search Button inside */}
-                  <div className="relative text-gray-700">
-                    {/* Postal Code Field */}
+                <div className="mt-8">
+
+                  <div className="mt-8">
+                    <p className="reg-font text-black mb-4 text-lg">
+                      Please provide GP Email (optional)
+
+                    </p>
+                  </div>
+                  <div>
+
                     <TextField
-                      label="Postal Code"
-                      className="text-gray-700"
-                      name="postalCode"
-                      placeholder="W1A 1AA"
-                      register={register}
-                      required
-                      errors={errors}
-                    />
+                      label="Email"
+                      name="email"
+                      placeholder="Email" register={register} required errors={errors} />
 
-                    {/* Search Button (Inside the Field) */}
-                    <button
-                      type="button"
-                      onClick={() => console.log("Searching for postal code:", watch("postalCode"))}
-                      className={`absolute right-3 transform -translate-y-1/2  cursor-pointer flex items-center bg-violet-700 text-white px-2 py-1 rounded ${
-                        errors.postalCode ? "top-2/4" : "top-2/3"
-                      }`}
-                    >
-                      <FaSearch className="w-4 h-4 me-2" /> Search
-                    </button>
                   </div>
+                  {/* Postal Code Field with Search Button inside */}
 
-                  {/* Toggle Button */}
-                  <div className="text-sm text-right">
-                    <button type="button" onClick={() => setManual(!manual)} className="text-black font-bold underline transition cursor-pointer">
-                      {manual ? "Hide manual address entry" : "Enter your address manually"}
-                    </button>
-                  </div>
 
-                  {/* Manual Address Fields */}
-                  {manual && (
-                    <div className="space-y-4">
-                      <TextField label="Address 1" name="address" placeholder="123 Main Street" register={register} required errors={errors} />
-                      <TextField label="Address 2" name="address" placeholder="Flat 14" register={register} required errors={errors} />
-                      <TextField label="City" name="city" placeholder="e.g., London" register={register} required errors={errors} />
-                      <TextField label="State" name="state" placeholder="Essex" register={register} required errors={errors} />
+                  <div className="mt-8">
+                    <p className="reg-font text-black mb-4 text-lg">Enter postal code to search GP address. If you can't find it enter manually.
+
+                    </p>
+
+                    <div className="relative text-gray-700">
+                      {/* Postal Code Field */}
+
+                      <TextField
+                        label="Postal Code"
+                        className="text-gray-700"
+                        name="postalCode"
+                        placeholder="W1A 1AA"
+                        register={register}
+                        required
+                        errors={errors}
+                      />
+
+                      {/* Search Button (Inside the Field) */}
+                      <button
+                        type="button"
+                        onClick={() => console.log("Searching for postal code:", watch("postalCode"))}
+                        className={`absolute right-3 transform -translate-y-1/2  cursor-pointer flex items-center bg-violet-700 text-white px-2 py-1 rounded ${errors.postalCode ? "top-2/4" : "top-2/3"
+                          }`}
+                      >
+                        <FaSearch className="w-4 h-4 me-2" /> Search
+                      </button>
                     </div>
-                  )}
+
+                    {/* Toggle Button */}
+                    <div className="text-sm text-right">
+                      <button type="button" onClick={() => setManual(!manual)} className="text-black font-bold underline transition cursor-pointer">
+                        {manual ? "Hide manual address entry" : "Enter your address manually"}
+                      </button>
+                    </div>
+
+                    {/* Manual Address Fields */}
+                    {manual && (
+                      <div className="space-y-4">
+                        <TextField label="Address 1" name="address" placeholder="123 Main Street" register={register} required errors={errors} />
+                        <TextField label="Address 2" name="address" placeholder="Flat 14" register={register} required errors={errors} />
+                        <TextField label="City" name="city" placeholder="e.g., London" register={register} required errors={errors} />
+                        <TextField label="State" name="state" placeholder="Essex" register={register} required errors={errors} />
+                      </div>
+                    )}
+                  </div>
+
                 </div>
               )}
 
