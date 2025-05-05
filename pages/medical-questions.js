@@ -6,20 +6,20 @@ import FormWrapper from "@/Components/FormWrapper/FormWrapper";
 import StepsHeader from "@/layout/stepsHeader";
 import BackButton from "@/Components/BackButton/BackButton";
 import NextButton from "@/Components/NextButton/NextButton";
-import { Inter } from "next/font/google";
-const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 import PageAnimationWrapper from "@/Components/PageAnimationWrapper/PageAnimationWrapper";
 import PageLoader from "@/Components/PageLoader/PageLoader";
 import useMedicalQuestionsStore from "@/store/medicalQuestionStore";
+import useMedicalInfoStore from "@/store/medicalInfoStore";
 
 const MedicalQuestions = () => {
   const router = useRouter();
-  const [questions, setQuestions] = useState([]);
-  const [responses, setResponses] = useState({});
-  const [errorMessages, setErrorMessages] = useState({});
   const [showLoader, setShowLoader] = useState(false);
 
+  // This is for new User
   const { medicalQuestions, setMedicalQuestions } = useMedicalQuestionsStore();
+
+  // This is If user old user and have data
+  const { medicalInfo, setMedicalInfo } = useMedicalInfoStore();
 
   const {
     control,
@@ -29,97 +29,69 @@ const MedicalQuestions = () => {
     formState: { isValid },
   } = useForm({ mode: "onChange" });
 
-  const medicalData = [
-    {
-      question: "Do you have any allergies or intolerances?",
-      has_sub_field: true,
-      sub_field_prompt: "Give us additional information, please.",
-      answer: "no",
-      subfield_response: "",
-    },
-    {
-      question: "Have you been prescribed and are currently taking weight loss medication?",
-      has_sub_field: true,
-      sub_field_prompt: "Please mention the medication and dose.",
-      answer: "no",
-      subfield_response: "",
-    },
-    {
-      question: "Are you currently taking any diabetes treatment medication?",
-      has_sub_field: false,
-      sub_field_prompt: "",
-      answer: "no",
-      subfield_response: "",
-    },
-  ];
-
   useEffect(() => {
-    const initialized = medicalData.map((q, i) => ({ ...q, id: i }));
-    setQuestions(initialized);
-
-    initialized.forEach((q) => {
-      setValue(`responses[${q.id}].answer`, q.answer);
-      setValue(`responses[${q.id}].subfield_response`, q.subfield_response);
+    medicalQuestions.forEach((q) => {
+      setValue(`responses[${q.id}].answer`, "no");
+      setValue(`responses[${q.id}].subfield_response`, "");
     });
-  }, []);
+  }, [medicalQuestions]);
 
-  const handleChange = (id, value, isSubField = false) => {
-    setResponses((prev) => ({
-      ...prev,
-      [id]: {
-        ...prev[id],
-        ...(isSubField ? { subfield_response: value } : { answer: value }),
-      },
-    }));
-
-    setValue(`responses[${id}].${isSubField ? "subfield_response" : "answer"}`, value);
-
-    if (!isSubField && value === "no") {
-      setErrorMessages((prev) => ({ ...prev, [id]: undefined }));
-    } else if (isSubField && value.trim() !== "") {
-      setErrorMessages((prev) => ({ ...prev, [id]: undefined }));
-    }
-  };
-
-  const isNextEnabled = questions.every((q) => {
+  const isNextEnabled = medicalQuestions.every((q) => {
     const answer = watch(`responses[${q.id}].answer`);
     const subfield = watch(`responses[${q.id}].subfield_response`);
-    return !errorMessages[q.id] && (answer === "no" || (answer === "yes" && (!q.has_sub_field || (subfield && subfield.trim() !== ""))));
+
+    if (answer === "no") return true;
+
+    if (answer === "yes" && q.has_sub_field) {
+      return subfield && subfield.trim() !== "";
+    }
+
+    if (answer === "yes" && !q.has_sub_field && q.validation_error_msg) {
+      return false; // Block next if error message should show
+    }
+
+    return true;
   });
 
   const onSubmit = async () => {
     setShowLoader(true);
-    await new Promise((resolve) => setTimeout(resolve, 500)); // Wait 2s
+    await new Promise((resolve) => setTimeout(resolve, 500));
     router.push("/patient-consent");
   };
 
   return (
     <>
       <StepsHeader />
-      <FormWrapper heading={"Medical Questions"} description={""} percentage={"80"}>
+      <FormWrapper heading={"Medical Questions"} percentage={"80"}>
         <PageAnimationWrapper>
           <div className={`relative ${showLoader ? "pointer-events-none cursor-not-allowed" : ""}`}>
             <form onSubmit={handleSubmit(onSubmit)} className="mt-8 space-y-8">
-              {questions.map((q) => {
+              {medicalQuestions.map((q) => {
                 const selectedAnswer = watch(`responses[${q.id}].answer`);
+                const subfieldValue = watch(`responses[${q.id}].subfield_response`);
+                const showValidationError = selectedAnswer === "yes" && !q.has_sub_field && q.validation_error_msg;
 
                 return (
                   <div
                     key={q.id}
-                    className={`p-5 shadow-sm border-1 rounded-md bg-white ${errorMessages[q.id] ? "border-red-400" : "border-gray-200"}`}
+                    className={`p-5 shadow-sm border-1 rounded-md bg-white ${showValidationError ? "border-red-400" : "border-gray-200"}`}
                   >
-                    <p className="text-base text-[#1C1C29] reg-font paragraph mb-4">{q.question}</p>
+                    <div
+                      className="text-base text-[#1C1C29] reg-font paragraph mb-4 [&>ul]:list-disc [&>ul]:ml-6 [&>li]:mt-0.5"
+                      dangerouslySetInnerHTML={{ __html: q.question }}
+                    ></div>
 
-                    {errorMessages[q.id] && <p className="text-sm text-red-500 mt-2">{errorMessages[q.id]}</p>}
+                    {showValidationError && <p className="text-sm text-red-500 mt-2">{q.validation_error_msg}</p>}
 
                     <div className="flex gap-4 mt-4">
-                      {["yes", "no"].map((option) => {
+                      {q.options.map((option) => {
                         const isSelected = selectedAnswer === option;
+
                         return (
                           <label
                             key={option}
-                            className={`bold-font paragraph flex items-center justify-start border px-6 py-2 transition-all cursor-pointer w-full sm:w-auto rounded-md
-                                ${isSelected ? "bg-[#DACFFF] border-violet-700" : "border-gray-300 bg-white hover:bg-gray-50"}`}
+                            className={`bold-font me-2 paragraph flex items-center justify-start border px-6 py-2 transition-all cursor-pointer w-full sm:w-2/3 rounded-md
+                              ${isSelected ? "bg-[#DACFFF] border-violet-700" : "border-gray-300 bg-white hover:bg-gray-50"}`}
                           >
                             <Controller
                               name={`responses[${q.id}].answer`}
@@ -130,7 +102,12 @@ const MedicalQuestions = () => {
                                   {...field}
                                   value={option}
                                   checked={field.value === option}
-                                  onChange={(e) => handleChange(q.id, e.target.value)}
+                                  onChange={(e) => {
+                                    field.onChange(e.target.value);
+                                    if (e.target.value === "no") {
+                                      setValue(`responses[${q.id}].subfield_response`, "");
+                                    }
+                                  }}
                                   className="hidden"
                                 />
                               )}
@@ -153,15 +130,14 @@ const MedicalQuestions = () => {
                       <textarea
                         className="text-black w-full p-3 mt-4 border border-violet-300 focus:ring-2 focus:ring-violet-600 rounded-md text-sm"
                         placeholder={q.sub_field_prompt}
-                        value={responses[q.id]?.subfield_response}
-                        onChange={(e) => handleChange(q.id, e.target.value, true)}
+                        value={subfieldValue}
+                        onChange={(e) => setValue(`responses[${q.id}].subfield_response`, e.target.value)}
                       />
                     )}
                   </div>
                 );
               })}
 
-              {/* <BackButton label="Back" onClick={() => router.back()} /> */}
               <div className="">
                 <NextButton disabled={!isNextEnabled} label="Next" />
                 <BackButton label="Back" className="mt-2" onClick={() => router.back()} />
