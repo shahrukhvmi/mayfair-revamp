@@ -54,7 +54,7 @@ export default function SignUp() {
           return (
             <label
               key={option}
-              className={`reg-font flex items-center px-4 py-2 rounded-md border justify-start cursor-pointer transition-all duration-200 flex-1
+              className={`reg-font flex items-center px-4 py-4 rounded-md border justify-start cursor-pointer transition-all duration-200 flex-1
                 ${isSelected
                   ? option === "yes"
                     ? "bg-violet-100 border-violet-600 text-violet-700"
@@ -74,7 +74,7 @@ export default function SignUp() {
               >
                 {isSelected && <FiCheck className="text-md"  />}
               </div>
-              <span className="text-sm font-medium capitalize">{option}</span>
+              <span className="text-md bold-font paragraph capitalize">{option}</span>
             </label>
           );
         })}
@@ -86,7 +86,7 @@ export default function SignUp() {
   return (
     <>
       <StepsHeader />
-      <FormWrapper heading={"Patient Acknowledgment"} description={""} percentage={"0"}>
+      <FormWrapper heading={"Acknowledgment"} description={""} percentage={"0"}>
         <PageAnimationWrapper>
           <div className="bg-white">
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">

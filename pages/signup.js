@@ -60,7 +60,7 @@ export default function SignUp() {
     <>
       <StepsHeader />
       <FormWrapper
-        heading={"Let's start with your name"}
+        heading={"Please enter your name"}
         description={"We require this to generate an electronic prescription if your prescriber prescribes a treatment."}
         percentage={"10"}
       >
