@@ -10,6 +10,7 @@ import { Inter } from "next/font/google";
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 import PageAnimationWrapper from "@/Components/PageAnimationWrapper/PageAnimationWrapper";
 import PageLoader from "@/Components/PageLoader/PageLoader";
+import useMedicalQuestionsStore from "@/store/medicalQuestionStore";
 
 const MedicalQuestions = () => {
   const router = useRouter();
@@ -17,6 +18,8 @@ const MedicalQuestions = () => {
   const [responses, setResponses] = useState({});
   const [errorMessages, setErrorMessages] = useState({});
   const [showLoader, setShowLoader] = useState(false);
+
+  const { medicalQuestions, setMedicalQuestions } = useMedicalQuestionsStore();
 
   const {
     control,

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import FormWrapper from "@/Components/FormWrapper/FormWrapper";
 import NextButton from "@/Components/NextButton/NextButton";
@@ -9,6 +9,7 @@ import PageLoader from "@/Components/PageLoader/PageLoader";
 import StepsHeader from "@/layout/stepsHeader";
 import { GoDotFill } from "react-icons/go";
 import BackButton from "@/Components/BackButton/BackButton";
+import usePatientInfoStore from "@/store/patientInfoStore";
 
 const options = ["Yes", "No", "Prefer not to say"];
 
@@ -16,10 +17,14 @@ export default function ConfirmEthnicity() {
   const [showLoader, setShowLoader] = useState(false);
   const router = useRouter();
 
+  const { patientInfo, setPatientInfo } = usePatientInfoStore();
+
   const {
     register,
     handleSubmit,
     watch,
+    setValue,
+    trigger,
     formState: { isValid },
   } = useForm({
     mode: "onChange",
@@ -30,11 +35,27 @@ export default function ConfirmEthnicity() {
 
   const selectedOption = watch("ethnicity");
 
+  useEffect(() => {
+    setValue("ethnicity", patientInfo?.ethnicity);
+    if (patientInfo?.ethnicity) {
+      setValue("ethnicity", patientInfo?.ethnicity);
+    }
+
+    if (patientInfo?.ethnicity) {
+      trigger(["ethnicity"]);
+    }
+  }, [patientInfo, setValue, patientInfo?.ethnicity]);
+
   const onSubmit = async (data) => {
     console.log("Form Data:", data);
+
+    setPatientInfo({
+      ...patientInfo, // 🧠 keep old data
+      ethnicity: data?.ethnicity,
+    });
     setShowLoader(true);
     await new Promise((resolve) => setTimeout(resolve, 500)); // Wait 2s
-    router.push("/bmi-detail");
+    router.push("/calculate-bmi");
   };
 
   return (
