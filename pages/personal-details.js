@@ -33,22 +33,24 @@ export default function PersonalDetails() {
   } = useForm({
     mode: "onChange",
     defaultValues: {
-      dob: patientInfo?.dob,
-      gender: patientInfo?.gender,
+      dob: "",
+      gender: "",
     },
   });
 
   useEffect(() => {
-    setValue("gender", patientInfo?.gender);
     if (patientInfo?.dob) {
       const parsedDate = parse(patientInfo.dob, "dd-MM-yyyy", new Date());
+      const fixedGender = patientInfo?.gender ? patientInfo.gender.charAt(0).toUpperCase() + patientInfo.gender.slice(1).toLowerCase() : "";
+
       setValue("dob", parsedDate);
+      setValue("gender", fixedGender);
     }
 
     if (patientInfo?.dob) {
       trigger(["dob"]);
     }
-  }, [patientInfo, setValue, patientInfo?.dob]);
+  }, [patientInfo, patientInfo?.gender]);
 
   const onSubmit = async (data) => {
     const formattedDOB = format(data.dob, "dd-MM-yyyy");

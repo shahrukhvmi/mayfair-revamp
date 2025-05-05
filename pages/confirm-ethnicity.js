@@ -36,9 +36,14 @@ export default function ConfirmEthnicity() {
   const selectedOption = watch("ethnicity");
 
   useEffect(() => {
-    setValue("ethnicity", patientInfo?.ethnicity);
+    const fixedEthnicity = patientInfo?.ethnicity
+      ? patientInfo?.ethnicity.charAt(0).toUpperCase() + patientInfo?.ethnicity.slice(1).toLowerCase()
+      : "";
+
+    setValue("ethnicity", fixedEthnicity);
+
     if (patientInfo?.ethnicity) {
-      setValue("ethnicity", patientInfo?.ethnicity);
+      setValue("ethnicity", fixedEthnicity);
     }
 
     if (patientInfo?.ethnicity) {
