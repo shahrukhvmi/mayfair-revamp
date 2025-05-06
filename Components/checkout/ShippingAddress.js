@@ -1,33 +1,26 @@
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Inter } from "next/font/google";
-import FormWrapper from "@/Components/FormWrapper/FormWrapper";
-import NextButton from "@/Components/NextButton/NextButton";
-import { useRouter } from "next/navigation";
-import { FaSearch } from "react-icons/fa";
-import TextField from "@/Components/TextField/TextField";
-import StepsHeader from "@/layout/stepsHeader";
-import PageAnimationWrapper from "@/Components/PageAnimationWrapper/PageAnimationWrapper";
-import PageLoader from "@/Components/PageLoader/PageLoader";
-import BackButton from "@/Components/BackButton/BackButton";
-import usePatientInfoStore from "@/store/patientInfoStore";
-import { Client } from "getaddress-api";
-import { FormControl, InputLabel, Select, MenuItem, FormHelperText } from "@mui/material";
-import MUISelectField from "@/Components/SelectField/SelectField";
 import SectionWrapper from "./SectionWrapper";
 import SectionHeader from "./SectionHeader";
+import { FaSearch } from "react-icons/fa";
+import TextField from "@/Components/TextField/TextField";
+import PageLoader from "@/Components/PageLoader/PageLoader";
+import { Client } from "getaddress-api";
+import NextButton from "@/Components/NextButton/NextButton";
+import MUISelectField from "@/Components/SelectField/SelectField";
+import useShippingOrBillingStore from "@/store/shipingOrbilling";
 
 const api = new Client("_UFb05P76EyMidU1VHIQ_A42976");
-const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 
-export default function ShippingAddress({ isComp })  {
+export default function ShippingAddress({ isComp }) {
   const [showLoader, setShowLoader] = useState(false);
   const [manual, setManual] = useState(false);
   const [addressOptions, setAddressOptions] = useState([]);
   const [selectedIndex, setSelectedIndex] = useState("");
-  const [searching, setSearching] = useState(false);
 
-  const { patientInfo, setPatientInfo } = usePatientInfoStore();
+  const { shippingInfo, setShippingInfo } = useShippingOrBillingStore();
+
   const {
     register,
     handleSubmit,
@@ -36,24 +29,32 @@ export default function ShippingAddress({ isComp })  {
     formState: { errors, isValid },
   } = useForm({
     mode: "onChange",
-    defaultValues: {
-      postalCode: "",
-      address1: "",
-      address2: "",
-      city: "",
-      state: "",
-    },
+    defaultValues: shippingInfo || {},
   });
 
-  const router = useRouter();
+  const postalCode = watch("postalCode");
+  const address1 = watch("address1");
+  const address2 = watch("address2");
+  const city = watch("city");
+  const state = watch("state");
+
+  // ✅ Watch all values and save in store
+  useEffect(() => {
+    setShippingInfo({
+      postalCode,
+      address1,
+      address2,
+      city,
+      state,
+    });
+  }, [postalCode, address1, address2, city, state]);
 
   const handleSearch = async () => {
-    const postal = watch("postalCode");
-    if (!postal) return alert("Please enter a postal code.");
+    if (!postalCode) return alert("Please enter postal code.");
 
     try {
-      const result = await api.find(postal);
-      if (result && result.addresses?.addresses?.length) {
+      const result = await api.find(postalCode);
+      if (result?.addresses?.addresses?.length) {
         setAddressOptions(result.addresses.addresses);
         setManual(true);
       }
@@ -62,111 +63,74 @@ export default function ShippingAddress({ isComp })  {
       alert("Something went wrong while fetching addresses.");
     }
   };
+  const [hasMounted, setHasMounted] = useState(false);
 
   useEffect(() => {
-    if (patientInfo?.address) {
-      setValue("postalCode", patientInfo.address.postalcode || "");
-      setValue("address1", patientInfo.address.addressone || "");
-      setValue("address2", patientInfo.address.addresstwo || "");
-      setValue("city", patientInfo.address.city || "");
-      setValue("state", patientInfo.address.state || "");
+    setHasMounted(true);
+  }, []);
 
-      if (patientInfo.address.addressone || patientInfo.address.addresstwo || patientInfo.address.city || patientInfo.address.state) {
-        setManual(true);
-      }
-    }
-  }, [patientInfo]);
-
-  const onSubmit = async (data) => {
-    const fullAddress = {
-      postalcode: data.postalCode,
-      addressone: data.address1,
-      addresstwo: data.address2,
-      city: data.city,
-      state: data.state,
-    };
-
-    setPatientInfo({ ...patientInfo, address: fullAddress });
+  const onSubmit = async () => {
     setShowLoader(true);
     await new Promise((resolve) => setTimeout(resolve, 500));
-    router.push("/preferred-phone-number");
+    setShowLoader(false);
+    alert("Shipping Info Saved Successfully");
   };
+
   return (
-    <SectionWrapper>
-      <SectionHeader
-        stepNumber={2}
-        title="Shipping Address"
-        description=""
-        completed={isComp}
-      />
+    <>
 
-      <div>
-        <div className={`relative ${showLoader ? "pointer-events-none cursor-not-allowed" : ""}`}>
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-            <div className="space-y-6">
-              <div className="relative">
-                <TextField label="Postal Code" name="postalCode" placeholder="W1A 1AA" register={register} required errors={errors} />
-                <button
-                  type="button"
-                  onClick={handleSearch}
-                  className={`bold-medium-font absolute right-3 transform -translate-y-1/2 cursor-pointer flex items-center bg-violet-700 text-white px-2 py-1 rounded ${errors.postalCode ? "top-2/4" : "top-2/3"
-                    }`}
-                >
-                  <FaSearch className="w-4 h-4 me-2" /> Search
-                </button>
-              </div>
+      <SectionWrapper>
+        <SectionHeader
+          stepNumber={2}
+          title="Shipping Address"
+          description=""
+          completed={isComp}
+        />
 
-              {addressOptions.length > 0 && (
-                <MUISelectField
-                  label="Select Your Address"
-                  name="addressSelect"
-                  value={selectedIndex}
-                  onChange={(e) => {
-                    const idx = e.target.value;
-                    const selected = addressOptions[idx];
-                    setSelectedIndex(idx);
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+          <TextField label="Postal Code" name="postalCode" placeholder="W1A 1AA" register={register} required errors={errors} />
+          <button type="button" onClick={handleSearch} className="text-white bg-violet-700 px-3 py-1 rounded">
+            <FaSearch className="inline-block me-2" /> Search
+          </button>
 
-                    // ✅ Set values and revalidate to clear any existing errors
-                    setValue("address1", selected.line_1 || "", { shouldValidate: true });
-                    setValue("address2", selected.line_2 || "", { shouldValidate: true }); // optional but still validate
-                    setValue("city", selected.town_or_city || "", { shouldValidate: true });
-                    setValue("state", selected.county || "", { shouldValidate: true });
-                  }}
-                  options={addressOptions.map((addr, idx) => ({
-                    value: idx,
-                    label: addr.formatted_address.join(", "),
-                  }))}
-                  error={errors?.addressSelect?.message}
-                />
-              )}
+          {hasMounted && addressOptions.length > 0 && (
+            <MUISelectField
+              label="Select Your Address"
+              name="addressSelect"
+              value={selectedIndex}
+              onChange={(e) => {
+                const idx = e.target.value;
+                const selected = addressOptions[idx];
+                setSelectedIndex(idx);
 
-              <div className="text-sm text-right">
-                <button type="button" onClick={() => setManual(!manual)} className="bold-font paragraph underline transition cursor-pointer">
-                  {manual ? "Hide manual address entry" : "Enter your address manually"}
-                </button>
-              </div>
-
-              {manual && (
-                <div className="space-y-4">
-                  <TextField label="Address 1" name="address1" placeholder="123 Main Street" register={register} required errors={errors} />
-                  <TextField label="Address 2" name="address2" placeholder="Flat 14" register={register} errors={errors} />
-                  <TextField label="City" name="city" placeholder="e.g., London" register={register} required errors={errors} />
-                  <TextField label="State" name="state" placeholder="Essex" register={register} required errors={errors} />
-                </div>
-              )}
-            </div>
-
-            <NextButton label="Next" disabled={!isValid} />
-          </form>
-
-          {showLoader && (
-            <div className="absolute inset-0 z-20 flex justify-center items-center bg-white/60 rounded-lg cursor-not-allowed">
-              <PageLoader />
-            </div>
+                setValue("address1", selected.line_1 || "", { shouldValidate: true });
+                setValue("address2", selected.line_2 || "", { shouldValidate: true });
+                setValue("city", selected.town_or_city || "", { shouldValidate: true });
+                setValue("state", selected.county || "", { shouldValidate: true });
+              }}
+              options={addressOptions.map((addr, idx) => ({
+                value: idx,
+                label: addr.formatted_address.join(", "),
+              }))}
+            />
           )}
-        </div>
-      </div>
-    </SectionWrapper>
-  );
-};
 
+
+          <TextField label="Address 1" name="address1" placeholder="123 Main Street" register={register} required errors={errors} />
+          <TextField label="Address 2" name="address2" placeholder="Flat 14" register={register} errors={errors} />
+          <TextField label="City" name="city" placeholder="e.g., London" register={register} required errors={errors} />
+          <TextField label="State" name="state" placeholder="e.g., Essex" register={register} required errors={errors} />
+
+          <NextButton label="Next" disabled={!isValid} />
+        </form>
+
+        {showLoader && (
+          <div className="absolute inset-0 flex items-center justify-center bg-white/70 rounded">
+            <PageLoader />
+          </div>
+        )}
+      </SectionWrapper>
+
+    </>
+  );
+}
