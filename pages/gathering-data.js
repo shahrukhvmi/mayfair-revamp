@@ -20,7 +20,7 @@ export default function GatherData() {
     onSuccess: (data) => {
       console.log(data, "ckdsjksdkjsd");
       if (data) {
-        toast.success("User registered successfully!");
+        // toast.success("User registered successfully!");
         const token = data?.data?.data?.token;
         const variations = data?.data?.data || [];
         setVariation(variations);

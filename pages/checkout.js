@@ -8,6 +8,8 @@ import ShippingAddress from "@/Components/checkout/ShippingAddress";
 import StepsHeader from "@/layout/stepsHeader";
 import { Inter } from "next/font/google";
 import { AnimatePresence, motion } from "framer-motion";
+import usePasswordReset from "@/store/usePasswordReset";
+import useCheckoutStep from "../store/useCheckoutStep";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 
@@ -20,14 +22,16 @@ const Checkout = () => {
     trigger,
     formState: { errors },
   } = useForm({ mode: "onChange" });
+  const { isPasswordReset } = usePasswordReset()
 
-  const [step, setStep] = useState(1);
+  // const [step, setStep] = useState(1);
   const [showThankYouModal, setShowThankYouModal] = useState(false);
 
   const [isPasswordValid, setIsPasswordValid] = useState(false);
   const [isStep1Completed, setIsStep1Completed] = useState(false);
   const [isStep2Completed, setIsStep2Completed] = useState(false);
   const [isStep3Completed, setIsStep3Completed] = useState(false);
+  const { step, setStep, resetStep } = useCheckoutStep(); // ✅ Local state nahi, ab zustand se
 
   const personalRef = useRef(null);
   const addressRef = useRef(null);
@@ -93,6 +97,13 @@ const Checkout = () => {
     console.log("Final Collected Data:", data);
     setShowThankYouModal(true);
   };
+  useEffect(() => {
+    if (isPasswordReset) {
+      setIsStep1Completed(true);
+      setStep(2); // ✅ Persist ho gaya now
+    }
+  }, [isPasswordReset]);
+
 
   return (
     <>
@@ -146,17 +157,17 @@ const Checkout = () => {
           </div>
 
           {/* Step 1 - Password */}
-          <div ref={personalRef} className="relative">
+          <div ref={personalRef} className={`relative ${isPasswordReset ? "hidden " : ''}`}>
             <SetAPassword
               register={register}
               control={control}
               setIsPasswordValid={setIsPasswordValid}
               isCompleted={isStep1Completed}
-              // onComplete={() => {
-              //   setIsStep1Completed(true);
-              //   setStep(2);
-              // }}
-              onComplete={() => setStep(step + 1)}
+              onComplete={() => {
+                setIsStep1Completed(true);
+                setStep(step + 1);
+              }}
+            // onComplete={() => setStep(step + 1)}
             />
 
 
@@ -168,15 +179,13 @@ const Checkout = () => {
               register={register}
               errors={errors}
               control={control}
-              isComp={isStep2Completed}
+              isCompleted={isStep1Completed}
+              onComplete={() => {
+                setIsStep1Completed(true);
+                setStep(step + 1);
+              }}
             />
-            {step === 2 && (
-              <NextButton
-                onClick={handleNextStep}
-                disabled={!addressFilled}
-                label="Continue"
-              />
-            )}
+
           </div>
 
           {/* Step 3 - Payment */}

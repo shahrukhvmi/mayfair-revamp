@@ -6,16 +6,14 @@ import { FiCheck, FiX, FiEye, FiEyeOff } from "react-icons/fi";
 import useSignupStore from "@/store/signupStore";
 import { useMutation } from "@tanstack/react-query";
 import toast from "react-hot-toast";
-import { useRouter } from "next/router";
 import { UpdatePassword } from "@/api/updatePassword";
-
+import usePasswordReset from "@/store/usePasswordReset";
+import NextButton from "../NextButton/NextButton";
 const SetAPassword = ({ register, control, setIsPasswordValid, isCompleted, onComplete }) => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const router = useRouter();
-
+  const { isPasswordReset, setIsPasswordReset } = usePasswordReset()
   const { email } = useSignupStore();
-
   const password = useWatch({ control, name: "password" }) || "";
   const confirmPassword = useWatch({ control, name: "confirmPassword" }) || "";
 
@@ -32,18 +30,33 @@ const SetAPassword = ({ register, control, setIsPasswordValid, isCompleted, onCo
   useEffect(() => {
     setIsPasswordValid(isPasswordStrongAndMatch);
   }, [isPasswordStrongAndMatch, setIsPasswordValid]);
-
-  // ✅ Register API Mutation
   const { mutate, isLoading } = useMutation(UpdatePassword, {
     onSuccess: (data) => {
-      toast.success("Account created successfully!");
+      console.log(data?.status, "dsddcsdf")
+      if (data?.status) {
+
+        toast.success("Account created successfully!");
+      }
       if (onComplete) onComplete();
-  
+      setIsPasswordReset(true)
+
     },
     onError: (error) => {
-      const errorMsg = error?.response?.data?.message || "Something went wrong!";
-      toast.error(errorMsg);
+      const errorData = error?.response?.data?.errors;
+
+      if (errorData && typeof errorData === "object") {
+        Object.values(errorData).forEach((errArray) => {
+          if (Array.isArray(errArray)) {
+            errArray.forEach((errMsg) => toast.error(errMsg));
+          } else {
+            toast.error(errArray);
+          }
+        });
+      } else {
+        toast.error(error?.response?.statusText || "Something went wrong!");
+      }
     },
+
   });
 
   const handleRegister = () => {
@@ -62,65 +75,69 @@ const SetAPassword = ({ register, control, setIsPasswordValid, isCompleted, onCo
   };
 
   return (
-    <SectionWrapper>
+    <SectionWrapper >
       <SectionHeader
         stepNumber={1}
         title="Set a Password"
         description="Please create a strong password for your account."
         completed={isCompleted}
+
       />
+      <div >
+        <div className="relative mt-4">
+          <input
+            type={showPassword ? "text" : "password"}
+            placeholder="Password"
+            {...register("password", { required: true })}
+            className={`w-full text-black px-3 py-4 border rounded-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-violet-300 focus:border-violet-800 ${password.length > 0 ? "border-violet-600" : "border-black"
+              }`}
+          />
+          <button
+            type="button"
+            onClick={() => setShowPassword(!showPassword)}
+            className="absolute top-1/2 right-3 transform -translate-y-1/2 text-gray-600 cursor-pointer"
+          >
+            {showPassword ? <FiEye className="w-5 h-5" /> : <FiEyeOff className="w-5 h-5" />}
+          </button>
+        </div>
 
-      <div className="relative mt-4">
-        <input
-          type={showPassword ? "text" : "password"}
-          placeholder="Password"
-          {...register("password", { required: true })}
-          className={`w-full text-black px-3 py-4 border rounded-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-violet-300 focus:border-violet-800 ${password.length > 0 ? "border-violet-600" : "border-black"
-            }`}
-        />
-        <button
-          type="button"
-          onClick={() => setShowPassword(!showPassword)}
-          className="absolute top-1/2 right-3 transform -translate-y-1/2 text-gray-600 cursor-pointer"
-        >
-          {showPassword ? <FiEye className="w-5 h-5" /> : <FiEyeOff className="w-5 h-5" />}
-        </button>
-      </div>
+        <div className="relative mt-4">
+          <input
+            type={showConfirmPassword ? "text" : "password"}
+            placeholder="Confirm Password"
+            {...register("confirmPassword", { required: true })}
+            onPaste={(e) => e.preventDefault()}
+            className={`w-full text-black px-3 py-4 border rounded-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-violet-300 focus:border-violet-800 ${confirmPassword.length > 0 ? "border-violet-600" : "border-black"
+              }`}
+          />
+          <button
+            type="button"
+            onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+            className="absolute top-1/2 right-3 transform -translate-y-1/2 text-gray-600 cursor-pointer"
+          >
+            {showConfirmPassword ? <FiEye className="w-5 h-5" /> : <FiEyeOff className="w-5 h-5" />}
+          </button>
+        </div>
 
-      <div className="relative mt-4">
-        <input
-          type={showConfirmPassword ? "text" : "password"}
-          placeholder="Confirm Password"
-          {...register("confirmPassword", { required: true })}
-          onPaste={(e) => e.preventDefault()}
-          className={`w-full text-black px-3 py-4 border rounded-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-violet-300 focus:border-violet-800 ${confirmPassword.length > 0 ? "border-violet-600" : "border-black"
-            }`}
-        />
-        <button
-          type="button"
-          onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-          className="absolute top-1/2 right-3 transform -translate-y-1/2 text-gray-600 cursor-pointer"
-        >
-          {showConfirmPassword ? <FiEye className="w-5 h-5" /> : <FiEyeOff className="w-5 h-5" />}
-        </button>
-      </div>
+        <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 mt-6 space-y-2">
+          <PasswordCheck valid={validations.length} label="At least 10 characters." />
+          <PasswordCheck valid={validations.case} label="Upper and lower case characters." />
+          <PasswordCheck valid={validations.special} label="At least 1 special character." />
+          <PasswordCheck valid={validations.number} label="At least 1 number." />
+          <PasswordCheck valid={validations.match} label="Passwords must match." />
+        </div>
 
-      <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 mt-6 space-y-2">
-        <PasswordCheck valid={validations.length} label="At least 10 characters." />
-        <PasswordCheck valid={validations.case} label="Upper and lower case characters." />
-        <PasswordCheck valid={validations.special} label="At least 1 special character." />
-        <PasswordCheck valid={validations.number} label="At least 1 number." />
-        <PasswordCheck valid={validations.match} label="Passwords must match." />
-      </div>
+        <div className="mt-6">
 
-      <div className="mt-6">
-        <button
-          onClick={handleRegister}
-          disabled={!isPasswordStrongAndMatch || isLoading}
-          className={`w-full px-4 py-3 text-white font-bold rounded ${!isPasswordStrongAndMatch || isLoading ? "bg-gray-400 cursor-not-allowed" : "bg-violet-700 hover:bg-violet-800"}`}
-        >
-          {isLoading ? "Creating Account..." : "Continue"}
-        </button>
+          <NextButton
+            onClick={handleRegister}
+            disabled={!isPasswordStrongAndMatch || isLoading || isPasswordReset}
+            label="Continue"
+          />
+
+          {/* {isLoading ? "Creating Account..." : "Continue"} */}
+
+        </div>
       </div>
     </SectionWrapper>
   );
