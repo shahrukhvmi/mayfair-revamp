@@ -10,12 +10,15 @@ import PageLoader from "@/Components/PageLoader/PageLoader";
 import BackButton from "@/Components/BackButton/BackButton";
 import SwitchTabs from "@/Components/Tabs/SwitchTabs";
 import useBmiStore from "@/store/bmiStore";
+import BmiTextField from "@/Components/BmiTextField/BmiTextField";
 
 export default function CalculateBmi() {
   const [localStep, setLocalStep] = useState(1);
   const [heightUnit, setHeightUnit] = useState("metric");
   const [weightUnit, setWeightUnit] = useState("kg");
   const [showLoader, setShowLoader] = useState(false);
+  const [heightUnitKey, setHeightUnitKey] = useState(""); // Will be "imperial" or "metric"
+  const [weightUnitKey, setWeightUnitKey] = useState("");
 
   const { bmi, setBmi } = useBmiStore();
   const router = useRouter();
@@ -169,6 +172,8 @@ export default function CalculateBmi() {
           hiddenLb: data?.weightLbs,
           hiddenCm: data?.hiddenCm || cm,
           hiddenKg: data?.hiddenKg || kg,
+          height_unit: heightUnitKey || bmi?.height_unit, // default to metric if blank
+          weight_unit: weightUnitKey || bmi?.weight_unit, // default to kg if blank
         });
 
         setShowLoader(true);
@@ -289,32 +294,41 @@ export default function CalculateBmi() {
                 {localStep === 1 &&
                   (heightUnit === "imperial" ? (
                     <div className="grid grid-cols-2 gap-4">
-                      <TextField
+                      <BmiTextField
                         label="Feet (ft)"
                         name="heightFt"
-                        type="number"
-                        register={register}
-                        required
+                        fieldProps={register("heightFt", {
+                          required: "This field is required",
+                          onChange: (e) => {
+                            if (e.target.value !== "") setHeightUnitKey("imperial");
+                          },
+                        })}
                         errors={errors}
                         onBlur={handleHeightBlur}
                       />
-                      <TextField
+                      <BmiTextField
                         label="Inches (in)"
                         name="heightIn"
-                        type="number"
-                        register={register}
-                        required
+                        fieldProps={register("heightIn", {
+                          required: "This field is required",
+                          onChange: (e) => {
+                            if (e.target.value !== "") setHeightUnitKey("imperial");
+                          },
+                        })}
                         errors={errors}
                         onBlur={handleHeightBlur}
                       />
                     </div>
                   ) : (
-                    <TextField
+                    <BmiTextField
                       label="Centimetres (cm)"
                       name="heightCm"
-                      type="number"
-                      register={register}
-                      required
+                      fieldProps={register("heightCm", {
+                        required: "This field is required",
+                        onChange: (e) => {
+                          if (e.target.value !== "") setHeightUnitKey("metric");
+                        },
+                      })}
                       errors={errors}
                       onBlur={handleCmBlur}
                     />
@@ -323,32 +337,41 @@ export default function CalculateBmi() {
                 {localStep === 2 &&
                   (weightUnit === "stlb" ? (
                     <div className="grid grid-cols-2 gap-4">
-                      <TextField
+                      <BmiTextField
                         label="Stone (st)"
                         name="weightSt"
-                        type="number"
-                        register={register}
-                        required
+                        fieldProps={register("weightSt", {
+                          required: "This field is required",
+                          onChange: (e) => {
+                            if (e.target.value !== "") setWeightUnitKey("imperial");
+                          },
+                        })}
                         errors={errors}
                         onBlur={handleWeightBlur}
                       />
-                      <TextField
+                      <BmiTextField
                         label="Pounds (lb)"
                         name="weightLbs"
-                        type="number"
-                        register={register}
-                        required
+                        fieldProps={register("weightLbs", {
+                          required: "This field is required",
+                          onChange: (e) => {
+                            if (e.target.value !== "") setWeightUnitKey("imperial");
+                          },
+                        })}
                         errors={errors}
                         onBlur={handleWeightBlur}
                       />
                     </div>
                   ) : (
-                    <TextField
+                    <BmiTextField
                       label="Kilograms (kg)"
                       name="weightKg"
-                      type="number"
-                      register={register}
-                      required
+                      fieldProps={register("weightKg", {
+                        required: "This field is required",
+                        onChange: (e) => {
+                          if (e.target.value !== "") setWeightUnitKey("metric");
+                        },
+                      })}
                       errors={errors}
                       onBlur={handleKgBlur}
                     />
