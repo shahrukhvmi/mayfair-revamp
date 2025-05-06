@@ -16,7 +16,7 @@ const ConfirmationSummary = () => {
   const { patientInfo } = usePatientInfoStore();
   const { bmi } = useBmiStore();
 
-  console.log(patientInfo);
+  console.log(bmi);
 
   const hanldeConfirm = async () => {
     setShowLoader(true);
@@ -51,16 +51,30 @@ const ConfirmationSummary = () => {
                   <span className="bold-font paragraph">Date of birth:</span> {patientInfo?.dob}
                 </p>
                 <p className="bold-font text-black">
-                  <span className="bold-font paragraph">Height:</span> {bmi?.cm} cm
+                  <span className="bold-font paragraph">Height:</span>{" "}
+                  {bmi?.height_unit == "imperial" ? (
+                    <span>
+                      {bmi?.ft} ft {bmi?.inch} inch
+                    </span>
+                  ) : (
+                    <span>{bmi?.cm} cm</span>
+                  )}
                 </p>
                 <p className="bold-font text-black">
-                  <span className="bold-font paragraph">Gender:</span> {patientInfo?.gender}
+                  <span className="bold-font paragraph">Gender:</span> <span className="capitalize">{patientInfo?.gender}</span>
                 </p>
                 <p className="bold-font text-black">
-                  <span className="bold-font paragraph">Weight:</span> {bmi?.kg} kg
+                  <span className="bold-font paragraph">Weight:</span>{" "}
+                  {bmi?.weight_unit == "metrics" ? (
+                    <span>{bmi?.kg} kg</span>
+                  ) : (
+                    <span>
+                      {bmi?.stones} stones {bmi?.pound} pound
+                    </span>
+                  )}
                 </p>
                 <p className="bold-font text-black">
-                  <span className="text-sm text-gray-700 mt-1">BMI: {bmi?.bmi}</span>
+                  <span className="text-sm text-gray-700 mt-1">BMI: </span> {bmi?.bmi}
                 </p>
               </div>
             </div>

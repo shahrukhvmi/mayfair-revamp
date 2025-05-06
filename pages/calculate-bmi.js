@@ -167,7 +167,6 @@ export default function CalculateBmi() {
           pound: data?.weightLbs,
           kg: data?.weightKg,
           bmi: calculatedBmi,
-          bmiLevel,
           hiddenInch: data?.heightIn,
           hiddenLb: data?.weightLbs,
           hiddenCm: data?.hiddenCm || cm,

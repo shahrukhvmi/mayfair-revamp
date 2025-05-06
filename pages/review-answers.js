@@ -10,6 +10,9 @@ import useBmiStore from "@/store/bmiStore";
 import useMedicalInfoStore from "@/store/medicalInfoStore";
 import useConfirmationInfoStore from "@/store/confirmationInfoStore";
 import useGpDetailsStore from "@/store/gpDetailStore";
+import sendStepData from "@/api/stepsDataApi";
+import { useMutation } from "@tanstack/react-query";
+import toast from "react-hot-toast";
 
 const ReviewAnswers = () => {
   const router = useRouter();
@@ -20,10 +23,51 @@ const ReviewAnswers = () => {
   const { confirmationInfo } = useConfirmationInfoStore();
   const { gpdetails } = useGpDetailsStore();
 
-  console.log(bmi);
+  console.log(confirmationInfo);
+
+  //Send All steps data
+  const stepsDataMutation = useMutation(sendStepData, {
+    onSuccess: (data) => {
+      console.log(data, "Medical Questions");
+
+      if (data) {
+        // router.push("/personal-details");
+        console.log("Data send Successfully");
+      }
+      return;
+    },
+    onError: (error) => {
+      // setLoading(false);
+      console.log("error", error?.response?.data?.message);
+      if (error) {
+        toast.error(error?.response?.data?.message);
+        setShowLoader(false);
+      }
+    },
+  });
 
   const handleRestart = () => {
-    router.push("/gathering-data");
+    router.push("/personal-details");
+  };
+
+  const handleSubmit = () => {
+    const formattedMedicalInfo = medicalInfo.map((item) => ({
+      question: item.question,
+      qsummary: item.qsummary,
+      answer: item.answer,
+      subfield_response: item.subfield_response,
+      sub_field_prompt: item.sub_field_prompt,
+      has_sub_field: item.has_sub_field,
+    }));
+
+    const formData = {
+      patientInfo: patientInfo,
+      bmi: bmi,
+      gpdetails: gpdetails,
+      confirmationInfo: confirmationInfo,
+      medicalInfo: formattedMedicalInfo,
+    };
+    stepsDataMutation.mutate(formData);
   };
 
   return (
@@ -90,8 +134,8 @@ const ReviewAnswers = () => {
 
               {/* Bottom Action Buttons */}
               <div className="mt-8 space-y-3">
-                <NextButton label="Confirm and Proceed" onClick={handleRestart} />
-                <BackButton label="Edit answers" className="mt-2" onClick={() => router.push("/confirmation-summary")} />
+                <NextButton label="Confirm and Proceed" onClick={handleSubmit} />
+                <BackButton label="Edit answers" className="mt-2" onClick={handleRestart} />
               </div>
             </div>
           </div>
