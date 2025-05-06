@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useWatch } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import SectionWrapper from "./SectionWrapper";
 import SectionHeader from "./SectionHeader";
 import { FiCheck, FiX, FiEye, FiEyeOff } from "react-icons/fi";
@@ -9,13 +9,25 @@ import toast from "react-hot-toast";
 import { UpdatePassword } from "@/api/updatePassword";
 import usePasswordReset from "@/store/usePasswordReset";
 import NextButton from "../NextButton/NextButton";
-const SetAPassword = ({ register, control, setIsPasswordValid, isCompleted, onComplete }) => {
+
+const SetAPassword = ({ isCompleted, onComplete }) => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const { isPasswordReset, setIsPasswordReset } = usePasswordReset()
+  const { isPasswordReset, setIsPasswordReset } = usePasswordReset();
   const { email } = useSignupStore();
-  const password = useWatch({ control, name: "password" }) || "";
-  const confirmPassword = useWatch({ control, name: "confirmPassword" }) || "";
+
+  const {
+    register,
+    handleSubmit,
+    control,
+    watch,
+    formState: { errors, isValid },
+  } = useForm({
+    mode: "onChange",
+  });
+
+  const password = watch("password") || "";
+  const confirmPassword = watch("confirmPassword") || "";
 
   const validations = {
     length: password.length >= 10,
@@ -27,23 +39,16 @@ const SetAPassword = ({ register, control, setIsPasswordValid, isCompleted, onCo
 
   const isPasswordStrongAndMatch = Object.values(validations).every(Boolean);
 
-  useEffect(() => {
-    setIsPasswordValid(isPasswordStrongAndMatch);
-  }, [isPasswordStrongAndMatch, setIsPasswordValid]);
   const { mutate, isLoading } = useMutation(UpdatePassword, {
     onSuccess: (data) => {
-      console.log(data?.status, "dsddcsdf")
       if (data?.status) {
-
         toast.success("Account created successfully!");
+        if (onComplete) onComplete();
+        setIsPasswordReset(true);
       }
-      if (onComplete) onComplete();
-      setIsPasswordReset(true)
-
     },
     onError: (error) => {
       const errorData = error?.response?.data?.errors;
-
       if (errorData && typeof errorData === "object") {
         Object.values(errorData).forEach((errArray) => {
           if (Array.isArray(errArray)) {
@@ -56,16 +61,14 @@ const SetAPassword = ({ register, control, setIsPasswordValid, isCompleted, onCo
         toast.error(error?.response?.statusText || "Something went wrong!");
       }
     },
-
   });
 
-  const handleRegister = () => {
+  const onSubmit = () => {
     if (!isPasswordStrongAndMatch) {
       toast.error("Please complete password requirements first.");
       return;
     }
 
-    // ✅ Call API
     mutate({
       company_id: 1,
       email: email,
@@ -75,29 +78,28 @@ const SetAPassword = ({ register, control, setIsPasswordValid, isCompleted, onCo
   };
 
   return (
-    <SectionWrapper >
+    <SectionWrapper>
       <SectionHeader
         stepNumber={1}
         title="Set a Password"
         description="Please create a strong password for your account."
         completed={isCompleted}
-
       />
-      <div >
+
+      <form onSubmit={handleSubmit(onSubmit)}>
         <div className="relative mt-4">
           <input
             type={showPassword ? "text" : "password"}
             placeholder="Password"
             {...register("password", { required: true })}
-            className={`w-full text-black px-3 py-4 border rounded-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-violet-300 focus:border-violet-800 ${password.length > 0 ? "border-violet-600" : "border-black"
-              }`}
+            className={`w-full text-black px-3 py-4 border rounded-sm placeholder-gray-400 focus:outline-none ${password.length > 0 ? "border-violet-600" : "border-black"}`}
           />
           <button
             type="button"
             onClick={() => setShowPassword(!showPassword)}
-            className="absolute top-1/2 right-3 transform -translate-y-1/2 text-gray-600 cursor-pointer"
+            className="absolute top-1/2 right-3 transform -translate-y-1/2 text-gray-600"
           >
-            {showPassword ? <FiEye className="w-5 h-5" /> : <FiEyeOff className="w-5 h-5" />}
+            {showPassword ? <FiEye /> : <FiEyeOff />}
           </button>
         </div>
 
@@ -107,15 +109,14 @@ const SetAPassword = ({ register, control, setIsPasswordValid, isCompleted, onCo
             placeholder="Confirm Password"
             {...register("confirmPassword", { required: true })}
             onPaste={(e) => e.preventDefault()}
-            className={`w-full text-black px-3 py-4 border rounded-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-violet-300 focus:border-violet-800 ${confirmPassword.length > 0 ? "border-violet-600" : "border-black"
-              }`}
+            className={`w-full text-black px-3 py-4 border rounded-sm placeholder-gray-400 focus:outline-none ${confirmPassword.length > 0 ? "border-violet-600" : "border-black"}`}
           />
           <button
             type="button"
             onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-            className="absolute top-1/2 right-3 transform -translate-y-1/2 text-gray-600 cursor-pointer"
+            className="absolute top-1/2 right-3 transform -translate-y-1/2 text-gray-600"
           >
-            {showConfirmPassword ? <FiEye className="w-5 h-5" /> : <FiEyeOff className="w-5 h-5" />}
+            {showConfirmPassword ? <FiEye /> : <FiEyeOff />}
           </button>
         </div>
 
@@ -128,29 +129,21 @@ const SetAPassword = ({ register, control, setIsPasswordValid, isCompleted, onCo
         </div>
 
         <div className="mt-6">
-
           <NextButton
-            onClick={handleRegister}
-            disabled={!isPasswordStrongAndMatch || isLoading || isPasswordReset}
             label="Continue"
+            disabled={!isPasswordStrongAndMatch || isLoading || isPasswordReset}
+            type="submit"
           />
-
-          {/* {isLoading ? "Creating Account..." : "Continue"} */}
-
         </div>
-      </div>
+      </form>
     </SectionWrapper>
   );
 };
 
 const PasswordCheck = ({ valid, label }) => (
-  <div className="flex items-center justify-between reg-font paragraph">
+  <div className="flex items-center justify-between">
     <span>{label}</span>
-    {valid ? (
-      <FiCheck className="text-green-600 w-4 h-4" />
-    ) : (
-      <FiX className="text-red-600 w-4 h-4" />
-    )}
+    {valid ? <FiCheck className="text-green-600" /> : <FiX className="text-red-600" />}
   </div>
 );
 
