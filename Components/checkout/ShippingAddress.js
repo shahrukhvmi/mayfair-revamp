@@ -1,33 +1,96 @@
-import React, { useState } from "react";
-import { useWatch } from "react-hook-form";
-import SectionHeader from "./SectionHeader";
+import React, { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import { Inter } from "next/font/google";
+import FormWrapper from "@/Components/FormWrapper/FormWrapper";
+import NextButton from "@/Components/NextButton/NextButton";
+import { useRouter } from "next/navigation";
+import { FaSearch } from "react-icons/fa";
 import TextField from "@/Components/TextField/TextField";
+import StepsHeader from "@/layout/stepsHeader";
+import PageAnimationWrapper from "@/Components/PageAnimationWrapper/PageAnimationWrapper";
+import PageLoader from "@/Components/PageLoader/PageLoader";
+import BackButton from "@/Components/BackButton/BackButton";
+import usePatientInfoStore from "@/store/patientInfoStore";
+import { Client } from "getaddress-api";
+import { FormControl, InputLabel, Select, MenuItem, FormHelperText } from "@mui/material";
+import MUISelectField from "@/Components/SelectField/SelectField";
 import SectionWrapper from "./SectionWrapper";
-import { FiChevronDown } from "react-icons/fi";
-import { FaDotCircle, FaRegCircle } from "react-icons/fa";
+import SectionHeader from "./SectionHeader";
 
-const ShippingAddress = ({ register, errors, control, isComp }) => {
+const api = new Client("_UFb05P76EyMidU1VHIQ_A42976");
+const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
+
+export default function ShippingAddress({ isComp })  {
+  const [showLoader, setShowLoader] = useState(false);
   const [manual, setManual] = useState(false);
-  const [sameAsShiping, setSameAsShiping] = useState(false);
+  const [addressOptions, setAddressOptions] = useState([]);
+  const [selectedIndex, setSelectedIndex] = useState("");
+  const [searching, setSearching] = useState(false);
 
-  const postalCode = useWatch({ control, name: "postalCode" }) || "";
-  const addressLine1 = useWatch({ control, name: "addressLine1" }) || "";
-  const city = useWatch({ control, name: "city" }) || "";
-  const country = useWatch({ control, name: "country" }) || "";
-  const firstName = useWatch({ control, name: "firstName" }) || "";
-  const lastName = useWatch({ control, name: "lastName" }) || "";
-  const state = useWatch({ control, name: "state" }) || "";
+  const { patientInfo, setPatientInfo } = usePatientInfoStore();
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    watch,
+    formState: { errors, isValid },
+  } = useForm({
+    mode: "onChange",
+    defaultValues: {
+      postalCode: "",
+      address1: "",
+      address2: "",
+      city: "",
+      state: "",
+    },
+  });
 
-  // Completed Logic
-  const isCompleted = manual
-    ? firstName.length > 0 &&
-    lastName.length > 0 &&
-    addressLine1.length > 0 &&
-    city.length > 0 &&
-    country.length > 0 &&
-    state.length > 0
-    : postalCode.length > 0;
+  const router = useRouter();
 
+  const handleSearch = async () => {
+    const postal = watch("postalCode");
+    if (!postal) return alert("Please enter a postal code.");
+
+    try {
+      const result = await api.find(postal);
+      if (result && result.addresses?.addresses?.length) {
+        setAddressOptions(result.addresses.addresses);
+        setManual(true);
+      }
+    } catch (error) {
+      console.error("API error:", error);
+      alert("Something went wrong while fetching addresses.");
+    }
+  };
+
+  useEffect(() => {
+    if (patientInfo?.address) {
+      setValue("postalCode", patientInfo.address.postalcode || "");
+      setValue("address1", patientInfo.address.addressone || "");
+      setValue("address2", patientInfo.address.addresstwo || "");
+      setValue("city", patientInfo.address.city || "");
+      setValue("state", patientInfo.address.state || "");
+
+      if (patientInfo.address.addressone || patientInfo.address.addresstwo || patientInfo.address.city || patientInfo.address.state) {
+        setManual(true);
+      }
+    }
+  }, [patientInfo]);
+
+  const onSubmit = async (data) => {
+    const fullAddress = {
+      postalcode: data.postalCode,
+      addressone: data.address1,
+      addresstwo: data.address2,
+      city: data.city,
+      state: data.state,
+    };
+
+    setPatientInfo({ ...patientInfo, address: fullAddress });
+    setShowLoader(true);
+    await new Promise((resolve) => setTimeout(resolve, 500));
+    router.push("/preferred-phone-number");
+  };
   return (
     <SectionWrapper>
       <SectionHeader
@@ -37,249 +100,73 @@ const ShippingAddress = ({ register, errors, control, isComp }) => {
         completed={isComp}
       />
 
-      <div className="space-y-6">
-        {/* Postal Code */}
-        <TextField
-          label="Postal Code"
-          name="postalCode"
-          placeholder=""
-          register={register}
-          required
-          errors={errors}
-        />
+      <div>
+        <div className={`relative ${showLoader ? "pointer-events-none cursor-not-allowed" : ""}`}>
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+            <div className="space-y-6">
+              <div className="relative">
+                <TextField label="Postal Code" name="postalCode" placeholder="W1A 1AA" register={register} required errors={errors} />
+                <button
+                  type="button"
+                  onClick={handleSearch}
+                  className={`bold-medium-font absolute right-3 transform -translate-y-1/2 cursor-pointer flex items-center bg-violet-700 text-white px-2 py-1 rounded ${errors.postalCode ? "top-2/4" : "top-2/3"
+                    }`}
+                >
+                  <FaSearch className="w-4 h-4 me-2" /> Search
+                </button>
+              </div>
 
-        {/* Toggle Manual Entry Button */}
+              {addressOptions.length > 0 && (
+                <MUISelectField
+                  label="Select Your Address"
+                  name="addressSelect"
+                  value={selectedIndex}
+                  onChange={(e) => {
+                    const idx = e.target.value;
+                    const selected = addressOptions[idx];
+                    setSelectedIndex(idx);
 
+                    // ✅ Set values and revalidate to clear any existing errors
+                    setValue("address1", selected.line_1 || "", { shouldValidate: true });
+                    setValue("address2", selected.line_2 || "", { shouldValidate: true }); // optional but still validate
+                    setValue("city", selected.town_or_city || "", { shouldValidate: true });
+                    setValue("state", selected.county || "", { shouldValidate: true });
+                  }}
+                  options={addressOptions.map((addr, idx) => ({
+                    value: idx,
+                    label: addr.formatted_address.join(", "),
+                  }))}
+                  error={errors?.addressSelect?.message}
+                />
+              )}
 
+              <div className="text-sm text-right">
+                <button type="button" onClick={() => setManual(!manual)} className="bold-font paragraph underline transition cursor-pointer">
+                  {manual ? "Hide manual address entry" : "Enter your address manually"}
+                </button>
+              </div>
 
-        <div className="text-sm">
-          <button
-            type="button"
-            onClick={() => setManual(!manual)}
-            className="bold-font paragraph underline transition "
-          >
-            <span className="reg-font paragraph">
-              {manual ? "Hide manual address entry" : "Enter your address manually"}
+              {manual && (
+                <div className="space-y-4">
+                  <TextField label="Address 1" name="address1" placeholder="123 Main Street" register={register} required errors={errors} />
+                  <TextField label="Address 2" name="address2" placeholder="Flat 14" register={register} errors={errors} />
+                  <TextField label="City" name="city" placeholder="e.g., London" register={register} required errors={errors} />
+                  <TextField label="State" name="state" placeholder="Essex" register={register} required errors={errors} />
+                </div>
+              )}
+            </div>
 
-            </span>
-          </button>
+            <NextButton label="Next" disabled={!isValid} />
+          </form>
+
+          {showLoader && (
+            <div className="absolute inset-0 z-20 flex justify-center items-center bg-white/60 rounded-lg cursor-not-allowed">
+              <PageLoader />
+            </div>
+          )}
         </div>
-
-
-        {/* Manual Address Fields */}
-        {manual && (<>
-
-
-          <div className="space-y-6">
-
-            {/* First Name + Last Name */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <TextField
-                label="First Name"
-                name="firstName"
-                placeholder="John"
-                register={register}
-                required={manual}
-                errors={errors}
-              />
-              <TextField
-                label="Last Name"
-                name="lastName"
-                placeholder="Doe"
-                register={register}
-                required={manual}
-                errors={errors}
-              />
-            </div>
-
-            {/* Country + Address Line 1 */}
-            <div className="grid grid-cols-12 md:grid-cols-1 gap-4">
-
-              <div className="relative w-full">
-                <label className="block mb-2 bold-font paragraph">Country</label>
-
-                <select
-                  {...register("country", { required: manual })}
-                  className="w-full appearance-none bg-white border border-black text-gray-900 text-sm rounded-md focus:ring-violet-500 focus:border-violet-500  py-5 px-3 pr-12 transition duration-300 ease-in-out mb-3"
-                >
-                  <option value="">Select your country</option>
-                  <option value="United Kingdom">United Kingdom (Mainland)</option>
-                  <option value="United States">Channel Islands</option>
-                  <option value="Canada">Northern Ireland</option>
-                </select>
-
-                {/* Custom React Icon Dropdown Arrow */}
-                <div className="pointer-events-none absolute top-16 right-3 transform -translate-y-1/2">
-                  <FiChevronDown className="w-5 h-5 text-gray-500" />
-                </div>
-
-                {errors.country && (
-                  <p className="text-red-500 text-xs mt-2">Country is required.</p>
-                )}
-              </div>
-
-
-
-
-            </div>
-
-            {/* Address Line 2 (optional) */}
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <TextField
-                label="Address Line 1"
-                name="addressLine1"
-                placeholder="123 Main Street"
-                register={register}
-                required={manual}
-                errors={errors}
-              />
-              <TextField
-                label="Address Line 2"
-                name="addressLine2"
-                placeholder="Apartment, suite, etc. (optional)"
-                register={register}
-                required={false}
-                errors={errors}
-              />
-            </div>
-
-            {/* City + State */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <TextField
-                label="City"
-                name="city"
-                placeholder="e.g., London"
-                register={register}
-                required={manual}
-                errors={errors}
-              />
-              <TextField
-                label="State"
-                name="state"
-                placeholder="e.g., England"
-                register={register}
-                required={manual}
-                errors={errors}
-              />
-            </div>
-
-          </div>
-          <div
-            className="flex items-center gap-3 cursor-pointer select-none mt-4"
-            onClick={() => setSameAsShiping(!sameAsShiping)}
-          >
-            {sameAsShiping ? (
-              <FaDotCircle className="text-violet-700 w-5 h-5" />
-            ) : (
-              <FaRegCircle className="text-gray-500 w-5 h-5" />
-            )}
-
-            <span className="text-sm font-medium text-gray-800">
-              {sameAsShiping ? "Make billing address same as shipping" : "Make billing address same as shipping"}
-            </span>
-          </div>
-        </>
-        )}
-
-
-
-
-
-        {!sameAsShiping && (
-          <div className="space-y-6">
-
-            {/* First Name + Last Name */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <TextField
-                label="Postal code"
-                name="firstName"
-                placeholder="John"
-                register={register}
-                required={sameAsShiping}
-                errors={errors}
-              />
-            
-            </div>
-
-            {/* Country + Address Line 1 */}
-            <div className="grid grid-cols-12 md:grid-cols-1 gap-4">
-
-              <div className="relative w-full">
-                <label className="block mb-2 bold-font paragraph">Country</label>
-
-                <select
-                  {...register("country", { required: sameAsShiping })}
-                  className="w-full appearance-none bg-white border border-black text-gray-900 text-sm rounded-md focus:ring-violet-500 focus:border-violet-500  py-5 px-3 pr-12 transition duration-300 ease-in-out mb-3"
-                >
-                  <option value="">Select your country</option>
-                  <option value="United Kingdom">United Kingdom (Mainland)</option>
-                  <option value="United States">Channel Islands</option>
-                  <option value="Canada">Northern Ireland</option>
-                </select>
-
-                {/* Custom React Icon Dropdown Arrow */}
-                <div className="pointer-events-none absolute top-16 right-3 transform -translate-y-1/2">
-                  <FiChevronDown className="w-5 h-5 text-gray-500" />
-                </div>
-
-                {errors.country && (
-                  <p className="text-red-500 text-xs mt-2">Country is required.</p>
-                )}
-              </div>
-
-
-
-
-            </div>
-
-            {/* Address Line 2 (optional) */}
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <TextField
-                label="Address Line 1"
-                name="addressLine1"
-                placeholder="123 Main Street"
-                register={register}
-                required={sameAsShiping}
-                errors={errors}
-              />
-              <TextField
-                label="Address Line 2"
-                name="addressLine2"
-                placeholder="Apartment, suite, etc. (optional)"
-                register={register}
-                required={false}
-                errors={errors}
-              />
-            </div>
-
-            {/* City + State */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <TextField
-                label="City"
-                name="city"
-                placeholder="e.g., London"
-                register={register}
-                required={sameAsShiping}
-                errors={errors}
-              />
-              <TextField
-                label="State"
-                name="state"
-                placeholder="e.g., England"
-                register={register}
-                required={sameAsShiping}
-                errors={errors}
-              />
-            </div>
-
-          </div>
-        )}
-
       </div>
     </SectionWrapper>
   );
 };
 
-export default ShippingAddress;

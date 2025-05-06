@@ -9,7 +9,7 @@ const usePasswordReset = create(
       clearIsPasswordReset: () => set({ isPasswordReset: null }),
     }),
     {
-      name: "user-password-reset", // localStorage key
+      name: "user-password-reset",
     }
   )
 );
