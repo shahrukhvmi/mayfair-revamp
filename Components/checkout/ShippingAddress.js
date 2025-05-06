@@ -13,7 +13,7 @@ import useShippingOrBillingStore from "@/store/shipingOrbilling";
 
 const api = new Client("_UFb05P76EyMidU1VHIQ_A42976");
 
-export default function ShippingAddress({ isComp }) {
+export default function ShippingAddress({ isCompleted, onComplete }) {
   const [showLoader, setShowLoader] = useState(false);
   const [manual, setManual] = useState(false);
   const [addressOptions, setAddressOptions] = useState([]);
@@ -73,6 +73,7 @@ export default function ShippingAddress({ isComp }) {
     setShowLoader(true);
     await new Promise((resolve) => setTimeout(resolve, 500));
     setShowLoader(false);
+    onComplete();
     alert("Shipping Info Saved Successfully");
   };
 
@@ -84,7 +85,7 @@ export default function ShippingAddress({ isComp }) {
           stepNumber={2}
           title="Shipping Address"
           description=""
-          completed={isComp}
+          completed={isCompleted}
         />
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
