@@ -6,10 +6,17 @@ import { useRouter } from "next/router";
 import React, { useState } from "react";
 import StepsHeader from "@/layout/stepsHeader";
 import PageLoader from "@/Components/PageLoader/PageLoader";
+import usePatientInfoStore from "@/store/patientInfoStore";
+import useBmiStore from "@/store/bmiStore";
 
 const ConfirmationSummary = () => {
   const router = useRouter();
   const [showLoader, setShowLoader] = useState(false);
+
+  const { patientInfo } = usePatientInfoStore();
+  const { bmi } = useBmiStore();
+
+  console.log(patientInfo);
 
   const hanldeConfirm = async () => {
     setShowLoader(true);
@@ -31,24 +38,29 @@ const ConfirmationSummary = () => {
           <div className="space-y-6">
             {/* Summary Box */}
             <div className="bg-[#DACFFF] border border-green-100 rounded-md p-5 text-sm text-gray-800">
-              <p className="bold-font text-black  mb-3">Json Brown</p>
+              <p className="bold-font text-black">
+                <span className="bold-font paragraph">Full Name: </span> {patientInfo?.firstName}
+              </p>
               <hr className="border-gray-300 mb-3" />
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-2 gap-x-8">
                 <p className="bold-font text-black">
-                  <span className="bold-font paragraph">Age:</span> 25
+                  <span className="bold-font paragraph">Postcode:</span> {patientInfo?.address?.postalcode}
                 </p>
                 <p className="bold-font text-black">
-                  <span className="bold-font paragraph">Height:</span> 125 cm
+                  <span className="bold-font paragraph">Date of birth:</span> {patientInfo?.dob}
                 </p>
                 <p className="bold-font text-black">
-                  <span className="bold-font paragraph">Sex at birth:</span> Male
+                  <span className="bold-font paragraph">Height:</span> {bmi?.cm} cm
                 </p>
                 <p className="bold-font text-black">
-                  <span className="bold-font paragraph">Weight:</span> 78 kg
+                  <span className="bold-font paragraph">Gender:</span> {patientInfo?.gender}
                 </p>
-                <p className="sm:col-span-2 bold-font text-black">
-                  <span className="bold-font paragraph">Ethnicity:</span> Yes
+                <p className="bold-font text-black">
+                  <span className="bold-font paragraph">Weight:</span> {bmi?.kg} kg
+                </p>
+                <p className="bold-font text-black">
+                  <span className="text-sm text-gray-700 mt-1">BMI: {bmi?.bmi}</span>
                 </p>
               </div>
             </div>
