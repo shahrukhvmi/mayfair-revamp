@@ -3,10 +3,18 @@ import { useWatch } from "react-hook-form";
 import SectionWrapper from "./SectionWrapper";
 import SectionHeader from "./SectionHeader";
 import { FiCheck, FiX, FiEye, FiEyeOff } from "react-icons/fi";
+import useSignupStore from "@/store/signupStore";
+import { useMutation } from "@tanstack/react-query";
+import toast from "react-hot-toast";
+import { useRouter } from "next/router";
+import { UpdatePassword } from "@/api/updatePassword";
 
-const SetAPassword = ({ register, control, setIsPasswordValid ,isCompleted}) => {
+const SetAPassword = ({ register, control, setIsPasswordValid, isCompleted, onComplete }) => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const router = useRouter();
+
+  const { email } = useSignupStore();
 
   const password = useWatch({ control, name: "password" }) || "";
   const confirmPassword = useWatch({ control, name: "confirmPassword" }) || "";
@@ -25,10 +33,36 @@ const SetAPassword = ({ register, control, setIsPasswordValid ,isCompleted}) => 
     setIsPasswordValid(isPasswordStrongAndMatch);
   }, [isPasswordStrongAndMatch, setIsPasswordValid]);
 
+  // ✅ Register API Mutation
+  const { mutate, isLoading } = useMutation(UpdatePassword, {
+    onSuccess: (data) => {
+      toast.success("Account created successfully!");
+      if (onComplete) onComplete();
+  
+    },
+    onError: (error) => {
+      const errorMsg = error?.response?.data?.message || "Something went wrong!";
+      toast.error(errorMsg);
+    },
+  });
+
+  const handleRegister = () => {
+    if (!isPasswordStrongAndMatch) {
+      toast.error("Please complete password requirements first.");
+      return;
+    }
+
+    // ✅ Call API
+    mutate({
+      company_id: 1,
+      email: email,
+      password: password,
+      password_confirmation: confirmPassword,
+    });
+  };
+
   return (
     <SectionWrapper>
-
-      {/* 🔥 Yahan completed pass karna hai */}
       <SectionHeader
         stepNumber={1}
         title="Set a Password"
@@ -36,7 +70,6 @@ const SetAPassword = ({ register, control, setIsPasswordValid ,isCompleted}) => 
         completed={isCompleted}
       />
 
-      {/* Password Field */}
       <div className="relative mt-4">
         <input
           type={showPassword ? "text" : "password"}
@@ -54,7 +87,6 @@ const SetAPassword = ({ register, control, setIsPasswordValid ,isCompleted}) => 
         </button>
       </div>
 
-      {/* Confirm Password Field */}
       <div className="relative mt-4">
         <input
           type={showConfirmPassword ? "text" : "password"}
@@ -73,7 +105,6 @@ const SetAPassword = ({ register, control, setIsPasswordValid ,isCompleted}) => 
         </button>
       </div>
 
-      {/* Password Validation */}
       <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 mt-6 space-y-2">
         <PasswordCheck valid={validations.length} label="At least 10 characters." />
         <PasswordCheck valid={validations.case} label="Upper and lower case characters." />
@@ -82,12 +113,21 @@ const SetAPassword = ({ register, control, setIsPasswordValid ,isCompleted}) => 
         <PasswordCheck valid={validations.match} label="Passwords must match." />
       </div>
 
+      <div className="mt-6">
+        <button
+          onClick={handleRegister}
+          disabled={!isPasswordStrongAndMatch || isLoading}
+          className={`w-full px-4 py-3 text-white font-bold rounded ${!isPasswordStrongAndMatch || isLoading ? "bg-gray-400 cursor-not-allowed" : "bg-violet-700 hover:bg-violet-800"}`}
+        >
+          {isLoading ? "Creating Account..." : "Continue"}
+        </button>
+      </div>
     </SectionWrapper>
   );
 };
 
 const PasswordCheck = ({ valid, label }) => (
-  <div className="flex items-center justify-between  reg-font paragraph">
+  <div className="flex items-center justify-between reg-font paragraph">
     <span>{label}</span>
     {valid ? (
       <FiCheck className="text-green-600 w-4 h-4" />

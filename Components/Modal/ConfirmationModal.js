@@ -30,13 +30,13 @@ const ConfirmationModal = ({ showModal, onConfirm, onCancel, removeItem }) => {
             <div className="flex justify-center gap-4">
               <button
                 onClick={onCancel}
-                className="font-med px-6 py-2 rounded-lg border border-gray-300 text-gray-800 hover:bg-gray-100 transition-all duration-200 capitalize"
+                className="font-med px-6 py-2 rounded-lg border border-gray-300 text-gray-800 hover:bg-gray-100 transition-all duration-200 capitalize cursor-pointer"
               >
                 no, cancel
               </button>
               <button
                 onClick={onConfirm}
-                className="font-med px-6 py-2 rounded-lg bg-violet-700 text-white hover:[#4565BF] transition-all duration-200 capitalize"
+                className="font-med px-6 py-2 rounded-lg bg-violet-700 text-white hover:[#4565BF] transition-all duration-200 capitalize cursor-pointer"
               >
                 yes i'm sure
               </button>

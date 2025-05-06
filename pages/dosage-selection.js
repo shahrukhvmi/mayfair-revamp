@@ -17,41 +17,21 @@ export default function DosageSelection() {
   // const {  } = useCartStore();
   const {
     addToCart,
-    removeFromCart,
     increaseQuantity,
     decreaseQuantity,
     items,
+    totalAmount,
   } = useCartStore();
 
-  const { register, handleSubmit, formState: { isValid, errors } } = useForm({
+  const { handleSubmit } = useForm({
     mode: "onChange",
   });
-
   const { variation } = useVariationStore();
-  console.log(variation, "allowed")
   const allowed = variation?.allowed;
   const onSubmit = () => {
     router.push("/checkout");
   };
-
-  // const handleAddDose = (dose) => {
-  //   addToCart({
-  //     id: dose.id,
-  //     type: "dose", // ✅ FIXED (Directly dose likh do, ye galti waha hui thi)
-  //     name: dose.name,
-  //     price: parseFloat(dose.price),
-  //     allowed: parseInt(dose.allowed),
-  //     item_id: dose.id,
-  //     product: dose?.product_name || "Dose Product",
-  //     product_concent: "Once Weekly",
-  //     label: dose?.name,
-  //     expiry: dose.expiry,
-  //     isSelected: true,
-  //   });
-  // };
-  // const totalQty = totalSelectedQty + 1;
-
-
+  //Allowed checking here 🔥
   const totalSelectedQty = () => items?.doses.reduce((total, v) => total + v.qty, 0);
   const handleAddDose = (dose) => {
     const totalQty = totalSelectedQty() + 1;
@@ -70,7 +50,7 @@ export default function DosageSelection() {
       toast.error(`Only ${stockQuantity} units available in stock.`);
       return;
     }
-
+    //Add to cart Addons🔥
     addToCart({
       id: dose.id,
       type: "dose",
@@ -86,14 +66,7 @@ export default function DosageSelection() {
     });
   };
 
-
-
-
-
-
-
-
-
+  //Add to cart Addons🔥
   const handleAddAddon = (addon) => {
     addToCart({
       id: addon.id,
@@ -126,11 +99,16 @@ export default function DosageSelection() {
                 <div className="col-span-12 sm:col-span-6 md:px-4 py-10">
                   <div className="bg-white rounded-lg shadow-lg overflow-hidden mb-6">
                     <div className="bg-violet-700 p-6">
-                      <img src="/images/wegovy.png" alt="" className="w-full h-40 object-contain" />
+                      <img src={variation?.img} alt="" className="w-full h-40 object-contain" />
                     </div>
                     <div className="p-6">
-                      <h2 className="text-2xl mb-4 bold-font text-gray-800">Mounjaro (Tirzepatide)</h2>
-                      <span className="bold-font text-black">From £168.00</span>
+                      <h2 className="text-2xl mb-4 bold-font text-gray-800">{variation?.name}</h2>
+                      <span className="bold-font text-black">From £{variation?.price}</span>
+                      {/* <div
+                        className="reg-font text-gray-600 bg-red-50  p-3 rounded-md text-sm"
+                        dangerouslySetInnerHTML={{ __html: variation?.description }}
+                      ></div> */}
+
                     </div>
                   </div>
 
@@ -141,8 +119,17 @@ export default function DosageSelection() {
                       Choose your dosage
                     </h1>
 
-                    {variation?.variations &&
-                      variation?.variations.map((dose, index) => {
+                    {variation?.variations
+                      ?.sort((a, b) => {
+                        const aOutOfStock = a?.stock?.status === 0;
+                        const bOutOfStock = b?.stock?.status === 0;
+
+                        // Out of stock ko neeche le jao
+                        if (aOutOfStock && !bOutOfStock) return 1;
+                        if (!aOutOfStock && bOutOfStock) return -1;
+                        return 0;
+                      })
+                      .map((dose, index) => {
                         const cartDose = items.doses.find(item => item.id === dose.id);
                         const cartQty = cartDose?.qty || 0;
 
@@ -158,36 +145,37 @@ export default function DosageSelection() {
                             onIncrement={() => increaseQuantity(dose.id, "dose")}
                             onDecrement={() => decreaseQuantity(dose.id, "dose")}
                           />
-
-                        )
+                        );
                       })}
+
                   </div>
 
 
+                  <div className="bg-white rounded-lg shadow-lg  px-4 py-6 my-4">
+                    {Array.isArray(variation?.addons) && variation?.addons.length > 0 && (
+                      <>
+                        <h1 className="my-4 niba-reg-font text-2xl text-gray-800">
+                          Select <span className="font-bold text-2xl">Addons</span>
+                        </h1>
+                        {variation?.addons.map((addon) => {
+                          const cartAddon = items.addons.find(item => item.id === addon.id);
+                          const cartQty = cartAddon?.qty || 0;
 
-                  {Array.isArray(variation?.addons) && variation?.addons.length > 0 && (
-                    <>
-                      <h1 className="my-4 niba-reg-font text-2xl text-gray-800">
-                        Select <span className="font-bold text-2xl">Addons</span>
-                      </h1>
-                      {variation?.addons.map((addon) => {
-                        const cartAddon = items.addons.find(item => item.id === addon.id);
-                        const cartQty = cartAddon?.qty || 0;
+                          return (
+                            <AddOn
+                              addon={addon}
+                              quantity={cartQty}   // ✅ yeh change krna hoga DosageSelection me
+                              isSelected={cartQty > 0}
+                              onAdd={() => handleAddAddon(addon)}
+                              onIncrement={() => increaseQuantity(addon.id, "addon")}
+                              onDecrement={() => decreaseQuantity(addon.id, "addon")}
+                            />
 
-                        return (
-                          <AddOn
-                            addon={addon}
-                            quantity={cartQty}   // ✅ yeh change krna hoga DosageSelection me
-                            isSelected={cartQty > 0}
-                            onAdd={() => handleAddAddon(addon)}
-                            onIncrement={() => increaseQuantity(addon.id, "addon")}
-                            onDecrement={() => decreaseQuantity(addon.id, "addon")}
-                          />
-
-                        )
-                      })}
-                    </>
-                  )}
+                          )
+                        })}
+                      </>
+                    )}
+                  </div>
 
                 </div>
               </div>
@@ -203,13 +191,14 @@ export default function DosageSelection() {
             <div className="text-black leading-tight">
               <div className="text-lg bold-font">Mounjaro</div>
               <div className="text-lg bold-font">
-                £189 <span className="text-lg reg-font">/month</span>
+                £{totalAmount}<span className="text-lg reg-font">.00</span>
               </div>
             </div>
           </div>
           <div>
 
-            <NextButton onClick={handleSubmit(onSubmit)} label="Next" />
+            <NextButton onClick={handleSubmit(onSubmit)}
+              disabled={totalSelectedQty() === 0} label="Next" />
           </div>
 
         </div>

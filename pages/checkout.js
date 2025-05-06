@@ -62,7 +62,7 @@ const Checkout = () => {
         setStep(1);
         scrollToRef(personalRef);
       }
-    } 
+    }
     else if (step === 2) {
       const valid = await trigger(["postalCode"]);
       if (valid) {
@@ -72,7 +72,7 @@ const Checkout = () => {
         setStep(2);
         scrollToRef(addressRef);
       }
-    } 
+    }
     else if (step === 3) {
       const valid = await trigger(["terms"]);
       if (valid && termsAccepted) {
@@ -152,14 +152,14 @@ const Checkout = () => {
               control={control}
               setIsPasswordValid={setIsPasswordValid}
               isCompleted={isStep1Completed}
+              // onComplete={() => {
+              //   setIsStep1Completed(true);
+              //   setStep(2);
+              // }}
+              onComplete={() => setStep(step + 1)}
             />
-            {step === 1 && (
-              <NextButton
-                onClick={handleNextStep}
-                disabled={!isPasswordValid}
-                label="Continue"
-              />
-            )}
+
+
           </div>
 
           {/* Step 2 - Address */}
