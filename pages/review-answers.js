@@ -13,6 +13,7 @@ import useGpDetailsStore from "@/store/gpDetailStore";
 import sendStepData from "@/api/stepsDataApi";
 import { useMutation } from "@tanstack/react-query";
 import toast from "react-hot-toast";
+import useProductId from "@/store/useProductIdStore";
 
 const ReviewAnswers = () => {
   const router = useRouter();
@@ -22,6 +23,7 @@ const ReviewAnswers = () => {
   const { medicalInfo } = useMedicalInfoStore();
   const { confirmationInfo } = useConfirmationInfoStore();
   const { gpdetails } = useGpDetailsStore();
+  const { productId } = useProductId();
 
   console.log(confirmationInfo);
 
@@ -66,6 +68,7 @@ const ReviewAnswers = () => {
       gpdetails: gpdetails,
       confirmationInfo: confirmationInfo,
       medicalInfo: formattedMedicalInfo,
+      pid: productId,
     };
     stepsDataMutation.mutate(formData);
   };
