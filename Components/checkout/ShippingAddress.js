@@ -71,16 +71,24 @@ export default function ShippingAddress({ isCompleted, onComplete }) {
     setValue("city", shipping.city || "");
     setValue("state", shipping.state || "");
 
-    // ✅ Set country
+    // ✅ Find country by name
     const country = shipmentCountries.find((c) => c.name === shipping.country_name);
     if (country) {
       setValue("shippingCountry", country.id.toString(), { shouldValidate: true });
       setShippingIndex(country.id.toString());
+
+      // ✅ ONLY UPDATE if price or name is different → to avoid infinite loop
+      if (shipping.country_price !== country.price || shipping.country_name !== country.name) {
+        setShipping({
+          ...shipping,
+          country_name: country.name,
+          country_price: country.price,
+        });
+      }
     }
 
-    // ✅ This is now directly boolean from API → true or false
     setValue("same_as_shipping", shipping.same_as_shipping ?? false);
-  }, [shipping, shipmentCountries]);
+  }, [shipping?.country_name, shipmentCountries]);
 
   const handleSearch = async () => {
     const postal = watch("postalcode");
