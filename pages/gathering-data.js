@@ -9,6 +9,7 @@ import useVariationStore from "@/store/useVariationStore";
 import PageLoader from "@/Components/PageLoader/PageLoader";
 import useShipmentCountries from "@/store/useShipmentCountriesStore";
 import useBillingCountries from "@/store/useBillingCountriesStore";
+import useCartStore from "@/store/useCartStore";
 
 export default function GatherData() {
   const router = useRouter();
