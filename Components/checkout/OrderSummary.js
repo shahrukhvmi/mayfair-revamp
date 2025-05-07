@@ -10,13 +10,18 @@ import { motion, AnimatePresence } from "framer-motion";
 import { RxCross2 } from "react-icons/rx";
 import NextButton from "../NextButton/NextButton";
 import { GoCheckCircleFill } from "react-icons/go";
+import useShippingOrBillingStore from "@/store/shipingOrbilling";
 
 const OrderSummary = () => {
   const router = useRouter();
   const [discountCode, setDiscountCode] = useState("");
 
+  // Get some data to store✌✌ 
   const { items, totalAmount } = useCartStore();
   const { Coupon, setCoupon, clearCoupon } = useCouponStore();
+  const { shipping, billing, billingSameAsShipping } = useShippingOrBillingStore();
+  console.log(shipping?.country_price, 'shipping');
+  console.log(items, 'items');
 
   const isApplyEnabled = discountCode.trim().length > 0;
   const handleEdit = () => {
@@ -54,16 +59,26 @@ const OrderSummary = () => {
   };
 
   let discountAmount = 0;
-  const shipping = 9.99;
-  let finalTotal = (totalAmount + shipping);
+
+  // Convert shipping?.country_price to number safely (if undefined, use 0)
+  const shippingPrice = Number(shipping?.country_price) || 0;
+  
+  // Start calculation
+  let finalTotal = totalAmount + shippingPrice;
+  
+  // Calculate discount
   if (Coupon?.Data?.type === "Percent") {
     discountAmount = (totalAmount / 100) * Coupon?.Data?.discount;
   } else {
-    discountAmount = Coupon?.Data?.discount;
+    discountAmount = Coupon?.Data?.discount || 0;
   }
+  
+  // Apply discount if available
   if (discountAmount) {
-    finalTotal = (totalAmount - discountAmount) + shipping;
+    finalTotal = (totalAmount - discountAmount) + shippingPrice;
   }
+  
+  // console.warn(typeof  , "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
 
   return (
     <div className="col-span-12 sm:col-span-4 mb-3">
@@ -115,7 +130,7 @@ const OrderSummary = () => {
                 >
                   <div className="flex flex-col">
                     <span className="text-base bold-font text-gray-900  truncate">
-                    {addon?.name}
+                      {addon?.name}
                     </span>
                     <span className="bold-font text-sm text-gray-600 mt-1">
                       Qty: x{addon?.qty}
@@ -131,12 +146,12 @@ const OrderSummary = () => {
 
             <div className="flex justify-between items-center mt-8">
               <p className="bold-font paragraph">Subtotal</p>
-              <p className="bold-font text-black">£{totalAmount.toFixed(2)}</p>
+              <p className="bold-font text-black">£{totalAmount?.toFixed(2)}</p>
             </div>
 
             <div className="flex justify-between items-center mt-4">
               <p className="bold-font paragraph">Shipping</p>
-              <p className="bold-font text-black">£{shipping}</p>
+              <p className="bold-font text-black">£{shipping?.country_price}</p>
             </div>
 
             {Coupon && (
@@ -153,7 +168,8 @@ const OrderSummary = () => {
             <div className="flex justify-between items-center">
               <p className="text-lg text-gray-900 font-bold">Total</p>
               <p className="text-lg text-gray-900 font-bold">
-                £{finalTotal.toFixed(2)}
+                £{finalTotal?.toFixed(2)}
+
               </p>
             </div>
 

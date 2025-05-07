@@ -9,7 +9,7 @@ const useCouponStore = create(
       clearCoupon: () => set({ Coupon: null }),
     }),
     {
-      name: "Coupon-storage",
+      name: "coupon-storage",
     }
   )
 );
