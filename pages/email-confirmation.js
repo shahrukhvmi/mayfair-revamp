@@ -11,7 +11,7 @@ import StepsHeader from "@/layout/stepsHeader";
 import BackButton from "@/Components/BackButton/BackButton";
 import { registerUser } from "@/api/authApi";
 import { useMutation } from "@tanstack/react-query";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 import useUserDataStore from "@/store/userDataStore";
 import useAuthStore from "@/store/authStore";
 import Fetcher from "@/library/Fetcher";
@@ -100,7 +100,6 @@ export default function EmailConfirmation() {
 
   return (
     <>
-      <Toaster position="top-center" reverseOrder={false} />
       <StepsHeader />
       <FormWrapper
         heading={"Please enter your email"}
