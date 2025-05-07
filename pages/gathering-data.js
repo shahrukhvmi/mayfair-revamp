@@ -7,6 +7,8 @@ import toast from "react-hot-toast";
 import Fetcher from "@/library/Fetcher";
 import useVariationStore from "@/store/useVariationStore";
 import PageLoader from "@/Components/PageLoader/PageLoader";
+import useShipmentCountries from "@/store/useShipmentCountriesStore";
+import useBillingCountries from "@/store/useBillingCountriesStore";
 
 export default function GatherData() {
   const router = useRouter();
@@ -14,18 +16,21 @@ export default function GatherData() {
 
   // store addons or dose here 🔥🔥
   const { setVariation } = useVariationStore();
+  const { setShipmentCountries } = useShipmentCountries();
+  const { setBillingCountries } = useBillingCountries();
+  const { clearCart } = useCartStore();
 
   // Variations fetch mutation
   const variationMutation = useMutation(getVariationsApi, {
     onSuccess: (data) => {
       console.log(data, "ckdsjksdkjsd");
       if (data) {
+        clearCart();
         // toast.success("User registered successfully!");
-        const token = data?.data?.data?.token;
         const variations = data?.data?.data || [];
         setVariation(variations);
-        Fetcher.axiosSetup.defaults.headers.common.Authorization = `Bearer ${token}`;
-
+        setShipmentCountries(data?.data?.data?.shippment_countries);
+        setBillingCountries(data?.data?.data?.billing_countries);
         // Redirect
         router.push("/dosage-selection");
       }

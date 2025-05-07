@@ -14,10 +14,10 @@ import BmiTextField from "@/Components/BmiTextField/BmiTextField";
 
 export default function CalculateBmi() {
   const [localStep, setLocalStep] = useState(1);
-  const [heightUnit, setHeightUnit] = useState("metric");
+  const [heightUnit, setHeightUnit] = useState("metrics");
   const [weightUnit, setWeightUnit] = useState("kg");
   const [showLoader, setShowLoader] = useState(false);
-  const [heightUnitKey, setHeightUnitKey] = useState(""); // Will be "imperial" or "metric"
+  const [heightUnitKey, setHeightUnitKey] = useState(""); // Will be "imperial" or "metrics"
   const [weightUnitKey, setWeightUnitKey] = useState("");
 
   const { bmi, setBmi } = useBmiStore();
@@ -81,7 +81,7 @@ export default function CalculateBmi() {
 
     // ⭐ Convert before going to next or calculating
     if (localStep === 1) {
-      if (heightUnit === "metric") {
+      if (heightUnit === "metrics") {
         // cm to ft/in
         const cm = parseFloat(watch("heightCm")) || 0;
         const totalInches = cm / 2.54;
@@ -167,12 +167,11 @@ export default function CalculateBmi() {
           pound: data?.weightLbs,
           kg: data?.weightKg,
           bmi: calculatedBmi,
-          bmiLevel,
           hiddenInch: data?.heightIn,
           hiddenLb: data?.weightLbs,
           hiddenCm: data?.hiddenCm || cm,
           hiddenKg: data?.hiddenKg || kg,
-          height_unit: heightUnitKey || bmi?.height_unit, // default to metric if blank
+          height_unit: heightUnitKey || bmi?.height_unit, // default to metrics if blank
           weight_unit: weightUnitKey || bmi?.weight_unit, // default to kg if blank
         });
 
@@ -241,7 +240,7 @@ export default function CalculateBmi() {
               tabs={
                 localStep === 1
                   ? [
-                      { label: "cm", value: "metric" },
+                      { label: "cm", value: "metrics" },
                       { label: "ft/inch", value: "imperial" },
                     ]
                   : [
@@ -252,7 +251,7 @@ export default function CalculateBmi() {
               selectedTab={localStep === 1 ? heightUnit : weightUnit}
               onTabChange={(value) => {
                 if (localStep === 1) {
-                  if (value === "metric") {
+                  if (value === "metrics") {
                     const ft = parseFloat(watch("heightFt")) || 0;
                     const inch = parseFloat(watch("heightIn")) || 0;
                     const cm = ft * 30.48 + inch * 2.54;
@@ -326,7 +325,7 @@ export default function CalculateBmi() {
                       fieldProps={register("heightCm", {
                         required: "This field is required",
                         onChange: (e) => {
-                          if (e.target.value !== "") setHeightUnitKey("metric");
+                          if (e.target.value !== "") setHeightUnitKey("metrics");
                         },
                       })}
                       errors={errors}
@@ -369,7 +368,7 @@ export default function CalculateBmi() {
                       fieldProps={register("weightKg", {
                         required: "This field is required",
                         onChange: (e) => {
-                          if (e.target.value !== "") setWeightUnitKey("metric");
+                          if (e.target.value !== "") setWeightUnitKey("metrics");
                         },
                       })}
                       errors={errors}
