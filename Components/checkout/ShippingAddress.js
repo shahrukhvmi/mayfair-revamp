@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import { Inter } from "next/font/google";
 import SectionWrapper from "./SectionWrapper";
 import SectionHeader from "./SectionHeader";
@@ -10,6 +10,10 @@ import { Client } from "getaddress-api";
 import NextButton from "@/Components/NextButton/NextButton";
 import MUISelectField from "@/Components/SelectField/SelectField";
 import useShippingOrBillingStore from "@/store/shipingOrbilling";
+import { useRouter } from "next/router";
+import useShipmentCountries from "@/store/useShipmentCountriesStore";
+import { RiRadioButtonFill } from "react-icons/ri";
+import { IoRadioButtonOff } from "react-icons/io5";
 
 const api = new Client("_UFb05P76EyMidU1VHIQ_A42976");
 
@@ -19,42 +23,72 @@ export default function ShippingAddress({ isCompleted, onComplete }) {
   const [addressOptions, setAddressOptions] = useState([]);
   const [selectedIndex, setSelectedIndex] = useState("");
 
-  const { shippingInfo, setShippingInfo } = useShippingOrBillingStore();
+  const [shippingIndex, setShippingIndex] = useState("");
+
+  const { shipping, setShipping, setBillingSameAsShipping, setBilling } = useShippingOrBillingStore();
+  const { shipmentCountries } = useShipmentCountries();
+
+  console.log(shipmentCountries, "shipmentCountries");
+
+  console.log(shipping, "shipping");
 
   const {
     register,
     handleSubmit,
     setValue,
     watch,
+    control,
     formState: { errors, isValid },
   } = useForm({
     mode: "onChange",
-    defaultValues: shippingInfo || {},
+    defaultValues: {
+      postalcode: "",
+      addressone: "",
+      addresstwo: "",
+      city: "",
+      state: "",
+      shippingCountry: "",
+      same_as_shipping: false,
+    },
   });
 
-  const postalCode = watch("postalCode");
-  const address1 = watch("address1");
-  const address2 = watch("address2");
-  const city = watch("city");
-  const state = watch("state");
-
   // ✅ Watch all values and save in store
+
+  const router = useRouter();
+
+  const sameAsShippingValue = watch("same_as_shipping");
+
   useEffect(() => {
-    setShippingInfo({
-      postalCode,
-      address1,
-      address2,
-      city,
-      state,
-    });
-  }, [postalCode, address1, address2, city, state]);
+    setBillingSameAsShipping(sameAsShippingValue);
+  }, [sameAsShippingValue, setBillingSameAsShipping]);
+
+  useEffect(() => {
+    if (!shipping || !shipmentCountries?.length) return;
+
+    setValue("postalcode", shipping.postalcode || "");
+    setValue("addressone", shipping.addressone || "");
+    setValue("addresstwo", shipping.addresstwo || "");
+    setValue("city", shipping.city || "");
+    setValue("state", shipping.state || "");
+
+    // ✅ Set country
+    const country = shipmentCountries.find((c) => c.name === shipping.country_name);
+    if (country) {
+      setValue("shippingCountry", country.id.toString(), { shouldValidate: true });
+      setShippingIndex(country.id.toString());
+    }
+
+    // ✅ This is now directly boolean from API → true or false
+    setValue("same_as_shipping", shipping.same_as_shipping ?? false);
+  }, [shipping, shipmentCountries]);
 
   const handleSearch = async () => {
-    if (!postalCode) return alert("Please enter postal code.");
+    const postal = watch("postalcode");
+    if (!postal) return alert("Please enter a postal code.");
 
     try {
-      const result = await api.find(postalCode);
-      if (result?.addresses?.addresses?.length) {
+      const result = await api.find(postal);
+      if (result && result.addresses?.addresses?.length) {
         setAddressOptions(result.addresses.addresses);
         setManual(true);
       }
@@ -63,38 +97,82 @@ export default function ShippingAddress({ isCompleted, onComplete }) {
       alert("Something went wrong while fetching addresses.");
     }
   };
-  const [hasMounted, setHasMounted] = useState(false);
 
-  useEffect(() => {
-    setHasMounted(true);
-  }, []);
-
-  const onSubmit = async () => {
+  const onSubmit = async (data) => {
     setShowLoader(true);
     await new Promise((resolve) => setTimeout(resolve, 500));
     setShowLoader(false);
+
+    const selectedCountry = shipmentCountries.find((c) => c.id.toString() === shippingIndex);
+
+    // ✅ Save shipping info
+    setShipping({
+      id: selectedCountry?.id || "",
+      country_name: selectedCountry?.name || "",
+      country_price: selectedCountry?.price || "",
+      postalcode: data.postalcode,
+      addressone: data.addressone,
+      addresstwo: data.addresstwo,
+      city: data.city,
+      state: data.state,
+      same_as_shipping: data.same_as_shipping, // ✅ ADD THIS LINE
+    });
+
+    if (data?.same_as_shipping == true) {
+      setBilling({
+        id: selectedCountry?.id || "",
+        country_name: selectedCountry?.name || "",
+        country_price: selectedCountry?.price || "",
+        postalcode: data.postalcode,
+        addressone: data.addressone,
+        addresstwo: data.addresstwo,
+        city: data.city,
+        state: data.state,
+        same_as_shipping: data.same_as_shipping, // ✅ Save this also
+      });
+    }
+
+    // ✅ Save billingSameAsShipping state
+    // API gives same_as_shipping as 1/0 but we use boolean in zustand so true/false
+    setBillingSameAsShipping(data.same_as_shipping);
+
     onComplete();
-    alert("Shipping Info Saved Successfully");
   };
 
   return (
     <>
-
       <SectionWrapper>
-        <SectionHeader
-          stepNumber={2}
-          title="Shipping Address"
-          description=""
-          completed={isCompleted}
-        />
+        <SectionHeader stepNumber={2} title="Shipping Address" description="" completed={isCompleted} />
 
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-          <TextField label="Postal Code" name="postalCode" placeholder="W1A 1AA" register={register} required errors={errors} />
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 mt-5">
+          <Controller
+            name="shippingCountry"
+            control={control}
+            rules={{ required: "Country is required" }}
+            render={({ field }) => (
+              <MUISelectField
+                label="Select Country"
+                name="shippingCountry"
+                value={field.value}
+                onChange={(e) => {
+                  const id = e.target.value;
+                  field.onChange(id); // ✅ set id to RHF
+                  setShippingIndex(id); // ✅ set id to local state
+                }}
+                options={(shipmentCountries || []).map((addr) => ({
+                  value: addr.id.toString(), // ✅ Use country id as value
+                  label: addr.name,
+                }))}
+              />
+            )}
+          />
+
+          <TextField label="Postal Code" name="postalcode" placeholder="W1A 1AA" register={register} required errors={errors} />
           <button type="button" onClick={handleSearch} className="text-white bg-violet-700 px-3 py-1 rounded">
             <FaSearch className="inline-block me-2" /> Search
           </button>
 
-          {hasMounted && addressOptions.length > 0 && (
+          {addressOptions.length > 0 && (
             <MUISelectField
               label="Select Your Address"
               name="addressSelect"
@@ -104,8 +182,8 @@ export default function ShippingAddress({ isCompleted, onComplete }) {
                 const selected = addressOptions[idx];
                 setSelectedIndex(idx);
 
-                setValue("address1", selected.line_1 || "", { shouldValidate: true });
-                setValue("address2", selected.line_2 || "", { shouldValidate: true });
+                setValue("addressone", selected.line_1 || "", { shouldValidate: true });
+                setValue("addresstwo", selected.line_2 || "", { shouldValidate: true });
                 setValue("city", selected.town_or_city || "", { shouldValidate: true });
                 setValue("state", selected.county || "", { shouldValidate: true });
               }}
@@ -116,11 +194,21 @@ export default function ShippingAddress({ isCompleted, onComplete }) {
             />
           )}
 
-
-          <TextField label="Address 1" name="address1" placeholder="123 Main Street" register={register} required errors={errors} />
-          <TextField label="Address 2" name="address2" placeholder="Flat 14" register={register} errors={errors} />
+          <TextField label="Address 1" name="addressone" placeholder="123 Main Street" register={register} required errors={errors} />
+          <TextField label="Address 2" name="addresstwo" placeholder="Flat 14" register={register} errors={errors} />
           <TextField label="City" name="city" placeholder="e.g., London" register={register} required errors={errors} />
           <TextField label="State" name="state" placeholder="e.g., Essex" register={register} required errors={errors} />
+
+          <Controller
+            name="same_as_shipping"
+            control={control}
+            render={({ field }) => (
+              <div className="flex items-center space-x-3 cursor-pointer" onClick={() => field.onChange(!field.value)}>
+                {field.value ? <RiRadioButtonFill className="text-violet-700 text-xl" /> : <IoRadioButtonOff className="text-gray-400 text-xl" />}
+                <span className="text-gray-700">Make billing address same as shipping</span>
+              </div>
+            )}
+          />
 
           <NextButton label="Next" disabled={!isValid} />
         </form>
@@ -131,7 +219,6 @@ export default function ShippingAddress({ isCompleted, onComplete }) {
           </div>
         )}
       </SectionWrapper>
-
     </>
   );
 }

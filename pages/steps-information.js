@@ -19,6 +19,7 @@ import usePatientInfoStore from "@/store/patientInfoStore";
 import useMedicalQuestionsStore from "@/store/medicalQuestionStore";
 import useConfirmationQuestionsStore from "@/store/confirmationQuestionStore";
 import PageLoader from "@/Components/PageLoader/PageLoader";
+import useShippingOrBillingStore from "@/store/shipingOrbilling";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 
@@ -37,6 +38,7 @@ export default function StepsInformation() {
   const { setMedicalQuestions } = useMedicalQuestionsStore();
   const { setConfirmationQuestions } = useConfirmationQuestionsStore();
   const [showLoader, setShowLoader] = useState(false);
+  const { billing, setBilling, shipping, setShipping, clearShipping, clearBilling } = useShippingOrBillingStore();
 
   //Get Consultation Data
   const consultationMutation = useMutation(userConsultationApi, {
@@ -51,6 +53,8 @@ export default function StepsInformation() {
         clearGpDetails();
         clearMedicalInfo();
         clearPatientInfo();
+        clearBilling();
+        clearShipping();
       } else if (data?.data) {
         setBmi(data?.data?.data?.bmi);
         setCheckout(data?.data?.data?.checkout);
@@ -58,6 +62,8 @@ export default function StepsInformation() {
         setGpDetails(data?.data?.data?.gpdetails);
         setMedicalInfo(data?.data?.data?.medicalInfo);
         setPatientInfo(data?.data?.data?.patientInfo);
+        setShipping(data?.data?.data?.billing);
+        setBilling(data?.data?.data?.shipping);
       }
 
       return;

@@ -4,28 +4,16 @@ import { persist } from "zustand/middleware";
 const useShippingOrBillingStore = create(
   persist(
     (set) => ({
-      shippingInfo: {
-        postalCode: "",
-        address1: "",
-        address2: "",
-        city: "",
-        state: "",
-      },
-      billingInfo: {
-        postalCode: "",
-        address1: "",
-        address2: "",
-        city: "",
-        state: "",
-      },
+      shipping: null,
+      billing: null,
       billingSameAsShipping: false, // ✅ NEW STATE added
 
-      setShippingInfo: (info) => set({ shippingInfo: info }),
-      setBillingInfo: (info) => set({ billingInfo: info }),
+      setShipping: (info) => set({ shipping: info }),
+      setBilling: (info) => set({ billing: info }),
       setBillingSameAsShipping: (status) => set({ billingSameAsShipping: status }),
 
-      clearShippingInfo: () => set({ shippingInfo: null }),
-      clearBillingInfo: () => set({ billingInfo: null }),
+      clearShipping: () => set({ shipping: null }),
+      clearBilling: () => set({ billing: null }),
     }),
     {
       name: "shipping-billing-storage",

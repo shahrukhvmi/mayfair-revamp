@@ -33,7 +33,7 @@ const ReviewAnswers = () => {
       console.log(data, "Medical Questions");
 
       if (data) {
-        // router.push("/personal-details");
+        router.push("/gathering-data");
         console.log("Data send Successfully");
       }
       return;
