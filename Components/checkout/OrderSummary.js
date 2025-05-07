@@ -87,43 +87,44 @@ const OrderSummary = () => {
               {items?.doses?.map((dose, index) => (
                 <li
                   key={index}
-                  className="group flex items-center justify-between 
-                  rounded-2xl bg-white hover:bg-violet-50 border
-                   border-gray-200 p-3 shadow-sm hover:shadow-md transition-all duration-200"
+                  className="group flex items-center justify-between rounded-lg bg-[#F2EEFF] hover:bg-violet-50  p-4 shadow-md transition-all duration-200"
                 >
-                  <div className="flex flex-col flex-1  overflow-hidden">
-                    <span className="text-lg bold-font text-gray-900 truncate group-hover:text-violet-700 transition">
+                  <div className="flex flex-col">
+                    <span className="text-base bold-font text-gray-900  truncate">
                       {dose?.product} {dose?.name}
-
-                      <span className="bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-xs">
-                        Qty: x{dose?.qty}
-                      </span>
-
-                      <span className="bg-violet-100 text-violet-700 px-3 py-1 rounded-full text-xs">
-                        £{dose?.price}
-                      </span>
                     </span>
-
-                  
+                    <span className="bold-font text-sm text-gray-600 mt-1">
+                      Qty: x{dose?.qty}
+                    </span>
                   </div>
+
+                  <span className="text-base bold-font  text-black px-4 py-1 rounded-full">
+                    £{dose?.price}
+                  </span>
                 </li>
               ))}
+
+
+
 
 
               {items?.addons?.map((addon, index) => (
                 <li
                   key={index}
-                  className="flex items-center justify-between bg-violet-100 rounded-xl p-3 shadow-sm hover:shadow-md transition"
+                  className="group flex items-center justify-between rounded-lg bg-[#F2EEFF] hover:bg-violet-50  p-4 shadow-md transition-all duration-200"
                 >
-                  <div className="flex flex-col flex-1 overflow-hidden">
-                    <span className="bold-font paragraph truncate">
-                      {addon?.name}
+                  <div className="flex flex-col">
+                    <span className="text-base bold-font text-gray-900  truncate">
+                    {addon?.name}
                     </span>
-                    <div className="flex items-center text-xs bold-font text-gray-800 mt-1 gap-2">
-                      <span>(x{addon?.qty})</span>
-                      <span>£{addon?.price}</span>
-                    </div>
+                    <span className="bold-font text-sm text-gray-600 mt-1">
+                      Qty: x{addon?.qty}
+                    </span>
                   </div>
+
+                  <span className="text-base bold-font  text-black px-4 py-1 rounded-full">
+                    £{addon?.price}
+                  </span>
                 </li>
               ))}
             </ul>
