@@ -51,6 +51,8 @@ export default function ShippingAddress({ isCompleted, onComplete }) {
       state: "",
       shippingCountry: "",
       same_as_shipping: false,
+      first_name: "",
+      last_name: "",
     },
   });
 
@@ -71,6 +73,8 @@ export default function ShippingAddress({ isCompleted, onComplete }) {
         postalcode: shipping.postalcode,
         addressone: shipping.addressone,
         addresstwo: shipping.addresstwo,
+        first_name: shipping.first_name,
+        last_name: shipping.last_name,
         city: shipping.city,
         state: shipping.state,
         same_as_shipping: true,
@@ -88,6 +92,8 @@ export default function ShippingAddress({ isCompleted, onComplete }) {
     setValue("postalcode", shipping.postalcode || "");
     setValue("addressone", shipping.addressone || "");
     setValue("addresstwo", shipping.addresstwo || "");
+    setValue("first_name", shipping.first_name || "");
+    setValue("last_name", shipping.last_name || "");
     setValue("city", shipping.city || "");
     setValue("state", shipping.state || "");
 
@@ -143,6 +149,8 @@ export default function ShippingAddress({ isCompleted, onComplete }) {
       postalcode: data.postalcode,
       addressone: data.addressone,
       addresstwo: data.addresstwo,
+      first_name: data.first_name,
+      last_name: data.last_name,
       city: data.city,
       state: data.state,
       same_as_shipping: data.same_as_shipping, // ✅ ADD THIS LINE
@@ -175,6 +183,9 @@ export default function ShippingAddress({ isCompleted, onComplete }) {
         <SectionHeader stepNumber={2} title="Shipping Address" description="" completed={isCompleted} />
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 mt-5">
+          <TextField label="First Name" name="first_name" placeholder="Enter your first name" register={register} required errors={errors} />
+          <TextField label="Last Name" name="last_name" placeholder="Enter your last name" register={register} errors={errors} />
+
           <Controller
             name="shippingCountry"
             control={control}
