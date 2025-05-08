@@ -241,7 +241,7 @@ export default function ShippingAddress({ isCompleted, onComplete }) {
                   className="w-6 h-6 border-4 border-t-transparent border-primary rounded-full text-white"
                 />
               ) : (
-                <span className="flex items-center">
+                <span className="flex items-center reg-font">
                   <FaSearch className="inline-block me-2" />
                   Search
                 </span>
@@ -282,7 +282,7 @@ export default function ShippingAddress({ isCompleted, onComplete }) {
             render={({ field }) => (
               <div className="flex items-center space-x-3 cursor-pointer" onClick={() => field.onChange(!field.value)}>
                 {field.value ? <RiRadioButtonFill className="text-violet-700 text-xl" /> : <IoRadioButtonOff className="text-gray-400 text-xl" />}
-                <span className="text-gray-700">Make billing address same as shipping</span>
+                <span className="text-gray-700 reg-font">Make billing address same as shipping</span>
               </div>
             )}
           />

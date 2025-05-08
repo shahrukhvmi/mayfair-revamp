@@ -26,7 +26,7 @@ const ProductConsent = ({ isCompleted, onComplete, onConsentChange }) => {
         completed={isCompleted}
       />
 
-      <div className="px-3">
+      <div>
         {/* Consent List */}
         <ul className="list-disc list-outside pl-5 text-sm text-gray-700 space-y-2 reg-font paragraph my-3">
           <li>If you are ordering a higher dose of Wegovy, you have started on the low doses and have titrated up to the higher dose.</li>

@@ -66,7 +66,7 @@ const StepsHeader = ({ isOpen, toggleSidebar }) => {
   };
   return (
     <>
-      <div className="bg-white px-4 sm:px-6 lg:px-6 flex items-center justify-between relative">
+      <div className="bg-white px-4 sm:px-6 lg:px-6 flex items-center justify-between relative py-2">
         {/* Hamburger Button (only visible on mobile) */}
         <button onClick={toggleSidebar} className="text-2xl text-violet-700 sm:hidden">
           {isOpen ? <FiX /> : <FiMenu />}
@@ -75,7 +75,7 @@ const StepsHeader = ({ isOpen, toggleSidebar }) => {
         {/* Logo */}
         <div className="w-32 sm:w-40">
           <Link href="/" onClick={handleRemovePid}>
-            <ApplicationLogo width={120} height={60} />
+            <ApplicationLogo width={140} height={80} />
           </Link>
         </div>
 

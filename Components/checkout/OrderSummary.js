@@ -104,10 +104,10 @@ const OrderSummary = () => {
       }
     },
   });
-
+  // hanlde payment ✔✔✔✌✌
   const handlePayment = () => {
     const checkout = {
-      firstName:shipping?.first_name,
+      firstName: shipping?.first_name,
       lastName: shipping?.last_name,
       email: email,
       phoneNo: patientInfo?.phoneNo,
@@ -130,10 +130,10 @@ const OrderSummary = () => {
         country: billing?.country_name,
       },
       discount: {
-        code: Coupon?.Data?.code,
-        discount: Coupon?.Data?.discount,
-        type: Coupon?.Data?.type,
-        discount_value: discountAmount,
+        code: Coupon?.Data?.code ? Coupon?.Data?.code : null,
+        discount: Coupon?.Data?.discount ? Coupon?.Data?.discount : null,
+        type: Coupon?.Data?.type ? Coupon?.Data?.type : null,
+        discount_value: discountAmount ? discountAmount : null,
       },
       subTotal: parseFloat(totalAmount),
       total: parseFloat(finalTotal),
@@ -147,8 +147,6 @@ const OrderSummary = () => {
       },
     };
 
-
-
     const formData = {
       checkout,
       patientInfo,
@@ -158,7 +156,7 @@ const OrderSummary = () => {
       })),
       addons: (items?.addons || []).map(a => ({
         ...a,
-        quantity: a.quantity || a.qty || 1, 
+        quantity: a.quantity || a.qty || 1,
       })),
       pid: 1,
       medicalInfo,
