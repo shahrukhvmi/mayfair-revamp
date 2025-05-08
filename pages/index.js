@@ -93,7 +93,7 @@ export default function Index() {
               name="action"
               value="Accept and re-order"
               disabled={!isValid}
-              className="bg-[#8363b8] hover:bg-[#8363b8] text-white w-full py-3 rounded-full bold-font text-sm  transition my-3"
+              className="cursor-pointer bg-[#8363b8] hover:bg-[#8363b8] text-white w-full py-3 rounded-full bold-font text-sm  transition my-3"
             >
               Accept and re-order
             </button>
