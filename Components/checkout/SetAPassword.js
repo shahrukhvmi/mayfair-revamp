@@ -92,7 +92,7 @@ const SetAPassword = ({ isCompleted, onComplete }) => {
             type={showPassword ? "text" : "password"}
             placeholder="Password"
             {...register("password", { required: true })}
-            className={`w-full text-black px-3 py-4 border rounded-sm placeholder-gray-400 focus:outline-none ${password.length > 0 ? "border-violet-600" : "border-black"}`}
+            className={`reg-font w-full text-black px-3 py-4 border rounded-sm placeholder-gray-400 focus:outline-none ${password.length > 0 ? "border-violet-600" : "border-black"}`}
           />
           <button
             type="button"
@@ -109,7 +109,7 @@ const SetAPassword = ({ isCompleted, onComplete }) => {
             placeholder="Confirm Password"
             {...register("confirmPassword", { required: true })}
             onPaste={(e) => e.preventDefault()}
-            className={`w-full text-black px-3 py-4 border rounded-sm placeholder-gray-400 focus:outline-none ${confirmPassword.length > 0 ? "border-violet-600" : "border-black"}`}
+            className={`reg-font w-full text-black px-3 py-4 border rounded-sm placeholder-gray-400 focus:outline-none ${confirmPassword.length > 0 ? "border-violet-600" : "border-black"}`}
           />
           <button
             type="button"
@@ -120,7 +120,7 @@ const SetAPassword = ({ isCompleted, onComplete }) => {
           </button>
         </div>
 
-        <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 mt-6 space-y-2">
+        <div className="bg-gray-50 text-black thin-font border border-gray-200 rounded-lg p-4 mt-6 space-y-2">
           <PasswordCheck valid={validations.length} label="At least 10 characters." />
           <PasswordCheck valid={validations.case} label="Upper and lower case characters." />
           <PasswordCheck valid={validations.special} label="At least 1 special character." />

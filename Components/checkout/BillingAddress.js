@@ -249,7 +249,7 @@ export default function BillingAddress({ isCompleted, onComplete, sameAsShipping
         <TextField label="City" name="city" placeholder="e.g., London" register={register} required errors={errors} />
         <TextField label="State" name="state" placeholder="e.g., Essex" register={register} required errors={errors} />
 
-        <NextButton label="Next" disabled={!isValid} />
+        <NextButton label="Continue" disabled={!isValid} />
       </form>
 
       {showLoader && (

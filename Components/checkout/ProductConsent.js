@@ -77,7 +77,7 @@ const ProductConsent = ({ isCompleted, onComplete, onConsentChange }) => {
           {/* Error Message */}
           {!isChecked && <p className="text-xs text-red-600 mt-2">You must accept the terms to continue.</p>}
         </div>
-        <NextButton label="Next" onClick={handleSubmit} disabled={!isValid} />
+        <NextButton label="Continue" onClick={handleSubmit} disabled={!isValid} />
       </div>
     </SectionWrapper>
   );

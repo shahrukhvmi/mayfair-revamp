@@ -154,29 +154,17 @@ export default function DosageSelection() {
               transition={{ type: "spring", stiffness: 300, damping: 25 }}
               className="bg-white rounded-lg shadow-xl p-6 max-w-md w-full"
             >
-              <h2 className="text-xl bold-font mb-4 text-gray-800">Dosage Confirmation</h2>
-              {selectedDose?.productConcent && <p className="text-md text-gray-500 rounded-md p-3 bg-gray-50 mb-4">{selectedDose?.productConcent}</p>}
-              <button
+              <h2 className="text-xl bold-font mb-4 text-gray-800 text-center">Dosage Confirmation</h2>
+              {selectedDose?.productConcent && <p 
+              className="text-md paragraph rounded-md p-3 reg-font mb-4">{selectedDose?.productConcent}</p>}
+              <NextButton
+                label=" I Confirm"
                 onClick={() => {
-                  // addToCart({
-                  //   id: selectedDose.id,
-                  //   type: "dose",
-                  //   name: selectedDose.name,
-                  //   price: parseFloat(selectedDose.price),
-                  //   allowed: parseInt(selectedDose.allowed),
-                  //   item_id: selectedDose.id,
-                  //   product: selectedDose?.product_name || "Dose Product",
-                  //   product_concent: "Once Weekly",
-                  //   label: selectedDose?.name,
-                  //   expiry: selectedDose.expiry,
-                  //   isSelected: true,
-                  // });
                   setShowDoseModal(false);
                 }}
-                className="w-full bg-violet-600 hover:bg-violet-700 text-white py-2 px-4 rounded"
-              >
-                Confirm Add
-              </button>
+              />
+
+
               {/* <button
                 onClick={() => setShowDoseModal(false)}
                 className="w-full mt-2 border border-gray-300 py-2 px-4 rounded text-gray-600 hover:bg-gray-100"
@@ -186,7 +174,7 @@ export default function DosageSelection() {
             </motion.div>
           </motion.div>
         )}
-      </AnimatePresence>
+      </AnimatePresence >
 
       <StepsHeader />
 

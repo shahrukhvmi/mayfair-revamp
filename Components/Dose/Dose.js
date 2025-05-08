@@ -6,7 +6,7 @@ import moment from "moment/moment";
 import ConfirmationModal from "../Modal/ConfirmationModal";
 import useCartStore from "@/store/useCartStore";
 
-const Dose = ({ doseData, onAdd, onIncrement, onDecrement, isSelected, quantity, allow, totalSelectedQty }) => {
+const Dose = ({ doseData, onAdd, onIncrement, onDecrement, isSelected, qty, allow, totalSelectedQty }) => {
   const [showModal, setShowModal] = React.useState(false);
   const { removeItemCompletely } = useCartStore();
 
@@ -34,13 +34,13 @@ const Dose = ({ doseData, onAdd, onIncrement, onDecrement, isSelected, quantity,
     }
   
     // Check if this product's own qty exceeded its stock
-    if (doseData.quantity >= doseData.stock.quantity) {
+    if (doseData.qty >= doseData.stock.quantity) {
       toast.error(`Only ${doseData.stock.quantity} units are available.`);
       return;
     }
   
     // Check if this product's qty exceeded allowed
-    if (quantity >= allowed) {
+    if (qty >= allowed) {
       toast.error(`You cannot select more than ${allowed} units for this option.`);
       return;
     }
@@ -53,7 +53,7 @@ const Dose = ({ doseData, onAdd, onIncrement, onDecrement, isSelected, quantity,
 
   const handleDecrement = (e) => {
     e.stopPropagation();
-    if (quantity > 1) {
+    if (qty > 1) {
       onDecrement();
     } else {
       setShowModal(true);
@@ -134,12 +134,12 @@ const Dose = ({ doseData, onAdd, onIncrement, onDecrement, isSelected, quantity,
                   <FaMinus size={10} className="text-black" />
                 </button>
 
-                <span className="px-3 py-1 text-black text-sm font-bold">{quantity}</span>
+                <span className="px-3 py-1 !text-black text-sm font-bold">{qty}</span>
 
                 <button
                   type="button"
                   onClick={handleIncrement}
-                  className={`p-2 rounded-full ${quantity >= allowed
+                  className={`p-2 rounded-full ${qty >= allowed
                       ? "cursor-not-allowed bg-gray-100 opacity-50 "
                       : "bg-gray-100 hover:bg-gray-200 cursor-pointer"
                     }`}

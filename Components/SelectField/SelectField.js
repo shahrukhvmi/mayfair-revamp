@@ -16,6 +16,7 @@ const MUISelectField = ({ label, name, value, onChange, options = [], error = ""
           value={value}
           onChange={onChange}
           displayEmpty
+          className="reg-font text-2xl"
           input={<OutlinedInput />}
           sx={{
             backgroundColor: "#fff",
@@ -32,7 +33,6 @@ const MUISelectField = ({ label, name, value, onChange, options = [], error = ""
             },
             ".MuiSelect-select": {
               padding: "16px 12px",
-              fontSize: "0.875rem",
               color: "#000",
             },
           }}
@@ -41,7 +41,7 @@ const MUISelectField = ({ label, name, value, onChange, options = [], error = ""
             {placeholder}
           </MenuItem>
           {options.map((option, idx) => (
-            <MenuItem key={idx} value={option.value}>
+            <MenuItem key={idx} value={option.value} className="reg-font text-lg">
               {option.label}
             </MenuItem>
           ))}
