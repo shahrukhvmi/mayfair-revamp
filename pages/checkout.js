@@ -17,7 +17,7 @@ const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 
 const Checkout = () => {
   const { isPasswordReset } = usePasswordReset();
-
+console.log(isPasswordReset,"isPasswordReset")
   // const [step, setStep] = useState(1);
   const [showThankYouModal, setShowThankYouModal] = useState(false);
 
@@ -102,7 +102,7 @@ const Checkout = () => {
     setShowThankYouModal(true);
   };
   useEffect(() => {
-    if (isPasswordReset) {
+    if (isPasswordReset == true) {
       setIsStep1Completed(true);
       setStep(2); // ✅ Persist ho gaya now
     }

@@ -5,6 +5,7 @@ import PageLoader from "@/Components/PageLoader/PageLoader";
 import StepsHeader from "@/layout/stepsHeader";
 import NextButton from "@/Components/NextButton/NextButton";
 import Image from "next/image";
+import usePatientStatus from "@/store/patientStatus";
 
 export default function Index() {
   const router = useRouter();
@@ -18,20 +19,27 @@ export default function Index() {
     mode: "onChange",
     defaultValues: {},
   });
+  const { patientStatus } = usePatientStatus();
 
+  const setReorderPatient = usePatientStatus((state) => state.setReorderPatient);
+  const setNewPatient = usePatientStatus((state) => state.setNewPatient);
   const onSubmit = async (data, e) => {
     const action = e.nativeEvent.submitter.value;
 
-    console.log("Clicked Button: ", action);
-
-    // Save action to localStorage (optional)
-    localStorage.setItem("selectedAction", action);
+    if (action === "Accept and re-order") {
+      setReorderPatient();
+      router.push("/login");
+    } else {
+      setNewPatient();
+      router.push("/acknowledgment");
+    }
 
     setShowLoader(true);
     await new Promise((resolve) => setTimeout(resolve, 500));
 
-    router.push("/acknowledgment");
+  
   };
+
 
   return (
     <>
@@ -52,18 +60,18 @@ export default function Index() {
           </div>
 
           {/* Heading */}
-          <h2 className=" bold-font text-black text-xl text-center mb-3 p-0">
+          <h2 className=" bold-font paragraph text-xl text-start mb-3 p-0">
             Let's get you started on your weight loss journey.
           </h2>
 
-          <p className="reg-font text-start text-sm text-black mb-8">
+          <p className="reg-font text-start text-sm paragraph mb-8">
             We’ll now ask a few questions about you and your health.
           </p>
 
           {/* Good to know */}
           <div className="mb-10">
-            <p className="bold-font text-black mb-4">Good to know:</p>
-            <ul className="reg-font list-disc list-inside space-y-3 text-black text-[15px] leading-relaxed">
+            <p className="bold-font paragraph mb-4">Good to know:</p>
+            <ul className="reg-font list-disc list-inside space-y-3 paragraph text-[15px] leading-relaxed">
               <li>Your consultation will take about five minutes to complete.</li>
               <li>All your responses are confidential and securely stored.</li>
               <li>We’ll show suitable treatment options based on the information you provide.</li>

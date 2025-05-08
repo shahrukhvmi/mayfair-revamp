@@ -19,16 +19,12 @@ const OrderSummary = () => {
   // Get some data to store✌✌ 
   const { items, totalAmount } = useCartStore();
   const { Coupon, setCoupon, clearCoupon } = useCouponStore();
-  const { shipping, billing, billingSameAsShipping } = useShippingOrBillingStore();
-  console.log(shipping?.country_price, 'shipping');
-  console.log(items, 'items');
+  const { shipping } = useShippingOrBillingStore();
 
   const isApplyEnabled = discountCode.trim().length > 0;
   const handleEdit = () => {
     router.push("dosage-selection");
   };
-
-  console.log(Coupon, "Coupon")
   const [couponLoading, setCouponLoading] = useState(false);
 
   const handleApplyCoupon = async () => {
@@ -37,8 +33,8 @@ const OrderSummary = () => {
       const res = await CouponApi({ coupon_code: discountCode });
       if (res?.data?.status === true) {
         toast.success("Coupon applied successfully!");
-        setCoupon(res.data); // assuming setCoupon is defined elsewhere
-        setDiscountCode(""); // assuming setDiscountCode is defined elsewhere
+        setCoupon(res.data);
+        setDiscountCode("");
       }
     } catch (error) {
       const err = error?.response?.data?.errors?.Coupon;
@@ -62,22 +58,22 @@ const OrderSummary = () => {
 
   // Convert shipping?.country_price to number safely (if undefined, use 0)
   const shippingPrice = Number(shipping?.country_price) || 0;
-  
+
   // Start calculation
   let finalTotal = totalAmount + shippingPrice;
-  
+
   // Calculate discount
   if (Coupon?.Data?.type === "Percent") {
     discountAmount = (totalAmount / 100) * Coupon?.Data?.discount;
   } else {
     discountAmount = Coupon?.Data?.discount || 0;
   }
-  
+
   // Apply discount if available
   if (discountAmount) {
     finalTotal = (totalAmount - discountAmount) + shippingPrice;
   }
-  
+
   // console.warn(typeof  , "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
 
   return (
