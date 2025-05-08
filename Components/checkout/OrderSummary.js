@@ -19,6 +19,7 @@ import useConfirmationInfoStore from "@/store/confirmationInfoStore";
 import PaymentPage from "../PaymentSection/PaymentPage";
 import sendStepData from "@/api/stepsDataApi";
 import { useMutation } from "@tanstack/react-query";
+import useSignupStore from "@/store/signupStore";
 
 const OrderSummary = () => {
   const router = useRouter();
@@ -33,6 +34,7 @@ const OrderSummary = () => {
   const { gpdetails } = useGpDetailsStore();
   const { bmi } = useBmiStore();
   const { confirmationInfo } = useConfirmationInfoStore();
+  const { email } = useSignupStore();
 
 
   const isApplyEnabled = discountCode.trim().length > 0;
@@ -40,6 +42,7 @@ const OrderSummary = () => {
     router.push("dosage-selection");
   };
   const [couponLoading, setCouponLoading] = useState(false);
+  const [paymentData, setPaymentData] = useState(null);
 
   const handleApplyCoupon = async () => {
     setCouponLoading(true);
@@ -87,16 +90,14 @@ const OrderSummary = () => {
     finalTotal = (totalAmount - discountAmount) + shippingPrice;
   }
 
-  // handle Payment 
+  // handle Payment ✌✌
   const checkoutMutation = useMutation(sendStepData, {
     onSuccess: (data) => {
-      console.log("Medical Questions Response:", data);
       if (data) {
-        console.log("Data sent successfully");
+        setPaymentData(data?.data?.paymentData);
       }
     },
     onError: (error) => {
-      console.log("error", error?.response?.data?.message);
       if (error) {
         toast.error(error?.response?.data?.message || "Something went wrong");
         setShowLoader(false);
@@ -106,10 +107,10 @@ const OrderSummary = () => {
 
   const handlePayment = () => {
     const checkout = {
-      firstName: "jack",
-      lastName: "jason",
-      email: "jack@gmail.com",
-      phoneNo: "+423493939",
+      firstName:shipping?.first_name,
+      lastName: shipping?.last_name,
+      email: email,
+      phoneNo: patientInfo?.phoneNo,
       shipping: {
         postalcode: shipping?.postalcode,
         addressone: shipping?.addressone,
@@ -129,9 +130,9 @@ const OrderSummary = () => {
         country: billing?.country_name,
       },
       discount: {
-        code: Coupon?.code,
-        discount: Coupon?.discount,
-        type: Coupon?.type,
+        code: Coupon?.Data?.code,
+        discount: Coupon?.Data?.discount,
+        type: Coupon?.Data?.type,
         discount_value: discountAmount,
       },
       subTotal: parseFloat(totalAmount),
@@ -145,14 +146,20 @@ const OrderSummary = () => {
         taggable_id: "1",
       },
     };
-    
-    <PaymentPage paymentData={checkout}/>
+
+
 
     const formData = {
       checkout,
       patientInfo,
-      items: items?.doses || [],
-      addons: items?.addons || [],
+      items: (items?.doses || []).map(d => ({
+        ...d,
+        quantity: d.quantity || d.qty || 1,
+      })),
+      addons: (items?.addons || []).map(a => ({
+        ...a,
+        quantity: a.quantity || a.qty || 1, 
+      })),
       pid: 1,
       medicalInfo,
       gpdetails,
@@ -166,199 +173,209 @@ const OrderSummary = () => {
   };
 
   return (
-    <div className="col-span-12 sm:col-span-4 mb-3">
-      <div className="mb-24 sm:mb-0">
-        <div className="bg-white p-6 rounded-2xl shadow-lg mt-6 sm:mt-[110px] font-inter">
-          <div className="relative">
-            <SectionHeader stepNumber={4} title="Order Summary" completed />
-            <div className="absolute right-0 top-0">
-              <button
-                type="button"
-                onClick={handleEdit}
-                className="ml-2 p-2 rounded-full bg-white hover:bg-gray-100 text-violet-700 shadow transition"
-              >
-                <HiOutlinePencilAlt className="w-4 h-4" />
-              </button>
-            </div>
-          </div>
-
-          <div className="overflow-y-auto">
-            <ul className="space-y-4 overflow-y-auto max-h-[250px] pr-1 pb-4">
-              {items?.doses?.map((dose, index) => (
-                <React.Fragment key={index}>
-                  {/* Standard dose item */}
-                  <li
-                    className="group flex items-center justify-between rounded-lg bg-[#F2EEFF] hover:bg-violet-50 p-4 shadow-md transition-all duration-200"
-                  >
-                    <div className="flex flex-col">
-                      <span className="text-base bold-font text-gray-900 truncate">
-                        {dose?.product} {dose?.name}
-                      </span>
-                      <span className="bold-font text-sm text-gray-600 mt-1">
-                        Qty: x{dose?.qty}
-                      </span>
-                    </div>
-
-                    <span className="text-base bold-font text-black px-4 py-1 rounded-full">
-                      £{dose?.price}
-                    </span>
-                  </li>
-
-                  {/* Additional item if product is Mounjaro */}
-                  {dose?.product === "Mounjaro (Tirzepatide)" && (
-                    <li
-                      className="group flex items-center justify-between rounded-lg bg-[#ececec] hover:bg-violet-50 p-4 shadow-md transition-all duration-200 mt-2"
+    <>
+      {paymentData ? (
+        <PaymentPage paymentData={paymentData} />
+      ) : (
+        <>
+          <div className="col-span-12 sm:col-span-4 mb-3">
+            <div className="mb-24 sm:mb-0">
+              <div className="bg-white p-6 rounded-2xl shadow-lg mt-6 sm:mt-[110px] font-inter">
+                <div className="relative">
+                  <SectionHeader stepNumber={4} title="Order Summary" completed />
+                  <div className="absolute right-0 top-0">
+                    <button
+                      type="button"
+                      onClick={handleEdit}
+                      className="ml-2 p-2 rounded-full bg-white hover:bg-gray-100 text-violet-700 shadow transition"
                     >
-                      <div className="flex flex-col">
-                        <span className="text-base bold-font text-gray-900 truncate">
-                          Pack of 5 Needle
-                        </span>
-                        <span className="bold-font text-sm text-gray-600 mt-1">
-                          {dose.qty}x
-                        </span>
-                      </div>
+                      <HiOutlinePencilAlt className="w-4 h-4" />
+                    </button>
+                  </div>
+                </div >
 
-                      <span className="text-base bold-font text-black px-4 py-1 rounded-full">
-                        £0.00
-                      </span>
-                    </li>
+                <div className="overflow-y-auto">
+                  <ul className="space-y-4 overflow-y-auto max-h-[250px] pr-1 pb-4">
+                    {items?.doses?.map((dose, index) => (
+                      <React.Fragment key={index}>
+                        {/* Standard dose item */}
+                        <li
+                          className="group flex items-center justify-between rounded-lg bg-[#F2EEFF] hover:bg-violet-50 p-4 shadow-md transition-all duration-200"
+                        >
+                          <div className="flex flex-col">
+                            <span className="text-base bold-font text-gray-900 truncate">
+                              {dose?.product} {dose?.name}
+                            </span>
+                            <span className="bold-font text-sm text-gray-600 mt-1">
+                              Qty: x{dose?.qty}
+                            </span>
+                          </div>
+
+                          <span className="text-base bold-font text-black px-4 py-1 rounded-full">
+                            £{dose?.price}
+                          </span>
+                        </li>
+
+                        {/* Additional item if product is Mounjaro */}
+                        {dose?.product === "Mounjaro (Tirzepatide)" && (
+                          <li
+                            className="group flex items-center justify-between rounded-lg bg-[#ececec] hover:bg-violet-50 p-4 shadow-md transition-all duration-200 mt-2"
+                          >
+                            <div className="flex flex-col">
+                              <span className="text-base bold-font text-gray-900 truncate">
+                                Pack of 5 Needle
+                              </span>
+                              <span className="bold-font text-sm text-gray-600 mt-1">
+                                {dose.qty}x
+                              </span>
+                            </div>
+
+                            <span className="text-base bold-font text-black px-4 py-1 rounded-full">
+                              £0.00
+                            </span>
+                          </li>
+                        )}
+                      </React.Fragment>
+                    ))}
+
+
+
+
+
+
+                    {items?.addons?.map((addon, index) => (
+                      <li
+                        key={index}
+                        className="group flex items-center justify-between rounded-lg bg-[#F2EEFF] hover:bg-violet-50  p-4 shadow-md transition-all duration-200"
+                      >
+                        <div className="flex flex-col">
+                          <span className="text-base bold-font text-gray-900  truncate">
+                            {addon?.name}
+                          </span>
+                          <span className="bold-font text-sm text-gray-600 mt-1">
+                            Qty: x{addon?.qty}
+                          </span>
+                        </div>
+
+                        <span className="text-base bold-font  text-black px-4 py-1 rounded-full">
+                          £{addon?.price}
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+
+                  <div className="flex justify-between items-center mt-8">
+                    <p className="bold-font paragraph !text-black">Subtotal</p>
+                    <p className="bold-font text-black">£{totalAmount?.toFixed(2)}</p>
+                  </div>
+
+                  <div className="flex justify-between items-center mt-4">
+                    <p className="bold-font paragraph !text-black">Shipping</p>
+                    <p className="bold-font text-black">£{shipping?.country_price}</p>
+                  </div>
+
+                  {Coupon && (
+                    <div className="flex justify-between items-center mt-4">
+                      <p className="text-sm text-[#1f9e8c] bold-font">Discount</p>
+                      <p className="text-sm text-[#1f9e8c] bold-font">
+                        -£{discountAmount?.toFixed(2)}
+                      </p>
+                    </div>
                   )}
-                </React.Fragment>
-              ))}
 
+                  <hr className="my-4 border-gray-200" />
 
+                  <div className="flex justify-between items-center">
+                    <p className="bold-font text-xl text-black">Total</p>
+                    <p className="bold-font text-xl text-black">
+                      £{finalTotal?.toFixed(2)}
 
-
-
-
-              {items?.addons?.map((addon, index) => (
-                <li
-                  key={index}
-                  className="group flex items-center justify-between rounded-lg bg-[#F2EEFF] hover:bg-violet-50  p-4 shadow-md transition-all duration-200"
-                >
-                  <div className="flex flex-col">
-                    <span className="text-base bold-font text-gray-900  truncate">
-                      {addon?.name}
-                    </span>
-                    <span className="bold-font text-sm text-gray-600 mt-1">
-                      Qty: x{addon?.qty}
-                    </span>
+                    </p>
                   </div>
 
-                  <span className="text-base bold-font  text-black px-4 py-1 rounded-full">
-                    £{addon?.price}
-                  </span>
-                </li>
-              ))}
-            </ul>
+                  <hr className="my-4 border-gray-200" />
 
-            <div className="flex justify-between items-center mt-8">
-              <p className="bold-font paragraph !text-black">Subtotal</p>
-              <p className="bold-font text-black">£{totalAmount?.toFixed(2)}</p>
-            </div>
+                  {/* Discount Section */}
+                  <AnimatePresence>
+                    {Coupon ? (
+                      <motion.div
+                        initial={{ opacity: 0, y: -12 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -12 }}
+                        transition={{ duration: 0.25, ease: "easeOut" }}
+                        className="relative mt-6 rounded-lg border-2 border-[#1f9e8c] bg-green-50 p-4 flex items-center justify-between"
+                      >
+                        <div className="flex items-center gap-3">
+                          <div className="flex items-center justify-center  border-[#1f9e8c] text-[#1f9e8c]">
+                            <GoCheckCircleFill size={32} />
 
-            <div className="flex justify-between items-center mt-4">
-              <p className="bold-font paragraph !text-black">Shipping</p>
-              <p className="bold-font text-black">£{shipping?.country_price}</p>
-            </div>
+                          </div>
 
-            {Coupon && (
-              <div className="flex justify-between items-center mt-4">
-                <p className="text-sm text-[#1f9e8c] bold-font">Discount</p>
-                <p className="text-sm text-[#1f9e8c] bold-font">
-                  -£{discountAmount?.toFixed(2)}
-                </p>
-              </div>
-            )}
+                          <div>
+                            <p className="niba-bold-font text-[#1f9e8c]">
+                              {Coupon?.Data?.code} <span className="reg-font paragraph">Applied</span>
+                            </p>
+                            <p className="text-gray-700 text-md  reg-font">
+                              - £{Coupon?.Data?.discount}{" "}
+                              {Coupon?.Data?.type === "Percent" && `(${Coupon?.Data?.discount}% off)`}
+                            </p>
+                          </div>
+                        </div>
 
-            <hr className="my-4 border-gray-200" />
+                        <button
+                          type="button"
+                          onClick={handleRemoveCoupon}
+                          className="text-red-500 text-sm reg-font hover:underline cursor-pointer"
+                        >
+                          <RxCross2 className="bold-font " size={24} />
 
-            <div className="flex justify-between items-center">
-              <p className="bold-font text-xl text-black">Total</p>
-              <p className="bold-font text-xl text-black">
-                £{finalTotal?.toFixed(2)}
+                        </button>
+                      </motion.div>
+                    ) : (
+                      <div className="flex mt-6 rounded-lg shadow-sm overflow-hidden">
+                        <input
+                          type="text"
+                          placeholder="Enter discount code"
+                          value={discountCode}
+                          onChange={(e) => setDiscountCode(e.target.value)}
+                          className="flex-1 text-sm text-gray-800 bg-gray-100 placeholder-gray-400 p-4 focus:outline-none reg-font"
+                        />
+                        <button
+                          type="button"
+                          onClick={handleApplyCoupon}
+                          disabled={!isApplyEnabled}
+                          className={`px-6 text-sm bold-font text-white transition-all duration-200 ${isApplyEnabled
+                            ? "bg-violet-600 hover:bg-violet-700"
+                            : "bg-gray-300 cursor-not-allowed"
+                            }`}
+                        >
+                          {couponLoading ? "Applying..." : "Apply"}
+                        </button>
+                      </div>
+                    )}
+                  </AnimatePresence>
 
-              </p>
-            </div>
 
-            <hr className="my-4 border-gray-200" />
 
-            {/* Discount Section */}
-            <AnimatePresence>
-              {Coupon ? (
-                <motion.div
-                  initial={{ opacity: 0, y: -12 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -12 }}
-                  transition={{ duration: 0.25, ease: "easeOut" }}
-                  className="relative mt-6 rounded-lg border-2 border-[#1f9e8c] bg-green-50 p-4 flex items-center justify-between"
-                >
-                  <div className="flex items-center gap-3">
-                    <div className="flex items-center justify-center  border-[#1f9e8c] text-[#1f9e8c]">
-                      <GoCheckCircleFill size={32} />
-
-                    </div>
-
-                    <div>
-                      <p className="niba-bold-font text-[#1f9e8c]">
-                        {Coupon?.Data?.code} <span className="reg-font paragraph">Applied</span>
-                      </p>
-                      <p className="text-gray-700 text-md  reg-font">
-                        - £{Coupon?.Data?.discount}{" "}
-                        {Coupon?.Data?.type === "Percent" && `(${Coupon?.Data?.discount}% off)`}
-                      </p>
-                    </div>
-                  </div>
-
-                  <button
-                    type="button"
-                    onClick={handleRemoveCoupon}
-                    className="text-red-500 text-sm reg-font hover:underline cursor-pointer"
-                  >
-                    <RxCross2 className="bold-font " size={24} />
-
-                  </button>
-                </motion.div>
-              ) : (
-                <div className="flex mt-6 rounded-lg shadow-sm overflow-hidden">
-                  <input
-                    type="text"
-                    placeholder="Enter discount code"
-                    value={discountCode}
-                    onChange={(e) => setDiscountCode(e.target.value)}
-                    className="flex-1 text-sm text-gray-800 bg-gray-100 placeholder-gray-400 p-4 focus:outline-none reg-font"
-                  />
-                  <button
-                    type="button"
-                    onClick={handleApplyCoupon}
-                    disabled={!isApplyEnabled}
-                    className={`px-6 text-sm bold-font text-white transition-all duration-200 ${isApplyEnabled
-                      ? "bg-violet-600 hover:bg-violet-700"
-                      : "bg-gray-300 cursor-not-allowed"
-                      }`}
-                  >
-                    {couponLoading ? "Applying..." : "Apply"}
-                  </button>
                 </div>
-              )}
-            </AnimatePresence>
+                <div className="my-5">
 
 
-
-          </div>
-          <div className="my-5">
-
-
-            <NextButton
-              label="Proceed to Payment "
-              onClick={handlePayment}
-            />
-          </div>
-        </div>
-      </div>
+                  <NextButton
+                    label="Proceed to Payment "
+                    onClick={handlePayment}
+                  />
+                </div>
+              </div >
+            </div >
 
 
-    </div>
+          </div >
+
+        </>
+      )
+      }
+    </>
   );
 };
 

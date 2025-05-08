@@ -120,6 +120,10 @@ const PaymentPage = ({ paymentData }) => {
               <input type="hidden" name="oid" value={paymentData.oid} readOnly />
             </p>
             <p>
+              <label htmlFor="companyId">Company ID:</label>
+              <input type="hidden" name="companyId" value={1} readOnly />
+            </p>
+            <p>
               <label htmlFor="storename">Store ID:</label>
               <input type="hidden" name="storename" value={paymentData.storename} readOnly />
             </p>
