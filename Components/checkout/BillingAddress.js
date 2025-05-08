@@ -25,7 +25,7 @@ export default function BillingAddress({ isCompleted, onComplete, sameAsShipping
   const [billingIndex, setBillingIndex] = useState("");
   const [addressSearchLoading, setAddressSearchLoading] = useState(false);
 
-  const { billing, setBilling, shipping } = useShippingOrBillingStore();
+  const { billing, setBilling, shipping, clearBilling } = useShippingOrBillingStore();
   const { billingCountries } = useBillingCountries();
 
   console.log(billing, "billing");
@@ -53,8 +53,32 @@ export default function BillingAddress({ isCompleted, onComplete, sameAsShipping
     },
   });
 
+  const postalCodeValue = watch("postalcode");
+
   const selectedBillingCountry = watch("billingCountry"); // get current selected billing country ID
-  const isSearchAllowed = allowedSearchCountryIds.includes(selectedBillingCountry);
+  // Get selected country object
+  const selectedCountryObj = (billingCountries || []).find((c) => c.id.toString() === selectedBillingCountry);
+
+  const allowedCountryNames = ["United Kingdom (Mainland)", "Channel Islands", "Northern Ireland"];
+  const isSearchAllowed = selectedCountryObj && allowedCountryNames.includes(selectedCountryObj.name);
+
+  useEffect(() => {
+    const selectedCountryObj = (billingCountries || []).find((c) => c.id.toString() === selectedBillingCountry);
+
+    const allowedCountryNames = ["United Kingdom (Mainland)", "Channel Islands", "Northern Ireland"];
+    const isAllowed = selectedCountryObj && allowedCountryNames.includes(selectedCountryObj.name);
+
+    if (!isAllowed && selectedCountryObj) {
+      // If country is selected BUT not allowed → clear billing
+      clearBilling();
+
+      setValue("postalcode", "");
+      setValue("addressone", "");
+      setValue("addresstwo", "");
+      setValue("city", "");
+      setValue("state", "");
+    }
+  }, [selectedBillingCountry, billingCountries]);
 
   // Prefill form fields
   useEffect(() => {
@@ -93,11 +117,15 @@ export default function BillingAddress({ isCompleted, onComplete, sameAsShipping
   // Handle postal code search
   const handleSearch = async () => {
     setAddressSearchLoading(true);
-    const postal = watch("postalcode");
-    if (!postal) return alert("Please enter a postal code.");
+    // const postal = watch("postalcode");
+
+    if (!postalCodeValue?.trim()) {
+      setAddressSearchLoading(false);
+      return;
+    }
 
     try {
-      const result = await api.find(postal);
+      const result = await api.find(postalCodeValue);
       if (result && result.addresses?.addresses?.length) {
         setAddressOptions(result.addresses.addresses);
         setManual(true);
@@ -121,7 +149,7 @@ export default function BillingAddress({ isCompleted, onComplete, sameAsShipping
       id: selectedCountry?.id || "",
       country_name: selectedCountry?.name || "",
       country_price: selectedCountry?.price || "",
-      postalcode: data.postalcode,
+      postalcode: data.postalCodeValue,
       addressone: data.addressone,
       addresstwo: data.addresstwo,
       city: data.city,
@@ -165,34 +193,36 @@ export default function BillingAddress({ isCompleted, onComplete, sameAsShipping
 
         <div className="relative">
           <TextField label="Postal Code" name="postalcode" placeholder="W1A 1AA" register={register} required errors={errors} />
-          <button
-            type="button"
-            onClick={handleSearch}
-            className={`absolute right-3 transform -translate-y-1/2 text-white bg-violet-700 px-3 py-1 rounded cursor-pointer w-32 flex items-center justify-center ${
-              errors.postalcode ? "top-2/4" : "top-2/3"
-            }`}
-            disabled={addressSearchLoading}
-          >
-            {addressSearchLoading ? (
-              <motion.div
-                animate={{ rotate: 360 }}
-                transition={{
-                  repeat: Infinity,
-                  duration: 1,
-                  ease: "linear",
-                }}
-                className="w-6 h-6 border-4 border-t-transparent border-primary rounded-full text-white"
-              />
-            ) : (
-              <span className="flex items-center">
-                <FaSearch className="inline-block me-2" />
-                Search
-              </span>
-            )}
-          </button>
+          {isSearchAllowed && (
+            <button
+              type="button"
+              onClick={handleSearch}
+              className={`absolute right-3 transform -translate-y-1/2 text-white bg-violet-700 px-3 py-1 rounded cursor-pointer w-32 flex items-center justify-center ${
+                errors.postalcode ? "top-2/4" : "top-2/3"
+              }`}
+              disabled={addressSearchLoading}
+            >
+              {addressSearchLoading ? (
+                <motion.div
+                  animate={{ rotate: 360 }}
+                  transition={{
+                    repeat: Infinity,
+                    duration: 1,
+                    ease: "linear",
+                  }}
+                  className="w-6 h-6 border-4 border-t-transparent border-primary rounded-full text-white"
+                />
+              ) : (
+                <span className="flex items-center">
+                  <FaSearch className="inline-block me-2" />
+                  Search
+                </span>
+              )}
+            </button>
+          )}
         </div>
 
-        {!addressSearchLoading && addressOptions.length > 0 && (
+        {isSearchAllowed && postalCodeValue?.trim() && !addressSearchLoading && addressOptions.length > 0 && (
           <MUISelectField
             label="Select Your Address"
             name="addressSelect"

@@ -61,6 +61,24 @@ export default function ShippingAddress({ isCompleted, onComplete }) {
   const sameAsShippingValue = watch("same_as_shipping");
 
   useEffect(() => {
+    if (sameAsShippingValue) {
+      const selectedCountry = shipmentCountries.find((c) => c.id.toString() === shippingIndex);
+
+      setBilling({
+        id: selectedCountry?.id || "",
+        country_name: selectedCountry?.name || "",
+        country_price: selectedCountry?.price || "",
+        postalcode: shipping.postalcode,
+        addressone: shipping.addressone,
+        addresstwo: shipping.addresstwo,
+        city: shipping.city,
+        state: shipping.state,
+        same_as_shipping: true,
+      });
+    }
+  }, [sameAsShippingValue, shipping, shippingIndex, shipmentCountries]);
+
+  useEffect(() => {
     setBillingSameAsShipping(sameAsShippingValue);
   }, [sameAsShippingValue, setBillingSameAsShipping]);
 
