@@ -13,6 +13,7 @@ import { Client } from "getaddress-api";
 import useShippingOrBillingStore from "@/store/shipingOrbilling";
 import useBillingCountriesStore from "@/store/useBillingCountriesStore";
 import useBillingCountries from "@/store/useBillingCountriesStore";
+import { motion } from "framer-motion";
 
 const api = new Client("_UFb05P76EyMidU1VHIQ_A42976");
 
@@ -22,6 +23,7 @@ export default function BillingAddress({ isCompleted, onComplete, sameAsShipping
   const [addressOptions, setAddressOptions] = useState([]);
   const [selectedIndex, setSelectedIndex] = useState("");
   const [billingIndex, setBillingIndex] = useState("");
+  const [addressSearchLoading, setAddressSearchLoading] = useState(false);
 
   const { billing, setBilling, shipping } = useShippingOrBillingStore();
   const { billingCountries } = useBillingCountries();
@@ -90,6 +92,7 @@ export default function BillingAddress({ isCompleted, onComplete, sameAsShipping
 
   // Handle postal code search
   const handleSearch = async () => {
+    setAddressSearchLoading(true);
     const postal = watch("postalcode");
     if (!postal) return alert("Please enter a postal code.");
 
@@ -98,6 +101,7 @@ export default function BillingAddress({ isCompleted, onComplete, sameAsShipping
       if (result && result.addresses?.addresses?.length) {
         setAddressOptions(result.addresses.addresses);
         setManual(true);
+        setAddressSearchLoading(false);
       }
     } catch (error) {
       console.error("API error:", error);
@@ -159,14 +163,36 @@ export default function BillingAddress({ isCompleted, onComplete, sameAsShipping
           )}
         />
 
-        <TextField label="Postal Code" name="postalcode" placeholder="W1A 1AA" register={register} required errors={errors} />
-        {isSearchAllowed && (
-          <button type="button" onClick={handleSearch} className="text-white bg-violet-700 px-3 py-1 rounded">
-            <FaSearch className="inline-block me-2" /> Search
+        <div className="relative">
+          <TextField label="Postal Code" name="postalcode" placeholder="W1A 1AA" register={register} required errors={errors} />
+          <button
+            type="button"
+            onClick={handleSearch}
+            className={`absolute right-3 transform -translate-y-1/2 text-white bg-violet-700 px-3 py-1 rounded cursor-pointer w-32 flex items-center justify-center ${
+              errors.postalcode ? "top-2/4" : "top-2/3"
+            }`}
+            disabled={addressSearchLoading}
+          >
+            {addressSearchLoading ? (
+              <motion.div
+                animate={{ rotate: 360 }}
+                transition={{
+                  repeat: Infinity,
+                  duration: 1,
+                  ease: "linear",
+                }}
+                className="w-6 h-6 border-4 border-t-transparent border-primary rounded-full text-white"
+              />
+            ) : (
+              <span className="flex items-center">
+                <FaSearch className="inline-block me-2" />
+                Search
+              </span>
+            )}
           </button>
-        )}
+        </div>
 
-        {addressOptions.length > 0 && (
+        {!addressSearchLoading && addressOptions.length > 0 && (
           <MUISelectField
             label="Select Your Address"
             name="addressSelect"
