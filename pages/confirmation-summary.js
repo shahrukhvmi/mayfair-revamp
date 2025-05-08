@@ -39,7 +39,7 @@ const ConfirmationSummary = () => {
             {/* Summary Box */}
             <div className="bg-[#DACFFF] border border-green-100 rounded-md p-5 text-sm text-gray-800">
               <p className="bold-font text-black">
-                <span className="bold-font paragraph">Full Name: </span> {patientInfo?.firstName}
+                <span className="bold-font paragraph">Full Name: </span> {patientInfo?.firstName} {patientInfo?.lastName}
               </p>
               <hr className="border-gray-300 mb-3" />
 
