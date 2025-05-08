@@ -152,12 +152,10 @@ export default function DosageSelection() {
               animate={{ y: 0, opacity: 1 }}
               exit={{ y: 100, opacity: 0 }}
               transition={{ type: "spring", stiffness: 300, damping: 25 }}
-              className="bg-white rounded-lg shadow-xl p-6 max-w-sm w-full"
+              className="bg-white rounded-lg shadow-xl p-6 max-w-md w-full"
             >
               <h2 className="text-xl bold-font mb-4 text-gray-800">Dosage Confirmation</h2>
-              {selectedDose?.productConcent && (
-                <p className="text-sm text-gray-500 border rounded-md p-3 bg-gray-50 mb-4">{selectedDose?.productConcent}</p>
-              )}
+              {selectedDose?.productConcent && <p className="text-md text-gray-500 rounded-md p-3 bg-gray-50 mb-4">{selectedDose?.productConcent}</p>}
               <button
                 onClick={() => {
                   // addToCart({
