@@ -11,6 +11,14 @@ import { RxCross2 } from "react-icons/rx";
 import NextButton from "../NextButton/NextButton";
 import { GoCheckCircleFill } from "react-icons/go";
 import useShippingOrBillingStore from "@/store/shipingOrbilling";
+import usePatientInfoStore from "@/store/patientInfoStore";
+import useMedicalInfoStore from "@/store/medicalInfoStore";
+import useGpDetailsStore from "@/store/gpDetailStore";
+import useBmiStore from "@/store/bmiStore";
+import useConfirmationInfoStore from "@/store/confirmationInfoStore";
+import PaymentPage from "../PaymentSection/PaymentPage";
+import sendStepData from "@/api/stepsDataApi";
+import { useMutation } from "@tanstack/react-query";
 
 const OrderSummary = () => {
   const router = useRouter();
@@ -19,7 +27,13 @@ const OrderSummary = () => {
   // Get some data to store✌✌ 
   const { items, totalAmount } = useCartStore();
   const { Coupon, setCoupon, clearCoupon } = useCouponStore();
-  const { shipping } = useShippingOrBillingStore();
+  const { shipping, billing, billingSameAsShipping } = useShippingOrBillingStore();
+  const { patientInfo } = usePatientInfoStore();
+  const { medicalInfo } = useMedicalInfoStore();
+  const { gpdetails } = useGpDetailsStore();
+  const { bmi } = useBmiStore();
+  const { confirmationInfo } = useConfirmationInfoStore();
+
 
   const isApplyEnabled = discountCode.trim().length > 0;
   const handleEdit = () => {
@@ -56,7 +70,6 @@ const OrderSummary = () => {
 
   let discountAmount = 0;
 
-  // Convert shipping?.country_price to number safely (if undefined, use 0)
   const shippingPrice = Number(shipping?.country_price) || 0;
 
   // Start calculation
@@ -75,10 +88,83 @@ const OrderSummary = () => {
   }
 
   // handle Payment 
+  const checkoutMutation = useMutation(sendStepData, {
+    onSuccess: (data) => {
+      console.log("Medical Questions Response:", data);
+      if (data) {
+        console.log("Data sent successfully");
+      }
+    },
+    onError: (error) => {
+      console.log("error", error?.response?.data?.message);
+      if (error) {
+        toast.error(error?.response?.data?.message || "Something went wrong");
+        setShowLoader(false);
+      }
+    },
+  });
 
-  const hanldePayment = () => {
+  const handlePayment = () => {
+    const checkout = {
+      firstName: "jack",
+      lastName: "jason",
+      email: "jack@gmail.com",
+      phoneNo: "+423493939",
+      shipping: {
+        postalcode: shipping?.postalcode,
+        addressone: shipping?.addressone,
+        addresstwo: shipping?.addresstwo,
+        city: shipping?.city,
+        state: shipping?.state,
+        country: shipping?.country_name,
+      },
+      terms: true,
+      sameAddress: billingSameAsShipping,
+      billing: {
+        postalcode: billing?.postalcode,
+        addressone: billing?.addressone,
+        addresstwo: billing?.addresstwo,
+        city: billing?.city,
+        state: billing?.state,
+        country: billing?.country_name,
+      },
+      discount: {
+        code: Coupon?.code,
+        discount: Coupon?.discount,
+        type: Coupon?.type,
+        discount_value: discountAmount,
+      },
+      subTotal: parseFloat(totalAmount),
+      total: parseFloat(finalTotal),
+      shipment: {
+        id: shipping?.id,
+        name: shipping?.country_name,
+        price: parseFloat(shipping?.country_price),
+        status: 1,
+        taggable_type: "App\\Models\\Product",
+        taggable_id: "1",
+      },
+    };
+    
+    <PaymentPage paymentData={checkout}/>
 
-  }
+    const formData = {
+      checkout,
+      patientInfo,
+      items: items?.doses || [],
+      addons: items?.addons || [],
+      pid: 1,
+      medicalInfo,
+      gpdetails,
+      bmi,
+      confirmationInfo,
+      reorder_concent: null,
+      product_id: 1,
+    };
+
+    checkoutMutation.mutate(formData);
+  };
+
   return (
     <div className="col-span-12 sm:col-span-4 mb-3">
       <div className="mb-24 sm:mb-0">
@@ -265,7 +351,7 @@ const OrderSummary = () => {
 
             <NextButton
               label="Proceed to Payment "
-              onClick={hanldePayment}
+              onClick={handlePayment}
             />
           </div>
         </div>

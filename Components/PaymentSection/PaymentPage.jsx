@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
-import "../PaymentSection/paymentpage.css";
-import { setPaymentLoading } from "../../store/slice/paymentLoaderSlice"; // adjust path as needed
+// import { setPaymentLoading } from "../../store/slice/paymentLoaderSlice"; // adjust path as needed
 const PaymentPage = ({ paymentData }) => {
   const [countdown, setCountdown] = useState(3);
 

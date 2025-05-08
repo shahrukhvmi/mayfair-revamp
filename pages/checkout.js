@@ -13,14 +13,10 @@ import useCheckoutStep from "../store/useCheckoutStep";
 import BillingAddress from "@/Components/checkout/BillingAddress";
 import useShippingOrBillingStore from "@/store/shipingOrbilling";
 
-const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 
 const Checkout = () => {
   const { isPasswordReset } = usePasswordReset();
-console.log(isPasswordReset,"isPasswordReset")
-  // const [step, setStep] = useState(1);
   const [showThankYouModal, setShowThankYouModal] = useState(false);
-
   const [isStep1Completed, setIsStep1Completed] = useState(false);
   const [isStep2Completed, setIsStep2Completed] = useState(false);
   const [isStep3Completed, setIsStep3Completed] = useState(false);
@@ -41,8 +37,6 @@ console.log(isPasswordReset,"isPasswordReset")
     }
   };
 
-  console.log(productConsentAccepted, "productConsentAccepted");
-
   useEffect(() => {
     if (step === 1) scrollToRef(personalRef);
     else if (step === 2) scrollToRef(addressRef);
@@ -62,40 +56,6 @@ console.log(isPasswordReset,"isPasswordReset")
     } else if (billingSameAsShipping == false && step === 5) scrollToRef(summaryRef);
   }, [step]);
 
-  // const handleNextStep = async () => {
-  //   let isStepValid = false;
-
-  //   if (step === 1) {
-  //     const valid = await trigger(["password", "confirmPassword"]);
-  //     if (valid && isPasswordValid) {
-  //       isStepValid = true;
-  //       setIsStep1Completed(true); // ⭐ Mark step 1 completed
-  //     } else {
-  //       setStep(1);
-  //       scrollToRef(personalRef);
-  //     }
-  //   } else if (step === 2) {
-  //     if (valid) {
-  //       isStepValid = true;
-  //       setIsStep2Completed(true); // ⭐ Mark step 2 completed
-  //     } else {
-  //       setStep(2);
-  //       scrollToRef(addressRef);
-  //     }
-  //   } else if (step === 3) {
-  //     if (valid) {
-  //       isStepValid = true;
-  //       setIsStep3Completed(true); // ⭐ Mark step 3 completed
-  //     } else {
-  //       setStep(3);
-  //       scrollToRef(paymentRef);
-  //     }
-  //   }
-
-  //   if (isStepValid) {
-  //     setStep((prev) => prev + 1);
-  //   }
-  // };
 
   const handleCheckOut = (data) => {
     console.log("Final Collected Data:", data);
@@ -107,6 +67,10 @@ console.log(isPasswordReset,"isPasswordReset")
       setStep(2); // ✅ Persist ho gaya now
     }
   }, [isPasswordReset]);
+  // handle Payment 
+
+
+  
 
   return (
     <>
@@ -164,7 +128,7 @@ console.log(isPasswordReset,"isPasswordReset")
               setIsStep1Completed(true);
               setStep(step + 1);
             }}
-            // onComplete={() => setStep(step + 1)}
+          // onComplete={() => setStep(step + 1)}
           />
         </div>
 
@@ -227,8 +191,11 @@ console.log(isPasswordReset,"isPasswordReset")
           <OrderSummary />
           {/* {step === 4 && <NextButton type="submit" label="Proceed to payment" />} */}
         </div>
+
+        {/* </form> */}
+
+
       </div>
-      {/* </form> */}
     </>
   );
 };
