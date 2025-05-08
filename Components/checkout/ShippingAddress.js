@@ -166,6 +166,18 @@ export default function ShippingAddress({ isCompleted, onComplete }) {
                   const id = e.target.value;
                   field.onChange(id); // ✅ set id to RHF
                   setShippingIndex(id); // ✅ set id to local state
+                  // ✅ Find selected country
+                  const selectedCountry = shipmentCountries.find((c) => c.id.toString() === id);
+
+                  if (selectedCountry) {
+                    // ✅ Update shipping immediately when user changes country
+                    setShipping({
+                      ...shipping,
+                      id: selectedCountry.id,
+                      country_name: selectedCountry.name,
+                      country_price: selectedCountry.price, // ✅ Update price
+                    });
+                  }
                 }}
                 options={(shipmentCountries || []).map((addr) => ({
                   value: addr.id.toString(), // ✅ Use country id as value
