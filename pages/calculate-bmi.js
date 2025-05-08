@@ -12,6 +12,14 @@ import SwitchTabs from "@/Components/Tabs/SwitchTabs";
 import useBmiStore from "@/store/bmiStore";
 import BmiTextField from "@/Components/BmiTextField/BmiTextField";
 
+const validateRange = (value, min, max, wholeOnly, message) => {
+  const num = Number(value);
+  if (isNaN(num)) return message;
+  if (wholeOnly && !Number.isInteger(num)) return message;
+  if (num < min || num > max) return message;
+  return true;
+};
+
 export default function CalculateBmi() {
   const [localStep, setLocalStep] = useState(1);
   const [heightUnit, setHeightUnit] = useState("metrics");
@@ -64,6 +72,22 @@ export default function CalculateBmi() {
       trigger(["heightFt", "heightIn", "heightCm", "weightSt", "weightLbs", "weightKg"]);
     }
   }, [bmi, setValue]);
+
+  const isStepValid = () => {
+    if (localStep === 1) {
+      if (heightUnit === "imperial") {
+        return !errors.heightFt && !errors.heightIn;
+      } else {
+        return !errors.heightCm;
+      }
+    } else {
+      if (weightUnit === "kg") {
+        return !errors.weightKg;
+      } else {
+        return !errors.weightSt && !errors.weightLbs;
+      }
+    }
+  };
 
   const handleNext = async () => {
     const fields =
@@ -298,6 +322,7 @@ export default function CalculateBmi() {
                         name="heightFt"
                         fieldProps={register("heightFt", {
                           required: "This field is required",
+                          validate: (value) => validateRange(value, 1, 10, true, "Only numbers from 1 to 10 are allowed"),
                           onChange: (e) => {
                             if (e.target.value !== "") setHeightUnitKey("imperial");
                           },
@@ -310,6 +335,7 @@ export default function CalculateBmi() {
                         name="heightIn"
                         fieldProps={register("heightIn", {
                           required: "This field is required",
+                          validate: (value) => validateRange(value, 0, 11, true, "Only valid numbers (0–11) are allowed"),
                           onChange: (e) => {
                             if (e.target.value !== "") setHeightUnitKey("imperial");
                           },
@@ -324,6 +350,12 @@ export default function CalculateBmi() {
                       name="heightCm"
                       fieldProps={register("heightCm", {
                         required: "This field is required",
+                        validate: (value) => {
+                          const num = Number(value);
+                          if (!Number.isInteger(num)) return "Only whole numbers from 1 to 300 are allowed";
+                          if (num < 1 || num > 300) return "Only whole numbers from 1 to 300 are allowed";
+                          return true;
+                        },
                         onChange: (e) => {
                           if (e.target.value !== "") setHeightUnitKey("metrics");
                         },
@@ -341,6 +373,7 @@ export default function CalculateBmi() {
                         name="weightSt"
                         fieldProps={register("weightSt", {
                           required: "This field is required",
+                          validate: (value) => validateRange(value, 4, 80, false, "Only valid numbers (4–80) are allowed"),
                           onChange: (e) => {
                             if (e.target.value !== "") setWeightUnitKey("imperial");
                           },
@@ -353,6 +386,7 @@ export default function CalculateBmi() {
                         name="weightLbs"
                         fieldProps={register("weightLbs", {
                           required: "This field is required",
+                          validate: (value) => validateRange(value, 0, 20, false, "Only valid numbers (0–20) are allowed"),
                           onChange: (e) => {
                             if (e.target.value !== "") setWeightUnitKey("imperial");
                           },
@@ -367,6 +401,7 @@ export default function CalculateBmi() {
                       name="weightKg"
                       fieldProps={register("weightKg", {
                         required: "This field is required",
+                        validate: (value) => validateRange(value, 40, 500, true, "Only whole numbers from 40 to 500 are allowed"),
                         onChange: (e) => {
                           if (e.target.value !== "") setWeightUnitKey("metrics");
                         },
@@ -376,7 +411,7 @@ export default function CalculateBmi() {
                     />
                   ))}
 
-                <NextButton label="Next" onClick={handleNext} type="button" />
+                <NextButton label="Next" onClick={handleNext} type="button" disabled={!isStepValid()} />
 
                 {localStep === 2 ? (
                   <BackButton type="button" label="Back" className="mt-3" onClick={() => setLocalStep(1)} />
