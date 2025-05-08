@@ -1,5 +1,5 @@
 import StepsHeader from "@/layout/stepsHeader";
-import React from "react";
+import React, { useState } from "react";
 import { Inter } from "next/font/google";
 import { useForm } from "react-hook-form";
 import NextButton from "@/Components/NextButton/NextButton";
@@ -9,6 +9,7 @@ import { useRouter } from "next/router";
 import useVariationStore from "@/store/useVariationStore";
 import useCartStore from "@/store/useCartStore";
 import toast from "react-hot-toast";
+import { motion, AnimatePresence } from "framer-motion";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 
@@ -28,12 +29,17 @@ export default function DosageSelection() {
   });
   const { variation } = useVariationStore();
   const allowed = variation?.allowed;
+  const [showDoseModal, setShowDoseModal] = useState(false);
+  const [selectedDose, setSelectedDose] = useState(null);
   const onSubmit = () => {
     router.push("/checkout");
   };
   //Allowed checking here 🔥
   const totalSelectedQty = () => items?.doses.reduce((total, v) => total + v.qty, 0);
   const handleAddDose = (dose) => {
+
+    setSelectedDose(dose);
+    setShowDoseModal(true);
     const totalQty = totalSelectedQty() + 1;
 
     if (allowed > 0 && totalQty > allowed) {
@@ -70,12 +76,12 @@ export default function DosageSelection() {
   const handleAddAddon = (addon) => {
     addToCart({
       id: addon.id,
-      type: "addon",   // ✅ Correct -> only "addon", store ke andar hi ye addons banega
+      type: "addon",
       name: addon.name,
       price: parseFloat(addon.price),
       allowed: parseInt(addon.allowed),
       item_id: addon.id,
-      product: addon?.title || "Addon Product",  // ✅ Title use karo kyunki Addons me title hota hai
+      product: addon?.title || "Addon Product",
       product_concent: "Addon",
       label: addon?.name,
       expiry: addon.expiry,
@@ -87,6 +93,57 @@ export default function DosageSelection() {
 
   return (
     <>
+      <AnimatePresence>
+        {showDoseModal && selectedDose && (
+          <motion.div
+            className="fixed inset-0 bg-black/50 backdrop-blur-sm flex justify-center items-center z-[9999]"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+          >
+            <motion.div
+              initial={{ y: 100, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              exit={{ y: 100, opacity: 0 }}
+              transition={{ type: "spring", stiffness: 300, damping: 25 }}
+              className="bg-white rounded-lg shadow-xl p-6 max-w-sm w-full"
+            >
+              <h2 className="text-xl bold-font mb-4 text-gray-800">
+                Added: {selectedDose?.product_name}
+              </h2>
+              <p className="text-gray-600 mb-4">{selectedDose?.name}</p>
+              <button
+                onClick={() => {
+                  addToCart({
+                    id: selectedDose.id,
+                    type: "dose",
+                    name: selectedDose.name,
+                    price: parseFloat(selectedDose.price),
+                    allowed: parseInt(selectedDose.allowed),
+                    item_id: selectedDose.id,
+                    product: selectedDose?.product_name || "Dose Product",
+                    product_concent: "Once Weekly",
+                    label: selectedDose?.name,
+                    expiry: selectedDose.expiry,
+                    isSelected: true,
+                  });
+                  setShowDoseModal(false);
+                }}
+                className="w-full bg-violet-600 hover:bg-violet-700 text-white py-2 px-4 rounded"
+              >
+                Confirm Add
+              </button>
+              <button
+                onClick={() => setShowDoseModal(false)}
+                className="w-full mt-2 border border-gray-300 py-2 px-4 rounded text-gray-600 hover:bg-gray-100"
+              >
+                Cancel
+              </button>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       <StepsHeader />
       <div className={`${inter.className} flex items-center justify-center bg-[#F2EEFF] px-4 sm:px-6 lg:px-8 `}>
         <div className="rounded-xl w-full max-w-2xl my-20">
@@ -99,7 +156,7 @@ export default function DosageSelection() {
                 <div className="col-span-12 sm:col-span-6 md:px-4 py-10">
                   <div className="bg-white rounded-lg shadow-lg overflow-hidden mb-6">
                     <div className="bg-violet-700 p-6">
-                      <img src={variation?.img} alt="" className="w-full h-40 object-contain" />
+                      <img src={variation?.img} alt={variation?.name} className="w-full h-40 object-contain" />
                     </div>
                     <div className="p-6">
                       <h2 className="text-2xl mb-4 bold-font text-gray-800">{variation?.name}</h2>
@@ -187,9 +244,9 @@ export default function DosageSelection() {
       <div className="fixed bottom-0 left-0 right-0 z-50 bg-[#ffffff] px-4 py-3 shadow-[0_-2px_10px_rgba(0,0,0,0.1)] ">
         <div className="max-w-xl mx-auto flex items-center justify-between">
           <div className="flex items-center space-x-3 me-5">
-            <img src="/images/wegovy.png" alt="Mounjaro" className="w-10 h-10 rounded-md object-contain" />
+            <img src={variation?.img} alt={variation?.name} className="w-10 h-10 rounded-md object-contain" />
             <div className="text-black leading-tight">
-              <div className="text-lg bold-font">Mounjaro</div>
+              <div className="text-lg bold-font">{variation?.name}</div>
               <div className="text-lg bold-font">
                 £{totalAmount}<span className="text-lg reg-font">.00</span>
               </div>
@@ -198,7 +255,7 @@ export default function DosageSelection() {
           <div>
 
             <NextButton onClick={handleSubmit(onSubmit)}
-              disabled={totalSelectedQty() === 0} label="Next" />
+              disabled={totalSelectedQty() === 0} label="Proceed to Checkout" />
           </div>
 
         </div>

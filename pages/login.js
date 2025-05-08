@@ -121,7 +121,7 @@ export default function LoginScreen() {
                              
                             />
 
-                            <NextButton label="Next" disabled={!isValid} type="submit" />
+                            <NextButton label="Login" disabled={!isValid} type="submit" />
                             <BackButton label="Back" className="mt-2" onClick={() => router.back()} />
                         </form>
 

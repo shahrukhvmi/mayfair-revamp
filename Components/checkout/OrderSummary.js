@@ -74,8 +74,11 @@ const OrderSummary = () => {
     finalTotal = (totalAmount - discountAmount) + shippingPrice;
   }
 
-  // console.warn(typeof  , "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
+  // handle Payment 
 
+  const hanldePayment = () => {
+
+  }
   return (
     <div className="col-span-12 sm:col-span-4 mb-3">
       <div className="mb-24 sm:mb-0">
@@ -96,24 +99,47 @@ const OrderSummary = () => {
           <div className="overflow-y-auto">
             <ul className="space-y-4 overflow-y-auto max-h-[250px] pr-1 pb-4">
               {items?.doses?.map((dose, index) => (
-                <li
-                  key={index}
-                  className="group flex items-center justify-between rounded-lg bg-[#F2EEFF] hover:bg-violet-50  p-4 shadow-md transition-all duration-200"
-                >
-                  <div className="flex flex-col">
-                    <span className="text-base bold-font text-gray-900  truncate">
-                      {dose?.product} {dose?.name}
-                    </span>
-                    <span className="bold-font text-sm text-gray-600 mt-1">
-                      Qty: x{dose?.qty}
-                    </span>
-                  </div>
+                <React.Fragment key={index}>
+                  {/* Standard dose item */}
+                  <li
+                    className="group flex items-center justify-between rounded-lg bg-[#F2EEFF] hover:bg-violet-50 p-4 shadow-md transition-all duration-200"
+                  >
+                    <div className="flex flex-col">
+                      <span className="text-base bold-font text-gray-900 truncate">
+                        {dose?.product} {dose?.name}
+                      </span>
+                      <span className="bold-font text-sm text-gray-600 mt-1">
+                        Qty: x{dose?.qty}
+                      </span>
+                    </div>
 
-                  <span className="text-base bold-font  text-black px-4 py-1 rounded-full">
-                    £{dose?.price}
-                  </span>
-                </li>
+                    <span className="text-base bold-font text-black px-4 py-1 rounded-full">
+                      £{dose?.price}
+                    </span>
+                  </li>
+
+                  {/* Additional item if product is Mounjaro */}
+                  {dose?.product === "Mounjaro (Tirzepatide)" && (
+                    <li
+                      className="group flex items-center justify-between rounded-lg bg-[#ececec] hover:bg-violet-50 p-4 shadow-md transition-all duration-200 mt-2"
+                    >
+                      <div className="flex flex-col">
+                        <span className="text-base bold-font text-gray-900 truncate">
+                          Pack of 5 Needle
+                        </span>
+                        <span className="bold-font text-sm text-gray-600 mt-1">
+                          {dose.qty}x
+                        </span>
+                      </div>
+
+                      <span className="text-base bold-font text-black px-4 py-1 rounded-full">
+                        £0.00
+                      </span>
+                    </li>
+                  )}
+                </React.Fragment>
               ))}
+
 
 
 
@@ -141,12 +167,12 @@ const OrderSummary = () => {
             </ul>
 
             <div className="flex justify-between items-center mt-8">
-              <p className="bold-font paragraph">Subtotal</p>
+              <p className="bold-font paragraph !text-black">Subtotal</p>
               <p className="bold-font text-black">£{totalAmount?.toFixed(2)}</p>
             </div>
 
             <div className="flex justify-between items-center mt-4">
-              <p className="bold-font paragraph">Shipping</p>
+              <p className="bold-font paragraph !text-black">Shipping</p>
               <p className="bold-font text-black">£{shipping?.country_price}</p>
             </div>
 
@@ -162,8 +188,8 @@ const OrderSummary = () => {
             <hr className="my-4 border-gray-200" />
 
             <div className="flex justify-between items-center">
-              <p className="text-lg text-gray-900 font-bold">Total</p>
-              <p className="text-lg text-gray-900 font-bold">
+              <p className="bold-font text-xl text-black">Total</p>
+              <p className="bold-font text-xl text-black">
                 £{finalTotal?.toFixed(2)}
 
               </p>
@@ -214,13 +240,13 @@ const OrderSummary = () => {
                     placeholder="Enter discount code"
                     value={discountCode}
                     onChange={(e) => setDiscountCode(e.target.value)}
-                    className="flex-1 text-sm text-gray-800 bg-gray-100 placeholder-gray-400 p-4 focus:outline-none"
+                    className="flex-1 text-sm text-gray-800 bg-gray-100 placeholder-gray-400 p-4 focus:outline-none reg-font"
                   />
                   <button
                     type="button"
                     onClick={handleApplyCoupon}
                     disabled={!isApplyEnabled}
-                    className={`px-6 text-sm font-semibold text-white transition-all duration-200 ${isApplyEnabled
+                    className={`px-6 text-sm bold-font text-white transition-all duration-200 ${isApplyEnabled
                       ? "bg-violet-600 hover:bg-violet-700"
                       : "bg-gray-300 cursor-not-allowed"
                       }`}
@@ -233,6 +259,14 @@ const OrderSummary = () => {
 
 
 
+          </div>
+          <div className="my-5">
+
+
+            <NextButton
+              label="Proceed to Payment "
+              onClick={hanldePayment}
+            />
           </div>
         </div>
       </div>
