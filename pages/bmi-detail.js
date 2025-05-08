@@ -131,8 +131,8 @@ export default function BmiDetail() {
       <StepsHeader />
       <FormWrapper heading={"Your BMI details"} percentage={"70"}>
         <PageAnimationWrapper>
-          <div className="py-12 mb-5 border text-center bg-violet-200 rounded">
-            <h1 className="text-black text-2xl bold-font">BMI: {bmi?.bmi}</h1>
+          <div className="py-12 mb-5 border text-center bg-violet-100 rounded-2xl shadow">
+            <h1 className="text-black text-3xl bold-font">BMI: {bmi?.bmi}</h1>
           </div>
 
           {shouldShowInfoMessage && (
