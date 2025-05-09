@@ -97,7 +97,7 @@ const SetAPassword = ({ isCompleted, onComplete }) => {
           <button
             type="button"
             onClick={() => setShowPassword(!showPassword)}
-            className="absolute top-1/2 right-3 transform -translate-y-1/2 text-gray-600"
+            className="cursor-pointer absolute top-1/2 right-3 transform -translate-y-1/2 text-gray-600"
           >
             {showPassword ? <FiEye /> : <FiEyeOff />}
           </button>
@@ -114,7 +114,7 @@ const SetAPassword = ({ isCompleted, onComplete }) => {
           <button
             type="button"
             onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-            className="absolute top-1/2 right-3 transform -translate-y-1/2 text-gray-600"
+            className="cursor-pointer absolute top-1/2 right-3 transform -translate-y-1/2 text-gray-600"
           >
             {showConfirmPassword ? <FiEye /> : <FiEyeOff />}
           </button>

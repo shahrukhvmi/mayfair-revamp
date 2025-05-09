@@ -11,12 +11,9 @@ export default function RouteGuard({ children }) {
     useEffect(() => {
         const path = router.pathname;
         const isPublic = publicRoutes.includes(path);
-        console.log(isPublic, "isPublic")
         if (!isPublic && !token) {
             router.push("/");
-        } else if (isPublic && token && path === "/login") {
-            router.push("/dashboard/");
-        } else {
+        }else {
             setLoading(false);
         }
     }, [router.pathname, token]);
@@ -24,4 +21,8 @@ export default function RouteGuard({ children }) {
     if (loading) return <div>Loading...</div>;
 
     return children;
+
+    // //  else if (isPublic && token) {
+    //     router.push("/dashboard/");
+    // } 
 }

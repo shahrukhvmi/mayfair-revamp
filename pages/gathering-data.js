@@ -10,6 +10,7 @@ import PageLoader from "@/Components/PageLoader/PageLoader";
 import useShipmentCountries from "@/store/useShipmentCountriesStore";
 import useBillingCountries from "@/store/useBillingCountriesStore";
 import useCartStore from "@/store/useCartStore";
+import useProductId from "@/store/useProductIdStore";
 
 export default function GatherData() {
   const router = useRouter();
@@ -20,6 +21,7 @@ export default function GatherData() {
   const { setShipmentCountries } = useShipmentCountries();
   const { setBillingCountries } = useBillingCountries();
   const { clearCart } = useCartStore();
+  const { productId } = useProductId()
 
   // Variations fetch mutation
   const variationMutation = useMutation(getVariationsApi, {
@@ -47,7 +49,7 @@ export default function GatherData() {
   // Call mutation on mount
   useEffect(() => {
     setShowLoader(true);
-    variationMutation.mutate({ id: 4, data: {} });
+    variationMutation.mutate({ id: productId, data: {} });
   }, []);
 
   return (

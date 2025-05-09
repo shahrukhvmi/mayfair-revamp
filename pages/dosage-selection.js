@@ -273,7 +273,7 @@ export default function DosageSelection() {
               <div className="text-lg bold-font">{variation?.name}</div>
               <div className="text-lg bold-font">
                 £{totalAmount}
-                <span className="text-lg reg-font">.00</span>
+                <span className="text-lg bold-font">.00</span>
               </div>
             </div>
           </div>

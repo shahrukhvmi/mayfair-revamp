@@ -84,6 +84,7 @@ const ProductCard = ({ id, title, image, price, status, buttonText, reorder, las
   });
 
   const handleClick = () => {
+    
     setIsButtonLoading(true);
     const formData = {
       clinic_id: 1,

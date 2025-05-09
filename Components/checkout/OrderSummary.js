@@ -212,7 +212,7 @@ const OrderSummary = () => {
                             <span className="text-base bold-font text-gray-900 truncate">
                               {dose?.product} {dose?.name}
                             </span>
-                            <span className="bold-font text-sm text-gray-600 mt-1">Qty: x{dose?.qty}</span>
+                            <span className="bold-font text-sm text-gray-600 mt-1">Quantity: x{dose?.qty}</span>
                           </div>
 
                           <span className="text-base bold-font text-black px-4 py-1 rounded-full">£{dose?.price}</span>
@@ -239,7 +239,7 @@ const OrderSummary = () => {
                       >
                         <div className="flex flex-col">
                           <span className="text-base bold-font text-gray-900  truncate">{addon?.name}</span>
-                          <span className="bold-font text-sm text-gray-600 mt-1">Qty: x{addon?.qty}</span>
+                          <span className="bold-font text-sm text-gray-600 mt-1">Quantity: x{addon?.qty}</span>
                         </div>
 
                         <span className="text-base bold-font  text-black px-4 py-1 rounded-full">£{addon?.price}</span>
@@ -315,7 +315,7 @@ const OrderSummary = () => {
                           type="button"
                           onClick={handleApplyCoupon}
                           disabled={!isApplyEnabled}
-                          className={`px-6 text-sm bold-font text-white transition-all duration-200 ${
+                          className={`cursor-pointer px-6 text-sm bold-font text-white transition-all duration-200 ${
                             isApplyEnabled ? "bg-violet-600 hover:bg-violet-700" : "bg-gray-300 cursor-not-allowed"
                           }`}
                         >

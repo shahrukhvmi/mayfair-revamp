@@ -98,7 +98,7 @@ const StepsHeader = ({ isOpen, toggleSidebar }) => {
             <div className="dropdown-menu absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-md shadow-lg z-50">
               <ul className="py-1">
                 <li className="reg-font px-4 py-2 text-[#1C1C29] hover:bg-gray-100 cursor-pointer">
-                  <Link href="/dashboard/" onClick={toggleDropdown}>
+                  <Link href="/dashboard" onClick={toggleDropdown}>
                     My Account
                   </Link>
                 </li>
