@@ -14,6 +14,7 @@ import usePatientInfoStore from "@/store/patientInfoStore";
 import { Client } from "getaddress-api";
 import { FormControl, InputLabel, Select, MenuItem, FormHelperText } from "@mui/material";
 import MUISelectField from "@/Components/SelectField/SelectField";
+import { motion } from "framer-motion";
 
 const api = new Client("_UFb05P76EyMidU1VHIQ_A42976");
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
@@ -24,6 +25,7 @@ export default function ResidentialAddress() {
   const [addressOptions, setAddressOptions] = useState([]);
   const [selectedIndex, setSelectedIndex] = useState("");
   const [searching, setSearching] = useState(false);
+  const [addressSearchLoading, setAddressSearchLoading] = useState(false);
 
   const { patientInfo, setPatientInfo } = usePatientInfoStore();
   const {
@@ -53,6 +55,7 @@ export default function ResidentialAddress() {
   const isNextEnabled = !!address1?.trim() && !!city?.trim() && !!state?.trim();
 
   const handleSearch = async () => {
+    setAddressSearchLoading(true);
     const postal = watch("postalCode");
     if (!postal) return alert("Please enter a postal code.");
 
@@ -61,10 +64,12 @@ export default function ResidentialAddress() {
       if (result && result.addresses?.addresses?.length) {
         setAddressOptions(result.addresses.addresses);
         setManual(true);
+        setAddressSearchLoading(false);
       }
     } catch (error) {
       console.error("API error:", error);
       alert("Something went wrong while fetching addresses.");
+      setAddressSearchLoading(false);
     }
   };
 
@@ -111,11 +116,27 @@ export default function ResidentialAddress() {
                     <button
                       type="button"
                       onClick={handleSearch}
-                      className={`bold-medium-font absolute right-3 transform -translate-y-1/2 cursor-pointer flex items-center bg-violet-700 text-white px-2 py-1 rounded ${
+                      className={`bold-medium-font absolute right-3 transform -translate-y-1/2 cursor-pointer flex items-center bg-violet-700 text-white px-2 py-1 rounded w-32 justify-center ${
                         errors.postalCode ? "top-2/4" : "top-2/3"
                       }`}
+                      disabled={addressSearchLoading}
                     >
-                      <FaSearch className="w-4 h-4 me-2" /> Search
+                      {addressSearchLoading ? (
+                        <motion.div
+                          animate={{ rotate: 360 }}
+                          transition={{
+                            repeat: Infinity,
+                            duration: 1,
+                            ease: "linear",
+                          }}
+                          className="w-6 h-6 border-4 border-t-transparent border-primary rounded-full text-white"
+                        />
+                      ) : (
+                        <span className="flex items-center reg-font">
+                          <FaSearch className="inline-block me-2" />
+                          Search
+                        </span>
+                      )}
                     </button>
                   </div>
 
