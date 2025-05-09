@@ -1,54 +1,113 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import useProductId from "@/store/useProductIdStore";
 import usePatientStatus from "@/store/patientStatus";
+import { userConsultationApi } from "@/api/consultationApi";
+import { useMutation } from "@tanstack/react-query";
+import { motion } from "framer-motion";
+import useConfirmationInfoStore from "@/store/confirmationInfoStore";
+import useGpDetailsStore from "@/store/gpDetailStore";
+import useMedicalInfoStore from "@/store/medicalInfoStore";
+import usePatientInfoStore from "@/store/patientInfoStore";
+import useMedicalQuestionsStore from "@/store/medicalQuestionStore";
+import useConfirmationQuestionsStore from "@/store/confirmationQuestionStore";
+import useAuthUserDetailStore from "@/store/useAuthUserDetailStore";
+import useBmiStore from "@/store/bmiStore";
+import useCheckoutStore from "@/store/checkoutStore";
+import useShippingOrBillingStore from "@/store/shipingOrbilling";
 
-const ProductCard = ({
-  id,
-  title,
-  image,
-  price,
-  status,
-  buttonText,
-  reorder,
-  lastOrderDate,
-}) => {
+const ProductCard = ({ id, title, image, price, status, buttonText, reorder, lastOrderDate }) => {
   const router = useRouter();
-  const { setProductId } = useProductId();
+  const { productId, setProductId } = useProductId();
   const { setReorderPatient, setNewPatient } = usePatientStatus();
+  const [isButtonLoading, setIsButtonLoading] = useState(false);
+
+  const { setBmi, clearBmi } = useBmiStore();
+  const { setCheckout, clearCheckout } = useCheckoutStore();
+  const { setConfirmationInfo, clearConfirmationInfo } = useConfirmationInfoStore();
+  const { setGpDetails, clearGpDetails } = useGpDetailsStore();
+  const { setMedicalInfo, clearMedicalInfo } = useMedicalInfoStore();
+  const { setPatientInfo, clearPatientInfo } = usePatientInfoStore();
+  const { setAuthUserDetail, clearAuthUserDetail } = useAuthUserDetailStore();
+  const { billing, setBilling, shipping, setShipping, clearShipping, clearBilling } = useShippingOrBillingStore();
+
+  //Get Consultation Data
+  const consultationMutation = useMutation(userConsultationApi, {
+    onSuccess: (data) => {
+      console.log(data, "Dataaaaaaaaaa");
+
+      if (data?.data?.data == null) {
+        console.log("true");
+        clearBmi();
+        clearCheckout();
+        clearConfirmationInfo();
+        clearGpDetails();
+        clearMedicalInfo();
+        clearPatientInfo();
+        clearBilling();
+        clearShipping();
+        clearAuthUserDetail();
+      } else if (data?.data) {
+        setBmi(data?.data?.data?.bmi);
+        setCheckout(data?.data?.data?.checkout);
+        setConfirmationInfo(data?.data?.data?.confirmationInfo);
+        setGpDetails(data?.data?.data?.gpdetails);
+        setMedicalInfo(data?.data?.data?.medicalInfo);
+        setPatientInfo(data?.data?.data?.patientInfo);
+        setShipping(data?.data?.data?.billing);
+        setBilling(data?.data?.data?.shipping);
+        setAuthUserDetail(data?.data?.data?.auth_user);
+      }
+
+      if (reorder) {
+        setReorderPatient(true);
+        setNewPatient(false);
+        router.push("/re-order");
+      } else {
+        setReorderPatient(false);
+        setNewPatient(true);
+        router.push("/acknowledgment");
+      }
+
+      setProductId(id);
+
+      setIsButtonLoading(false);
+      return;
+    },
+    onError: (error) => {
+      // setLoading(false);
+      console.log("error", error?.response?.data?.errors?.email);
+      if (error) {
+        setIsButtonLoading(false);
+      }
+    },
+  });
 
   const handleClick = () => {
-    if (reorder) {
-      setReorderPatient();
-      router.push("re-order")
-    } else {
-      setNewPatient();
-      router.push("acknowledgment")
-    }
-    setProductId(id);
-
+    setIsButtonLoading(true);
+    const formData = {
+      clinic_id: 1,
+      product_id: productId,
+    };
+    consultationMutation.mutate(formData);
   };
 
   // No need for this effect if setReorderPatient() is already called in handleClick
-  useEffect(() => {
-    if (reorder) {
-      setReorderPatient();
-    }
-  }, [reorder]); // Make sure this only runs when `reorder` changes
+  // useEffect(() => {
+  //   if (reorder == true) {
+  //     setReorderPatient(true);
+  //   }
+  // }, [reorder]); // Make sure this only runs when `reorder` changes
 
   return (
     <>
       <div className="relative bg-white rounded-lg rounded-b-2xl overflow-hidden transition-transform shadow-md">
         {/* Out of Stock Overlay */}
-        {!status && (
-          <div className="h-full w-full left-0 absolute bg-[rgba(119,136,153,0.4)] cursor-not-allowed z-10 thin-font"></div>
-        )}
+        {!status && <div className="h-full w-full left-0 absolute bg-[rgba(119,136,153,0.4)] cursor-not-allowed z-10 thin-font"></div>}
 
         {/* Out of Stock Ribbon */}
         {!status && (
-          <div className="absolute -left-8 top-7 bg-red-500 text-white px-[30px] text-xs py-1 rounded-tl -rotate-45 z-20 thin-font">
-            Out of stock
-          </div>
+          <div className="absolute -left-8 top-7 bg-red-500 text-white px-[30px] text-xs py-1 rounded-tl -rotate-45 z-20 thin-font">Out of stock</div>
         )}
 
         {/* Price Ribbon */}
@@ -72,9 +131,7 @@ const ProductCard = ({
         <div className="bg-[#EDE9FE] p-5 text-center rounded-2xl">
           <h2 className="text-lg bold-font mb-3 text-gray-900">{title}</h2>
 
-          <p className="mb-3 text-sm font-semibold">
-            {lastOrderDate && `Last Ordered: ${lastOrderDate}`}
-          </p>
+          <p className="mb-3 text-sm font-semibold">{lastOrderDate && `Last Ordered: ${lastOrderDate}`}</p>
 
           <div className="w-full text-center">
             <button
@@ -83,10 +140,24 @@ const ProductCard = ({
               className={
                 status === false
                   ? "cursor-pointer reg-font bg-[#897bba] text-white py-2 px-6 rounded-full text-sm text-center"
-                  : "cursor-pointer reg-font bg-[#5b45a7] text-white font-medium py-2 px-6 rounded-full text-sm text-center hover:bg-white hover:text-violet-700 transition-colors duration-200"
+                  : "cursor-pointer reg-font bg-[#5b45a7] text-white font-medium py-2 px-6 rounded-full text-sm text-center hover:bg-violet-400  transition-colors duration-200"
               }
             >
-              {buttonText}
+              {isButtonLoading == true ? (
+                <div className="px-12 w-full">
+                  <motion.div
+                    animate={{ rotate: 360 }}
+                    transition={{
+                      repeat: Infinity,
+                      duration: 1,
+                      ease: "linear",
+                    }}
+                    className="w-6 h-6 border-4 border-t-transparent border-primary rounded-full text-white"
+                  />
+                </div>
+              ) : (
+                <>{buttonText}</>
+              )}
             </button>
           </div>
         </div>

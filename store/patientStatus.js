@@ -5,9 +5,11 @@ const usePatientStatus = create(
   persist(
     (set) => ({
       patientStatus: null,
-      setReorderPatient: () => set({ patientStatus: "reorder" }),
-      setNewPatient: () => set({ patientStatus: "new" }),
-      resetStatus: () => set({ patientStatus: null }),
+      newPatient: null,
+      setReorderPatient: (status) => set({ patientStatus: status }),
+      setNewPatient: (status) => set({ newPatient: status }),
+      resetPatientStatus: () => set({ patientStatus: null }),
+      resetNewPatientStatus: () => set({ patientStatus: null }),
     }),
     {
       name: "patient-status-storage",

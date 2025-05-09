@@ -14,7 +14,8 @@ const SkeletonCard = () => (
   </div>
 );
 
-const MyAccount = () => {  const [isLoading, setIsLoading] = useState(true);
+const MyAccount = () => {
+  const [isLoading, setIsLoading] = useState(true);
   const [productData, setProductData] = useState(null);
 
   // Dummy function; replace with your real implementation
@@ -79,7 +80,7 @@ const MyAccount = () => {  const [isLoading, setIsLoading] = useState(true);
                 status={productData.reorder?.inventories?.[0]?.status}
                 lastOrderDate={productData.reorder?.lastOrderDate}
                 buttonText="Reorder Consultation"
-                reorder={true}
+                reorder={false}
               />
             )}
           </div>
@@ -92,9 +93,7 @@ const MyAccount = () => {  const [isLoading, setIsLoading] = useState(true);
       ) : productData?.products?.length > 0 ? (
         <>
           <header className="pb-9">
-            <h1 className="text-2xl text-left bold-font text-gray-900">
-              Available Treatments
-            </h1>
+            <h1 className="text-2xl text-left bold-font text-gray-900">Available Treatments</h1>
             <p className="paragraph thin-font text-left text-sm leading-relaxed xl:w-4xl mt-2">
               We offer the following weight loss injections treatment options to help you in your weight loss journey...
             </p>
@@ -118,9 +117,7 @@ const MyAccount = () => {  const [isLoading, setIsLoading] = useState(true);
           </div>
         </>
       ) : (
-        <p className="text-start reg-font text-sm text-gray-600">
-          No available treatments at the moment.
-        </p>
+        <p className="text-start reg-font text-sm text-gray-600">No available treatments at the moment.</p>
       )}
     </div>
   );

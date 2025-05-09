@@ -15,6 +15,7 @@ const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 
 export default function DosageSelection() {
   const [shownDoseIds, setShownDoseIds] = useState([]);
+  const [isButtonLoading, setIsButtonLoading] = useState(false);
   const router = useRouter();
   // const {  } = useCartStore();
   const { addToCart, increaseQuantity, decreaseQuantity, items, totalAmount } = useCartStore();
@@ -35,6 +36,7 @@ export default function DosageSelection() {
   const [selectedDose, setSelectedDose] = useState(null);
 
   const onSubmit = () => {
+    setIsButtonLoading(true);
     router.push("/checkout");
   };
   //Allowed checking here 🔥
@@ -155,15 +157,13 @@ export default function DosageSelection() {
               className="bg-white rounded-lg shadow-xl p-6 max-w-md w-full"
             >
               <h2 className="text-xl bold-font mb-4 text-gray-800 text-center">Dosage Confirmation</h2>
-              {selectedDose?.productConcent && <p 
-              className="text-md paragraph rounded-md p-3 reg-font mb-4">{selectedDose?.productConcent}</p>}
+              {selectedDose?.productConcent && <p className="text-md paragraph rounded-md p-3 reg-font mb-4">{selectedDose?.productConcent}</p>}
               <NextButton
                 label=" I Confirm"
                 onClick={() => {
                   setShowDoseModal(false);
                 }}
               />
-
 
               {/* <button
                 onClick={() => setShowDoseModal(false)}
@@ -174,7 +174,7 @@ export default function DosageSelection() {
             </motion.div>
           </motion.div>
         )}
-      </AnimatePresence >
+      </AnimatePresence>
 
       <StepsHeader />
 
@@ -278,7 +278,22 @@ export default function DosageSelection() {
             </div>
           </div>
           <div>
-            <NextButton onClick={handleSubmit(onSubmit)} disabled={totalSelectedQty() === 0} label="Proceed to Checkout" />
+            {isButtonLoading == true ? (
+              <div className="w-full px-28  py-3 rounded-full text-white bg-violet-700">
+                <motion.div
+                  animate={{ rotate: 360 }}
+                  transition={{
+                    repeat: Infinity,
+                    duration: 1,
+                    ease: "linear",
+                  }}
+                  className="w-5 h-5 border-4 border-t-transparent border-primary rounded-full text-white"
+                />
+              </div>
+            ) : (
+              <NextButton onClick={handleSubmit(onSubmit)} disabled={totalSelectedQty() === 0} label="Proceed to Checkout" />
+            )}
+            {/* <NextButton onClick={handleSubmit(onSubmit)} disabled={totalSelectedQty() === 0} label="Proceed to Checkout" /> */}
           </div>
         </div>
       </div>

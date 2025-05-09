@@ -43,6 +43,8 @@ const ReviewAnswers = () => {
         setMedicalInfo(data?.data?.lastConsultation?.fields?.medicalInfo);
         setPatientInfo(data?.data?.lastConsultation?.fields?.patientInfo);
       }
+
+      router.push("/gathering-data");
       return;
     },
     onError: (error) => {
