@@ -46,7 +46,7 @@ const StepsHeader = ({ isOpen, toggleSidebar }) => {
     };
   }, [isOpenDrop]);
   const handleLogout = () => {
-    setIsOpenDrop(false); // Close the dropdown
+    setIsOpenDrop(false);
     // logout();
     alert("logout");
   };
@@ -92,17 +92,17 @@ const StepsHeader = ({ isOpen, toggleSidebar }) => {
           {isOpenDrop && (
             <div className="dropdown-menu absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-md shadow-lg z-50">
               <ul className="py-1">
-                <li className="ligt-font px-4 py-2 text-[#1C1C29] hover:bg-gray-100 cursor-pointer">
-                  <Link href="/" onClick={toggleDropdown}>
+                <li className="reg-font px-4 py-2 text-[#1C1C29] hover:bg-gray-100 cursor-pointer">
+                  <Link href="/dashboard/" onClick={toggleDropdown}>
                     My Account
                   </Link>
                 </li>
-                <li className="ligt-font px-4 py-2 text-[#1C1C29] hover:bg-gray-100 cursor-pointer">
-                  <Link href="" onClick={toggleDropdown}>
+                <li className="reg-font px-4 py-2 text-[#1C1C29] hover:bg-gray-100 cursor-pointer">
+                  <Link href="my-profile" onClick={toggleDropdown}>
                     My Profile
                   </Link>
                 </li>
-                <li className="ligt-font px-4 py-2 text-[#1C1C29] hover:bg-gray-100 cursor-pointer" onClick={handleLogout}>
+                <li className="reg-font px-4 py-2 text-[#1C1C29] hover:bg-gray-100 cursor-pointer" onClick={handleLogout}>
                   Logout
                 </li>
               </ul>

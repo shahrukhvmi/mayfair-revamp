@@ -9,9 +9,11 @@ import FormWrapper from "@/Components/FormWrapper/FormWrapper";
 import PageAnimationWrapper from "@/Components/PageAnimationWrapper/PageAnimationWrapper";
 import StepsHeader from "@/layout/stepsHeader";
 import BackButton from "@/Components/BackButton/BackButton";
+import useAuthStore from "@/store/authStore";
 
 export default function SignUp() {
   const [showLoader, setShowLoader] = useState(false);
+  const { token } = useAuthStore();
 
   // 🛒 Zustand State
   const { firstName, lastName, setFirstName, setLastName } = useSignupStore();
@@ -53,7 +55,13 @@ export default function SignUp() {
 
     setShowLoader(true);
     await new Promise((resolve) => setTimeout(resolve, 500)); // Wait 2s
-    router.push("/email-confirmation");
+    if (token) {
+      router.push("/steps-information");
+
+    } else {
+
+      router.push("/email-confirmation");
+    }
   };
 
   return (
