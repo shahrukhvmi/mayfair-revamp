@@ -16,7 +16,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
   const router = useRouter();
 
   const navItems = [
-    { href: "/dashboard", label: "My Account", icon: <GiMedicines />, key: "tab-home" },
+    { href: "/dashboard/", label: "My Account", icon: <GiMedicines />, key: "tab-home" },
     { href: "/orders", label: "My Orders", icon: <HiShoppingBag />, key: "tab-orders" },
     { href: "/profile", label: "My Profile", icon: <HiUser />, key: "tab-profile" },
     { href: "/address", label: "My Address Book", icon: <HiLocationMarker />, key: "tab-address" },
