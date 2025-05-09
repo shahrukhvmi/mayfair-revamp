@@ -3,6 +3,7 @@
 export const publicRoutes = [
     "/",
     "/login",
+    "/email-confirmation",
     "/signup",
     "/thank-you",
     "/payment-failed",
