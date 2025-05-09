@@ -27,6 +27,7 @@ export default function GpDetail() {
     handleSubmit,
     watch,
     setValue,
+    trigger,
     formState: { errors, isValid },
   } = useForm({
     mode: "onChange",
@@ -63,7 +64,8 @@ export default function GpDetail() {
         setManual(true);
       }
     }
-  }, [gpdetails]);
+    trigger();
+  }, [gpdetails, trigger, setValue]);
 
   useEffect(() => {
     if (gpDetails === "no") {

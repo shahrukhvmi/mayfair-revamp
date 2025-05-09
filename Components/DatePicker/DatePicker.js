@@ -5,7 +5,7 @@ import { TextField } from "@mui/material";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 
-const MuiDatePickerField = ({ name, label = "Date of Birth", control, required = true, errors = {} }) => {
+const MuiDatePickerField = ({ name, label = "Date of Birth", control, rules, required = true, errors = {} }) => {
   const currentYear = new Date().getFullYear();
 
   const validateDate = (value) => {
@@ -20,7 +20,7 @@ const MuiDatePickerField = ({ name, label = "Date of Birth", control, required =
       <Controller
         name={name}
         control={control}
-        rules={{ validate: required ? validateDate : undefined }}
+        rules={rules}
         render={({ field }) => (
           <DatePicker
             label={label}

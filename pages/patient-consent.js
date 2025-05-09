@@ -40,6 +40,8 @@ export default function PatientConsent() {
         ...q,
         answer: false, // default unchecked
       }));
+
+      console.log(initialized, "initialized");
       setQuestions(initialized);
     } else {
       console.log("❌ No questions found");
@@ -103,7 +105,7 @@ export default function PatientConsent() {
                       </div>
 
                       {/* Checklist (if exists) */}
-                      {q.has_checklist && (
+                      {q.checklist && (
                         <div
                           className="list-disc list-outside pl-5 text-sm text-gray-700 space-y-2 reg-font paragraph [&>ul]:list-disc [&>ul]:ml-6 [&>li]:mt-0.5"
                           dangerouslySetInnerHTML={{ __html: q.checklist }}

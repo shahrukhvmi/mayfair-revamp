@@ -44,6 +44,13 @@ export default function ResidentialAddress() {
   });
 
   const router = useRouter();
+  // 👇 Watch individual address fields
+  const address1 = watch("address1");
+  const city = watch("city");
+  const state = watch("state");
+
+  // 👇 Enable Next only when required fields are filled
+  const isNextEnabled = !!address1?.trim() && !!city?.trim() && !!state?.trim();
 
   const handleSearch = async () => {
     const postal = watch("postalCode");
@@ -152,7 +159,7 @@ export default function ResidentialAddress() {
                   )}
                 </div>
 
-                <NextButton label="Next" disabled={!isValid} />
+                <NextButton label="Next" disabled={!isNextEnabled} />
                 <BackButton label="Back" className="mt-2" onClick={() => router.back()} />
               </form>
 

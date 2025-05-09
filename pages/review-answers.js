@@ -14,15 +14,18 @@ import sendStepData from "@/api/stepsDataApi";
 import { useMutation } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import useProductId from "@/store/useProductIdStore";
+import useAuthUserDetailStore from "@/store/useAuthUserDetailStore";
+import useCheckoutStore from "@/store/checkoutStore";
 
 const ReviewAnswers = () => {
   const router = useRouter();
 
-  const { patientInfo } = usePatientInfoStore();
-  const { bmi } = useBmiStore();
-  const { medicalInfo } = useMedicalInfoStore();
-  const { confirmationInfo } = useConfirmationInfoStore();
-  const { gpdetails } = useGpDetailsStore();
+  const { patientInfo, setPatientInfo } = usePatientInfoStore();
+  const { authUserDetail, setAuthUserDetail } = useAuthUserDetailStore();
+  const { bmi, setBmi } = useBmiStore();
+  const { medicalInfo, setMedicalInfo } = useMedicalInfoStore();
+  const { confirmationInfo, setConfirmationInfo } = useConfirmationInfoStore();
+  const { gpdetails, setGpDetails } = useGpDetailsStore();
   const { productId } = useProductId();
 
   console.log(confirmationInfo);
@@ -32,9 +35,13 @@ const ReviewAnswers = () => {
     onSuccess: (data) => {
       console.log(data, "Medical Questions");
 
-      if (data) {
-        router.push("/gathering-data");
-        console.log("Data send Successfully");
+      if (data?.data?.lastConsultation) {
+        console.log(data?.data?.lastConsultation?.fields, "data?.data?.data");
+        setBmi(data?.data?.lastConsultation?.fields?.bmi);
+        setConfirmationInfo(data?.data?.lastConsultation?.fields?.confirmationInfo);
+        setGpDetails(data?.data?.lastConsultation?.fields?.gpdetails);
+        setMedicalInfo(data?.data?.lastConsultation?.fields?.medicalInfo);
+        setPatientInfo(data?.data?.lastConsultation?.fields?.patientInfo);
       }
       return;
     },
@@ -62,8 +69,21 @@ const ReviewAnswers = () => {
       has_sub_field: item.has_sub_field,
     }));
 
+    const fname = patientInfo?.firstName ? patientInfo?.firstName : authUserDetail?.fname;
+    const lname = patientInfo?.lastName ? patientInfo?.lastName : authUserDetail?.lname;
+
     const formData = {
-      patientInfo: patientInfo,
+      // patientInfo: patientInfo,
+      patientInfo: {
+        firstName: fname,
+        lastName: lname,
+        dob: patientInfo?.dob,
+        ethnicity: patientInfo?.ethnicity,
+        gender: patientInfo?.gender,
+        phoneNo: patientInfo?.phoneNo,
+        pregnancy: patientInfo?.pregnancy,
+        address: patientInfo?.address,
+      },
       bmi: bmi,
       gpdetails: gpdetails,
       confirmationInfo: confirmationInfo,

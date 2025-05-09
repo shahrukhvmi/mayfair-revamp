@@ -20,6 +20,8 @@ import useMedicalQuestionsStore from "@/store/medicalQuestionStore";
 import useConfirmationQuestionsStore from "@/store/confirmationQuestionStore";
 import PageLoader from "@/Components/PageLoader/PageLoader";
 import useShippingOrBillingStore from "@/store/shipingOrbilling";
+import useProductId from "@/store/useProductIdStore";
+import useAuthUserDetailStore from "@/store/useAuthUserDetailStore";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 
@@ -37,8 +39,12 @@ export default function StepsInformation() {
   const { setPatientInfo, clearPatientInfo } = usePatientInfoStore();
   const { setMedicalQuestions } = useMedicalQuestionsStore();
   const { setConfirmationQuestions } = useConfirmationQuestionsStore();
+  const { setAuthUserDetail, clearAuthUserDetail } = useAuthUserDetailStore();
   const [showLoader, setShowLoader] = useState(false);
+
+  //Zustand state
   const { billing, setBilling, shipping, setShipping, clearShipping, clearBilling } = useShippingOrBillingStore();
+  const { productId } = useProductId();
 
   //Get Consultation Data
   const consultationMutation = useMutation(userConsultationApi, {
@@ -55,6 +61,7 @@ export default function StepsInformation() {
         clearPatientInfo();
         clearBilling();
         clearShipping();
+        clearAuthUserDetail();
       } else if (data?.data) {
         setBmi(data?.data?.data?.bmi);
         setCheckout(data?.data?.data?.checkout);
@@ -64,6 +71,7 @@ export default function StepsInformation() {
         setPatientInfo(data?.data?.data?.patientInfo);
         setShipping(data?.data?.data?.billing);
         setBilling(data?.data?.data?.shipping);
+        setAuthUserDetail(data?.data?.data?.auth_user);
       }
 
       return;
@@ -98,8 +106,12 @@ export default function StepsInformation() {
   });
 
   useEffect(() => {
+    const formData = {
+      clinic_id: 1,
+      product_id: productId,
+    };
     setShowLoader(true);
-    consultationMutation.mutate();
+    consultationMutation.mutate(formData);
     medicalQuestionsMutation.mutate();
   }, []);
 

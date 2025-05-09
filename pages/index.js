@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import PageLoader from "@/Components/PageLoader/PageLoader";
@@ -6,10 +6,29 @@ import StepsHeader from "@/layout/stepsHeader";
 import NextButton from "@/Components/NextButton/NextButton";
 import Image from "next/image";
 import usePatientStatus from "@/store/patientStatus";
+import useProductId from "@/store/useProductIdStore";
+import { useSearchParams } from "next/navigation";
 
 export default function Index() {
   const router = useRouter();
   const [showLoader, setShowLoader] = useState(false);
+
+  //Search Param to get product ID
+  const searchParams = useSearchParams();
+
+  //From zustand Store
+  const { productId, setProductId } = useProductId();
+  const { patientStatus } = usePatientStatus();
+
+  useEffect(() => {
+    const param = searchParams.get("product_id");
+    if (param) {
+      const parsedId = parseInt(param, 10);
+      if (!isNaN(parsedId)) {
+        setProductId(parsedId); // ✅ store in Zustand + localStorage
+      }
+    }
+  }, [searchParams, setProductId]);
 
   const {
     register,
@@ -19,10 +38,10 @@ export default function Index() {
     mode: "onChange",
     defaultValues: {},
   });
-  const { patientStatus } = usePatientStatus();
 
   const setReorderPatient = usePatientStatus((state) => state.setReorderPatient);
   const setNewPatient = usePatientStatus((state) => state.setNewPatient);
+
   const onSubmit = async (data, e) => {
     const action = e.nativeEvent.submitter.value;
 
@@ -36,10 +55,7 @@ export default function Index() {
 
     setShowLoader(true);
     await new Promise((resolve) => setTimeout(resolve, 500));
-
-  
   };
-
 
   return (
     <>
@@ -47,7 +63,6 @@ export default function Index() {
 
       <section className="my-8">
         <div className="bg-white max-w-xl mx-auto rounded-3xl p-10 shadow-lg border border-gray-100 relative">
-
           {/* Icon */}
           <div className="flex justify-center mb-8">
             <Image
@@ -60,13 +75,9 @@ export default function Index() {
           </div>
 
           {/* Heading */}
-          <h2 className=" bold-font paragraph text-xl text-start mb-3 p-0">
-            Let's get you started on your weight loss journey.
-          </h2>
+          <h2 className=" bold-font paragraph text-xl text-start mb-3 p-0">Let's get you started on your weight loss journey.</h2>
 
-          <p className="reg-font text-start text-sm paragraph mb-8">
-            We’ll now ask a few questions about you and your health.
-          </p>
+          <p className="reg-font text-start text-sm paragraph mb-8">We’ll now ask a few questions about you and your health.</p>
 
           {/* Good to know */}
           <div className="mb-10">
@@ -79,14 +90,7 @@ export default function Index() {
           </div>
 
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-            <NextButton
-              type="submit"
-              label="Accept and continue"
-              disabled={!isValid}
-
-
-            />
-
+            <NextButton type="submit" label="Accept and continue" disabled={!isValid} />
 
             <button
               type="submit"
