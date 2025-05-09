@@ -8,12 +8,15 @@ import StepsHeader from "@/layout/stepsHeader";
 import PageLoader from "@/Components/PageLoader/PageLoader";
 import usePatientInfoStore from "@/store/patientInfoStore";
 import useBmiStore from "@/store/bmiStore";
+import useAuthUserDetailStore from "@/store/useAuthUserDetailStore";
 
 const ConfirmationSummary = () => {
   const router = useRouter();
   const [showLoader, setShowLoader] = useState(false);
 
   const { patientInfo } = usePatientInfoStore();
+
+  const { authUserDetail } = useAuthUserDetailStore();
   const { bmi } = useBmiStore();
 
   console.log(bmi);
@@ -39,7 +42,17 @@ const ConfirmationSummary = () => {
             {/* Summary Box */}
             <div className="bg-[#DACFFF] border border-green-100 rounded-md p-5 text-sm text-gray-800">
               <p className="bold-font text-black">
-                <span className="bold-font paragraph">Full Name: </span> {patientInfo?.firstName} {patientInfo?.lastName}
+                <span className="bold-font paragraph">Full Name: </span>{" "}
+                {patientInfo?.firstName ? (
+                  <>
+                    {" "}
+                    {patientInfo?.firstName} {patientInfo?.lastName}
+                  </>
+                ) : (
+                  <>
+                    {authUserDetail?.fname} {authUserDetail?.lname}
+                  </>
+                )}
               </p>
               <hr className="border-gray-300 mb-3" />
 

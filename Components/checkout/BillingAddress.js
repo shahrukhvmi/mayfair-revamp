@@ -149,13 +149,15 @@ export default function BillingAddress({ isCompleted, onComplete, sameAsShipping
       id: selectedCountry?.id || "",
       country_name: selectedCountry?.name || "",
       country_price: selectedCountry?.price || "",
-      postalcode: data.postalCodeValue,
+      postalcode: data.postalcode,
       addressone: data.addressone,
       addresstwo: data.addresstwo,
       city: data.city,
       state: data.state,
       same_as_shipping: data.same_as_shipping, // ✅ Save this also
     });
+
+    console.log(data.postalcode, "data.postalCodeValue");
 
     onComplete();
   };

@@ -47,8 +47,12 @@ const MedicalQuestions = () => {
   // Prefill form fields
   useEffect(() => {
     questions.forEach((q) => {
-      setValue(`responses[${q.id}].answer`, q.answer || "no");
-      setValue(`responses[${q.id}].subfield_response`, q.subfield_response || "");
+      if (q.answer) {
+        setValue(`responses[${q.id}].answer`, q.answer);
+      }
+      if (q.subfield_response) {
+        setValue(`responses[${q.id}].subfield_response`, q.subfield_response);
+      }
     });
   }, [questions]);
 

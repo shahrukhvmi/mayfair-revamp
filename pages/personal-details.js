@@ -11,14 +11,18 @@ import { useEffect, useState } from "react";
 import PageLoader from "@/Components/PageLoader/PageLoader";
 import { FiCheck } from "react-icons/fi";
 import MuiDatePickerField from "@/Components/DatePicker/DatePicker";
-import { format, parse } from "date-fns";
+import { differenceInYears, format, parse } from "date-fns";
 import usePatientInfoStore from "@/store/patientInfoStore";
+import useProductId from "@/store/useProductIdStore";
 
 export default function PersonalDetails() {
   const [showLoader, setShowLoader] = useState(false);
 
   const router = useRouter();
+
+  //Zustand Store State
   const { patientInfo, setPatientInfo } = usePatientInfoStore();
+  const { productId } = useProductId();
 
   console.log(patientInfo, "patientInfo");
 
@@ -37,6 +41,26 @@ export default function PersonalDetails() {
       gender: "",
     },
   });
+
+  const validateAge = (date) => {
+    if (!date) return "Date of birth is required";
+
+    const age = differenceInYears(new Date(), date);
+
+    if (age < 18) {
+      return "You must be at least 18 years old";
+    }
+
+    if (productId === 4 && age > 75) {
+      return "Wegovy (Semaglutide) is not recommended for individuals above 75 years of age";
+    }
+
+    if (productId === 1 && age > 85) {
+      return "Mounjaro (Tirzepatide) is not recommended for individuals above 85 years of age";
+    }
+
+    return true;
+  };
 
   useEffect(() => {
     if (patientInfo?.dob) {
@@ -119,7 +143,9 @@ export default function PersonalDetails() {
                   {errors.gender && <p className="text-red-500 text-sm mt-1 text-center">Please select your gender</p>}
                 </div>
                 <div>
-                  <MuiDatePickerField name="dob" label="Date of Birth" control={control} errors={errors} />
+                  <MuiDatePickerField name="dob" label="Date of Birth" control={control} errors={errors} rules={{ validate: validateAge }} />
+
+                  {/* {errors.dob && <p className="text-red-500 text-sm mt-1 text-center">{errors.dob.message}</p>} */}
 
                   {/* {errors.dob && <p className="text-red-500 text-sm mt-1">Date of birth is required</p>} */}
                 </div>
