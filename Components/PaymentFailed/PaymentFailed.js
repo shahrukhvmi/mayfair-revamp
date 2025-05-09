@@ -11,29 +11,20 @@ const PaymentFailed = () => {
   };
 
   return (
-    <>
-      <div className="flex items-center justify-center min-h-screen bg-[#dacfff] px-6 sm:px-44">
-        <div className="bg-white  rounded-lg shadow-lg p-8 text-center w-full">
-          <div className="text-center">
-            <div role="status" className="mb-8">
-              <LuBadgeX className="inline w-16 h-16 text-gray-200  fill-purple-600 mx-auto mb-4" />
-              <h2 className="text-3xl bold-font text-gray-800  mb-4">Ohh Sorry!</h2>
-              <div className="text-left text-gray-600  mb-5">
-                <center>
-                  {" "}
-                  <p>Your Payment has Failed!.</p>
-                </center>
-              </div>
-            </div>
-            <NextButton
-              onClick={handleGoBack}
-              label=" Continue to Available Treatments"
-            />
-
-          </div>
+    <div className="flex items-center justify-center h-screen bg-[#dacfff] px-6 sm:px-44">
+      <div className="bg-white rounded-lg shadow-lg p-8 text-center w-full max-w-2xl">
+        <LuBadgeX className="inline w-16 h-16 text-gray-200 fill-purple-600 mx-auto mb-4" />
+        <h2 className="text-3xl niba-bold-font text-gray-800 mb-4">Payment Not Completed</h2>
+        <p className="text-gray-600 mb-6 reg-font">It looks like your payment wasn’t completed. You can try again or contact us if you need help.</p>
+        <div className="text-center flex justify-center">
+          <NextButton
+            onClick={handleGoBack}
+            className={"s:!w-96 "}
+            label="Continue to Available Treatments"
+          />
         </div>
       </div>
-    </>
+    </div>
   );
 };
 

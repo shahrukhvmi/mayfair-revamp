@@ -162,12 +162,24 @@ export default function BmiDetail() {
                     control={control}
                     render={({ field }) => (
                       <FormControlLabel
-                        control={<Checkbox {...field} checked={field.value} />}
+                        control={
+                          <Checkbox
+                            {...field}
+                            checked={field.value}
+                            sx={{
+                              color: "#6D28D9", // violet-700
+                              '&.Mui-checked': {
+                                color: "#6D28D9", // violet-700 when checked
+                              },
+                            }}
+                          />
+                        }
                         label={getCheckbox1Label()}
                         classes={{ label: "font-medium text-gray-800" }}
                       />
                     )}
                   />
+
                 </Box>
 
                 <Box mb={1}>
@@ -176,12 +188,24 @@ export default function BmiDetail() {
                     control={control}
                     render={({ field }) => (
                       <FormControlLabel
-                        control={<Checkbox {...field} checked={field.value} />}
+                        control={
+                          <Checkbox
+                            {...field}
+                            checked={field.value}
+                            sx={{
+                              color: "#6D28D9", // violet-700
+                              '&.Mui-checked': {
+                                color: "#6D28D9", // violet-700 when checked
+                              },
+                            }}
+                          />
+                        }
                         label="You have at least one weight-related comorbidity (e.g. PCOS, diabetes, etc.)"
                         classes={{ label: "font-medium text-gray-800" }}
                       />
                     )}
                   />
+
                 </Box>
 
                 {checkbox2 && (
@@ -216,6 +240,12 @@ export default function BmiDetail() {
                                 setValue("weight_related_comorbidity_explanation", "");
                               }
                             }}
+                            sx={{
+                              color: "#6D28D9", // violet-700
+                              '&.Mui-checked': {
+                                color: "#6D28D9", // violet-700 when checked
+                              },
+                            }}
                           />
                         }
                         label="None of the above"
@@ -223,6 +253,7 @@ export default function BmiDetail() {
                       />
                     )}
                   />
+
                   {noneOfTheAbove && (
                     <p className="text-red-600 font-normal mt-2">
                       Your BMI in this range, weight loss treatment can only be prescribed if you have either previously taken weight loss medication,

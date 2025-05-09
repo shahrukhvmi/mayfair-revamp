@@ -97,10 +97,11 @@ export default function Index() {
               name="action"
               value="Accept and re-order"
               disabled={!isValid}
-              className="cursor-pointer bg-[#8363b8] hover:bg-[#8363b8] text-white w-full py-3 rounded-full bold-font text-sm  transition my-3"
+              className=" w-full px-12   bold-font text-sm border-in duration-150 ease-in-out hover:bg-violet-700  py-3 rounded-full bold-font  transition my-3 border-2 text-violet-700 hover:text-white border-violet-700"
             >
               Accept and re-order
             </button>
+
           </form>
 
           {showLoader && (
