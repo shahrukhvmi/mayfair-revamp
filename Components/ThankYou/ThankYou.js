@@ -2,6 +2,7 @@ import React, { useRef } from "react";
 import { useRouter } from "next/router";
 import { HiBadgeCheck } from "react-icons/hi";
 import FormWrapper from "../FormWrapper/FormWrapper";
+import NextButton from "../NextButton/NextButton";
 
 const ThankYou = () => {
   const GO = useRouter();
@@ -40,12 +41,11 @@ const ThankYou = () => {
             </p>
           </div>
         </div>
-        <button
+        <NextButton
           onClick={handleGoBack}
-          className="bg-violet-700 hover:bg-violet-600 text-white px-2 sm:px-8 py-2 rounded-md font-medium transition-all duration-150 ease-in"
-        >
-          Continue to View Order Details
-        </button>
+          label="Continue to View Order Details"
+        />
+
       </div>
     </FormWrapper>
 

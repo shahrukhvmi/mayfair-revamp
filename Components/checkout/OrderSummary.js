@@ -98,9 +98,17 @@ const OrderSummary = () => {
       }
     },
     onError: (error) => {
-      if (error) {
-        toast.error(error?.response?.data?.message || "Something went wrong");
-        setShowLoader(false);
+      console.log(error,"dsfdsdsdfsdf")
+      const errors = error?.response?.data?.original?.errors;
+      const product_error = error?.response?.data?.errors?.Product;
+
+      if (errors && typeof errors === "object") {
+        Object.keys(errors).forEach((key) => {
+          const errorMessage = errors[key];
+          Array.isArray(errorMessage) ? errorMessage.forEach((msg) => toast.error(msg)) : toast.error(errorMessage);
+        });
+      } else {
+        toast.error(product_error)
       }
     },
   });

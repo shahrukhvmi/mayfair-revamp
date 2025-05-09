@@ -36,17 +36,19 @@ export default function LoginScreen() {
             password: "",
         },
     });
+    const { setEmail } = useSignupStore();
 
     const loginMutation = useMutation(Login, {
         onSuccess: (data) => {
             const user = data?.data?.data;
             if (user) {
+
                 setUserData(user);
                 setToken(user.token);
                 toast.success("Login Successfully");
                 Fetcher.axiosSetup.defaults.headers.common.Authorization = `Bearer ${user.token}`;
                 setShowLoader(false);
-                router.push("/steps-information");
+                router.push("/dashboard");
             }
         },
         onError: (error) => {
@@ -84,7 +86,7 @@ export default function LoginScreen() {
             password: data.password,
             company_id: 1,
         };
-
+        setEmail(data?.email);
         loginMutation.mutate(formData);
     };
 
@@ -107,7 +109,7 @@ export default function LoginScreen() {
                                 register={register}
                                 required
                                 errors={errors}
-                               
+
                             />
 
                             <TextField
@@ -118,7 +120,7 @@ export default function LoginScreen() {
                                 register={register}
                                 required
                                 errors={errors}
-                             
+
                             />
 
                             <NextButton label="Login" disabled={!isValid} type="submit" />

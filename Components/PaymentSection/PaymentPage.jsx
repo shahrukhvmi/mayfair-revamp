@@ -1,105 +1,87 @@
 import React, { useEffect, useState } from "react";
-// import { setPaymentLoading } from "../../store/slice/paymentLoaderSlice"; // adjust path as needed
+import { motion, AnimatePresence } from "framer-motion";
+
 const PaymentPage = ({ paymentData }) => {
   const [countdown, setCountdown] = useState(3);
 
-
-  //   useEffect(() => {
-
-  //     const updateCountdown = () => {
-  //         console.log(paymentData,"paymentData")
-  //       setCountdown((prevCountdown) => {
-  //         if (prevCountdown <= 1) {
-  //             console.log(paymentData);
-
-  //            document.getElementById('process-payment-form').submit();
-  //           return 0;
-  //         }
-  //         return prevCountdown - 1;
-  //       });
-  //     };
-
-  //     const timer = setInterval(updateCountdown, 1000);
-
-  //     return () => clearInterval(timer);
-  //   }, []);
-
-  // useEffect(() => {
-  //     console.log(paymentData); // Log paymentData to see if it's available
-  //     if (!paymentData?.actionurl) {
-  //         console.error("Payment action URL is missing");
-  //         return;
-  //     }
-
-  //     const updateCountdown = () => {
-  //         setCountdown((prevCountdown) => {
-  //             if (prevCountdown <= 1) {
-  //                 console.log("Form is being submitted:", paymentData);
-  //                 document.getElementById("process-payment-form").submit();
-  //                 return 0;
-  //             }
-  //             return prevCountdown - 1;
-  //         });
-  //     };
-
-  //     const timer = setTimeout(updateCountdown, 1000);
-
-  //     return () => clearTimeout(timer);
-  // }, [paymentData]);
-
   useEffect(() => {
-    if (!paymentData?.actionurl) {
-      return;
-    }
-
-    // Set loader true when countdown starts
-    // dispatch(setPaymentLoading(true));
+    if (!paymentData?.actionurl) return;
 
     const updateCountdown = () => {
-      setCountdown((prevCountdown) => {
-        if (prevCountdown <= 1) {
+      setCountdown((prev) => {
+        if (prev <= 1) {
           localStorage.removeItem("p_id");
           document.getElementById("process-payment-form").submit();
-          // Set loader false when countdown ends
-          setTimeout(() => {
-            // dispatch(setPaymentLoading(false));
-          }, 4000); // 4 sec delay
           return 0;
         }
-        setTimeout(updateCountdown, 1000); // Recursive call
-        return prevCountdown - 1;
+        setTimeout(updateCountdown, 1000);
+        return prev - 1;
       });
     };
 
     const timer = setTimeout(updateCountdown, 1000);
-
     return () => clearTimeout(timer);
   }, [paymentData]);
 
   return (
-    <>
-      <div className="process-payment-overlay-block"></div>
-      <div className="jumbotron text-center thank-you-main">
-        <div className="container d-flex justify-content-center">
-          <div className="process-payment bg-white p-4 rounded">
-            <div>
-              <svg className="spinner" viewBox="0 0 50 50">
-                <circle className="path" cx="25" cy="25" r="20" fill="none" strokeWidth="5"></circle>
-              </svg>
-            </div>
-            <p className="lead text-center">
-              <strong>Your payment is being processed!</strong>
-            </p>
-            <div id="countdown">Redirecting in {countdown}...</div>
-            <hr />
-            <div className="row justify-content-center">
-              <div className="col-6">
-                <p className="stay-text lead">Do not leave this page, you will be redirected to payment promptly.</p>
-              </div>
-            </div>
-          </div>
-        </div>
+    <AnimatePresence>
+      <motion.div
+        className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/50 backdrop-blur-sm"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+      >
+        <motion.div
+          className="bg-white p-8 rounded-2xl shadow-xl w-full max-w-md text-center flex flex-col items-center"
+          initial={{ scale: 0.95, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          exit={{ scale: 0.95, opacity: 0 }}
+          transition={{ duration: 0.3 }}
+        >
+          {/* Loader ring */}
+          <svg
+            className="w-16 h-16 text-violet-600 animate-spin mb-6"
+            viewBox="0 0 50 50"
+          >
+            <circle
+              className="opacity-25"
+              cx="25"
+              cy="25"
+              r="20"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="5"
+            />
+            <circle
+              className="opacity-100 text-violet-500"
+              cx="25"
+              cy="25"
+              r="20"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="5"
+              strokeDasharray="90"
+              strokeDashoffset="0"
+              strokeLinecap="round"
+            />
+          </svg>
 
+          {/* Text */}
+          <p className="text-xl bold-font text-gray-800">
+            Your payment is being processed!
+          </p>
+          <p className="bold-font text-base text-gray-600 mt-2">
+            Redirecting in {countdown}...
+          </p>
+
+          <hr className="w-full my-6 border-gray-200" />
+
+          <p className="reg-font text-sm text-gray-500">
+            Do not leave this page, you will be redirected to payment promptly.
+          </p>
+        </motion.div>
+
+        {/* Hidden form */}
         <form style={{ display: "none" }} id="process-payment-form" method="post" action={paymentData.actionurl}>
           <fieldset>
             <legend>IPG Connect Request Details</legend>
@@ -169,8 +151,8 @@ const PaymentPage = ({ paymentData }) => {
             </p>
           </fieldset>
         </form>
-      </div>
-    </>
+      </motion.div>
+    </AnimatePresence>
   );
 };
 
