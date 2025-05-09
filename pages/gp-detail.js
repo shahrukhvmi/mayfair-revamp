@@ -181,7 +181,7 @@ export default function GpDetail() {
                 {["yes", "no"].map((option) => (
                   <label
                     key={option}
-                    className={`w-1/2 flex items-center gap-3 px-4 py-3 border rounded-lg text-black ${
+                    className={`cursor-pointer w-1/2 flex items-center gap-3 px-4 py-3 border rounded-lg text-black ${
                       gpDetails === option ? "bg-[#DACFFF] border-violet-700" : "border-gray-300 hover:bg-gray-50"
                     }`}
                   >
@@ -215,7 +215,7 @@ export default function GpDetail() {
                     ].map((option) => (
                       <label
                         key={option.value}
-                        className={`w-full flex items-center gap-3 px-4 py-4 border rounded-lg mb-4 text-black ${
+                        className={`cursor-pointer w-full flex items-center gap-3 px-4 py-4 border rounded-lg mb-4 text-black ${
                           gepTreatMent === option.value ? "bg-[#DACFFF] border-violet-700" : "border-gray-300 hover:bg-gray-50"
                         }`}
                       >

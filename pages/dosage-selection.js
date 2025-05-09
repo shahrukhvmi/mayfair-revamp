@@ -179,7 +179,7 @@ export default function DosageSelection() {
       <StepsHeader />
 
       <div className={`${inter.className} flex items-center justify-center bg-[#F2EEFF] px-4 sm:px-6 lg:px-8 `}>
-        <div className="rounded-xl w-full max-w-2xl my-20">
+        <div className="rounded-xl w-full max-w-2xl my-10">
           <div className="w-full mx-auto sm:px-8 my-6 rounded-md">
             <div className="flex justify-center">
               <h1 className="niba-reg-font heading text-center my-3">You’re ready to start your personal weight loss journey</h1>
