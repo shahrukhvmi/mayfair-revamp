@@ -39,15 +39,9 @@ export default function Index() {
     defaultValues: {},
   });
 
-<<<<<<< HEAD
-  const setReorderPatient = usePatientStatus.getState().setReorderPatient;
-  const setNewPatient = usePatientStatus.getState().setNewPatient;
-  
-=======
   const setReorderPatient = usePatientStatus((state) => state.setReorderPatient);
   const setNewPatient = usePatientStatus((state) => state.setNewPatient);
 
->>>>>>> f2e3c83b1e1f7bf0b23384b70871ec86a05bb64d
   const onSubmit = async (data, e) => {
     const action = e.nativeEvent.submitter.value;
 
