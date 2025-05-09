@@ -25,7 +25,7 @@ const OrderSummary = () => {
   const router = useRouter();
   const [discountCode, setDiscountCode] = useState("");
 
-  // Get some data to store✌✌ 
+  // Get some data to store✌✌
   const { items, totalAmount } = useCartStore();
   const { Coupon, setCoupon, clearCoupon } = useCouponStore();
   const { shipping, billing, billingSameAsShipping } = useShippingOrBillingStore();
@@ -36,13 +36,13 @@ const OrderSummary = () => {
   const { confirmationInfo } = useConfirmationInfoStore();
   const { email } = useSignupStore();
 
-
   const isApplyEnabled = discountCode.trim().length > 0;
   const handleEdit = () => {
     router.push("dosage-selection");
   };
   const [couponLoading, setCouponLoading] = useState(false);
   const [paymentData, setPaymentData] = useState(null);
+  const [isButtonLoading, setIsButtonLoading] = useState(false);
 
   const handleApplyCoupon = async () => {
     setCouponLoading(true);
@@ -65,7 +65,6 @@ const OrderSummary = () => {
     }
   };
 
-
   const handleRemoveCoupon = () => {
     clearCoupon();
     toast("Coupon removed");
@@ -87,7 +86,7 @@ const OrderSummary = () => {
 
   // Apply discount if available
   if (discountAmount) {
-    finalTotal = (totalAmount - discountAmount) + shippingPrice;
+    finalTotal = totalAmount - discountAmount + shippingPrice;
   }
 
   // handle Payment ✌✌
@@ -98,22 +97,25 @@ const OrderSummary = () => {
       }
     },
     onError: (error) => {
-      console.log(error,"dsfdsdsdfsdf")
+      console.log(error, "dsfdsdsdfsdf");
       const errors = error?.response?.data?.original?.errors;
       const product_error = error?.response?.data?.errors?.Product;
 
       if (errors && typeof errors === "object") {
+        setIsButtonLoading(false);
         Object.keys(errors).forEach((key) => {
           const errorMessage = errors[key];
           Array.isArray(errorMessage) ? errorMessage.forEach((msg) => toast.error(msg)) : toast.error(errorMessage);
         });
       } else {
-        toast.error(product_error)
+        toast.error(product_error);
+        setIsButtonLoading(false);
       }
     },
   });
   // hanlde payment ✔✔✔✌✌
   const handlePayment = () => {
+    setIsButtonLoading(true);
     const checkout = {
       firstName: shipping?.first_name,
       lastName: shipping?.last_name,
@@ -158,11 +160,11 @@ const OrderSummary = () => {
     const formData = {
       checkout,
       patientInfo,
-      items: (items?.doses || []).map(d => ({
+      items: (items?.doses || []).map((d) => ({
         ...d,
         quantity: d.quantity || d.qty || 1,
       })),
-      addons: (items?.addons || []).map(a => ({
+      addons: (items?.addons || []).map((a) => ({
         ...a,
         quantity: a.quantity || a.qty || 1,
       })),
@@ -198,56 +200,37 @@ const OrderSummary = () => {
                       <HiOutlinePencilAlt className="w-4 h-4" />
                     </button>
                   </div>
-                </div >
+                </div>
 
                 <div className="overflow-y-auto">
                   <ul className="space-y-4 overflow-y-auto max-h-[250px] pr-1 pb-4">
                     {items?.doses?.map((dose, index) => (
                       <React.Fragment key={index}>
                         {/* Standard dose item */}
-                        <li
-                          className="group flex items-center justify-between rounded-lg bg-[#F2EEFF] hover:bg-violet-50 p-4 shadow-md transition-all duration-200"
-                        >
+                        <li className="group flex items-center justify-between rounded-lg bg-[#F2EEFF] hover:bg-violet-50 p-4 shadow-md transition-all duration-200">
                           <div className="flex flex-col">
                             <span className="text-base bold-font text-gray-900 truncate">
                               {dose?.product} {dose?.name}
                             </span>
-                            <span className="bold-font text-sm text-gray-600 mt-1">
-                              Qty: x{dose?.qty}
-                            </span>
+                            <span className="bold-font text-sm text-gray-600 mt-1">Qty: x{dose?.qty}</span>
                           </div>
 
-                          <span className="text-base bold-font text-black px-4 py-1 rounded-full">
-                            £{dose?.price}
-                          </span>
+                          <span className="text-base bold-font text-black px-4 py-1 rounded-full">£{dose?.price}</span>
                         </li>
 
                         {/* Additional item if product is Mounjaro */}
                         {dose?.product === "Mounjaro (Tirzepatide)" && (
-                          <li
-                            className="group flex items-center justify-between rounded-lg bg-[#ececec] hover:bg-violet-50 p-4 shadow-md transition-all duration-200 mt-2"
-                          >
+                          <li className="group flex items-center justify-between rounded-lg bg-[#ececec] hover:bg-violet-50 p-4 shadow-md transition-all duration-200 mt-2">
                             <div className="flex flex-col">
-                              <span className="text-base bold-font text-gray-900 truncate">
-                                Pack of 5 Needle
-                              </span>
-                              <span className="bold-font text-sm text-gray-600 mt-1">
-                                {dose.qty}x
-                              </span>
+                              <span className="text-base bold-font text-gray-900 truncate">Pack of 5 Needle</span>
+                              <span className="bold-font text-sm text-gray-600 mt-1">{dose.qty}x</span>
                             </div>
 
-                            <span className="text-base bold-font text-black px-4 py-1 rounded-full">
-                              £0.00
-                            </span>
+                            <span className="text-base bold-font text-black px-4 py-1 rounded-full">£0.00</span>
                           </li>
                         )}
                       </React.Fragment>
                     ))}
-
-
-
-
-
 
                     {items?.addons?.map((addon, index) => (
                       <li
@@ -255,17 +238,11 @@ const OrderSummary = () => {
                         className="group flex items-center justify-between rounded-lg bg-[#F2EEFF] hover:bg-violet-50  p-4 shadow-md transition-all duration-200"
                       >
                         <div className="flex flex-col">
-                          <span className="text-base bold-font text-gray-900  truncate">
-                            {addon?.name}
-                          </span>
-                          <span className="bold-font text-sm text-gray-600 mt-1">
-                            Qty: x{addon?.qty}
-                          </span>
+                          <span className="text-base bold-font text-gray-900  truncate">{addon?.name}</span>
+                          <span className="bold-font text-sm text-gray-600 mt-1">Qty: x{addon?.qty}</span>
                         </div>
 
-                        <span className="text-base bold-font  text-black px-4 py-1 rounded-full">
-                          £{addon?.price}
-                        </span>
+                        <span className="text-base bold-font  text-black px-4 py-1 rounded-full">£{addon?.price}</span>
                       </li>
                     ))}
                   </ul>
@@ -283,9 +260,7 @@ const OrderSummary = () => {
                   {Coupon && (
                     <div className="flex justify-between items-center mt-4">
                       <p className="text-sm text-[#1f9e8c] bold-font">Discount</p>
-                      <p className="text-sm text-[#1f9e8c] bold-font">
-                        -£{discountAmount?.toFixed(2)}
-                      </p>
+                      <p className="text-sm text-[#1f9e8c] bold-font">-£{discountAmount?.toFixed(2)}</p>
                     </div>
                   )}
 
@@ -293,10 +268,7 @@ const OrderSummary = () => {
 
                   <div className="flex justify-between items-center">
                     <p className="bold-font text-xl text-black">Total</p>
-                    <p className="bold-font text-xl text-black">
-                      £{finalTotal?.toFixed(2)}
-
-                    </p>
+                    <p className="bold-font text-xl text-black">£{finalTotal?.toFixed(2)}</p>
                   </div>
 
                   <hr className="my-4 border-gray-200" />
@@ -314,7 +286,6 @@ const OrderSummary = () => {
                         <div className="flex items-center gap-3">
                           <div className="flex items-center justify-center  border-[#1f9e8c] text-[#1f9e8c]">
                             <GoCheckCircleFill size={32} />
-
                           </div>
 
                           <div>
@@ -322,19 +293,13 @@ const OrderSummary = () => {
                               {Coupon?.Data?.code} <span className="reg-font paragraph">Applied</span>
                             </p>
                             <p className="text-gray-700 text-md  reg-font">
-                              - £{Coupon?.Data?.discount}{" "}
-                              {Coupon?.Data?.type === "Percent" && `(${Coupon?.Data?.discount}% off)`}
+                              - £{Coupon?.Data?.discount} {Coupon?.Data?.type === "Percent" && `(${Coupon?.Data?.discount}% off)`}
                             </p>
                           </div>
                         </div>
 
-                        <button
-                          type="button"
-                          onClick={handleRemoveCoupon}
-                          className="text-red-500 text-sm reg-font hover:underline cursor-pointer"
-                        >
+                        <button type="button" onClick={handleRemoveCoupon} className="text-red-500 text-sm reg-font hover:underline cursor-pointer">
                           <RxCross2 className="bold-font " size={24} />
-
                         </button>
                       </motion.div>
                     ) : (
@@ -350,37 +315,38 @@ const OrderSummary = () => {
                           type="button"
                           onClick={handleApplyCoupon}
                           disabled={!isApplyEnabled}
-                          className={`px-6 text-sm bold-font text-white transition-all duration-200 ${isApplyEnabled
-                            ? "bg-violet-600 hover:bg-violet-700"
-                            : "bg-gray-300 cursor-not-allowed"
-                            }`}
+                          className={`px-6 text-sm bold-font text-white transition-all duration-200 ${
+                            isApplyEnabled ? "bg-violet-600 hover:bg-violet-700" : "bg-gray-300 cursor-not-allowed"
+                          }`}
                         >
                           {couponLoading ? "Applying..." : "Apply"}
                         </button>
                       </div>
                     )}
                   </AnimatePresence>
-
-
-
                 </div>
                 <div className="my-5">
-
-
-                  <NextButton
-                    label="Proceed to Payment "
-                    onClick={handlePayment}
-                  />
+                  {isButtonLoading == true ? (
+                    <div className="w-full px-28  py-3 rounded-full text-white bg-violet-700 flex justify-center">
+                      <motion.div
+                        animate={{ rotate: 360 }}
+                        transition={{
+                          repeat: Infinity,
+                          duration: 1,
+                          ease: "linear",
+                        }}
+                        className="w-5 h-5 border-4 border-t-transparent border-primary rounded-full text-white"
+                      />
+                    </div>
+                  ) : (
+                    <NextButton label="Proceed to Payment " onClick={handlePayment} />
+                  )}
                 </div>
-              </div >
-            </div >
-
-
-          </div >
-
+              </div>
+            </div>
+          </div>
         </>
-      )
-      }
+      )}
     </>
   );
 };

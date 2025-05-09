@@ -9,22 +9,91 @@ import PageLoader from "@/Components/PageLoader/PageLoader";
 import usePatientInfoStore from "@/store/patientInfoStore";
 import useBmiStore from "@/store/bmiStore";
 import useAuthUserDetailStore from "@/store/useAuthUserDetailStore";
+import sendStepData from "@/api/stepsDataApi";
+import { useMutation } from "@tanstack/react-query";
+import useMedicalInfoStore from "@/store/medicalInfoStore";
+import useConfirmationInfoStore from "@/store/confirmationInfoStore";
+import useProductId from "@/store/useProductIdStore";
+import useGpDetailsStore from "@/store/gpDetailStore";
 
 const ConfirmationSummary = () => {
   const router = useRouter();
   const [showLoader, setShowLoader] = useState(false);
 
-  const { patientInfo } = usePatientInfoStore();
-
-  const { authUserDetail } = useAuthUserDetailStore();
-  const { bmi } = useBmiStore();
+  // Zustand States
+  const { patientInfo, setPatientInfo } = usePatientInfoStore();
+  const { authUserDetail, setAuthUserDetail } = useAuthUserDetailStore();
+  const { bmi, setBmi } = useBmiStore();
+  const { medicalInfo, setMedicalInfo } = useMedicalInfoStore();
+  const { confirmationInfo, setConfirmationInfo } = useConfirmationInfoStore();
+  const { gpdetails, setGpDetails } = useGpDetailsStore();
+  const { productId } = useProductId();
 
   console.log(bmi);
 
+  const stepsDataMutation = useMutation(sendStepData, {
+    onSuccess: (data) => {
+      console.log(data, "Medical Questions");
+
+      if (data?.data?.lastConsultation) {
+        console.log(data?.data?.lastConsultation?.fields, "data?.data?.data");
+        setBmi(data?.data?.lastConsultation?.fields?.bmi);
+        setConfirmationInfo(data?.data?.lastConsultation?.fields?.confirmationInfo);
+        setGpDetails(data?.data?.lastConsultation?.fields?.gpdetails);
+        setMedicalInfo(data?.data?.lastConsultation?.fields?.medicalInfo);
+        setPatientInfo(data?.data?.lastConsultation?.fields?.patientInfo);
+      }
+
+      router.push("/gathering-data");
+      return;
+    },
+    onError: (error) => {
+      // setLoading(false);
+      console.log("error", error?.response?.data?.message);
+      if (error) {
+        toast.error(error?.response?.data?.message);
+        setShowLoader(false);
+      }
+    },
+  });
+
+  //handle Confirm
   const hanldeConfirm = async () => {
     setShowLoader(true);
-    await new Promise((resolve) => setTimeout(resolve, 500)); // Wait 2s
-    router.push("/gathering-data");
+
+    const formattedMedicalInfo = medicalInfo.map((item) => ({
+      question: item.question,
+      qsummary: item.qsummary,
+      answer: item.answer,
+      subfield_response: item.subfield_response,
+      sub_field_prompt: item.sub_field_prompt,
+      has_sub_field: item.has_sub_field,
+    }));
+
+    const fname = patientInfo?.firstName ? patientInfo?.firstName : authUserDetail?.fname;
+    const lname = patientInfo?.lastName ? patientInfo?.lastName : authUserDetail?.lname;
+
+    const formData = {
+      // patientInfo: patientInfo,
+      patientInfo: {
+        firstName: fname,
+        lastName: lname,
+        dob: patientInfo?.dob,
+        ethnicity: patientInfo?.ethnicity,
+        gender: patientInfo?.gender,
+        phoneNo: patientInfo?.phoneNo,
+        pregnancy: patientInfo?.pregnancy,
+        address: patientInfo?.address,
+      },
+      bmi: bmi,
+      gpdetails: gpdetails,
+      confirmationInfo: confirmationInfo,
+      medicalInfo: formattedMedicalInfo,
+      pid: productId,
+    };
+    stepsDataMutation.mutate(formData);
+    // await new Promise((resolve) => setTimeout(resolve, 500)); // Wait 2s
+    // router.push("/gathering-data");
   };
   const reviewAll = () => {
     router.push("/review-answers");
