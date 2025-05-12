@@ -5,22 +5,21 @@ import ApplicationUser from "@/config/ApplicationUser";
 import Link from "next/link";
 import useSignupStore from "@/store/signupStore";
 import useAuthStore from "@/store/authStore";
+import LoginModal from "@/Components/LoginModal/LoginModal";
+import useLoginModalStore from "@/store/useLoginModalStore";
+import { Login } from "@/api/loginApi";
+import { useMutation } from "@tanstack/react-query";
+import toast from "react-hot-toast";
+import Fetcher from "@/library/Fetcher";
+import { useRouter } from "next/router";
 
 const StepsHeader = ({ isOpen, toggleSidebar }) => {
   const [isOpenDrop, setIsOpenDrop] = useState(false);
-
+  const [showLoader, setShowLoader] = useState(false);
+  const { token, setToken, clearToken } = useAuthStore();
+  const { showLoginModal, closeLoginModal, openLoginModal } = useLoginModalStore();
   const { firstName } = useSignupStore();
   const [name, setUserData] = useState("");
-
-  // RTk Query Fetch user /GetUserData 🔥🔥
-  // const { data } = useProfileUserDataQuery();
-  // const data = [];
-  // useEffect(() => {
-  //   if (data) {
-  //     const userName = data.profile?.user ?? "";
-  //     setUserData(userName);
-  //   }
-  // }, [data]);
 
   const toggleDropdown = () => {
     setIsOpenDrop((prev) => !prev);
@@ -49,12 +48,14 @@ const StepsHeader = ({ isOpen, toggleSidebar }) => {
   const handleLogout = () => {
     setIsOpenDrop(false);
     // logout();
-    alert("logout");
+    clearToken();
+    router.push("/login/")
   };
 
   const handleRemovePid = () => {
     localStorage.removeItem("previous_id");
   };
+  const router = useRouter();
 
   const [impersonat, setImpersonat] = useState(null);
 
@@ -68,16 +69,53 @@ const StepsHeader = ({ isOpen, toggleSidebar }) => {
     logout();
   };
 
-  const { token } = useAuthStore();
+  const loginMutation = useMutation(Login, {
+    onSuccess: (data) => {
+      const user = data?.data?.data;
+      setUserData(user);
+      setToken(user.token);
+      toast.success("Login Successfully");
+      Fetcher.axiosSetup.defaults.headers.common.Authorization = `Bearer ${user.token}`;
+      setShowLoader(false);
+      closeLoginModal()
+      router.push("/dashboard");
+    },
+    onError: (error) => {
+      const errors = error?.response?.data?.errors;
 
+      if (errors && typeof errors === "object") {
+        Object.values(errors).forEach((err) => {
+          // If error is an array (like from Laravel validation), loop through that too
+          if (Array.isArray(err)) {
+            err.forEach((msg) => toast.error(msg));
+          } else {
+            toast.error(err);
+          }
+        });
+      }
+
+      setShowLoader(false);
+    },
+
+  });
   return (
     <>
+
+      <LoginModal
+        show={showLoginModal}
+        onClose={closeLoginModal}
+        onLogin={(data) => {
+          setShowLoader(true);
+          loginMutation.mutate({ ...data, company_id: 1 });
+        }}
+        isLoading={showLoader}
+      />
       <div className="bg-white px-4 sm:px-6 lg:px-6 flex items-center justify-between relative py-2">
         {/* Hamburger Button (only visible on mobile) */}
         <button onClick={toggleSidebar} className="text-2xl text-violet-700 sm:hidden">
           {isOpen ? <FiX /> : <FiMenu />}
         </button>
-    
+
         {/* Logo */}
         <div className="w-32 sm:w-40">
           <Link href="/" onClick={handleRemovePid}>
@@ -121,12 +159,12 @@ const StepsHeader = ({ isOpen, toggleSidebar }) => {
           {!token && (
             <div className="w-1/2 items-center justify-end lg:w-[100%] sm:flex hidden">
               <p className="hidden md:block text-black reg-font">Already have an account?</p>
-              <a
+              <span
                 className="inline-flex items-center px-6 py-2 bg-violet-800 border border-transparent rounded-full font-semibold text-xs text-white uppercase tracking-widest hover:bg-violet-700 focus:bg-bg-violet-700 active:bg-violet-900 focus:outline-none focus:ring-2 focus:ring-violet-500 focus:ring-offset-2 transition ease-in-out duration-150 false ml-4"
-                href="/login/"
+                onClick={openLoginModal}
               >
                 Login
-              </a>
+              </span>
             </div>
           )}
         </div>

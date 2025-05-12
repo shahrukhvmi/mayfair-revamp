@@ -1,27 +1,34 @@
-import useSignupStore from "@/store/signupStore";
-import TextField from "@/Components/TextField/TextField";
-import { useForm } from "react-hook-form";
-import NextButton from "@/Components/NextButton/NextButton";
-import { useRouter } from "next/navigation";
-import PageLoader from "@/Components/PageLoader/PageLoader";
 import { useEffect, useState } from "react";
-import FormWrapper from "@/Components/FormWrapper/FormWrapper";
-import PageAnimationWrapper from "@/Components/PageAnimationWrapper/PageAnimationWrapper";
-import StepsHeader from "@/layout/stepsHeader";
-import BackButton from "@/Components/BackButton/BackButton";
-import { registerUser } from "@/api/authApi";
+import { useRouter } from "next/navigation";
+import { useForm } from "react-hook-form";
 import { useMutation } from "@tanstack/react-query";
 import toast from "react-hot-toast";
+
+import useSignupStore from "@/store/signupStore";
 import useUserDataStore from "@/store/userDataStore";
 import useAuthStore from "@/store/authStore";
+import { registerUser } from "@/api/authApi";
+import { Login } from "@/api/loginApi";
 import Fetcher from "@/library/Fetcher";
-// import toast from "react-hot-toast";
+
+import NextButton from "@/Components/NextButton/NextButton";
+import BackButton from "@/Components/BackButton/BackButton";
+import StepsHeader from "@/layout/stepsHeader";
+import FormWrapper from "@/Components/FormWrapper/FormWrapper";
+import PageAnimationWrapper from "@/Components/PageAnimationWrapper/PageAnimationWrapper";
+import LoginModal from "@/Components/LoginModal/LoginModal";
+import TextField from "@/Components/TextField/TextField";
+import PageLoader from "@/Components/PageLoader/PageLoader";
+import useLoginModalStore from "@/store/useLoginModalStore";
 
 export default function EmailConfirmation() {
   const [showLoader, setShowLoader] = useState(false);
-
+  const [already, setAlready] = useState(false);
+  // const [showLoginModal, setShowLoginModal] = useState(false);
+  console.log(showLoader, "showLoader")
+  const router = useRouter();
   const { firstName, lastName, email, confirmationEmail, setEmail, setConfirmationEmail } = useSignupStore();
-  const { userData, setUserData } = useUserDataStore();
+  const { setUserData } = useUserDataStore();
   const { token, setToken } = useAuthStore();
 
   const {
@@ -29,120 +36,147 @@ export default function EmailConfirmation() {
     handleSubmit,
     setValue,
     getValues,
-    trigger, // ⭐️ to get live form values
+    trigger,
     formState: { errors, isValid },
   } = useForm({
     mode: "onChange",
-    defaultValues: {
-      email: "",
-      confirmationEmail: "",
-    },
+    defaultValues: { email: "", confirmationEmail: "" },
   });
+  const { showLoginModal, closeLoginModal, openLoginModal } = useLoginModalStore();
+  useEffect(() => {
+    setValue("email", email);
+    setValue("confirmationEmail", confirmationEmail);
+    if (email) trigger(["email", "confirmationEmail"]);
+  }, [email, confirmationEmail, setValue, trigger]);
 
-  const router = useRouter();
-
-  // Register Mutation Function
   const registerMutation = useMutation(registerUser, {
     onSuccess: (data) => {
-      console.log(data?.data?.data, "Dataaaaaaaaaa");
-
-      if (data) {
-        // toast.success("User Register successfully!");
-        setUserData(data?.data?.data);
-        setToken(data?.data?.data?.token);
-        Fetcher.axiosSetup.defaults.headers.common.Authorization = `Bearer ${token}`;
-        router.push("/steps-information");
-      }
-
-      return;
+      const user = data?.data?.data;
+      setUserData(user);
+      setToken(user?.token);
+      Fetcher.axiosSetup.defaults.headers.common.Authorization = `Bearer ${user?.token}`;
+      router.push("/steps-information");
     },
     onError: (error) => {
-      // setLoading(false);
-      console.log("error", error?.response?.data?.errors?.email);
-      if (error?.response?.data?.errors?.email) {
-        toast.error(error?.response?.data?.errors?.email);
-      }
+      const emailError = error?.response?.data?.errors?.email;
+      if (emailError === "The email has already been taken.") setAlready(true);
+      if (emailError) toast.error(emailError);
       setShowLoader(false);
     },
   });
 
-  useEffect(() => {
-    setValue("email", email);
-    setValue("confirmationEmail", confirmationEmail);
+  const loginMutation = useMutation(Login); // no onSuccess/onError
 
-    if (email) {
-      trigger(["email", "confirmationEmail"]);
-    }
 
-    // trigger(["email", "confirmationEmail"]);
-  }, [email, confirmationEmail, setValue, trigger]);
-
-  const onSubmit = async (data) => {
-    console.log("Form Data:", data);
+  const handleSignupSubmit = (data) => {
     setEmail(data.email);
     setConfirmationEmail(data.confirmationEmail);
     setShowLoader(true);
-    const formData = {
+
+    registerMutation.mutate({
       email: data.email,
       email_confirmation: data.confirmationEmail,
       fname: firstName,
       lname: lastName,
       company_id: 1,
-    };
-
-    console.log(formData, "formData");
-    registerMutation.mutate(formData);
-
-    // await new Promise((resolve) => setTimeout(resolve, 500));
+    });
   };
 
   return (
     <>
+      <LoginModal
+        show={showLoginModal}
+        onClose={closeLoginModal}
+        isLoading={showLoader}
+        onLogin={async (data) => {
+          setShowLoader(true);
+          try {
+            const response = await loginMutation.mutateAsync({ ...data, company_id: 1 });
+            const user = response?.data?.data;
+
+            setUserData(user);
+            setToken(user.token);
+            toast.success("Login Successfully");
+
+            Fetcher.axiosSetup.defaults.headers.common.Authorization = `Bearer ${user.token}`;
+            closeLoginModal();
+
+            // ✅ Hide loader immediately after success
+            setShowLoader(false);
+
+            // ✅ Then redirect
+            router.push("/dashboard");
+          } catch (error) {
+            const errorMsg = error?.response?.data?.errors;
+            const firstMsg = errorMsg && typeof errorMsg === "object"
+              ? Object.values(errorMsg)[0]
+              : "Something went wrong.";
+            toast.error(firstMsg);
+            setShowLoader(false);
+          }
+        }}
+
+      />
+
+
+      {/*  */}
+
       <StepsHeader />
       <FormWrapper
-        heading={"Please enter your email"}
-        description={"This is where we'll send information from your prescriber and pharmacy."}
-        percentage={"20"}
+        heading="Please enter your email"
+        description="This is where we'll send information from your prescriber and pharmacy."
+        percentage="20"
       >
         <PageAnimationWrapper>
-          <div className="">
-            <div className={`relative ${showLoader ? "pointer-events-none cursor-not-allowed" : ""}`}>
-              <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-                <TextField
-                  label="Email Address"
-                  name="email"
-                  placeholder="Email Address"
-                  type="email"
-                  register={register}
-                  required
-                  errors={errors}
-                  disablePaste={true}
-                />
+          <div className={`relative ${showLoader ? "pointer-events-none cursor-not-allowed" : ""}`}>
+            <form onSubmit={handleSubmit(handleSignupSubmit)} className="space-y-4">
+              <TextField
+                label="Email Address"
+                name="email"
+                type="email"
+                placeholder="Email Address"
+                register={register}
+                required
+                errors={errors}
+              />
 
-                <TextField
-                  label="Confirm Email Address"
-                  name="confirmationEmail"
-                  placeholder="Confirm Email Address"
-                  type="email"
-                  register={register}
-                  required
-                  validation={{
-                    validate: (value) => value === getValues("email") || "Email addresses must match.",
-                  }}
-                  errors={errors}
-                  disablePaste={true}
-                />
+              <TextField
+                label="Confirm Email Address"
+                name="confirmationEmail"
+                type="email"
+                placeholder="Confirm Email Address"
+                register={register}
+                required
+                validation={{
+                  validate: (value) =>
+                    value === getValues("email") || "Email addresses must match.",
+                }}
+                errors={errors}
+              />
 
-                <NextButton label="Next" disabled={!isValid} type="submit" />
-                <BackButton label="Back" className="mt-2" onClick={() => router.back()} />
-              </form>
-
-              {showLoader && (
-                <div className="absolute inset-0 z-20 flex justify-center items-center bg-white/60 rounded-lg cursor-not-allowed">
-                  <PageLoader />
+              {already && (
+                <div className="text-sm text-red-600 bg-red-50 border border-red-200 p-3 rounded-md">
+                  This email is already registered.{" "}
+                  <span
+                    onClick={openLoginModal}
+                    className="text-blue-600 underline cursor-pointer font-medium hover:text-blue-800"
+                  >
+                    Click here to login.
+                  </span>
                 </div>
               )}
-            </div>
+
+
+
+              <NextButton label="Next" type="submit" disabled={!isValid} />
+              <BackButton label="Back" className="mt-2" onClick={() => router.back()} />
+            </form>
+
+            {showLoader && (
+              <div className="absolute inset-0 z-20 flex justify-center items-center bg-white/60 rounded-lg">
+                <PageLoader />
+              </div>
+            )}
           </div>
         </PageAnimationWrapper>
       </FormWrapper>
