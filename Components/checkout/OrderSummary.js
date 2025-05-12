@@ -195,7 +195,7 @@ const OrderSummary = () => {
                     <button
                       type="button"
                       onClick={handleEdit}
-                      className="ml-2 p-2 rounded-full bg-white hover:bg-gray-100 text-violet-700 shadow transition"
+                      className="cursor-pointer ml-2 p-2 rounded-full bg-white hover:bg-gray-100 text-violet-700 shadow transition"
                     >
                       <HiOutlinePencilAlt className="w-4 h-4" />
                     </button>
@@ -215,7 +215,7 @@ const OrderSummary = () => {
                             <span className="bold-font text-sm text-gray-600 mt-1">Quantity: x{dose?.qty}</span>
                           </div>
 
-                          <span className="text-base bold-font text-black px-4 py-1 rounded-full">£{dose?.price}</span>
+                          <span className="text-base bold-font text-black px-4 py-1 rounded-full">£{dose?.price?.toFixed(2)}</span>
                         </li>
 
                         {/* Additional item if product is Mounjaro */}
@@ -242,7 +242,7 @@ const OrderSummary = () => {
                           <span className="bold-font text-sm text-gray-600 mt-1">Quantity: x{addon?.qty}</span>
                         </div>
 
-                        <span className="text-base bold-font  text-black px-4 py-1 rounded-full">£{addon?.price}</span>
+                        <span className="text-base bold-font  text-black px-4 py-1 rounded-full">£{addon?.price?.toFixed(2)}</span>
                       </li>
                     ))}
                   </ul>

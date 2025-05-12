@@ -110,7 +110,7 @@ const ConfirmationSummary = () => {
           <div className="space-y-6">
             {/* Summary Box */}
             <div className="bg-[#DACFFF] border border-green-100 rounded-md p-5 text-sm text-gray-800">
-              <p className="bold-font text-black">
+              <p className="bold-font text-black mb-1">
                 <span className="bold-font paragraph">Full Name: </span>{" "}
                 {patientInfo?.firstName ? (
                   <>
@@ -123,14 +123,14 @@ const ConfirmationSummary = () => {
                   </>
                 )}
               </p>
-              <hr className="border-gray-300 mb-3" />
+              {/* <hr className="border-gray-300 mb-3" /> */}
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-2 gap-x-8">
                 <p className="bold-font text-black">
-                  <span className="bold-font paragraph">Postcode:</span> {patientInfo?.address?.postalcode}
+                  <span className="bold-font paragraph">Postal Code:</span> {patientInfo?.address?.postalcode}
                 </p>
                 <p className="bold-font text-black">
-                  <span className="bold-font paragraph">Date of birth:</span> {patientInfo?.dob}
+                  <span className="bold-font paragraph">Date of Birth:</span> {patientInfo?.dob}
                 </p>
                 <p className="bold-font text-black">
                   <span className="bold-font paragraph">Height:</span>{" "}
