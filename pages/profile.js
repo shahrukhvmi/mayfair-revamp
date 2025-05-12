@@ -1,13 +1,15 @@
-import DashBoardLayout from '@/Components/Dashboard/DashboardLayout/DashBoardLayout'
-import React from 'react'
+import DashBoardLayout from "@/Components/Dashboard/DashboardLayout/DashBoardLayout";
+import ProtectedPage from "@/Components/ProtectedPage/ProtectedPage";
+import React from "react";
 
 const profile = () => {
   return (
-    <DashBoardLayout>
-            <h1>My Profile</h1>
+    <ProtectedPage>
+      <DashBoardLayout>
+        <h1>My Profile</h1>
+      </DashBoardLayout>
+    </ProtectedPage>
+  );
+};
 
-        </DashBoardLayout>
-  )
-}
-
-export default profile
+export default profile;

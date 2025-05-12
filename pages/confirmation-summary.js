@@ -15,6 +15,8 @@ import useMedicalInfoStore from "@/store/medicalInfoStore";
 import useConfirmationInfoStore from "@/store/confirmationInfoStore";
 import useProductId from "@/store/useProductIdStore";
 import useGpDetailsStore from "@/store/gpDetailStore";
+import useSignupStore from "@/store/signupStore";
+import useLastBmi from "@/store/useLastBmiStore";
 
 const ConfirmationSummary = () => {
   const router = useRouter();
@@ -28,6 +30,10 @@ const ConfirmationSummary = () => {
   const { confirmationInfo, setConfirmationInfo } = useConfirmationInfoStore();
   const { gpdetails, setGpDetails } = useGpDetailsStore();
   const { productId } = useProductId();
+  const { setLastBmi } = useLastBmi();
+
+  //To get firstname and lastName from signup store
+  const { firstName, lastName } = useSignupStore();
 
   console.log(bmi);
 
@@ -42,6 +48,7 @@ const ConfirmationSummary = () => {
         setGpDetails(data?.data?.lastConsultation?.fields?.gpdetails);
         setMedicalInfo(data?.data?.lastConsultation?.fields?.medicalInfo);
         setPatientInfo(data?.data?.lastConsultation?.fields?.patientInfo);
+        setLastBmi(data?.data?.lastConsultation?.fields?.bmi);
       }
 
       router.push("/gathering-data");
@@ -70,8 +77,8 @@ const ConfirmationSummary = () => {
       has_sub_field: item.has_sub_field,
     }));
 
-    const fname = patientInfo?.firstName ? patientInfo?.firstName : authUserDetail?.fname;
-    const lname = patientInfo?.lastName ? patientInfo?.lastName : authUserDetail?.lname;
+    const fname = firstName ? firstName : patientInfo?.firstName;
+    const lname = lastName ? lastName : patientInfo?.lastName;
 
     const formData = {
       // patientInfo: patientInfo,
@@ -112,14 +119,14 @@ const ConfirmationSummary = () => {
             <div className="bg-[#DACFFF] border border-green-100 rounded-md p-5 text-sm text-gray-800">
               <p className="bold-font text-black mb-1">
                 <span className="bold-font paragraph">Full Name: </span>{" "}
-                {patientInfo?.firstName ? (
+                {firstName ? (
                   <>
                     {" "}
-                    {patientInfo?.firstName} {patientInfo?.lastName}
+                    {firstName} {lastName}
                   </>
                 ) : (
                   <>
-                    {authUserDetail?.fname} {authUserDetail?.lname}
+                    {patientInfo?.firstName} {patientInfo?.lastName}
                   </>
                 )}
               </p>

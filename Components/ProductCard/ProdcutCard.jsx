@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import useProductId from "@/store/useProductIdStore";
-import usePatientStatus from "@/store/patientStatus";
+import usePatientStatus from "@/store/useReorderStore";
 import { userConsultationApi } from "@/api/consultationApi";
 import { useMutation } from "@tanstack/react-query";
 import { motion } from "framer-motion";
@@ -15,11 +15,14 @@ import useAuthUserDetailStore from "@/store/useAuthUserDetailStore";
 import useBmiStore from "@/store/bmiStore";
 import useCheckoutStore from "@/store/checkoutStore";
 import useShippingOrBillingStore from "@/store/shipingOrbilling";
+import useReorder from "@/store/useReorderStore";
+import useLastBmi from "@/store/useLastBmiStore";
 
-const ProductCard = ({ id, title, image, price, status, buttonText, reorder, lastOrderDate }) => {
+const ProductCard = ({ id, title, image, price, status, buttonText, lastOrderDate, reorder }) => {
   const router = useRouter();
   const { productId, setProductId } = useProductId();
-  const { setReorderPatient, setNewPatient } = usePatientStatus();
+  const { setReorder } = useReorder();
+
   const [isButtonLoading, setIsButtonLoading] = useState(false);
 
   const { setBmi, clearBmi } = useBmiStore();
@@ -30,6 +33,7 @@ const ProductCard = ({ id, title, image, price, status, buttonText, reorder, las
   const { setPatientInfo, clearPatientInfo } = usePatientInfoStore();
   const { setAuthUserDetail, clearAuthUserDetail } = useAuthUserDetailStore();
   const { billing, setBilling, shipping, setShipping, clearShipping, clearBilling } = useShippingOrBillingStore();
+  const { setLastBmi } = useLastBmi();
 
   //Get Consultation Data
   const consultationMutation = useMutation(userConsultationApi, {
@@ -57,15 +61,14 @@ const ProductCard = ({ id, title, image, price, status, buttonText, reorder, las
         setShipping(data?.data?.data?.billing);
         setBilling(data?.data?.data?.shipping);
         setAuthUserDetail(data?.data?.data?.auth_user);
+        setLastBmi(data?.data?.data?.bmi);
       }
 
       if (reorder) {
-        setReorderPatient(true);
-        setNewPatient(false);
         router.push("/re-order");
+        setReorder(true);
       } else {
-        setReorderPatient(false);
-        setNewPatient(true);
+        setReorder(false);
         router.push("/acknowledgment");
       }
 
@@ -84,7 +87,6 @@ const ProductCard = ({ id, title, image, price, status, buttonText, reorder, las
   });
 
   const handleClick = () => {
-    
     setIsButtonLoading(true);
     const formData = {
       clinic_id: 1,

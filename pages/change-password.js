@@ -1,13 +1,15 @@
-import DashBoardLayout from '@/Components/Dashboard/DashboardLayout/DashBoardLayout'
-import React from 'react'
+import DashBoardLayout from "@/Components/Dashboard/DashboardLayout/DashBoardLayout";
+import ProtectedPage from "@/Components/ProtectedPage/ProtectedPage";
+import React from "react";
 
 const changePassword = () => {
-    return (
-        <DashBoardLayout>
-            <h1>Change Password</h1>
+  return (
+    <ProtectedPage>
+      <DashBoardLayout>
+        <h1>Change Password</h1>
+      </DashBoardLayout>
+    </ProtectedPage>
+  );
+};
 
-        </DashBoardLayout>
-    )
-}
-
-export default changePassword
+export default changePassword;
