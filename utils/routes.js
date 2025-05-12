@@ -24,6 +24,7 @@ export const publicRoutes = [
     "/gathering-data",
     "/dosage-selection",
     "/checkout",
+    "/re-order",
    
 
   ];

@@ -57,7 +57,10 @@ export default function ResidentialAddress() {
   const handleSearch = async () => {
     setAddressSearchLoading(true);
     const postal = watch("postalCode");
-    if (!postal) return alert("Please enter a postal code.");
+    if (!postal) {
+      alert("Please enter a postal code.");
+      setAddressSearchLoading(false);
+    }
 
     try {
       const result = await api.find(postal);
