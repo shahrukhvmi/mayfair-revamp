@@ -41,7 +41,7 @@ export default function ForgotForm({
             onClick={onBack}
             className="text-sm reg-font text-blue-500 text-center underline mt-2 cursor-pointer"
           >
-            Back to Login
+            Login
           </p>
         </form>
       )}
