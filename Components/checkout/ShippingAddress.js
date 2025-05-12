@@ -92,8 +92,12 @@ export default function ShippingAddress({ isCompleted, onComplete }) {
     setValue("postalcode", shipping.postalcode || "");
     setValue("addressone", shipping.addressone || "");
     setValue("addresstwo", shipping.addresstwo || "");
-    setValue("first_name", shipping.first_name || "");
-    setValue("last_name", shipping.last_name || "");
+    if (shipping.first_name) {
+      setValue("first_name", shipping.first_name);
+    }
+    if (shipping.last_name) {
+      setValue("last_name", shipping.last_name);
+    }
     setValue("city", shipping.city || "");
     setValue("state", shipping.state || "");
 
