@@ -123,7 +123,10 @@ export default function ShippingAddress({ isCompleted, onComplete }) {
   const handleSearch = async () => {
     setAddressSearchLoading(true);
     const postal = watch("postalcode");
-    if (!postal) return alert("Please enter a postal code.");
+    if (!postal) {
+      alert("Please enter a postal code.");
+      setAddressSearchLoading(false);
+    }
 
     try {
       const result = await api.find(postal);
