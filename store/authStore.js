@@ -3,7 +3,7 @@ import { persist } from "zustand/middleware";
 
 const useAuthStore = create(
   persist(
-    (set, get) => ({
+    (set) => ({
       token: null,
       hasHydrated: false,
       setToken: (token) => set({ token }),
@@ -12,8 +12,9 @@ const useAuthStore = create(
     }),
     {
       name: "auth-storage",
-      onRehydrateStorage: () => () => {
-        get().setHasHydrated(); // ✅ mark hydration complete after persist loads
+      // ✅ Trigger setHasHydrated AFTER rehydration completes
+      onRehydrateStorage: () => (state) => {
+        state.setHasHydrated();
       },
     }
   )
