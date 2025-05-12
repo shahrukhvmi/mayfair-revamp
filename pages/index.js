@@ -5,9 +5,10 @@ import PageLoader from "@/Components/PageLoader/PageLoader";
 import StepsHeader from "@/layout/stepsHeader";
 import NextButton from "@/Components/NextButton/NextButton";
 import Image from "next/image";
-import usePatientStatus from "@/store/patientStatus";
 import useProductId from "@/store/useProductIdStore";
 import { useSearchParams } from "next/navigation";
+import useReorder from "@/store/useReorderStore";
+import useAuthStore from "@/store/authStore";
 
 export default function Index() {
   const router = useRouter();
@@ -18,7 +19,8 @@ export default function Index() {
 
   //From zustand Store
   const { productId, setProductId } = useProductId();
-  const { patientStatus } = usePatientStatus();
+  const { reorder, setReorder } = useReorder();
+  const { token } = useAuthStore();
 
   useEffect(() => {
     const param = searchParams.get("product_id");
@@ -39,17 +41,17 @@ export default function Index() {
     defaultValues: {},
   });
 
-  const setReorderPatient = usePatientStatus((state) => state.setReorderPatient);
-  const setNewPatient = usePatientStatus((state) => state.setNewPatient);
-
   const onSubmit = async (data, e) => {
     const action = e.nativeEvent.submitter.value;
 
     if (action === "Accept and re-order") {
-      setReorderPatient();
-      router.push("/login");
+      if (token) {
+        router.push("/dashboard");
+      } else {
+        router.push("/login");
+      }
     } else {
-      setNewPatient();
+      setReorder(false);
       router.push("/acknowledgment");
     }
 
@@ -101,7 +103,6 @@ export default function Index() {
             >
               Accept and re-order
             </button>
-
           </form>
 
           {showLoader && (

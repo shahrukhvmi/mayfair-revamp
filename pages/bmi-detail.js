@@ -11,12 +11,19 @@ import PageAnimationWrapper from "@/Components/PageAnimationWrapper/PageAnimatio
 import TextField from "@/Components/TextField/TextField";
 import NextButton from "@/Components/NextButton/NextButton";
 import BackButton from "@/Components/BackButton/BackButton";
+import useReorder from "@/store/useReorderStore";
+import useLastBmi from "@/store/useLastBmiStore";
+import { BsInfoCircle } from "react-icons/bs";
 
 export default function BmiDetail() {
   const [showLoader, setShowLoader] = useState(false);
   const { bmi, setBmi } = useBmiStore();
   const { patientInfo } = usePatientInfoStore();
+  const { reorder } = useReorder();
+  const { lastBmi } = useLastBmi();
   const router = useRouter();
+
+  console.log(lastBmi, "lastBmi");
 
   const {
     control,
@@ -43,7 +50,14 @@ export default function BmiDetail() {
   const shouldShowCheckboxes = patientInfo?.ethnicity === "Yes" ? bmiValue >= 25.5 && bmiValue <= 27.4 : bmiValue >= 27.5 && bmiValue <= 29.9;
   const shouldShowInfoMessage = patientInfo?.ethnicity === "Yes" && bmiValue >= 27.5 && bmiValue <= 29.9;
 
-  const isNextDisabled = shouldShowCheckboxes && (noneOfTheAbove || (!checkbox1 && !checkbox2) || (checkbox2 && !explanation?.trim()));
+  // Check For reorder and low BMI
+  const isReorderAndBmiLow = reorder && bmiValue < 20;
+
+  const isNextDisabled =
+    (!reorder && shouldShowCheckboxes && (noneOfTheAbove || (!checkbox1 && !checkbox2) || (checkbox2 && !explanation?.trim()))) ||
+    (reorder && bmiValue < 20);
+
+  // const isNextDisabled = shouldShowCheckboxes && (noneOfTheAbove || (!checkbox1 && !checkbox2) || (checkbox2 && !explanation?.trim()));
 
   const getCheckbox1Label = () => {
     return patientInfo?.ethnicity === "Yes" && bmiValue >= 25.5 && bmiValue <= 27.4
@@ -80,34 +94,37 @@ export default function BmiDetail() {
 
   // Checkbox 2 → Uncheck → Clear textarea
   useEffect(() => {
-    if (!checkbox2) {
+    if (!checkbox2 && explanation) {
       setValue("weight_related_comorbidity_explanation", "");
     }
-  }, [checkbox2, setValue]);
+  }, [checkbox2, explanation, setValue]);
 
   const onSubmit = (data) => {
     const consent = {
       previously_taking_medicine: [],
       weight_related_comorbidity: [],
       weight_related_comorbidity_explanation: "",
-      assian_message: shouldShowInfoMessage
-        ? "As you have confirmed that you are from one of the following family backgrounds: South Asian, Chinese, Other Asian, Middle Eastern, Black African or African-Caribbean, your cardiometabolic risk occurs at a lower BMI. You are, therefore, able to proceed with a lower BMI."
-        : "",
+      assian_message: "",
     };
 
-    // Check if checkboxes are visible
-    if (shouldShowCheckboxes) {
-      // Checkbox 1 (medicine)
-      if (data.checkbox1) {
-        consent.previously_taking_medicine.push(getCheckbox1Label());
-      }
+    // Skip all logic if reorder is true
+    if (!reorder) {
+      consent.assian_message = shouldShowInfoMessage
+        ? "As you have confirmed that you are from one of the following family backgrounds: South Asian, Chinese, Other Asian, Middle Eastern, Black African or African-Caribbean, your cardiometabolic risk occurs at a lower BMI. You are, therefore, able to proceed with a lower BMI."
+        : "";
 
-      // Checkbox 2 (comorbidity)
-      if (data.checkbox2) {
-        consent.weight_related_comorbidity.push("You have at least one weight-related comorbidity (e.g. PCOS, diabetes, etc.)");
+      // Only populate if checkboxes are visible
+      if (shouldShowCheckboxes) {
+        if (data.checkbox1) {
+          consent.previously_taking_medicine.push(getCheckbox1Label());
+        }
 
-        if (data.weight_related_comorbidity_explanation) {
-          consent.weight_related_comorbidity_explanation = data.weight_related_comorbidity_explanation;
+        if (data.checkbox2) {
+          consent.weight_related_comorbidity.push("You have at least one weight-related comorbidity (e.g. PCOS, diabetes, etc.)");
+
+          if (data.weight_related_comorbidity_explanation) {
+            consent.weight_related_comorbidity_explanation = data.weight_related_comorbidity_explanation;
+          }
         }
       }
     }
@@ -134,8 +151,35 @@ export default function BmiDetail() {
           <div className="py-12 mb-5 border text-center bg-violet-100 rounded-2xl shadow">
             <h1 className="text-black text-3xl bold-font">BMI: {bmi?.bmi}</h1>
           </div>
+          {reorder && lastBmi ? (
+            lastBmi?.weight_unit == "metric" ? (
+              <div className="bg-[#FFF3CD] px-4 py-4 mt-6 mb-6 text-gray-700 rounded shadow-md">
+                <p className="flex items-center">
+                  <BsInfoCircle className="me-2" /> Your previous recorded weight was <span className="font-bold ms-1">{lastBmi?.kg} kg</span>
+                </p>
+              </div>
+            ) : (
+              <div className="bg-[#FFF3CD] px-4 py-4 mt-6 mb-6 text-gray-700 rounded shadow-md">
+                <p className="flex items-center">
+                  <BsInfoCircle className="me-2" /> Your previous recorded weight was{" "}
+                  <span className="font-bold ms-1">
+                    {lastBmi?.stones} st & {lastBmi?.pound} lbs
+                  </span>
+                </p>
+              </div>
+            )
+          ) : (
+            ""
+          )}
 
-          {shouldShowInfoMessage && (
+          {isReorderAndBmiLow && (
+            <div className="bg-red-100 text-red-700 p-4 rounded-md mb-4 border border-red-300">
+              Your BMI is approaching the lower end of healthy weight. Due to the risk of becoming underweight, you are not able to proceed. Please
+              arrange a telephone consultation with a member of our clinical team to discuss alternatives.
+            </div>
+          )}
+
+          {shouldShowInfoMessage && !reorder && (
             <div className="bg-[#FFF3CD] px-4 py-4 mt-6 mb-6 text-gray-700 rounded shadow-md">
               <p>
                 As you have confirmed that you are from one of the following family backgrounds: South Asian, Chinese, Other Asian, Middle Eastern,
@@ -146,7 +190,7 @@ export default function BmiDetail() {
           )}
 
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 relative">
-            {shouldShowCheckboxes && (
+            {shouldShowCheckboxes && !reorder && (
               <>
                 {patientInfo?.ethnicity === "No" || patientInfo?.ethnicity === "Prefer not to say" ? (
                   <p className="text-gray-800 font-normal">Your BMI is between 27-29.9 which indicates you are overweight.</p>
@@ -168,7 +212,7 @@ export default function BmiDetail() {
                             checked={field.value}
                             sx={{
                               color: "#6D28D9", // violet-700
-                              '&.Mui-checked': {
+                              "&.Mui-checked": {
                                 color: "#6D28D9", // violet-700 when checked
                               },
                             }}
@@ -179,7 +223,6 @@ export default function BmiDetail() {
                       />
                     )}
                   />
-
                 </Box>
 
                 <Box mb={1}>
@@ -194,7 +237,7 @@ export default function BmiDetail() {
                             checked={field.value}
                             sx={{
                               color: "#6D28D9", // violet-700
-                              '&.Mui-checked': {
+                              "&.Mui-checked": {
                                 color: "#6D28D9", // violet-700 when checked
                               },
                             }}
@@ -205,7 +248,6 @@ export default function BmiDetail() {
                       />
                     )}
                   />
-
                 </Box>
 
                 {checkbox2 && (
@@ -242,7 +284,7 @@ export default function BmiDetail() {
                             }}
                             sx={{
                               color: "#6D28D9", // violet-700
-                              '&.Mui-checked': {
+                              "&.Mui-checked": {
                                 color: "#6D28D9", // violet-700 when checked
                               },
                             }}

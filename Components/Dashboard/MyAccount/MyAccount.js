@@ -80,7 +80,7 @@ const MyAccount = () => {
                 status={productData.reorder?.inventories?.[0]?.status}
                 lastOrderDate={productData.reorder?.lastOrderDate}
                 buttonText="Reorder Consultation"
-                reorder={false}
+                reorder={true}
               />
             )}
           </div>

@@ -22,12 +22,15 @@ import PageLoader from "@/Components/PageLoader/PageLoader";
 import useShippingOrBillingStore from "@/store/shipingOrbilling";
 import useProductId from "@/store/useProductIdStore";
 import useAuthUserDetailStore from "@/store/useAuthUserDetailStore";
+import useLastBmi from "@/store/useLastBmiStore";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 
 export default function StepsInformation() {
   const [imageLoaded, setImageLoaded] = useState(false);
   const [showContent, setShowContent] = useState(false);
+  const [showLoader, setShowLoader] = useState(false);
+
   const router = useRouter();
 
   //calling from zustand Store
@@ -40,11 +43,9 @@ export default function StepsInformation() {
   const { setMedicalQuestions } = useMedicalQuestionsStore();
   const { setConfirmationQuestions } = useConfirmationQuestionsStore();
   const { setAuthUserDetail, clearAuthUserDetail } = useAuthUserDetailStore();
-  const [showLoader, setShowLoader] = useState(false);
-
-  //Zustand state
   const { billing, setBilling, shipping, setShipping, clearShipping, clearBilling } = useShippingOrBillingStore();
   const { productId } = useProductId();
+  const { setLastBmi } = useLastBmi();
 
   //Get Consultation Data
   const consultationMutation = useMutation(userConsultationApi, {
@@ -72,6 +73,7 @@ export default function StepsInformation() {
         setShipping(data?.data?.data?.billing);
         setBilling(data?.data?.data?.shipping);
         setAuthUserDetail(data?.data?.data?.auth_user);
+        setLastBmi(data?.data?.data?.bmi);
       }
 
       return;

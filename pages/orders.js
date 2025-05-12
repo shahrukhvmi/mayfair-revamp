@@ -1,13 +1,15 @@
-import DashBoardLayout from '@/Components/Dashboard/DashboardLayout/DashBoardLayout'
-import React from 'react'
+import DashBoardLayout from "@/Components/Dashboard/DashboardLayout/DashBoardLayout";
+import ProtectedPage from "@/Components/ProtectedPage/ProtectedPage";
+import React from "react";
 
 const orders = () => {
-    return (
-        <DashBoardLayout>
-            <h1>My orders</h1>
+  return (
+    <ProtectedPage>
+      <DashBoardLayout>
+        <h1>My orders</h1>
+      </DashBoardLayout>
+    </ProtectedPage>
+  );
+};
 
-        </DashBoardLayout>
-    )
-}
-
-export default orders
+export default orders;

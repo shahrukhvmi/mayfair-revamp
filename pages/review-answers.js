@@ -16,6 +16,7 @@ import toast from "react-hot-toast";
 import useProductId from "@/store/useProductIdStore";
 import useAuthUserDetailStore from "@/store/useAuthUserDetailStore";
 import useCheckoutStore from "@/store/checkoutStore";
+import useLastBmi from "@/store/useLastBmiStore";
 
 const ReviewAnswers = () => {
   const router = useRouter();
@@ -27,6 +28,7 @@ const ReviewAnswers = () => {
   const { confirmationInfo, setConfirmationInfo } = useConfirmationInfoStore();
   const { gpdetails, setGpDetails } = useGpDetailsStore();
   const { productId } = useProductId();
+  const { setLastBmi } = useLastBmi();
 
   console.log(confirmationInfo);
 
@@ -42,6 +44,7 @@ const ReviewAnswers = () => {
         setGpDetails(data?.data?.lastConsultation?.fields?.gpdetails);
         setMedicalInfo(data?.data?.lastConsultation?.fields?.medicalInfo);
         setPatientInfo(data?.data?.lastConsultation?.fields?.patientInfo);
+        setLastBmi(data?.data?.lastConsultation?.fields?.bmi);
       }
 
       router.push("/gathering-data");
