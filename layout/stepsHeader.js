@@ -12,14 +12,37 @@ import { useMutation } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import Fetcher from "@/library/Fetcher";
 import { useRouter } from "next/router";
+import useShippingOrBillingStore from "@/store/shipingOrbilling";
+import useAuthUserDetailStore from "@/store/useAuthUserDetailStore";
+import useConfirmationQuestionsStore from "@/store/confirmationQuestionStore";
+import useMedicalQuestionsStore from "@/store/medicalQuestionStore";
+import usePatientInfoStore from "@/store/patientInfoStore";
+import useMedicalInfoStore from "@/store/medicalInfoStore";
+import useGpDetailsStore from "@/store/gpDetailStore";
+import useConfirmationInfoStore from "@/store/confirmationInfoStore";
+import useCheckoutStore from "@/store/checkoutStore";
+import useBmiStore from "@/store/bmiStore";
 
 const StepsHeader = ({ isOpen, toggleSidebar }) => {
   const [isOpenDrop, setIsOpenDrop] = useState(false);
   const [showLoader, setShowLoader] = useState(false);
-  const { token, setToken, clearToken } = useAuthStore();
   const { showLoginModal, closeLoginModal, openLoginModal } = useLoginModalStore();
   const { firstName } = useSignupStore();
   const [name, setUserData] = useState("");
+
+  const { clearBmi } = useBmiStore();
+  const { clearCheckout } = useCheckoutStore();
+  const { clearConfirmationInfo } = useConfirmationInfoStore();
+  const { clearGpDetails } = useGpDetailsStore();
+  const { clearMedicalInfo } = useMedicalInfoStore();
+  const { clearPatientInfo } = usePatientInfoStore();
+  const { clearMedicalQuestions } = useMedicalQuestionsStore();
+  const { clearConfirmationQuestions } = useConfirmationQuestionsStore();
+  const { clearAuthUserDetail } = useAuthUserDetailStore();
+  const { token, clearToken, setToken } = useAuthStore();
+  const { clearShipping, clearBilling } = useShippingOrBillingStore();
+
+  const router = useRouter();
 
   const toggleDropdown = () => {
     setIsOpenDrop((prev) => !prev);
@@ -48,25 +71,21 @@ const StepsHeader = ({ isOpen, toggleSidebar }) => {
   const handleLogout = () => {
     setIsOpenDrop(false);
     // logout();
+    setIsOpenDrop(false);
+    // logout();
+    clearBmi();
+    clearCheckout();
+    clearConfirmationInfo();
+    clearGpDetails();
+    clearMedicalInfo();
+    clearPatientInfo();
+    clearBilling();
+    clearShipping();
+    clearAuthUserDetail();
+    clearMedicalQuestions();
+    clearConfirmationQuestions();
     clearToken();
-    router.push("/login/")
-  };
-
-  const handleRemovePid = () => {
-    localStorage.removeItem("previous_id");
-  };
-  const router = useRouter();
-
-  const [impersonat, setImpersonat] = useState(null);
-
-  useEffect(() => {
-    const impersonateEmail = localStorage.getItem("impersonate_email");
-    setImpersonat(impersonateEmail);
-  }, []);
-
-  const handleRemovedImpersonate = () => {
-    setImpersonat(null);
-    logout();
+    router.push("/login/");
   };
 
   const loginMutation = useMutation(Login, {
@@ -77,7 +96,7 @@ const StepsHeader = ({ isOpen, toggleSidebar }) => {
       toast.success("Login Successfully");
       Fetcher.axiosSetup.defaults.headers.common.Authorization = `Bearer ${user.token}`;
       setShowLoader(false);
-      closeLoginModal()
+      closeLoginModal();
       router.push("/dashboard");
     },
     onError: (error) => {
@@ -96,11 +115,9 @@ const StepsHeader = ({ isOpen, toggleSidebar }) => {
 
       setShowLoader(false);
     },
-
   });
   return (
     <>
-
       <LoginModal
         show={showLoginModal}
         onClose={closeLoginModal}
@@ -118,7 +135,7 @@ const StepsHeader = ({ isOpen, toggleSidebar }) => {
 
         {/* Logo */}
         <div className="w-32 sm:w-40">
-          <Link href="/" onClick={handleRemovePid}>
+          <Link href="/">
             <ApplicationLogo width={140} height={80} />
           </Link>
         </div>
@@ -126,11 +143,12 @@ const StepsHeader = ({ isOpen, toggleSidebar }) => {
         {/* User Info */}
         <div className="relative">
           {/* Dropdown Trigger */}
-          {token && <div className="flex items-center space-x-2 cursor-pointer" onClick={toggleDropdown}>
-            <ApplicationUser className="w-10 h-10 rounded-full" />
-            <span className="reg-font text-[#1C1C29] truncate">{firstName ? firstName : ""}</span>
-          </div>
-          }
+          {token && (
+            <div className="flex items-center space-x-2 cursor-pointer" onClick={toggleDropdown}>
+              <ApplicationUser className="w-10 h-10 rounded-full" />
+              <span className="reg-font text-[#1C1C29] truncate">{firstName ? firstName : ""}</span>
+            </div>
+          )}
 
           {token && isOpenDrop && (
             <div className="dropdown-menu absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-md shadow-lg z-50">
@@ -145,10 +163,7 @@ const StepsHeader = ({ isOpen, toggleSidebar }) => {
                     My Profile
                   </Link>
                 </li>
-                <li
-                  className="reg-font px-4 py-2 text-[#1C1C29] hover:bg-gray-100 cursor-pointer"
-                  onClick={handleLogout}
-                >
+                <li className="reg-font px-4 py-2 text-[#1C1C29] hover:bg-gray-100 cursor-pointer" onClick={handleLogout}>
                   Logout
                 </li>
               </ul>
