@@ -5,7 +5,7 @@ import { TextField } from "@mui/material";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 
-const MuiDatePickerField = ({ name, label = "Date of Birth", control, rules, required = true, errors = {} }) => {
+const MuiDatePickerField = ({ name, label, control, rules, required = true, errors = {} }) => {
   const currentYear = new Date().getFullYear();
 
   const validateDate = (value) => {
@@ -28,6 +28,7 @@ const MuiDatePickerField = ({ name, label = "Date of Birth", control, rules, req
             onChange={(date) => field.onChange(date)}
             maxDate={new Date()}
             format="dd/MM/yyyy"
+            className="reg-font"
             slotProps={{
               textField: {
                 fullWidth: true,

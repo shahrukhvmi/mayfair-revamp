@@ -1,4 +1,5 @@
 import DashBoardLayout from "@/Components/Dashboard/DashboardLayout/DashBoardLayout";
+import MyAddress from "@/Components/Dashboard/MyAddress/MyAddress";
 import ProtectedPage from "@/Components/ProtectedPage/ProtectedPage";
 import React from "react";
 
@@ -6,7 +7,7 @@ const address = () => {
   return (
     <ProtectedPage>
       <DashBoardLayout>
-        <h1>My Address</h1>
+        <MyAddress />
       </DashBoardLayout>
     </ProtectedPage>
   );
