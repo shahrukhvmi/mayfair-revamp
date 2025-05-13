@@ -55,7 +55,7 @@ const MyAccount = () => {
         renderSkeletons()
       ) : productData?.reorder ? (
         <div className="mb-8">
-          <h1 className="text-2xl bold-font mb-4 text-gray-900">Reorder Treatment</h1>
+         <h1 className="text-left niba-bold-font heading">Reorder Treatment</h1>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {Array.isArray(productData.reorder) ? (
               productData.reorder.map((item, index) => (
@@ -93,8 +93,8 @@ const MyAccount = () => {
       ) : productData?.products?.length > 0 ? (
         <>
           <header className="pb-9">
-            <h1 className="text-2xl text-left bold-font text-gray-900">Available Treatments</h1>
-            <p className="paragraph thin-font text-left text-sm leading-relaxed xl:w-4xl mt-2">
+            <h1 className="text-left niba-bold-font heading">Available Treatments</h1>
+            <p className="paragraph thin-font text-left  mt-2">
               We offer the following weight loss injections treatment options to help you in your weight loss journey...
             </p>
           </header>

@@ -285,29 +285,29 @@ const OrderDetails = () => {
                                 </TableRow>
 
                                 {/* Shipping Fee (Optional) */}
-                                {order?.discount > 0 && (
+                                {orders?.discount > 0 && (
                                     <>
                                         <TableRow className="hover:bg-gray-50">
                                             <TableCell className="text-gray-800 py-3 font-medium">Discount Amount</TableCell>
                                             <TableCell></TableCell>
                                             <TableCell className="text-gray-800 py-3">
-                                                {order?.type === "Fixed"
-                                                    ? `-£${order?.discount_value}`
-                                                    : `-${parseFloat(order?.discount_value).toFixed(1)}%`}
+                                                {orders?.type === "Fixed"
+                                                    ? `-£${orders?.discount_value}`
+                                                    : `-${parseFloat(orders?.discount_value).toFixed(1)}%`}
                                             </TableCell>
                                         </TableRow>
 
                                         <TableRow className="hover:bg-gray-50">
                                             <TableCell className="text-gray-800 py-3 font-medium">Coupon Code</TableCell>
                                             <TableCell></TableCell>
-                                            <TableCell className="text-gray-800 py-3">{order?.code || "N/A"}</TableCell>
+                                            <TableCell className="text-gray-800 py-3">{orders?.code || "N/A"}</TableCell>
                                         </TableRow>
 
                                         <TableRow className="hover:bg-gray-50">
                                             <TableCell className="text-gray-800 py-3 font-medium">Discount Type</TableCell>
                                             <TableCell></TableCell>
                                             <TableCell className="text-gray-800 py-3">
-                                                {`${order?.type === "Fixed" ? "Fixed" : "Percentage"}`}
+                                                {`${orders?.type === "Fixed" ? "Fixed" : "Percentage"}`}
                                             </TableCell>
                                         </TableRow>
                                     </>

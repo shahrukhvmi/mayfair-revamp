@@ -45,13 +45,13 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
           const isActive = normalizePath(router.pathname).startsWith(normalizePath(href));
           console.log(router.pathname, "isActive")
           return (
-            <Link href={href} legacyBehavior key={key}>
+            <Link href={href} legacyBehavior key={key} className="niba-bold-font">
               <a
                 onClick={toggleSidebar}
                 className={`flex items-center p-2 rounded-md ${key} ${isActive
                     ? `bg-[#7c3aed] text-white ${styles["active-tab"]}`
-                    : "hover:bg-gray-200 text-[#111827]"
-                  } reg-font`}
+                    : "hover:bg-gray-200 darkGrayColor"
+                  } medium-font `}
               >
                 {React.cloneElement(icon, {
                   className: `text-2xl mr-3 ${isActive ? "text-white" : "text-[#6b7280]"}`,
