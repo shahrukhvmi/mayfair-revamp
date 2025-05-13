@@ -3,7 +3,6 @@ import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import { FiCheck } from "react-icons/fi";
 
-import FormWrapper from "@/Components/FormWrapper/FormWrapper";
 import NextButton from "@/Components/NextButton/NextButton";
 import ProgressBar from "@/Components/ProgressBar/ProgressBar";
 import StepsHeader from "@/layout/stepsHeader";
@@ -12,6 +11,7 @@ import StepsHeader from "@/layout/stepsHeader";
 import { Inter } from "next/font/google";
 import PageAnimationWrapper from "@/Components/PageAnimationWrapper/PageAnimationWrapper";
 import PageLoader from "@/Components/PageLoader/PageLoader";
+import FormWrapper from "@/Components/FormWrapper/FormWrapper";
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 
 export default function Acknowledgment() {
