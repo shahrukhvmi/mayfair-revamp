@@ -20,6 +20,7 @@ import LoginModal from "@/Components/LoginModal/LoginModal";
 import TextField from "@/Components/TextField/TextField";
 import PageLoader from "@/Components/PageLoader/PageLoader";
 import useLoginModalStore from "@/store/useLoginModalStore";
+import usePasswordReset from "@/store/usePasswordReset";
 
 export default function EmailConfirmation() {
   const [showLoader, setShowLoader] = useState(false);
@@ -48,7 +49,7 @@ export default function EmailConfirmation() {
     setValue("confirmationEmail", confirmationEmail);
     if (email) trigger(["email", "confirmationEmail"]);
   }, [email, confirmationEmail, setValue, trigger]);
-
+  const { setIsPasswordReset, isPasswordReset } = usePasswordReset();
   const registerMutation = useMutation(registerUser, {
     onSuccess: (data) => {
       const user = data?.data?.data;
@@ -93,7 +94,7 @@ export default function EmailConfirmation() {
           try {
             const response = await loginMutation.mutateAsync({ ...data, company_id: 1 });
             const user = response?.data?.data;
-
+            setIsPasswordReset(true);
             setUserData(user);
             setToken(user.token);
             toast.success("Login Successfully");
@@ -123,8 +124,8 @@ export default function EmailConfirmation() {
 
       <StepsHeader />
       <FormWrapper
-        heading="Please enter your email"
-        description="This is where we'll send information from your prescriber and pharmacy."
+        heading="Enter your email address"
+        description="This is where we will send information about your order."
         percentage="20"
       >
         <PageAnimationWrapper>

@@ -105,7 +105,7 @@ const MedicalQuestions = () => {
 
                 return (
                   <div
-                    key={q.id}
+                    key={q?.id}
                     className={`p-5 shadow-sm border rounded-md bg-white ${showValidationError ? "border-red-400" : "border-gray-200"}`}
                   >
                     <div
@@ -114,7 +114,7 @@ const MedicalQuestions = () => {
                     ></div>
 
                     <div className="flex gap-4 mt-4">
-                      {q.options.map((option) => {
+                      {q?.options?.map((option) => {
                         const isSelected = selectedAnswer === option;
 
                         return (

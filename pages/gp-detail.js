@@ -210,7 +210,7 @@ export default function GpDetail() {
                   <p className="text-gray-500 mt-6">Do you consent for us to inform your GP about the treatment?</p>
                   <div className="mt-4 gap-2">
                     {[
-                      { value: "yes", label: "Yes - Please inform my GP" },
+                      { value: "yes", label: "Yes – Please inform my GP" },
                       { value: "no", label: "No – I will inform my GP prior to starting treatment" },
                     ].map((option) => (
                       <label

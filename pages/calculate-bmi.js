@@ -96,8 +96,8 @@ export default function CalculateBmi() {
           ? ["heightFt", "heightIn"]
           : ["heightCm"]
         : weightUnit === "stlb"
-        ? ["weightSt", "weightLbs"]
-        : ["weightKg"];
+          ? ["weightSt", "weightLbs"]
+          : ["weightKg"];
 
     // Validate
     const isValid = await trigger(fields);
@@ -255,22 +255,23 @@ export default function CalculateBmi() {
       <StepsHeader />
       <FormWrapper
         heading={localStep === 1 ? "What is your height?" : "What is your current weight?"}
-        description="Your Body Mass Index (BMI) is an important factor in assessing your eligibility for treatment. Please enter your height and weight below to allow us to calculate your BMI."
+        description={`Your Body Mass Index (BMI) is an important factor in assessing your eligibility for treatment. Please enter your ${localStep === 1 ? "height" : "weight"} below to allow us to calculate your BMI.`}
         percentage="70"
       >
+
         <PageAnimationWrapper>
           <div>
             <SwitchTabs
               tabs={
                 localStep === 1
                   ? [
-                      { label: "cm", value: "metrics" },
-                      { label: "ft/inch", value: "imperial" },
-                    ]
+                    { label: "cm", value: "metrics" },
+                    { label: "ft/inch", value: "imperial" },
+                  ]
                   : [
-                      { label: "kg", value: "kg" },
-                      { label: "st/lb", value: "stlb" },
-                    ]
+                    { label: "kg", value: "kg" },
+                    { label: "st/lb", value: "stlb" },
+                  ]
               }
               selectedTab={localStep === 1 ? heightUnit : weightUnit}
               onTabChange={(value) => {
@@ -426,8 +427,8 @@ export default function CalculateBmi() {
                 </div>
               )}
             </div>
-          </div>
-        </PageAnimationWrapper>
+          </div >
+        </PageAnimationWrapper >
       </FormWrapper>
     </>
   );

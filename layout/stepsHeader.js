@@ -22,6 +22,7 @@ import useGpDetailsStore from "@/store/gpDetailStore";
 import useConfirmationInfoStore from "@/store/confirmationInfoStore";
 import useCheckoutStore from "@/store/checkoutStore";
 import useBmiStore from "@/store/bmiStore";
+import usePasswordReset from "@/store/usePasswordReset";
 
 const StepsHeader = ({ isOpen, toggleSidebar }) => {
   const [isOpenDrop, setIsOpenDrop] = useState(false);
@@ -43,7 +44,7 @@ const StepsHeader = ({ isOpen, toggleSidebar }) => {
   const { clearShipping, clearBilling } = useShippingOrBillingStore();
 
   const router = useRouter();
-
+  const { setIsPasswordReset } = usePasswordReset();
   const toggleDropdown = () => {
     setIsOpenDrop((prev) => !prev);
   };
@@ -98,6 +99,7 @@ const StepsHeader = ({ isOpen, toggleSidebar }) => {
       setShowLoader(false);
       closeLoginModal();
       router.push("/dashboard");
+      setIsPasswordReset(true)
     },
     onError: (error) => {
       const errors = error?.response?.data?.errors;

@@ -108,7 +108,7 @@ export default function ResidentialAddress() {
   return (
     <>
       <StepsHeader />
-      <FormWrapper heading="Patient Residential Address" description="Require for age verification purpose" percentage="40">
+      <FormWrapper heading="Mention Your Residential Address" description="Required for age verification purpose" percentage="40">
         <PageAnimationWrapper>
           <div>
             <div className={`relative ${showLoader ? "pointer-events-none cursor-not-allowed" : ""}`}>

@@ -202,7 +202,7 @@ export default function DosageSelection() {
                   </div>
 
                   <div className="bg-white rounded-lg shadow-lg  px-4 py-6">
-                    <h1 className="my-4 bold-font text-2xl text-black text-center">Choose your dosage</h1>
+                    <h1 className="my-4 niba-bold-font text-2xl text-black text-start"><span className="niba-reg-font">Choose your </span> Dosage</h1>
 
                     {variation?.variations
                       ?.sort((a, b) => {
@@ -238,7 +238,7 @@ export default function DosageSelection() {
                     {Array.isArray(variation?.addons) && variation?.addons.length > 0 && (
                       <>
                         <h1 className="my-4 niba-reg-font text-2xl text-gray-800">
-                          Select <span className="font-bold text-2xl">Addons</span>
+                          Select <span className="font-bold text-2xl">Add-ons</span>
                         </h1>
                         {variation?.addons.map((addon) => {
                           const cartAddon = items.addons.find((item) => item.id === addon.id);

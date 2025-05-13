@@ -110,7 +110,7 @@ const ConfirmationSummary = () => {
       <StepsHeader />
       <FormWrapper
         heading="Confirm your answers"
-        description="It’s important your answers are accurate, as we’ll use them to determine your suitability for the Weight Reset Program."
+        description="It’s important your answers are accurate, as we’ll use them to determine your suitability for the treatment."
         percentage={95}
       >
         <PageAnimationWrapper>

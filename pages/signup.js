@@ -68,8 +68,8 @@ export default function SignUp() {
     <>
       <StepsHeader />
       <FormWrapper
-        heading={"Please enter your name"}
-        description={"We require this to generate an electronic prescription if your prescriber prescribes a treatment."}
+        heading={"Enter your full name"}
+        description={"We require this to generate your prescription if you qualify for the treatment."}
         percentage={"10"}
       >
         <PageAnimationWrapper>

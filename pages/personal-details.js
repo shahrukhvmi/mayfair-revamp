@@ -99,7 +99,7 @@ export default function PersonalDetails() {
       <StepsHeader />
 
       <FormWrapper
-        heading={"What is your sex at birth?"}
+        heading={"Mention your sex at birth"}
         description={
           "This refers to your sex when you were born. We ask this because a range of health issues are specific to people based on their sex at birth."
         }

@@ -21,8 +21,8 @@ const ProductConsent = ({ isCompleted, onComplete, onConsentChange }) => {
     <SectionWrapper>
       <SectionHeader
         stepNumber={3}
-        title="Product Consent"
-        description="Please review the important information below regarding your treatment."
+        title="Treatment Consent"
+        description="Please review the important information below regarding your treatment:"
         completed={isCompleted}
       />
 
@@ -71,7 +71,7 @@ const ProductConsent = ({ isCompleted, onComplete, onConsentChange }) => {
             </div>
 
             {/* Checkbox Label */}
-            <span className="leading-snug bold-font paragraph">I confirm that I have read, understood and accept all of the above information.</span>
+            <span className="leading-snug bold-font paragraph">I confirm that I have read, understood and accepted all of the above information.</span>
           </label>
 
           {/* Error Message */}

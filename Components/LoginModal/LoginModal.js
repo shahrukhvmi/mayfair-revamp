@@ -136,7 +136,7 @@ export default function LoginModal({
                             {mode === "login"
                                 ? "Login"
                                 : mode === "forgot"
-                                    ? "Forgot Password"
+                                    ? "Forgot Password?"
                                     : "Reset Password"}
                         </h2>
 

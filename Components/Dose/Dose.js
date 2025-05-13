@@ -24,31 +24,31 @@ const Dose = ({ doseData, onAdd, onIncrement, onDecrement, isSelected, qty, allo
 
   const handleIncrement = (e) => {
     e.stopPropagation();
-  
+
     const totalQty = totalSelectedQty() + 1;
-  
+
     // Check if global total quantity exceeded
     if (totalQty > allowed) {
       toast.error(`You can only select up to ${allowed} units in total.`);
       return;
     }
-  
+
     // Check if this product's own qty exceeded its stock
     if (doseData.qty >= doseData.stock.quantity) {
       toast.error(`Only ${doseData.stock.quantity} units are available.`);
       return;
     }
-  
+
     // Check if this product's qty exceeded allowed
     if (qty >= allowed) {
       toast.error(`You cannot select more than ${allowed} units for this option.`);
       return;
     }
-  
+
     // All okay, increment
     onIncrement(doseData?.id);
   };
-  
+
 
 
   const handleDecrement = (e) => {
@@ -62,7 +62,7 @@ const Dose = ({ doseData, onAdd, onIncrement, onDecrement, isSelected, qty, allo
 
   const handleDelete = () => {
     setShowModal(false);
-    removeItemCompletely(doseData?.id,"doses");
+    removeItemCompletely(doseData?.id, "doses");
   };
 
   return (
@@ -113,7 +113,11 @@ const Dose = ({ doseData, onAdd, onIncrement, onDecrement, isSelected, qty, allo
             <span className="capitalize font-semibold">{doseData?.product_name}</span> <br />
             <span className="text-sm">{doseData.name}</span>
             <br />
-            <span className="text-xs text-gray-500">Expiry: {doseData?.expiry ? moment(doseData?.expiry).format("DD/MM/YYYY") : "-"}</span>
+            {doseData?.expiry == null ?
+              <p className="mb-2"></p> :
+              <span className="text-xs text-gray-500">Expiry: {doseData?.expiry ? moment(doseData?.expiry).format("DD/MM/YYYY") : "-"}</span>
+            }
+
           </span>
         </div >
 
@@ -140,8 +144,8 @@ const Dose = ({ doseData, onAdd, onIncrement, onDecrement, isSelected, qty, allo
                   type="button"
                   onClick={handleIncrement}
                   className={`p-2 rounded-full ${qty >= allowed
-                      ? "cursor-not-allowed bg-gray-100 opacity-50 "
-                      : "bg-gray-100 hover:bg-gray-200 cursor-pointer"
+                    ? "cursor-not-allowed bg-gray-100 opacity-50 "
+                    : "bg-gray-100 hover:bg-gray-200 cursor-pointer"
                     }`}
                 >
                   <FaPlus size={10} className="text-black" />

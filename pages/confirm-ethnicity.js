@@ -67,13 +67,16 @@ export default function ConfirmEthnicity() {
     <>
       <StepsHeader />
       <FormWrapper
-        heading={"Confirm Ethnicity for BMI"}
+        heading={"Confirm Ethnicity"}
         description={
-          "People of certain ethnicities may be suitable for treatment at a lower BMI than others, if appropriate. Does one of the following options describe your ethnic group or background?"
+          "People of certain ethnicities may be suitable for treatment at a lower BMI than others, if appropriate."
         }
         percentage={"60"}
       >
         <PageAnimationWrapper>
+          <p className="bold-font paragraph my-3">
+            Does one of the following options describe your ethnic group or background?
+          </p>
           <div className="">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
               {["South Asian", "Chinese", "Other Asian", "Middle Eastern", "Black African", "African-Caribbean"].map((ethnicity, index) => (

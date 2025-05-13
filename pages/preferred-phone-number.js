@@ -52,7 +52,7 @@ export default function SignUp() {
   return (
     <>
       <StepsHeader />
-      <FormWrapper heading={"What is your preferred phone number?"} description={"Please provide an active phone number to ensure smooth delivery of your order."} percentage={"50"}>
+      <FormWrapper heading={"Enter your phone number"} description={"Please provide an active phone number to ensure smooth delivery of your order."} percentage={"50"}>
         <PageAnimationWrapper>
           <div>
             <div className={`relative ${showLoader ? "pointer-events-none cursor-not-allowed" : ""}`}>

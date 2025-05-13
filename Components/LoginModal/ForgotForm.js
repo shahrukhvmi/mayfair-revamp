@@ -26,6 +26,8 @@ export default function ForgotForm({
         </div>
       ) : (
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+
+          <p className="text-black reg-font">Enter your email address below and we will send you a password reset link.</p>
           <TextField
             label="Email Address"
             name="email"
@@ -35,7 +37,7 @@ export default function ForgotForm({
             required
             errors={errors}
           />
-          <NextButton label="Send Reset Link" type="submit" disabled={isLoading} />
+          <NextButton label="Send Password Reset Link" type="submit" disabled={isLoading} />
 
           <p
             onClick={onBack}
