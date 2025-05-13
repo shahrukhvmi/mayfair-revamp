@@ -6,11 +6,11 @@ import React from "react";
 const Dashboard = () => {
   return (
     <>
-      {/* <ProtectedPage> */}
+      <ProtectedPage>
         <DashBoardLayout>
           <MyAccount />
         </DashBoardLayout>
-      {/* </ProtectedPage> */}
+      </ProtectedPage>
     </>
   );
 };
