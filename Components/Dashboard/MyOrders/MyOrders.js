@@ -76,9 +76,9 @@ const MyOrders = () => {
             {/* Search and Filter Section */}
             <header className="p-4">
                 <h1 className="md:text-3xl text-lg mb-2 niba-bold-font heading">My Orders</h1>
-                <p className="reg-font text-gray-600 text-left text-sm xl:w-3/4 mt-2">View your order history</p>
+                <p className="reg-font paragraph  text-left text-sm xl:w-3/4 mt-2">View your order history</p>
             </header>
-            <div className="flex flex-col md:flex-row items-center justify-between space-y-3 md:space-y-0 md:space-x-4 px-3">
+            <div className="flex flex-col md:flex-row items-center justify-between space-y-3 md:space-y-0 md:space-x-4">
                 <div className="w-full md:w-1/2">
                     <form className="flex items-center" onSubmit={(e) => e.preventDefault()}>
                         <label htmlFor="simple-search" className="sr-only">
@@ -99,7 +99,7 @@ const MyOrders = () => {
                                 onChange={handleSearchChange}
                                 type="text"
                                 id="simple-search"
-                                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full pl-10 p-2"
+                                className="reg-font bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full pl-10 p-2"
                                 placeholder="Search by Order ID"
                             />
                         </div>
@@ -114,7 +114,7 @@ const MyOrders = () => {
                         <select
                             value={status}
                             onChange={(e) => handleStatusChange(e.target.value)}
-                            className={`text-sm rounded-lg border border-gray-300 focus:ring-primary-500 focus:border-primary-500 px-4 py-2 appearance-none pr-8 transition ease-in-out duration-200 ${getStatusClasses(
+                            className={`thin-font text-sm rounded-lg border border-gray-300 focus:ring-primary-500 focus:border-primary-500 px-4 py-2 appearance-none pr-8 transition ease-in-out duration-200 ${getStatusClasses(
                                 status
                             )}`}
                         >

@@ -89,15 +89,15 @@ const OrderDetails = () => {
         <>
             <StepsHeader isOpen={isOpen} toggleSidebar={toggleSidebar} />
 
-            <div className="p-3 sm:p-6 sm:bg-[#F9FAFB] sm:min-h-screen sm:rounded-md sm:shadow-md my-5 sm:me-5">
+            <div className="p-3 sm:p-6 sm:bg-[#F9FAFB] sm:min-h-screen sm:rounded-md sm:shadow-md my-5 sm:m-5">
                 <div className="relative">
                     <p className="h-fit whitespace-nowrap inline-flex items-center px-6 py-2 bg-violet-700 border border-transparent rounded-tr-full rounded-br-full font-semibold text-xs cursor-text text-white uppercase tracking-widest hover:bg-violet-700 focus:bg-violet-700 active:bg-violet-700 focus:outline-none focus:ring-2 focus:ring-violet-700 focus:ring-offset-2 transition ease-in-out duration-150  absolute -left-4 -top-4 lg:relative lg:top-0 lg:left-0">
                         {date} {time}
                     </p>
                 </div>
                 <div className="flex flex-col md:flex-row justify-between items-center my-6">
-                    <h1 className="text-2xl semibold-font text-[#1C1C29] my-4 sm:mb-4 md:mb-0">
-                        Details of Order #{order?.data?.order?.id}
+                    <h1 className="text-2xl bold-font text-[#1C1C29] my-4 sm:mb-4 md:mb-0">
+                        Details of Order # <span className="niba-bold-font">{order?.data?.order?.id}</span>
                     </h1>
 
                     {/* Buttons for Order Details */}
@@ -163,7 +163,7 @@ const OrderDetails = () => {
 
                 {/* Patient Information */}
                 <div className="sm:bg-gray-50 rounded-lg mb-6">
-                    <h2 className="text-xl bold-font text-[#1C1C29] mb-4">
+                    <h2 className="text-xl niba-bold-font text-[#1C1C29] mb-4">
                         Patient Information
                     </h2>
                     <TableContainer component={Paper}>
@@ -172,7 +172,7 @@ const OrderDetails = () => {
                                 <TableRow>
                                     <TableCell
                                         style={{ width: "50%" }}
-                                        className="reg-font  text-[#1C1C29] uppercase"
+                                        className="reg-font  paragraph"
                                     >
                                         First Name
                                     </TableCell>
@@ -185,7 +185,7 @@ const OrderDetails = () => {
                                     </TableCell>
                                 </TableRow>
                                 <TableRow>
-                                    <TableCell className="reg-font  text-[#1C1C29] uppercase">
+                                    <TableCell className="reg-font  paragraph">
                                         Last name
                                     </TableCell>
                                     <TableCell className="reg-font  text-[#1C1C29] capitalize">
@@ -193,7 +193,7 @@ const OrderDetails = () => {
                                     </TableCell>
                                 </TableRow>
                                 <TableRow>
-                                    <TableCell className="reg-font  text-[#1C1C29] uppercase">
+                                    <TableCell className="reg-font  paragraph">
                                         Ethnicity
                                     </TableCell>
                                     <TableCell className="reg-font  text-[#1C1C29] capitalize">
@@ -201,7 +201,7 @@ const OrderDetails = () => {
                                     </TableCell>
                                 </TableRow>
                                 <TableRow>
-                                    <TableCell className="reg-font  text-[#1C1C29] uppercase">
+                                    <TableCell className="reg-font  paragraph">
                                         Pregnancy
                                     </TableCell>
                                     <TableCell className="reg-font  text-[#1C1C29] capitalize">
@@ -209,7 +209,7 @@ const OrderDetails = () => {
                                     </TableCell>
                                 </TableRow>
                                 <TableRow>
-                                    <TableCell className="reg-font  text-[#1C1C29] uppercase">
+                                    <TableCell className="reg-font  paragraph">
                                         gender
                                     </TableCell>
                                     <TableCell className="reg-font  text-[#1C1C29] capitalize">
@@ -217,7 +217,7 @@ const OrderDetails = () => {
                                     </TableCell>
                                 </TableRow>
                                 <TableRow>
-                                    <TableCell className="reg-font  text-[#1C1C29] uppercase">
+                                    <TableCell className="reg-font  paragraph">
                                         dob
                                     </TableCell>
 
@@ -229,7 +229,7 @@ const OrderDetails = () => {
                                 </TableRow>
 
                                 <TableRow>
-                                    <TableCell className="reg-font  text-[#1C1C29] uppercase">
+                                    <TableCell className="reg-font  paragraph">
                                         Phone
                                     </TableCell>
 
@@ -249,7 +249,7 @@ const OrderDetails = () => {
 
 
                 <div className="rounded-lg mb-6 ">
-                    <h2 className="text-xl bold-font text-[#1C1C29] mb-4">Product Details</h2>
+                    <h2 className="text-xl niba-bold-font text-[#1C1C29] mb-4">Product Details</h2>
 
 
                     <TableContainer component={Paper} className="rounded-lg shadow">
@@ -319,7 +319,7 @@ const OrderDetails = () => {
                                 {/* Total Row */}
                                 <TableRow className="font-bold ">
                                     <TableCell className="py-3 font-serif">
-                                        <span className="font-bold ">Total</span>
+                                        <span className="bold-font ">Total</span>
                                     </TableCell>
                                     <TableCell></TableCell>
                                     <TableCell className="py-3">
@@ -335,14 +335,14 @@ const OrderDetails = () => {
 
                 {/* GP Details */}
                 <div className="sm:bg-gray-50 rounded-lg mb-6">
-                    <h2 className="text-xl bold-font text-[#1C1C29] mb-4">GP Details</h2>
+                    <h2 className="text-xl niba-bold-font text-[#1C1C29] mb-4">GP Details</h2>
                     <TableContainer component={Paper}>
                         <Table>
                             <TableBody>
                                 <TableRow>
                                     <TableCell
                                         style={{ width: "50%" }}
-                                        className="reg-font  text-[#1C1C29] uppercase "
+                                        className="reg-font  paragraph "
                                     >
                                         gp Consent
                                     </TableCell>
@@ -356,7 +356,7 @@ const OrderDetails = () => {
                                 <TableRow>
                                     <TableCell
                                         style={{ width: "50%" }}
-                                        className="reg-font  text-[#1C1C29] uppercase"
+                                        className="reg-font  paragraph"
                                     >
                                         address
                                     </TableCell>
@@ -369,7 +369,7 @@ const OrderDetails = () => {
                                     </TableCell>
                                 </TableRow>
                                 <TableRow>
-                                    <TableCell className="reg-font  text-[#1C1C29] uppercase">
+                                    <TableCell className="reg-font  paragraph">
                                         city
                                     </TableCell>
                                     <TableCell className="reg-font  text-[#1C1C29] capitalize">
@@ -378,7 +378,7 @@ const OrderDetails = () => {
                                     </TableCell>
                                 </TableRow>
                                 <TableRow>
-                                    <TableCell className="reg-font  text-[#1C1C29] uppercase">
+                                    <TableCell className="reg-font  paragraph">
                                         email
                                     </TableCell>
                                     <TableCell className="reg-font  text-[#1C1C29] capitalize">
@@ -387,7 +387,7 @@ const OrderDetails = () => {
                                     </TableCell>
                                 </TableRow>
                                 <TableRow>
-                                    <TableCell className="reg-font  text-[#1C1C29] uppercase">
+                                    <TableCell className="reg-font  paragraph">
                                         state
                                     </TableCell>
                                     <TableCell className="reg-font  text-[#1C1C29] capitalize">
@@ -401,7 +401,7 @@ const OrderDetails = () => {
                 </div>
 
                 <div className="sm:bg-gray-50 rounded-lg mb-6">
-                    <h2 className="text-xl bold-font text-[#1C1C29] mb-4">
+                    <h2 className="text-xl niba-bold-font text-[#1C1C29] mb-4">
                         Shipping Information
                     </h2>
                     <TableContainer component={Paper}>
@@ -411,7 +411,7 @@ const OrderDetails = () => {
                                 <TableRow>
                                     <TableCell
                                         style={{ width: "50%" }}
-                                        className="reg-font  text-[#1C1C29] uppercase"
+                                        className="reg-font  paragraph"
                                     >
                                         First Name
                                     </TableCell>
@@ -427,7 +427,7 @@ const OrderDetails = () => {
                                 <TableRow>
                                     <TableCell
                                         style={{ width: "50%" }}
-                                        className="reg-font  text-[#1C1C29] uppercase"
+                                        className="reg-font  paragraph"
                                     >
                                         Last Name
                                     </TableCell>
@@ -443,7 +443,7 @@ const OrderDetails = () => {
                                 <TableRow>
                                     <TableCell
                                         style={{ width: "50%" }}
-                                        className="reg-font  text-[#1C1C29] uppercase"
+                                        className="reg-font  paragraph"
                                     >
                                         Address1
                                     </TableCell>
@@ -457,7 +457,7 @@ const OrderDetails = () => {
                                 <TableRow>
                                     <TableCell
                                         style={{ width: "50%" }}
-                                        className="reg-font  text-[#1C1C29] uppercase"
+                                        className="reg-font  paragraph"
                                     >
                                         Address2
                                     </TableCell>
@@ -470,7 +470,7 @@ const OrderDetails = () => {
                                     </TableCell>
                                 </TableRow>
                                 <TableRow>
-                                    <TableCell className="reg-font  text-[#1C1C29] uppercase">
+                                    <TableCell className="reg-font  paragraph">
                                         City
                                     </TableCell>
                                     <TableCell className="reg-font  text-[#1C1C29] capitalize">
@@ -478,7 +478,7 @@ const OrderDetails = () => {
                                     </TableCell>
                                 </TableRow>
                                 <TableRow>
-                                    <TableCell className="reg-font  text-[#1C1C29] uppercase">
+                                    <TableCell className="reg-font  paragraph">
                                         State / Province / Region:
                                     </TableCell>
                                     <TableCell className="reg-font  text-[#1C1C29] capitalize">
@@ -486,7 +486,7 @@ const OrderDetails = () => {
                                     </TableCell>
                                 </TableRow>
                                 <TableRow>
-                                    <TableCell className="reg-font  text-[#1C1C29] uppercase">
+                                    <TableCell className="reg-font  paragraph">
                                         Postalcode
                                     </TableCell>
                                     <TableCell className="reg-font  text-[#1C1C29] capitalize">
@@ -495,7 +495,7 @@ const OrderDetails = () => {
                                 </TableRow>
 
                                 <TableRow>
-                                    <TableCell className="reg-font  text-[#1C1C29] uppercase">
+                                    <TableCell className="reg-font  paragraph">
                                         Country
                                     </TableCell>
                                     <TableCell className="reg-font  text-[#1C1C29] capitalize">
@@ -505,7 +505,7 @@ const OrderDetails = () => {
 
 
                                 <TableRow>
-                                    <TableCell className="reg-font  text-[#1C1C29] uppercase">
+                                    <TableCell className="reg-font  paragraph">
                                         Phone Number
                                     </TableCell>
                                     <TableCell className="reg-font  text-[#1C1C29] capitalize">
