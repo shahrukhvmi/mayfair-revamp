@@ -155,7 +155,7 @@ const ProductCard = ({ id, title, image, price, status, buttonText, lastOrderDat
                       duration: 1,
                       ease: "linear",
                     }}
-                    className="w-6 h-6 border-4 border-t-transparent border-primary rounded-full text-white"
+                    className="w-6 h-6 border-4 border-t-transparent rounded-full text-white"
                   />
                 </div>
               ) : (
