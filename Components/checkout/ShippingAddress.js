@@ -15,6 +15,7 @@ import useShipmentCountries from "@/store/useShipmentCountriesStore";
 import { RiRadioButtonFill } from "react-icons/ri";
 import { IoRadioButtonOff } from "react-icons/io5";
 import { motion } from "framer-motion";
+import toast from "react-hot-toast";
 
 const api = new Client("_UFb05P76EyMidU1VHIQ_A42976");
 
@@ -134,9 +135,13 @@ export default function ShippingAddress({ isCompleted, onComplete }) {
         setAddressOptions(result.addresses.addresses);
         setManual(true);
         setAddressSearchLoading(false);
+      } else {
+        setAddressSearchLoading(false);
+        toast.error("Invalid Postal Code");
       }
     } catch (error) {
-      console.error("API error:", error);
+      setAddressSearchLoading(false);
+      console.log("API error:", error);
       alert("Something went wrong while fetching addresses.");
     }
   };
@@ -183,6 +188,29 @@ export default function ShippingAddress({ isCompleted, onComplete }) {
 
     onComplete();
   };
+
+  useEffect(() => {
+    const subscription = watch((values) => {
+      const selectedCountry =
+        shipmentCountries.find((c) => c.id.toString() === values.shippingCountry) || shipmentCountries.find((c) => c.id.toString() === shippingIndex);
+
+      setShipping({
+        id: selectedCountry?.id || "",
+        country_name: selectedCountry?.name || "",
+        country_price: selectedCountry?.price || "",
+        postalcode: values.postalcode || "",
+        addressone: values.addressone || "",
+        addresstwo: values.addresstwo || "",
+        first_name: values.first_name || "",
+        last_name: values.last_name || "",
+        city: values.city || "",
+        state: values.state || "",
+        same_as_shipping: values.same_as_shipping ?? false,
+      });
+    });
+
+    return () => subscription.unsubscribe();
+  }, [watch, shipmentCountries, shippingIndex, setShipping]);
 
   return (
     <>

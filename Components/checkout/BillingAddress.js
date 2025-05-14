@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { FaSearch } from "react-icons/fa";
 import { IoRadioButtonOff } from "react-icons/io5";
@@ -14,6 +14,7 @@ import useShippingOrBillingStore from "@/store/shipingOrbilling";
 import useBillingCountriesStore from "@/store/useBillingCountriesStore";
 import useBillingCountries from "@/store/useBillingCountriesStore";
 import { motion } from "framer-motion";
+import toast from "react-hot-toast";
 
 const api = new Client("_UFb05P76EyMidU1VHIQ_A42976");
 
@@ -27,6 +28,7 @@ export default function BillingAddress({ isCompleted, onComplete, sameAsShipping
 
   const { billing, setBilling, shipping, clearBilling } = useShippingOrBillingStore();
   const { billingCountries } = useBillingCountries();
+  const prevBillingRef = useRef({});
 
   console.log(billing, "billing");
 
@@ -130,6 +132,9 @@ export default function BillingAddress({ isCompleted, onComplete, sameAsShipping
         setAddressOptions(result.addresses.addresses);
         setManual(true);
         setAddressSearchLoading(false);
+      } else {
+        setAddressSearchLoading(false);
+        toast.error("Invalid Postal Code");
       }
     } catch (error) {
       console.error("API error:", error);
@@ -161,6 +166,35 @@ export default function BillingAddress({ isCompleted, onComplete, sameAsShipping
 
     onComplete();
   };
+
+  useEffect(() => {
+    const subscription = watch((values) => {
+      const selectedCountry =
+        billingCountries.find((c) => c.id.toString() === values.billingCountry) || billingCountries.find((c) => c.id.toString() === billingIndex);
+
+      const updatedBilling = {
+        id: selectedCountry?.id || "",
+        country_name: selectedCountry?.name || "",
+        country_price: selectedCountry?.price || "",
+        postalcode: values.postalcode || "",
+        addressone: values.addressone || "",
+        addresstwo: values.addresstwo || "",
+        city: values.city || "",
+        state: values.state || "",
+        same_as_shipping: false,
+      };
+
+      const prev = prevBillingRef.current;
+      const hasChanged = JSON.stringify(prev) !== JSON.stringify(updatedBilling);
+
+      if (hasChanged) {
+        prevBillingRef.current = updatedBilling;
+        setBilling(updatedBilling);
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  }, [watch, billingCountries, billingIndex, setBilling]);
 
   if (sameAsShipping) {
     return null; // ✅ Do not render anything if same as shipping

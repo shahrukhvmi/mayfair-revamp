@@ -39,6 +39,7 @@ export default function PatientConsent() {
       const initialized = confirmationQuestions.map((q) => ({
         ...q,
         answer: false, // default unchecked
+        has_check_list: true, // <-- hardcoded
       }));
 
       console.log(initialized, "initialized");
@@ -56,7 +57,8 @@ export default function PatientConsent() {
   }, [questions]);
 
   const handleCheckboxChange = (id, value) => {
-    const updated = questions.map((q) => (q.id === id ? { ...q, answer: value } : q));
+    const updated = questions.map((q) => (q.id === id ? { ...q, answer: value, has_check_list: true } : q));
+
     setQuestions(updated);
     setValue(`responses[${id}].answer`, value);
   };

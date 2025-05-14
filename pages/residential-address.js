@@ -15,6 +15,7 @@ import { Client } from "getaddress-api";
 import { FormControl, InputLabel, Select, MenuItem, FormHelperText } from "@mui/material";
 import MUISelectField from "@/Components/SelectField/SelectField";
 import { motion } from "framer-motion";
+import toast from "react-hot-toast";
 
 const api = new Client("_UFb05P76EyMidU1VHIQ_A42976");
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
@@ -68,6 +69,9 @@ export default function ResidentialAddress() {
         setAddressOptions(result.addresses.addresses);
         setManual(true);
         setAddressSearchLoading(false);
+      } else {
+        setAddressSearchLoading(false);
+        toast.error("Invalid Postal Code");
       }
     } catch (error) {
       console.error("API error:", error);
