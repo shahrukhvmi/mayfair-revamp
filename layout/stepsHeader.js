@@ -177,7 +177,7 @@ const StepsHeader = ({ isOpen, toggleSidebar }) => {
             <div className="w-1/2 items-center justify-end lg:w-[100%] sm:flex hidden">
               <p className="hidden md:block text-black reg-font">Already have an account?</p>
               <span
-                className="inline-flex items-center px-6 py-2 bg-violet-800 border border-transparent rounded-full font-semibold text-xs text-white uppercase tracking-widest hover:bg-violet-700 focus:bg-bg-violet-700 active:bg-violet-900 focus:outline-none focus:ring-2 focus:ring-violet-500 focus:ring-offset-2 transition ease-in-out duration-150 false ml-4"
+                className="cursor-pointer inline-flex items-center px-6 py-2 bg-violet-800 border border-transparent rounded-full font-semibold text-xs text-white uppercase tracking-widest hover:bg-violet-700 focus:bg-bg-violet-700 active:bg-violet-900 focus:outline-none focus:ring-2 focus:ring-violet-500 focus:ring-offset-2 transition ease-in-out duration-150 false ml-4"
                 onClick={openLoginModal}
               >
                 Login
