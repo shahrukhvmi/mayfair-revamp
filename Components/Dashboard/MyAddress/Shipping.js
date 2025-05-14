@@ -168,6 +168,7 @@ export default function Shipping({ shipmentCountries }) {
                 label="Select Country"
                 name="shippingCountry"
                 value={field.value}
+                required
                 onChange={(e) => {
                   const id = e.target.value;
                   field.onChange(id);
