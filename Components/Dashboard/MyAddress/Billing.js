@@ -139,6 +139,10 @@ export default function Billing({ billingCountries }) {
 
   return (
     <SectionWrapper>
+      <header className="pb-4">
+        <h1 className="md:text-3xl text-lg mb-2 niba-bold-font text-black">Billing Information</h1>
+        <p className="reg-font paragraph  text-left text-sm xl:w-3/4 mt-2">Update your billing information</p>
+      </header>
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 mt-5">
         <Controller
           name="billingCountry"
