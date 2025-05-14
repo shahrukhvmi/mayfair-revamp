@@ -17,6 +17,7 @@ import useProductId from "@/store/useProductIdStore";
 import useGpDetailsStore from "@/store/gpDetailStore";
 import useSignupStore from "@/store/signupStore";
 import useLastBmi from "@/store/useLastBmiStore";
+import toast from "react-hot-toast";
 
 const ConfirmationSummary = () => {
   const router = useRouter();
@@ -56,9 +57,9 @@ const ConfirmationSummary = () => {
     },
     onError: (error) => {
       // setLoading(false);
-      console.log("error", error?.response?.data?.message);
+      setShowLoader(false);
       if (error) {
-        toast.error(error?.response?.data?.message);
+        toast.error("Something went wrong");
         setShowLoader(false);
       }
     },

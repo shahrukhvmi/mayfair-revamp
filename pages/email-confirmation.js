@@ -26,11 +26,13 @@ export default function EmailConfirmation() {
   const [showLoader, setShowLoader] = useState(false);
   const [already, setAlready] = useState(false);
   // const [showLoginModal, setShowLoginModal] = useState(false);
-  console.log(showLoader, "showLoader")
+  console.log(showLoader, "showLoader");
   const router = useRouter();
   const { firstName, lastName, email, confirmationEmail, setEmail, setConfirmationEmail } = useSignupStore();
   const { setUserData } = useUserDataStore();
   const { token, setToken } = useAuthStore();
+  const { setIsPasswordReset, isPasswordReset } = usePasswordReset();
+  const { showLoginModal, closeLoginModal, openLoginModal } = useLoginModalStore();
 
   const {
     register,
@@ -43,18 +45,18 @@ export default function EmailConfirmation() {
     mode: "onChange",
     defaultValues: { email: "", confirmationEmail: "" },
   });
-  const { showLoginModal, closeLoginModal, openLoginModal } = useLoginModalStore();
   useEffect(() => {
     setValue("email", email);
     setValue("confirmationEmail", confirmationEmail);
     if (email) trigger(["email", "confirmationEmail"]);
   }, [email, confirmationEmail, setValue, trigger]);
-  const { setIsPasswordReset, isPasswordReset } = usePasswordReset();
+
   const registerMutation = useMutation(registerUser, {
     onSuccess: (data) => {
       const user = data?.data?.data;
       setUserData(user);
       setToken(user?.token);
+      setIsPasswordReset(true);
       Fetcher.axiosSetup.defaults.headers.common.Authorization = `Bearer ${user?.token}`;
       router.push("/steps-information");
     },
@@ -67,7 +69,6 @@ export default function EmailConfirmation() {
   });
 
   const loginMutation = useMutation(Login); // no onSuccess/onError
-
 
   const handleSignupSubmit = (data) => {
     setEmail(data.email);
@@ -109,37 +110,21 @@ export default function EmailConfirmation() {
             router.push("/dashboard");
           } catch (error) {
             const errorMsg = error?.response?.data?.errors;
-            const firstMsg = errorMsg && typeof errorMsg === "object"
-              ? Object.values(errorMsg)[0]
-              : "Something went wrong.";
+            const firstMsg = errorMsg && typeof errorMsg === "object" ? Object.values(errorMsg)[0] : "Something went wrong.";
             toast.error(firstMsg);
             setShowLoader(false);
           }
         }}
-
       />
-
 
       {/*  */}
 
       <StepsHeader />
-      <FormWrapper
-        heading="Enter your email address"
-        description="This is where we will send information about your order."
-        percentage="20"
-      >
+      <FormWrapper heading="Enter your email address" description="This is where we will send information about your order." percentage="20">
         <PageAnimationWrapper>
           <div className={`relative ${showLoader ? "pointer-events-none cursor-not-allowed" : ""}`}>
             <form onSubmit={handleSubmit(handleSignupSubmit)} className="space-y-4">
-              <TextField
-                label="Email Address"
-                name="email"
-                type="email"
-                placeholder="Email Address"
-                register={register}
-                required
-                errors={errors}
-              />
+              <TextField label="Email Address" name="email" type="email" placeholder="Email Address" register={register} required errors={errors} />
 
               <TextField
                 label="Confirm Email Address"
@@ -149,8 +134,7 @@ export default function EmailConfirmation() {
                 register={register}
                 required
                 validation={{
-                  validate: (value) =>
-                    value === getValues("email") || "Email addresses must match.",
+                  validate: (value) => value === getValues("email") || "Email addresses must match.",
                 }}
                 errors={errors}
               />
@@ -158,16 +142,11 @@ export default function EmailConfirmation() {
               {already && (
                 <div className="text-sm text-red-600 bg-red-50 border border-red-200 p-3 rounded-md">
                   This email is already registered.{" "}
-                  <span
-                    onClick={openLoginModal}
-                    className="text-blue-600 underline cursor-pointer font-medium hover:text-blue-800"
-                  >
+                  <span onClick={openLoginModal} className="text-blue-600 underline cursor-pointer font-medium hover:text-blue-800">
                     Click here to login.
                   </span>
                 </div>
               )}
-
-
 
               <NextButton label="Next" type="submit" disabled={!isValid} />
               <BackButton label="Back" className="mt-2" onClick={() => router.back()} />

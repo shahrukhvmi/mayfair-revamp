@@ -6,7 +6,7 @@ const usePasswordReset = create(
     (set) => ({
       isPasswordReset: false,
       setIsPasswordReset: (isPasswordReset) => set({ isPasswordReset }),
-      clearIsPasswordReset: () => set({ isPasswordReset: null }),
+      clearIsPasswordReset: () => set({ isPasswordReset: false }),
     }),
     {
       name: "user-password-reset",
