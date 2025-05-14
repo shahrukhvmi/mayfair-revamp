@@ -57,7 +57,7 @@ export default function Acknowledgment() {
               className={`reg-font flex items-center px-4 py-4 rounded-md border justify-start cursor-pointer transition-all duration-200 flex-1
                 ${isSelected
                   ? option === "yes"
-                    ? "bg-violet-100 border-violet-600 text-violet-700"
+                    ? "bg-violet-100 border-primary text-primary"
                     : "bg-red-100 border-red-600 text-red-700"
                   : "bg-white border-gray-300 hover:border-gray-400 text-gray-800"
                 }`}
@@ -67,7 +67,7 @@ export default function Acknowledgment() {
                 className={`w-5 h-5 mr-2 rounded-md border flex items-center justify-start
                   ${isSelected
                     ? option === "yes"
-                      ? "bg-violet-600 border-violet-600 text-white"
+                      ? "bg-primary border-violet-600 text-white"
                       : "bg-red-600 border-red-600 text-white"
                     : "border-gray-400 bg-white"
                   }`}
@@ -112,7 +112,7 @@ export default function Acknowledgment() {
                       <input type="checkbox" {...register("confirmConsent", { required: true })} className="hidden" />
                       <div
                         className={`w-5 h-5 rounded-full flex items-center justify-center border transition-all duration-200
-                          ${confirmConsent ? "bg-violet-600 border-violet-600 text-white" : "bg-white border-gray-400"}`}
+                          ${confirmConsent ? "bg-primary border-violet-600 text-white" : "bg-white border-gray-400"}`}
                       >
                         {confirmConsent && <FiCheck className="w-3 h-3" />}
                       </div>

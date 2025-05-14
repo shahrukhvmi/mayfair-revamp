@@ -70,8 +70,8 @@ export default function PregnancyCheck() {
                 ${
                   isSelected
                     ? option === "yes"
-                      ? "bg-violet-100 border-violet-600 text-violet-700"
-                      : "bg-violet-100 border-violet-600 text-violet-700"
+                      ? "bg-violet-100 border-primary text-violet-700"
+                      : "bg-violet-100 border-primary text-violet-700"
                     : "bg-white border-gray-300 hover:border-gray-400 text-gray-800"
                 }`}
             >
@@ -81,8 +81,8 @@ export default function PregnancyCheck() {
                   ${
                     isSelected
                       ? option === "yes"
-                        ? "bg-violet-600 border-violet-600 text-white"
-                        : "bg-violet-600 border-violet-600 text-white"
+                        ? "bg-primary border-[#47317c] text-white"
+                        : "bg-primary border-[#47317c] text-white"
                       : "border-gray-400 bg-white"
                   }`}
               >
@@ -104,7 +104,7 @@ export default function PregnancyCheck() {
         description={
           "Please note that our treatment programme is not suitable for use while breastfeeding, pregnant, or currently trying to conceive."
         }
-        percentage={"0"}
+        percentage={"30"}
       >
         <PageAnimationWrapper>
           <div className="bg-white">

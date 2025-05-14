@@ -9,6 +9,7 @@ import { getProfileData, sendProfileData } from "@/api/myProfileApi";
 import { useMutation } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import { parse } from "date-fns"; // 👈 for DOB parsing
+import NextButton from "@/Components/NextButton/NextButton";
 
 const MyProfile = () => {
   const [userEmail, setUserEmail] = useState("");
@@ -91,16 +92,16 @@ const MyProfile = () => {
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
         {/* First & Last Name */}
         <div className="grid sm:grid-cols-2 gap-4">
-          <ProfileTextField required label="First Name" name="firstname" placeholder="First Name" register={register}  errors={errors} />
+          <ProfileTextField required label="First Name" name="firstname" placeholder="First Name" register={register} errors={errors} />
 
-          <ProfileTextField required label="Last Name" name="lastname" placeholder="Last Name" register={register}  errors={errors} />
+          <ProfileTextField required label="Last Name" name="lastname" placeholder="Last Name" register={register} errors={errors} />
         </div>
 
         {/* Gender & DOB */}
         <div className="grid sm:grid-cols-2 gap-4 items-start">
           <div>
             <label className="bold-font paragraph mb-2 relative">Gender
-               <span className="text-red-500 absolute m-1 niba-semibold-font"> *</span></label>
+              <span className="text-red-500 absolute m-1 niba-semibold-font"> *</span></label>
             <FormControl fullWidth error={!!errors.gender}>
               <Controller
                 name="gender"
@@ -133,7 +134,7 @@ const MyProfile = () => {
 
           <div>
             <label className="bold-font paragraph mb-2 relative">Date of Birth
-               <span className="text-red-500 absolute  m-1 niba-semibold-font"> *</span></label>
+              <span className="text-red-500 absolute  m-1 niba-semibold-font"> *</span></label>
             <MuiDatePickerField
               name="dob"
               //   label="Date of Birth"
@@ -186,22 +187,11 @@ const MyProfile = () => {
         {/* Submit Button */}
         <div className="mt-4 sm:max-w-20">
           <div className="text-center my-3">
-            <button
-              disabled={!isValid}
-              type="submit"
-              className="w-full px-6 py-2 bg-violet-700 text-white rounded-md text-xs uppercase tracking-widest disabled:opacity-50 disabled:cursor-not-allowed transition ease-in-out duration-150 cursor-pointer"
-            >
-              {loading ? (
-                <div className="relative">
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <div className="w-5 h-5 border-2 border-t-transparent border-[#ffffff] rounded-full animate-spin"></div> {/* Spinner */}
-                  </div>
-                  <span className="opacity-0">Saving...</span>
-                </div>
-              ) : (
-                "Save"
-              )}
-            </button>
+
+            <NextButton  disabled={!isValid}  label="Save" type="submit"/>
+
+
+           
           </div>
         </div>
       </form>
