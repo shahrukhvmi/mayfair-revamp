@@ -1,5 +1,6 @@
 import TextField from "../TextField/TextField";
 import NextButton from "../NextButton/NextButton";
+import BackButton from "../BackButton/BackButton";
 
 export default function ForgotForm({
   register,
@@ -17,17 +18,17 @@ export default function ForgotForm({
           <p>
             A password reset link has been sent to your email address.
           </p>
-      
+
           <p className="text-gray-600 mt-2 reg-font">
             Didn’t receive the email? Check your spam or junk folder.
           </p>
 
-       
+
         </div>
       ) : (
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
 
-          <p className="text-black reg-font">Enter your email address below and we will send you a password reset link.</p>
+          <p className="paragraph reg-font">Enter your email address below and we will send you a password reset link.</p>
           <TextField
             label="Email Address"
             name="email"
@@ -39,12 +40,14 @@ export default function ForgotForm({
           />
           <NextButton label="Send Password Reset Link" type="submit" disabled={isLoading} />
 
-          <p
-            onClick={onBack}
-            className="text-sm reg-font text-blue-500 text-center underline mt-2 cursor-pointer"
-          >
-            Login
-          </p>
+          <div className="mt-2">
+            <BackButton
+              onClick={onBack}
+              label="Login"
+            />
+
+          </div>
+
         </form>
       )}
     </>

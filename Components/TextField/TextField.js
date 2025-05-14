@@ -32,8 +32,14 @@ const TextField = ({
       {label && (
         <label htmlFor={name} className="bold-font paragraph mb-2">
           {label}
+          {required ? (
+            <span className="text-red-500 absolute top-1 ms-1 niba-semibold-font"> *</span>
+          ) : (
+            <span className="text-gray-500 text-sm font-normal ml-1">(optional)</span>
+          )}
         </label>
       )}
+
 
       {multiline ? (
         <textarea
@@ -60,9 +66,9 @@ const TextField = ({
             onPaste={handlePaste}
             {...(register
               ? register(name, {
-                  required: required && "This field is required",
-                  ...validation,
-                })
+                required: required && "This field is required",
+                ...validation,
+              })
               : { value, onChange })}
             className={`reg-font w-full text-black px-3 py-4 border rounded-sm placeholder-gray-400 
               focus:outline-none focus:ring-2 focus:ring-violet-300 focus:border-violet-800

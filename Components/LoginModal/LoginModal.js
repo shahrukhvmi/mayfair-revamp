@@ -76,9 +76,20 @@ export default function LoginModal({
             setLocalLoading(false);
         },
         onError: (error) => {
-            const message = error?.response?.data?.message || "Something went wrong.";
-            toast.error(message);
-            setLocalLoading(false);
+   
+            const errors = error?.response?.data?.errors;
+
+            if (errors && typeof errors === "object") {
+                Object.values(errors).forEach((err) => {
+                    if (Array.isArray(err)) {
+                        err.forEach((msg) => toast.error(msg));
+                    } else {
+                        toast.error(err);
+                    }
+                });
+            } else {
+                toast.error("Something went wrong.");
+            }
         },
     });
 

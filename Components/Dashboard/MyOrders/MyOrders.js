@@ -9,26 +9,32 @@ import { useMutation } from "@tanstack/react-query";
 const MyOrders = () => {
     const [isLoading, setIsLoading] = useState(true);
     const [data, setOrderList] = useState(null);
+    const [page, setPage] = useState(1);
+
+    useEffect(() => {
+        getOrderList.mutate({ data: {}, page });
+    }, [page]);
+
 
     console.log(data, "data")
     const getOrderList = useMutation(GetOrdersApi, {
         onSuccess: (res) => {
-
-            console.log(res?.data?.myorders?.allorders, "sdfkjdkjsdjbd")
-            const product = res?.data?.myorders?.allorders || {};
-            setOrderList(product);
-
+            const paginationData = res?.data?.myorders || {};
+            setOrderList(paginationData); // ✅ Set the entire pagination object
             setIsLoading(false);
         },
+
         onError: (error) => {
             toast.error(error?.response?.data?.errors || "Something went wrong");
             setIsLoading(false);
         },
     });
 
-    useEffect(() => {
-        getOrderList.mutate({ data: {} });
-    }, []);
+useEffect(() => {
+    getOrderList.mutate({ data: {}, page });
+}, [page]);
+
+
     // const [orderData] = useState(data?.myorders.allorders);
     const [searchValue, setSearchValue] = useState("");
     const [status, setStatus] = useState("all");
@@ -42,10 +48,10 @@ const MyOrders = () => {
     const handleStatusChange = (selectedStatus) => {
         setStatus(selectedStatus);
     };
-
+    console.log(data, "dsdsdsdsdsdata")
     // Filter data based on search input and status
     // const APIORDER = data?.myorders?.allorders
-    const filteredData = data?.filter((order) => {
+    const filteredData = data?.allorders?.filter((order) => {
         const matchesSearch =
             order.order_id?.toString().includes(searchValue) ||
             order.treatment?.toLowerCase().includes(searchValue) ||
@@ -270,7 +276,9 @@ const MyOrders = () => {
                 </table>
             </div>
 
-            <Pagination pagination={data?.myorders} />
+            <Pagination pagination={data} setPage={setPage} />
+
+
         </div>
     );
 };

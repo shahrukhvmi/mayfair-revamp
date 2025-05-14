@@ -83,28 +83,30 @@ const MyProfile = () => {
     <div className="p-6 sm:bg-[#F9FAFB] sm:min-h-screen sm:rounded-md sm:shadow-md my-5 sm:me-5">
       <div className="mb-8">
 
-      
-      <h1 className="md:text-3xl text-lg mb-2 niba-bold-font heading">Profile Information</h1>
-                <p className="reg-font paragraph  text-left text-sm xl:w-3/4 mt-2">Update your account's profile information and email address.</p>
+
+        <h1 className="md:text-3xl text-lg mb-2 niba-bold-font heading">Profile Information</h1>
+        <p className="reg-font paragraph  text-left text-sm xl:w-3/4 mt-2">Update your account's profile information and email address.</p>
       </div>
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
         {/* First & Last Name */}
         <div className="grid sm:grid-cols-2 gap-4">
-          <ProfileTextField label="First Name" name="firstname" placeholder="First Name" register={register} required errors={errors} />
+          <ProfileTextField required label="First Name" name="firstname" placeholder="First Name" register={register}  errors={errors} />
 
-          <ProfileTextField label="Last Name" name="lastname" placeholder="Last Name" register={register} required errors={errors} />
+          <ProfileTextField required label="Last Name" name="lastname" placeholder="Last Name" register={register}  errors={errors} />
         </div>
 
         {/* Gender & DOB */}
         <div className="grid sm:grid-cols-2 gap-4 items-start">
           <div>
-            <label className="bold-font paragraph mb-2">Gender</label>
+            <label className="bold-font paragraph mb-2 relative">Gender
+               <span className="text-red-500 absolute m-1 niba-semibold-font"> *</span></label>
             <FormControl fullWidth error={!!errors.gender}>
               <Controller
                 name="gender"
                 control={control}
                 rules={{ required: "Gender is required" }}
+
                 render={({ field }) => (
                   <Select
                     {...field}
@@ -130,7 +132,8 @@ const MyProfile = () => {
           </div>
 
           <div>
-            <label className="bold-font paragraph mb-2">Date of Birth</label>
+            <label className="bold-font paragraph mb-2 relative">Date of Birth
+               <span className="text-red-500 absolute  m-1 niba-semibold-font"> *</span></label>
             <MuiDatePickerField
               name="dob"
               //   label="Date of Birth"
@@ -146,8 +149,8 @@ const MyProfile = () => {
         {/* Phone & Email */}
         <div className="grid sm:grid-cols-2 gap-4">
           <div>
-            <label htmlFor="phoneNumber" className="bold-font paragraph mb-2">
-              Phone Number
+            <label htmlFor="phoneNumber" className="bold-font paragraph mb-2 relative">
+              Phone Number <span className="text-red-500 absolute  m-1 niba-semibold-font"> *</span>
             </label>
             <Controller
               name="phone"
@@ -155,9 +158,8 @@ const MyProfile = () => {
               rules={{ required: "Phone number is required" }}
               render={({ field }) => (
                 <div
-                  className={`w-full text-black px-3 py-3 border rounded-sm placeholder-gray-400 focus-within:ring-2 focus-within:ring-violet-300 focus-within:border-violet-800 ${
-                    errors.phoneNumber ? "border-red-500" : "border-gray-400"
-                  }`}
+                  className={`w-full text-black px-3 py-3 border rounded-sm placeholder-gray-400 focus-within:ring-2 focus-within:ring-violet-300 focus-within:border-violet-800 ${errors.phoneNumber ? "border-red-500" : "border-gray-400"
+                    }`}
                 >
                   <PhoneInput
                     {...field}
@@ -174,7 +176,7 @@ const MyProfile = () => {
 
           <div>
             <label className="bold-font paragraph mb-2">Email Address</label>
-            <div className="border border-gray-400 rounded-sm px-3 flex items-center text-sm text-black cursor-not-allowed h-15">
+            <div className=" border border-gray-400 rounded-sm px-3 flex items-center text-sm text-black cursor-not-allowed h-15">
               <p className="reg-font">{userEmail}</p>
             </div>
             <p className="reg-font text-xs mt-2 text-gray-700">(This email is associated with your account and cannot be changed)</p>

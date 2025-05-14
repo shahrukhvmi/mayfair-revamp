@@ -92,7 +92,11 @@ const OrderDetails = () => {
             <div className="p-3 sm:p-6 sm:bg-[#F9FAFB] sm:min-h-screen sm:rounded-md sm:shadow-md my-5 sm:m-5">
                 <div className="relative">
                     <p className="h-fit whitespace-nowrap inline-flex items-center px-6 py-2 bg-violet-700 border border-transparent rounded-tr-full rounded-br-full font-semibold text-xs cursor-text text-white uppercase tracking-widest hover:bg-violet-700 focus:bg-violet-700 active:bg-violet-700 focus:outline-none focus:ring-2 focus:ring-violet-700 focus:ring-offset-2 transition ease-in-out duration-150  absolute -left-4 -top-4 lg:relative lg:top-0 lg:left-0">
-                        {date} {time}
+                        {moment(date, "DD-MM-YYYY", true).isValid()
+                            ? moment(date, "DD-MM-YYYY").format("DD-MM-YYYY")
+                            : "N/A"}   {time}
+
+
                     </p>
                 </div>
                 <div className="flex flex-col md:flex-row justify-between items-center my-6">
@@ -210,7 +214,7 @@ const OrderDetails = () => {
                                 </TableRow>
                                 <TableRow>
                                     <TableCell className="reg-font  paragraph">
-                                        gender
+                                        Gender
                                     </TableCell>
                                     <TableCell className="reg-font  text-[#1C1C29] capitalize">
                                         {patientData?.gender ? patientData?.gender : "N/A"}
@@ -218,12 +222,15 @@ const OrderDetails = () => {
                                 </TableRow>
                                 <TableRow>
                                     <TableCell className="reg-font  paragraph">
-                                        dob
+                                        Date of birth
+                                    </TableCell>
+                                    <TableCell className="reg-font text-[#1C1C29] capitalize">
+                                        {moment(patientData?.dob, "DD-MM-YYYY", true).isValid()
+                                            ? moment(patientData.dob, "DD-MM-YYYY").format("DD-MM-YYYY")
+                                            : "N/A"}
                                     </TableCell>
 
-                                    <TableCell className="reg-font text-[#1C1C29] capitalize">
-                                        {patientData?.dob ? moment(patientData.dob).format('DD-MM-YYYY') : "N/A"}
-                                    </TableCell>
+
 
 
                                 </TableRow>
@@ -271,11 +278,15 @@ const OrderDetails = () => {
                             {/* Table Body */}
                             <TableBody>
                                 {products?.filter((product) => product.name.includes("mg")).map((product) => (
+
                                     <TableRow key={product.id} className="hover:bg-gray-50">
                                         <TableCell className="text-gray-800 capitalize py-3">{product.label}</TableCell>
                                         <TableCell className="text-gray-800 py-3">{product.quantity}</TableCell>
-                                        <TableCell className="text-gray-800 py-3">£{parseFloat(product.price).toFixed(2)}</TableCell>
+                                        <TableCell className="text-gray-800 py-3">
+                                            £{(parseFloat(product.price) * product.quantity).toFixed(2)}
+                                        </TableCell>
                                     </TableRow>
+
                                 ))}
 
                                 <TableRow className="hover:bg-gray-50">
@@ -344,7 +355,7 @@ const OrderDetails = () => {
                                         style={{ width: "50%" }}
                                         className="reg-font  paragraph "
                                     >
-                                        gp Consent
+                                        Gp Consent
                                     </TableCell>
                                     <TableCell
                                         style={{ width: "50%" }}
@@ -358,7 +369,7 @@ const OrderDetails = () => {
                                         style={{ width: "50%" }}
                                         className="reg-font  paragraph"
                                     >
-                                        address
+                                        Address
                                     </TableCell>
                                     <TableCell
                                         style={{ width: "50%" }}
@@ -370,7 +381,7 @@ const OrderDetails = () => {
                                 </TableRow>
                                 <TableRow>
                                     <TableCell className="reg-font  paragraph">
-                                        city
+                                        City
                                     </TableCell>
                                     <TableCell className="reg-font  text-[#1C1C29] capitalize">
                                         {gpDetails?.city || "N/A"}
@@ -379,7 +390,7 @@ const OrderDetails = () => {
                                 </TableRow>
                                 <TableRow>
                                     <TableCell className="reg-font  paragraph">
-                                        email
+                                        Email
                                     </TableCell>
                                     <TableCell className="reg-font  text-[#1C1C29] capitalize">
                                         {gpDetails?.email || "N/A"}
@@ -388,7 +399,7 @@ const OrderDetails = () => {
                                 </TableRow>
                                 <TableRow>
                                     <TableCell className="reg-font  paragraph">
-                                        state
+                                        State
                                     </TableCell>
                                     <TableCell className="reg-font  text-[#1C1C29] capitalize">
                                         {gpDetails?.state || "N/A"}
@@ -519,7 +530,7 @@ const OrderDetails = () => {
 
                 {/* Back Button */}
                 <div className="flex justify-start">
-                    <Link href="/my-orders/">
+                    <Link href="/orders/">
                         <button className="reg-font px-6 py-2 bg-violet-700 cursor-pointer text-white rounded-md hover:bg-violet-700 transition">
                             Back
                         </button>

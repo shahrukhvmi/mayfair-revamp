@@ -103,13 +103,15 @@ export default function LoginScreen() {
         percentage="0"
       > */}
       <div className={`flex justify-center bg-[#DACFFF] p-6`}>
-        <div className={`bg-white rounded-xl shadow-md w-full max-w-3xl p-8`}>
+        <div className={`bg-white rounded-xl shadow-md w-full max-w-lg p-8`}>
 
           {/* Title */}
           <h1 className="niba-reg-font heading mb-2">Login</h1>
 
           {/* Description */}
-          <p className="mb-6 reg-font paragraph">In order for our doctors to assess your suitability for treatment, you will be asked to complete a short medical questionnaire at the next step.</p>
+          <p className="mb-6 reg-font paragraph">In order for our doctors to assess your suitability for treatment, you will be asked to complete a short medical questionnaire at the next step.
+
+          </p>
 
           <PageAnimationWrapper>
             <div className={`relative ${showLoader ? "pointer-events-none cursor-not-allowed" : ""}`}>
@@ -119,7 +121,7 @@ export default function LoginScreen() {
                 <TextField label="Password" name="password" placeholder="Password" type="password" register={register} required errors={errors} />
 
                 <NextButton label="Login" disabled={!isValid} type="submit" />
-                <BackButton label="Back" className="mt-2" onClick={() => router.back()} />
+                {/* <BackButton label="Back" className="mt-2" onClick={() => router.back()} /> */}
               </form>
 
               {showLoader && (

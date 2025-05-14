@@ -1,9 +1,10 @@
 import TextField from "../TextField/TextField";
 import NextButton from "../NextButton/NextButton";
 import { useForm } from "react-hook-form"; // 🟢 ADD THIS
+import BackButton from "../BackButton/BackButton";
 
 export default function LoginForm({ register, handleSubmit, errors, isLoading, onLogin, onForgot }) {
-    
+
   return (
     <form onSubmit={handleSubmit(onLogin)} className="space-y-4">
       <TextField
@@ -25,12 +26,15 @@ export default function LoginForm({ register, handleSubmit, errors, isLoading, o
         errors={errors}
       />
       <NextButton label="Login" type="submit" disabled={isLoading} />
-      <p
-        onClick={onForgot}
-        className="text-sm reg-font text-blue-500 underline cursor-pointer text-center mt-2"
-      >
-        Forgot Password?
-      </p>
+
+
+      <div className="mt-2">
+        <BackButton
+          onClick={onForgot}
+          label="Forgot Password?"
+        />
+
+      </div>
     </form>
   );
 }

@@ -86,6 +86,7 @@ const StepsHeader = ({ isOpen, toggleSidebar }) => {
     clearMedicalQuestions();
     clearConfirmationQuestions();
     clearToken();
+    setIsPasswordReset(false)
     router.push("/login/");
   };
 
@@ -161,7 +162,7 @@ const StepsHeader = ({ isOpen, toggleSidebar }) => {
                   </Link>
                 </li>
                 <li className="reg-font px-4 py-2 text-[#1C1C29] hover:bg-gray-100 cursor-pointer">
-                  <Link href="my-profile" onClick={toggleDropdown}>
+                  <Link href="/profile" onClick={toggleDropdown}>
                     My Profile
                   </Link>
                 </li>

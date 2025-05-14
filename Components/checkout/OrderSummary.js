@@ -252,17 +252,17 @@ const OrderSummary = () => {
                     <p className="bold-font text-black">£{totalAmount?.toFixed(2)}</p>
                   </div>
 
-                  <div className="flex justify-between items-center mt-4">
-                    <p className="bold-font paragraph !text-black">Shipping</p>
-                    <p className="bold-font text-black">£{shipping?.country_price}</p>
-                  </div>
-
                   {Coupon && (
                     <div className="flex justify-between items-center mt-4">
                       <p className="text-sm text-[#1f9e8c] bold-font">Discount</p>
                       <p className="text-sm text-[#1f9e8c] bold-font">-£{discountAmount?.toFixed(2)}</p>
                     </div>
                   )}
+                  <div className="flex justify-between items-center mt-4">
+                    <p className="bold-font paragraph !text-black">Shipping</p>
+                    <p className="bold-font text-black">£{shipping?.country_price}</p>
+                  </div>
+
 
                   <hr className="my-4 border-gray-200" />
 
@@ -315,9 +315,8 @@ const OrderSummary = () => {
                           type="button"
                           onClick={handleApplyCoupon}
                           disabled={!isApplyEnabled}
-                          className={`cursor-pointer px-6 text-sm bold-font text-white transition-all duration-200 ${
-                            isApplyEnabled ? "bg-violet-600 hover:bg-violet-700" : "bg-gray-300 cursor-not-allowed"
-                          }`}
+                          className={`cursor-pointer px-6 text-sm bold-font text-white transition-all duration-200 ${isApplyEnabled ? "bg-violet-600 hover:bg-violet-700" : "bg-gray-300 cursor-not-allowed"
+                            }`}
                         >
                           {couponLoading ? "Applying..." : "Apply"}
                         </button>

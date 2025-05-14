@@ -65,6 +65,7 @@ const PasswordChange = () => {
                                 register={register}
                                 validation={{ required: "Current password is required" }}
                                 errors={errors}
+                                required
                             />
                         </div>
                         <div className="w-full md:w-1/2">
@@ -73,6 +74,7 @@ const PasswordChange = () => {
                                 label="New Password"
                                 name="newpassword"
                                 register={register}
+                                required
                                 validation={{
                                     required: "New password is required",
                                     minLength: {
@@ -103,6 +105,7 @@ const PasswordChange = () => {
                                 type="password"
                                 label="Confirm Password"
                                 name="newpassword_confirmation"
+                                required
                                 register={register}
                                 validation={{
                                     required: "Please confirm your password",
