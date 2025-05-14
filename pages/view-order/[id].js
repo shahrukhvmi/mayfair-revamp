@@ -91,7 +91,7 @@ const OrderDetails = () => {
 
             <div className="p-3 sm:p-6 sm:bg-[#F9FAFB] sm:min-h-screen sm:rounded-md sm:shadow-md my-5 sm:m-5">
                 <div className="relative">
-                    <p className="h-fit whitespace-nowrap inline-flex items-center px-6 py-2 bg-violet-700 border border-transparent rounded-tr-full rounded-br-full font-semibold text-xs cursor-text text-white uppercase tracking-widest hover:bg-violet-700 focus:bg-violet-700 active:bg-violet-700 focus:outline-none focus:ring-2 focus:ring-violet-700 focus:ring-offset-2 transition ease-in-out duration-150  absolute -left-4 -top-4 lg:relative lg:top-0 lg:left-0">
+                    <p className="h-fit whitespace-nowrap inline-flex items-center px-6 py-2 bg-primary border border-transparent rounded-tr-full rounded-br-full font-semibold text-xs cursor-text text-white uppercase tracking-widest hover:bg-primary focus:bg-primary active:bg-primary focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 transition ease-in-out duration-150  absolute -left-4 -top-4 lg:relative lg:top-0 lg:left-0">
                         {moment(date, "DD-MM-YYYY", true).isValid()
                             ? moment(date, "DD-MM-YYYY").format("DD-MM-YYYY")
                             : "N/A"}   {time}
@@ -106,23 +106,23 @@ const OrderDetails = () => {
 
                     {/* Buttons for Order Details */}
                     <div className="flex-wrap justify-between md:space-x-2 space-y-2 md:space-y-0 hidden sm:flex">
-                        <button className="reg-font px-5 py-3 bg-violet-700 text-white rounded-full hover:bg-[#3a4e91] transition duration-300 ease-in-out w-full md:w-auto">
+                        <button className="reg-font px-5 py-3 bg-primary text-white rounded-full hover:bg-[#3a4e91] transition duration-300 ease-in-out w-full md:w-auto">
                             <span className="mx-1 my-1">Order Status</span>
-                            <span className="reg-font bg-[#223e8a] text-xs rounded-lg p-1">
+                            <span className="reg-font bg-violet-900 text-xs rounded-lg p-1">
                                 {order?.data?.order?.status}
                             </span>
                         </button>
 
-                        <button className="reg-font px-5 py-3 bg-violet-700 text-white rounded-full hover:bg-[#3a4e91] transition duration-300 ease-in-out w-full md:w-auto">
+                        <button className="reg-font px-5 py-3 bg-primary text-white rounded-full hover:bg-[#3a4e91] transition duration-300 ease-in-out w-full md:w-auto">
                             <span className="mx-1 my-1">Payment Status</span>
-                            <span className="reg-font bg-[#223e8a] text-xs p-1 rounded-lg">
+                            <span className="reg-font bg-violet-900 text-xs p-1 rounded-lg">
                                 {order?.data?.order?.payments?.status}
                             </span>
                         </button>
 
-                        <button className="reg-font px-5 py-3 bg-violet-700 text-white rounded-full hover:bg-[#3a4e91] transition duration-300 ease-in-out w-full md:w-auto">
+                        <button className="reg-font px-5 py-3 bg-primary text-white rounded-full hover:bg-[#3a4e91] transition duration-300 ease-in-out w-full md:w-auto">
                             <span className="mx-1 my-1">Order Total</span>
-                            <span className="reg-font bg-[#223e8a] text-xs p-1 rounded-lg">
+                            <span className="reg-font bg-violet-900 text-xs p-1 rounded-lg">
                                 £{order?.data?.order?.total_price}
                             </span>
                         </button>
@@ -531,7 +531,7 @@ const OrderDetails = () => {
                 {/* Back Button */}
                 <div className="flex justify-start">
                     <Link href="/orders/">
-                        <button className="reg-font px-6 py-2 bg-violet-700 cursor-pointer text-white rounded-md hover:bg-violet-700 transition">
+                        <button className="reg-font px-6 py-2 bg-primary cursor-pointer text-white rounded-md hover:bg-primary transition">
                             Back
                         </button>
                     </Link>

@@ -18,7 +18,7 @@ const Pagination = ({ pagination, setPage }) => {
               className={` reg-font px-4 py-2 rounded-full text-sm font-medium transition-all duration-300
                 ${current_page === 1
                   ? "bg-gray-200 text-gray-400 cursor-not-allowed"
-                  : "bg-violet-700 border border-gray-300 text-white hover:text-white cursor-pointer"}
+                  : "bg-primary border border-gray-300 text-white hover:text-white cursor-pointer"}
               `}
             >
               Previous
@@ -32,8 +32,8 @@ const Pagination = ({ pagination, setPage }) => {
                 onClick={() => setPage(i + 1)}
                 className={`cursor-pointer reg-font px-4 py-2 rounded-full text-sm font-semibold transition-all duration-300 shadow-sm
                   ${current_page === i + 1
-                    ? "bg-violet-700 text-white"
-                    : "bg-white border border-gray-300 text-gray-800 hover:bg-purple-600 hover:text-white"}
+                    ? "bg-primary text-white"
+                    : "bg-white border border-gray-300 text-gray-800 hover:bg-purple-800 hover:text-white"}
                 `}
               >
                 {i + 1}
@@ -49,7 +49,7 @@ const Pagination = ({ pagination, setPage }) => {
               className={`reg-font  px-4 py-2 rounded-full text-sm font-medium transition-all duration-300
                 ${current_page === last_page
                   ? "bg-gray-200 text-gray-400 cursor-not-allowed"
-                  : "bg-violet-700 text-white border border-gray-300 reg-font hover:bg-violet-600 hover:text-white cursor-pointer"}
+                  : "bg-primary !text-white border border-primary reg-font hover:bg-violet-800 hover:text-white cursor-pointer"}
               `}
             >
               Next

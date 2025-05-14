@@ -15,6 +15,7 @@ import useShipmentCountries from "@/store/useShipmentCountriesStore";
 import { RiRadioButtonFill } from "react-icons/ri";
 import { IoRadioButtonOff } from "react-icons/io5";
 import { motion } from "framer-motion";
+import toast from "react-hot-toast";
 
 const api = new Client("_UFb05P76EyMidU1VHIQ_A42976");
 
@@ -134,9 +135,13 @@ export default function ShippingAddress({ isCompleted, onComplete }) {
         setAddressOptions(result.addresses.addresses);
         setManual(true);
         setAddressSearchLoading(false);
+      } else {
+        setAddressSearchLoading(false);
+        toast.error("Invalid Postal Code");
       }
     } catch (error) {
-      console.error("API error:", error);
+      setAddressSearchLoading(false);
+      console.log("API error:", error);
       alert("Something went wrong while fetching addresses.");
     }
   };
@@ -184,6 +189,29 @@ export default function ShippingAddress({ isCompleted, onComplete }) {
     onComplete();
   };
 
+  useEffect(() => {
+    const subscription = watch((values) => {
+      const selectedCountry =
+        shipmentCountries.find((c) => c.id.toString() === values.shippingCountry) || shipmentCountries.find((c) => c.id.toString() === shippingIndex);
+
+      setShipping({
+        id: selectedCountry?.id || "",
+        country_name: selectedCountry?.name || "",
+        country_price: selectedCountry?.price || "",
+        postalcode: values.postalcode || "",
+        addressone: values.addressone || "",
+        addresstwo: values.addresstwo || "",
+        first_name: values.first_name || "",
+        last_name: values.last_name || "",
+        city: values.city || "",
+        state: values.state || "",
+        same_as_shipping: values.same_as_shipping ?? false,
+      });
+    });
+
+    return () => subscription.unsubscribe();
+  }, [watch, shipmentCountries, shippingIndex, setShipping]);
+
   return (
     <>
       <SectionWrapper>
@@ -202,6 +230,7 @@ export default function ShippingAddress({ isCompleted, onComplete }) {
                 label="Select Country"
                 name="shippingCountry"
                 value={field.value}
+                required
                 onChange={(e) => {
                   const id = e.target.value;
                   field.onChange(id); // ✅ set id to RHF
@@ -232,7 +261,7 @@ export default function ShippingAddress({ isCompleted, onComplete }) {
             <button
               type="button"
               onClick={handleSearch}
-              className={`absolute right-3 transform -translate-y-1/2 text-white bg-violet-700 px-3 py-1 rounded cursor-pointer w-32 flex items-center justify-center ${
+              className={`absolute right-3 transform -translate-y-1/2 text-white bg-primary px-3 py-1 rounded cursor-pointer w-28 flex items-center justify-center ${
                 errors.postalcode ? "top-2/4" : "top-2/3"
               }`}
               disabled={addressSearchLoading}
@@ -288,7 +317,7 @@ export default function ShippingAddress({ isCompleted, onComplete }) {
             control={control}
             render={({ field }) => (
               <div className="flex items-center space-x-3 cursor-pointer" onClick={() => field.onChange(!field.value)}>
-                {field.value ? <RiRadioButtonFill className="text-violet-700 text-xl" /> : <IoRadioButtonOff className="text-gray-400 text-xl" />}
+                {field.value ? <RiRadioButtonFill className="text-primary text-xl" /> : <IoRadioButtonOff className="text-gray-400 text-xl" />}
                 <span className="text-gray-700 reg-font">Make billing address same as shipping</span>
               </div>
             )}

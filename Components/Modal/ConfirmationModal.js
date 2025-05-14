@@ -36,7 +36,7 @@ const ConfirmationModal = ({ showModal, onConfirm, onCancel, removeItem }) => {
               </button>
               <button
                 onClick={onConfirm}
-                className="font-med px-6 py-2 rounded-lg bg-violet-700 text-white hover:[#4565BF] transition-all duration-200 capitalize cursor-pointer"
+                className="font-med px-6 py-2 rounded-lg bg-primary text-white hover:[#4565BF] transition-all duration-200 capitalize cursor-pointer"
               >
                 yes
               </button>

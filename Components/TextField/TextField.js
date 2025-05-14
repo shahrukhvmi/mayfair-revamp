@@ -52,7 +52,7 @@ const TextField = ({
           onChange={onChange}
           rows={rows}
           className={`reg-font w-full text-black px-3 py-4 border rounded-sm placeholder-gray-400 
-            focus:outline-none focus:ring-2 focus:ring-violet-300 focus:border-violet-800
+            focus:outline-none focus:ring-2 focus:ring-violet-300 focus:border-primary
             ${errors[name] ? "border-red-500" : "border-black"}
           `}
         />
@@ -71,7 +71,7 @@ const TextField = ({
               })
               : { value, onChange })}
             className={`reg-font w-full text-black px-3 py-4 border rounded-sm placeholder-gray-400 
-              focus:outline-none focus:ring-2 focus:ring-violet-300 focus:border-violet-800
+              focus:outline-none focus:ring-2 focus:ring-violet-300 focus:border-primary
               ${errors[name] ? "border-red-500" : "border-black"}
               ${isPassword ? "pr-12" : ""}
             `}

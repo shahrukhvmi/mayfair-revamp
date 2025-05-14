@@ -49,7 +49,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
               <a
                 onClick={toggleSidebar}
                 className={`flex items-center p-2 rounded-md ${key} ${isActive
-                    ? `bg-[#7c3aed] text-white ${styles["active-tab"]}`
+                    ? `bg-primary text-white ${styles["active-tab"]}`
                     : "hover:bg-gray-200 darkGrayColor"
                   } medium-font `}
               >

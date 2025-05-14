@@ -143,7 +143,7 @@ const ProductCard = ({ id, title, image, price, status, buttonText, lastOrderDat
               className={
                 status === false
                   ? "cursor-pointer reg-font bg-[#897bba] text-white py-2 px-6 rounded-full text-sm text-center"
-                  : "cursor-pointer reg-font bg-[#5b45a7] text-white font-medium py-2 px-6 rounded-full text-sm text-center hover:bg-violet-400  transition-colors duration-200"
+                  : "cursor-pointer reg-font bg-primary text-white font-medium py-2 px-6 rounded-full text-sm text-center hover:bg-violet-400  transition-colors duration-200"
               }
             >
               {isButtonLoading == true ? (

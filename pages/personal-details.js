@@ -128,7 +128,7 @@ export default function PersonalDetails() {
                         >
                           <div
                             className={`w-5 h-5 rounded-sm flex items-center justify-center border transition
-                            ${selected ? "bg-violet-700 border-violet-800 text-white" : "border-gray-400 bg-white"}`}
+                            ${selected ? "bg-primary border-violet-800 text-white" : "border-gray-400 bg-white"}`}
                           >
                             {selected && <FiCheck className="w-4 h-4" />}
                           </div>

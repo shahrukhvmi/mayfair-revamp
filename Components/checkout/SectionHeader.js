@@ -12,7 +12,7 @@ const SectionHeader = ({ stepNumber, title, description, completed = false }) =>
       <div className="flex items-center space-x-4">
         {/* Step Circle or Check */}
         <div className={`flex items-center justify-center w-8 h-8 rounded-full font-bold text-sm transition-all duration-300 ${
-          completed ? "bg-violet-800 text-white" : "border border-black text-black"
+          completed ? "bg-primary text-white" : "border border-black text-black"
         }`}>
           <AnimatePresence mode="wait" initial={false}>
             {completed ? (

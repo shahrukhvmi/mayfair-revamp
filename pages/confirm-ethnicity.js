@@ -82,7 +82,7 @@ export default function ConfirmEthnicity() {
               {["South Asian", "Chinese", "Other Asian", "Middle Eastern", "Black African", "African-Caribbean"].map((ethnicity, index) => (
                 <div key={index} className="flex items-start gap-3">
                   {/* w-2.5 h-2.5 */}
-                  <div className=" mt-2 bg-violet-700 rounded-full"></div>
+                  <div className=" mt-2 bg-primary rounded-full"></div>
                   <div className="flex items-center">
                     <GoDotFill className="me-2 text-gray-800 text-xs" />
                     <p className="niba-bold-font text-gray-700">{ethnicity}</p>
@@ -103,7 +103,7 @@ export default function ConfirmEthnicity() {
                       >
                         <div
                           className={`w-5 h-5 rounded-sm flex items-center justify-center border transition
-                        ${isSelected ? "bg-violet-700 border-violet-800 text-white" : "border-gray-400 bg-white"}`}
+                        ${isSelected ? "bg-primary border-violet-800 text-white" : "border-gray-400 bg-white"}`}
                         >
                           {isSelected && <FiCheck className="w-4 h-4" />}
                         </div>

@@ -63,7 +63,7 @@ const ProductConsent = ({ isCompleted, onComplete, onConsentChange }) => {
                   onConsentChange?.(checked);
                 }}
                 className="peer w-6 h-6 cursor-pointer appearance-none rounded-full border-2 border-gray-300 bg-white 
-  checked:bg-violet-600 checked:border-violet-600 focus:outline-none transition-all duration-300
+  checked:bg-[#47317c] checked:border-[#47317c] focus:outline-none transition-all duration-300
   checked:shadow-md checked:shadow-violet-300 bold-font paragraph"
               />
               {/* Check Icon */}

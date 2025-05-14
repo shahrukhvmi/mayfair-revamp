@@ -188,7 +188,7 @@ export default function DosageSelection() {
               <div className="grid gap-4 px-4">
                 <div className="col-span-12 sm:col-span-6 md:px-4 py-10">
                   <div className="bg-white rounded-lg shadow-lg overflow-hidden mb-6">
-                    <div className="bg-violet-700 p-6">
+                    <div className="bg-primary p-6">
                       <img src={variation?.img} alt={variation?.name} className="w-full h-40 object-contain" />
                     </div>
                     <div className="p-6">
@@ -279,7 +279,7 @@ export default function DosageSelection() {
           </div>
           <div>
             {isButtonLoading == true ? (
-              <div className="w-full px-28  py-3 rounded-full text-white bg-violet-700">
+              <div className="w-full px-28  py-3 rounded-full text-white bg-primary">
                 <motion.div
                   animate={{ rotate: 360 }}
                   transition={{

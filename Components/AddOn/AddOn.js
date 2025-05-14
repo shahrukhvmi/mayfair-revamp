@@ -52,13 +52,13 @@ const AddOn = ({ addon, onAdd, onIncrement, onDecrement, isSelected, quantity })
         className={`relative flex items-center justify-between p-5 border-2 cursor-pointer mt-3 transition-all duration-300 ease-in-out rounded-md ${stockStatus === 0
           ? "opacity-70 cursor-not-allowed bg-white border-black"
           : isSelected
-            ? "border-violet-700 bg-violet-100 hover:bg-violet-100"
+            ? "border-primary bg-violet-100 hover:bg-violet-100"
             : "border-gray-300 bg-white hover:bg-gray-50"
           }`}
       >
         {/* Check badge */}
         {isSelected && (
-          <div className="absolute -top-2 -right-2 bg-violet-600 text-white rounded-full w-6 h-6 flex items-center justify-center">
+          <div className="absolute -top-2 -right-2 bg-primary text-white rounded-full w-6 h-6 flex items-center justify-center">
             <FaCheck size={12} />
           </div>
         )}
@@ -67,11 +67,11 @@ const AddOn = ({ addon, onAdd, onIncrement, onDecrement, isSelected, quantity })
         <div className="flex flex-col space-y-1">
           <div className="flex items-center space-x-2">
             {isSelected ? (
-              <FaDotCircle className="text-violet-700 w-4 h-4 mt-1" />
+              <FaDotCircle className="text-primary w-4 h-4 mt-1" />
             ) : (
               <FaRegCircle className="text-gray-800 w-4 h-4 mt-1" />
             )}
-            <span className={`font-semibold ${isSelected ? "text-violet-700" : "text-gray-800"}`}>
+            <span className={`font-semibold ${isSelected ? "text-primary" : "text-gray-800"}`}>
               {addon?.title}
             </span>
           </div>
@@ -81,7 +81,7 @@ const AddOn = ({ addon, onAdd, onIncrement, onDecrement, isSelected, quantity })
 
         {/* Right Content */}
         <div className="flex items-center space-x-3">
-          <span className={`font-bold text-lg ${isSelected ? "text-violet-700" : "text-gray-700"}`}>
+          <span className={`font-bold text-lg ${isSelected ? "text-primary" : "text-gray-700"}`}>
             £{parseFloat(addon?.price).toFixed(2)}
           </span>
 

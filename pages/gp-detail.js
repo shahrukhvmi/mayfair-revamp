@@ -204,13 +204,13 @@ export default function GpDetail() {
                   <label
                     key={option}
                     className={`cursor-pointer w-1/2 flex items-center gap-3 px-4 py-3 border rounded-lg text-black ${
-                      gpDetails === option ? "bg-[#F2EEFF] border-violet-700" : "border-gray-300 hover:bg-gray-50"
+                      gpDetails === option ? "bg-[#F2EEFF] border-primary" : "border-gray-300 hover:bg-gray-50"
                     }`}
                   >
                     <input type="radio" value={option} {...register("gpDetails", { required: true })} className="hidden" />
                     <div
                       className={`w-5 h-5 rounded-sm flex items-center justify-center border ${
-                        gpDetails === option ? "bg-violet-700 border-violet-700 text-white" : "border-gray-400"
+                        gpDetails === option ? "bg-primary border-violet-700 text-white" : "border-gray-400"
                       }`}
                     >
                       {gpDetails === option && <FiCheck />}
@@ -244,7 +244,7 @@ export default function GpDetail() {
                         <input type="radio" value={option.value} {...register("gepTreatMent", { required: true })} className="hidden" />
                         <div
                           className={`w-5 h-5 rounded-sm flex items-center justify-center border ${
-                            gepTreatMent === option.value ? "bg-violet-700 border-violet-700 text-white" : "border-gray-400"
+                            gepTreatMent === option.value ? "bg-primary border-violet-700 text-white" : "border-gray-400"
                           }`}
                         >
                           {gepTreatMent === option.value && <FiCheck />}
@@ -266,7 +266,7 @@ export default function GpDetail() {
                       type="button"
                       onClick={handleAddressFetch}
                       disabled={searchLoading}
-                      className="absolute right-3 top-9 bg-violet-700 text-white px-3 py-1 rounded w-32 flex items-center cursor-pointer"
+                      className="absolute right-3 top-9 bg-primary text-white px-3 py-1 rounded w-28 flex items-center cursor-pointer"
                     >
                       {searchLoading ? (
                         "Searching..."

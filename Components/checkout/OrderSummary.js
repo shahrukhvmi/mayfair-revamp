@@ -93,7 +93,7 @@ const OrderSummary = () => {
     onSuccess: (data) => {
       if (data) {
         setPaymentData(data?.data?.paymentData);
-      
+
       }
     },
     onError: (error) => {
@@ -195,9 +195,9 @@ const OrderSummary = () => {
                     <button
                       type="button"
                       onClick={handleEdit}
-                      className="cursor-pointer ml-2 p-2 rounded-full bg-white hover:bg-gray-100 text-violet-700 shadow transition"
+                      className="cursor-pointer ml-2 p-2 rounded-full bg-white hover:bg-gray-100 text-primary shadow transition"
                     >
-                      <HiOutlinePencilAlt className="w-4 h-4" />
+                      <HiOutlinePencilAlt className="w-4 h-4" color="#47317c" />
                     </button>
                   </div>
                 </div>
@@ -315,7 +315,7 @@ const OrderSummary = () => {
                           type="button"
                           onClick={handleApplyCoupon}
                           disabled={!isApplyEnabled}
-                          className={`cursor-pointer px-6 text-sm bold-font text-white transition-all duration-200 ${isApplyEnabled ? "bg-violet-600 hover:bg-violet-700" : "bg-gray-300 cursor-not-allowed"
+                          className={`cursor-pointer px-6 text-sm bold-font text-white transition-all duration-200 ${isApplyEnabled ? "bg-primary hover:bg-primary" : "bg-gray-300 cursor-not-allowed"
                             }`}
                         >
                           {couponLoading ? "Applying..." : "Apply"}
@@ -326,7 +326,7 @@ const OrderSummary = () => {
                 </div>
                 <div className="my-5">
                   {isButtonLoading == true ? (
-                    <div className="w-full px-28  py-3 rounded-full text-white bg-violet-700 flex justify-center">
+                    <div className="w-full px-28  py-3 rounded-full text-white bg-primary flex justify-center">
                       <motion.div
                         animate={{ rotate: 360 }}
                         transition={{

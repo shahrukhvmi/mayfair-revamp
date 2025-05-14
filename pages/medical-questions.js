@@ -121,7 +121,7 @@ const MedicalQuestions = () => {
                           <label
                             key={option}
                             className={`bold-font paragraph flex items-center justify-start border px-6 py-2 transition-all cursor-pointer w-full sm:w-auto rounded-md
-                                ${isSelected ? "bg-[#F2EEFF] border-violet-700" : "border-gray-300 bg-white hover:bg-gray-50"}`}
+                                ${isSelected ? "bg-[#F2EEFF] border-primary" : "border-gray-300 bg-white hover:bg-gray-50"}`}
                           >
                             <Controller
                               name={`responses[${q.id}].answer`}
@@ -139,7 +139,7 @@ const MedicalQuestions = () => {
                             />
                             <div
                               className={`w-5 h-5 rounded-sm border mr-2 flex items-center justify-center 
-                                ${isSelected ? "bg-violet-700 border-violet-700 text-white" : "border-gray-400"}`}
+                                ${isSelected ? "bg-primary border-violet-700 text-white" : "border-gray-400"}`}
                             >
                               {isSelected && <FaCheck className="text-xs" />}
                             </div>

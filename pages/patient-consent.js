@@ -39,6 +39,8 @@ export default function PatientConsent() {
       const initialized = confirmationQuestions.map((q) => ({
         ...q,
         answer: false, // default unchecked
+        has_check_list: true, // <-- hardcoded
+        has_checklist: true, // <-- hardcoded
       }));
 
       console.log(initialized, "initialized");
@@ -56,7 +58,8 @@ export default function PatientConsent() {
   }, [questions]);
 
   const handleCheckboxChange = (id, value) => {
-    const updated = questions.map((q) => (q.id === id ? { ...q, answer: value } : q));
+    const updated = questions.map((q) => (q.id === id ? { ...q, answer: value, has_check_list: true, has_checklist: true } : q));
+
     setQuestions(updated);
     setValue(`responses[${id}].answer`, value);
   };
@@ -96,7 +99,7 @@ export default function PatientConsent() {
                         />
                         <label htmlFor={`question-${q.id}`} className="flex items-start gap-2 cursor-pointer">
                           {selectedAnswer ? (
-                            <FaDotCircle className="text-violet-700 w-9 h-9 mt-1" />
+                            <FaDotCircle className="text-primary w-9 h-9 mt-1" />
                           ) : (
                             <FaRegCircle className="text-violet-700 w-9 h-9 mt-1" />
                           )}

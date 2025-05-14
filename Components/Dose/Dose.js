@@ -73,7 +73,7 @@ const Dose = ({ doseData, onAdd, onIncrement, onDecrement, isSelected, qty, allo
           ${isOutOfStock
             ? "opacity-50 cursor-not-allowed bg-white border-black"
             : isSelected
-              ? "border-violet-700 bg-violet-100 cursor-pointer"
+              ? "border-primary bg-violet-100 cursor-pointer"
               : isAllowExceeded
                 ? "border-gray-300 bg-white cursor-not-allowed opacity-60"
                 : "border-gray-300 bg-white hover:bg-gray-50 cursor-pointer"
@@ -86,7 +86,7 @@ const Dose = ({ doseData, onAdd, onIncrement, onDecrement, isSelected, qty, allo
             <div className="absolute inset-0 z-10 bg-white/10  cursor-not-allowed rounded-md"></div>
 
             {/* Out of stock badge */}
-            <div className="absolute left-[14px] top-[-10px] bg-violet-800 text-white px-3 py-0.5 text-xs font-semibold rounded z-20">
+            <div className="absolute left-[14px] top-[-10px] bg-primary text-white px-3 py-0.5 text-xs font-semibold rounded z-20">
               Out of stock
             </div>
           </>
@@ -95,7 +95,7 @@ const Dose = ({ doseData, onAdd, onIncrement, onDecrement, isSelected, qty, allo
 
         {/* Tick if selected */}
         {isSelected && (
-          <div className={`absolute -top-3 -right-3 bg-violet-800 text-white rounded-full p-2 shadow-lg
+          <div className={`absolute -top-3 -right-3 bg-primary text-white rounded-full p-2 shadow-lg
              ${isSelected ? "cursor-not-allowed" : "cursor-pointer"
             }`}>
             <FaCheck size={12} />
@@ -105,11 +105,11 @@ const Dose = ({ doseData, onAdd, onIncrement, onDecrement, isSelected, qty, allo
         {/* Left Side - Product Details */}
         <div className="flex items-center space-x-3">
           {isSelected ? (
-            <FaDotCircle className="text-violet-700 w-4 h-4 mt-1" />
+            <FaDotCircle className="text-primary w-4 h-4 mt-1" />
           ) : (
             <FaRegCircle className="text-gray-800 w-4 h-4 mt-1" />
           )}
-          <span className={`reg-font text-black text-sm sm:text-md ${isSelected ? "text-violet-700" : "text-gray-800"} text-lg`}>
+          <span className={`reg-font text-black text-sm sm:text-md ${isSelected ? "text-primary" : "text-gray-800"} text-lg`}>
             <span className="capitalize font-semibold">{doseData?.product_name}</span> <br />
             <span className="text-sm">{doseData.name}</span>
             <br />
@@ -123,7 +123,7 @@ const Dose = ({ doseData, onAdd, onIncrement, onDecrement, isSelected, qty, allo
 
         {/* Right Side - Price and Quantity */}
         < div className="flex items-center space-x-3" >
-          <span className={`font-bold ${isSelected ? "text-violet-700" : "text-gray-700"}`}>
+          <span className={`font-bold ${isSelected ? "text-primary" : "text-gray-700"}`}>
             £{parseFloat(doseData?.price).toFixed(2)}
           </span>
 

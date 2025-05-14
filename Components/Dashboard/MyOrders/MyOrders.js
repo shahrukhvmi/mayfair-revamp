@@ -261,7 +261,7 @@ useEffect(() => {
                                         <div className="flex items-center gap-6 justify-around">
                                             <div className="group relative">
                                                 <Link href={`/view-order/${order.id}/`}>
-                                                    <IoEye size={20} color="indigo" className="group-hover:opacity-75" />
+                                                    <IoEye size={20} color="#47317c" className="group-hover:opacity-75" />
                                                 </Link>
                                                 <div className="hidden group-hover:block absolute bg-gray-800 text-white p-2 rounded shadow-lg text-xs left-1/2 transform -translate-x-1/2">
                                                     View
