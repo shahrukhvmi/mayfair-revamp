@@ -16,6 +16,8 @@ import useAuthStore from "@/store/authStore";
 import Fetcher from "@/library/Fetcher";
 import { Login } from "@/api/loginApi";
 import usePasswordReset from "@/store/usePasswordReset";
+import LoginModal from "@/Components/LoginModal/LoginModal";
+import useLoginModalStore from "@/store/useLoginModalStore";
 
 export default function LoginScreen() {
   const [showLoader, setShowLoader] = useState(false);
@@ -39,7 +41,7 @@ export default function LoginScreen() {
       password: "",
     },
   });
-
+  const { showLoginModal, closeLoginModal, openLoginModal } = useLoginModalStore();
   const loginMutation = useMutation(Login, {
     onSuccess: (data) => {
       const user = data?.data?.data;
@@ -96,6 +98,38 @@ export default function LoginScreen() {
 
   return (
     <>
+
+      <LoginModal
+        modes="forgot"
+        show={showLoginModal}
+        onClose={closeLoginModal}
+        isLoading={showLoader}
+        onLogin={async (data) => {
+          setShowLoader(true);
+          try {
+            const response = await loginMutation.mutateAsync({ ...data, company_id: 1 });
+            const user = response?.data?.data;
+            setIsPasswordReset(true);
+            setUserData(user);
+            setToken(user.token);
+            toast.success("Login Successfully");
+
+            Fetcher.axiosSetup.defaults.headers.common.Authorization = `Bearer ${user.token}`;
+            closeLoginModal();
+            setShowLoader(false);
+
+            router.push("/dashboard");
+          } catch (error) {
+            const errorMsg = error?.response?.data?.errors;
+            const firstMsg = errorMsg && typeof errorMsg === "object"
+              ? Object.values(errorMsg)[0]
+              : "Something went wrong.";
+            toast.error(firstMsg);
+            setShowLoader(false);
+          }
+        }}
+
+      />
       <StepsHeader />
       {/* <FormWrapper
         heading="Login"
@@ -119,7 +153,7 @@ export default function LoginScreen() {
                 <TextField label="Email Address" name="email" placeholder="Email Address" type="email" register={register} required errors={errors} />
 
                 <TextField label="Password" name="password" placeholder="Password" type="password" register={register} required errors={errors} />
-
+                <BackButton onClick={openLoginModal} label="Forgot password" />
                 <NextButton label="Login" disabled={!isValid} type="submit" />
                 {/* <BackButton label="Back" className="mt-2" onClick={() => router.back()} /> */}
               </form>

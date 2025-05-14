@@ -122,6 +122,7 @@ const StepsHeader = ({ isOpen, toggleSidebar }) => {
   return (
     <>
       <LoginModal
+        modes="login"
         show={showLoginModal}
         onClose={closeLoginModal}
         onLogin={(data) => {

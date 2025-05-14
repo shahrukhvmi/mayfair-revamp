@@ -1,5 +1,5 @@
 import { useEffect, useState, useMemo } from "react";
-import { useSearchParams } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
 import toast from "react-hot-toast";
 import { useMutation } from "@tanstack/react-query";
@@ -19,6 +19,7 @@ export default function LoginModal({
     onClose = () => { },
     onLogin = () => { },
     isLoading = false,
+    modes
 }) {
     const {
         register,
@@ -27,11 +28,21 @@ export default function LoginModal({
         formState: { errors },
     } = useForm();
 
+    const pathname = usePathname();
+
+    const [mode, setMode] = useState(modes);
+
     const searchParams = useSearchParams();
     const token = searchParams.get("token");
     const emailFromURL = searchParams.get("email");
+    // useEffect(() => {
+    //     const pathname = window.location.pathname.replace(/\/+$/, "");
+    //     console.log(pathname, "pathname");
+    //     setMode(pathname == "/login" ? "forgot" : "login");
 
-    const [mode, setMode] = useState("login");
+    // }, [mode]);
+
+    console.log(mode, "mode")
     const [forceVisible, setForceVisible] = useState(false);
     const [showLoginMsg, setShowLoginMsg] = useState(false);
     const [localLoading, setLocalLoading] = useState(false);
@@ -76,7 +87,7 @@ export default function LoginModal({
             setLocalLoading(false);
         },
         onError: (error) => {
-   
+
             const errors = error?.response?.data?.errors;
 
             if (errors && typeof errors === "object") {
