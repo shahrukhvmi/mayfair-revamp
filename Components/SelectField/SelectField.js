@@ -1,12 +1,17 @@
 import React from "react";
 import { FormControl, Select, MenuItem, FormHelperText, OutlinedInput } from "@mui/material";
 
-const MUISelectField = ({ label, name, value, onChange, options = [], error = "", placeholder = "Select an option" }) => {
+const MUISelectField = ({ label, name, value, onChange, options = [], error = "", placeholder = "Select an option", required = false }) => {
   return (
-    <div className="mb-4">
+    <div className="mb-4 relative">
       {label && (
-        <label htmlFor={name} className="bold-font paragraph mb-2 block">
+        <label htmlFor={name} className="bold-font paragraph mb-2">
           {label}
+          {required ? (
+            <span className="text-red-500 absolute top-1 ms-1 niba-semibold-font"> *</span>
+          ) : (
+            <span className="text-gray-500 text-sm font-normal ml-1">(optional)</span>
+          )}
         </label>
       )}
 

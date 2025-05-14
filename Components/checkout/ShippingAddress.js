@@ -230,6 +230,7 @@ export default function ShippingAddress({ isCompleted, onComplete }) {
                 label="Select Country"
                 name="shippingCountry"
                 value={field.value}
+                required
                 onChange={(e) => {
                   const id = e.target.value;
                   field.onChange(id); // ✅ set id to RHF

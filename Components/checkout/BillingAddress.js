@@ -214,6 +214,7 @@ export default function BillingAddress({ isCompleted, onComplete, sameAsShipping
               label="Select Country"
               name="billingCountry"
               value={field.value}
+              required
               onChange={(e) => {
                 const id = e.target.value;
                 field.onChange(id);

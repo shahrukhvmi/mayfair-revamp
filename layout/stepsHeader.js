@@ -24,6 +24,7 @@ import useCheckoutStore from "@/store/checkoutStore";
 import useBmiStore from "@/store/bmiStore";
 import usePasswordReset from "@/store/usePasswordReset";
 import { usePathname } from "next/navigation";
+import useProductId from "@/store/useProductIdStore";
 
 const StepsHeader = ({ isOpen, toggleSidebar }) => {
   const [isOpenDrop, setIsOpenDrop] = useState(false);
@@ -43,6 +44,7 @@ const StepsHeader = ({ isOpen, toggleSidebar }) => {
   const { clearAuthUserDetail } = useAuthUserDetailStore();
   const { token, clearToken, setToken } = useAuthStore();
   const { clearShipping, clearBilling } = useShippingOrBillingStore();
+  const { clearProductId } = useProductId();
   const pathname = usePathname();
 
   const router = useRouter();
@@ -89,6 +91,7 @@ const StepsHeader = ({ isOpen, toggleSidebar }) => {
     clearConfirmationQuestions();
     clearToken();
     setIsPasswordReset(false);
+    clearProductId();
     router.push("/login/");
   };
 
@@ -166,8 +169,7 @@ const StepsHeader = ({ isOpen, toggleSidebar }) => {
             </div>
           )}
 
-
-         {!pathname.startsWith("/login") && !token && (
+          {!pathname.startsWith("/login") && !token && (
             <div className="w-1/2 items-center justify-end lg:w-[100%] sm:flex hidden">
               <p className="hidden md:block text-black reg-font">Already have an account?</p>
               <span
