@@ -202,7 +202,9 @@ export default function DosageSelection() {
                   </div>
 
                   <div className="bg-white rounded-lg shadow-lg  px-4 py-6">
-                    <h1 className="my-4 niba-bold-font text-2xl text-black text-start"><span className="niba-reg-font">Choose your </span> Dosage</h1>
+                    <h1 className="my-4 niba-bold-font text-2xl text-black text-start">
+                      <span className="niba-reg-font">Choose your </span> Dosage
+                    </h1>
 
                     {variation?.variations
                       ?.sort((a, b) => {
@@ -287,7 +289,7 @@ export default function DosageSelection() {
                     duration: 1,
                     ease: "linear",
                   }}
-                  className="w-5 h-5 border-4 border-t-transparent border-primary rounded-full text-white"
+                  className="w-5 h-5 border-4 border-t-transparent rounded-full text-white"
                 />
               </div>
             ) : (

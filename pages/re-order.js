@@ -10,102 +10,97 @@ import PageAnimationWrapper from "@/Components/PageAnimationWrapper/PageAnimatio
 import PageLoader from "@/Components/PageLoader/PageLoader";
 
 export default function Acknowledgment() {
-    const router = useRouter();
-    const [showLoader, setShowLoader] = useState(false);
+  const router = useRouter();
+  const [showLoader, setShowLoader] = useState(false);
 
-    const {
-        register,
-        handleSubmit,
-        watch,
-        formState: { isValid },
-    } = useForm({
-        mode: "onChange",
-        defaultValues: {
-            personalUse: "",
-        },
-    });
+  const {
+    register,
+    handleSubmit,
+    watch,
+    formState: { isValid },
+  } = useForm({
+    mode: "onChange",
+    defaultValues: {
+      personalUse: "",
+    },
+  });
 
-    const personalUse = watch("personalUse");
+  const personalUse = watch("personalUse");
 
-    const onSubmit = async (data) => {
-        setShowLoader(true);
-        await new Promise((resolve) => setTimeout(resolve, 500));
+  const onSubmit = async (data) => {
+    setShowLoader(true);
+    await new Promise((resolve) => setTimeout(resolve, 500));
 
-        if (data.personalUse === "yes") {
-            router.push("/signup");
-        } else {
-            router.push("/calculate-bmi");
-        }
-    };
+    if (data.personalUse === "yes") {
+      router.push("/signup");
+    } else {
+      router.push("/calculate-bmi");
+    }
+  };
 
-    const renderYesNo = (fieldName, value) => (
-        <div className="flex gap-4 mt-4 w-full">
-            {["yes", "no"].map((option) => {
-                const isSelected = value === option;
-                return (
-                    <label
-                        key={option}
-                        className={`reg-font flex items-center px-4 py-4 rounded-md border justify-start cursor-pointer transition-all duration-200 flex-1
-                            ${isSelected
+  const renderYesNo = (fieldName, value) => (
+    <div className="flex gap-4 mt-4 w-full">
+      {["yes", "no"].map((option) => {
+        const isSelected = value === option;
+        return (
+          <label
+            key={option}
+            className={`reg-font flex items-center px-4 py-4 rounded-md border justify-start cursor-pointer transition-all duration-200 flex-1
+                            ${
+                              isSelected
                                 ? option === "yes"
-                                    ? "bg-violet-100 border-violet-600 text-violet-700"
-                                    : "bg-green-100 border-green-600 text-green-700"
+                                  ? "bg-violet-100 border-violet-600 text-violet-700"
+                                  : "bg-green-100 border-green-600 text-green-700"
                                 : "bg-white border-gray-300 hover:border-gray-400 text-gray-800"
                             }`}
-                    >
-                        <input
-                            type="radio"
-                            value={option}
-                            {...register(fieldName, { required: true })}
-                            className="hidden"
-                        />
-                        <div
-                            className={`w-5 h-5 mr-2 rounded-md border flex items-center justify-center
-                                ${isSelected
+          >
+            <input type="radio" value={option} {...register(fieldName, { required: true })} className="hidden" />
+            <div
+              className={`w-5 h-5 mr-2 rounded-md border flex items-center justify-center
+                                ${
+                                  isSelected
                                     ? option === "yes"
-                                        ? "bg-violet-600 border-violet-600 text-white"
-                                        : "bg-green-600 border-green-600 text-white"
+                                      ? "bg-violet-600 border-violet-600 text-white"
+                                      : "bg-green-600 border-green-600 text-white"
                                     : "border-gray-400 bg-white"
                                 }`}
-                        >
-                            {isSelected && <FiCheck className="text-md" />}
-                        </div>
-                        <span className="text-md bold-font paragraph capitalize">{option}</span>
-                    </label>
-                );
-            })}
-        </div>
-    );
+            >
+              {isSelected && <FiCheck className="text-md" />}
+            </div>
+            <span className="text-md bold-font paragraph capitalize">{option}</span>
+          </label>
+        );
+      })}
+    </div>
+  );
 
-    return (
-        <>
-            <StepsHeader />
-            <FormWrapper heading="Reorder Confirmation" description="" percentage="0">
-                <PageAnimationWrapper>
-                    <div className="bg-white">
-                        <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
-                            <div className="space-y-6">
-                                <div className="space-y-2">
-                                    <p className="text-sm reg-font paragraph">
-                                        Has anything changed since your last order?
-                                    </p>
-                                    {renderYesNo("personalUse", personalUse)}
-                                </div>
-                            </div>
+  return (
+    <>
+      <StepsHeader />
+      <FormWrapper heading="Reorder Confirmation" description="" percentage="0">
+        <PageAnimationWrapper>
+          <div className="bg-white">
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
+              <div className="space-y-6">
+                <div className="space-y-2">
+                  <p className="text-sm reg-font paragraph">Has anything changed since your last order?</p>
+                  {renderYesNo("personalUse", personalUse)}
+                </div>
+              </div>
 
-                            <div className="my-5">
-                                <NextButton disabled={!isValid} label="I Confirm" />
-                            </div>
-                        </form>
+              <div className="my-5">
+                <NextButton disabled={!isValid} label="I Confirm" />
+              </div>
+            </form>
 
-                        {showLoader && (
-                            <div className="absolute inset-0 z-20 flex justify-center items-center bg-white/60 rounded-lg cursor-not-allowed">
-                                <PageLoader />
-                            </div>
-                        )}
-                    </div>
-                </PageAnimationWrapper>
-            </FormWrapper>
-        </>
-    );
+            {showLoader && (
+              <div className="absolute inset-0 z-20 flex justify-center items-center bg-white/60 rounded-lg cursor-not-allowed">
+                <PageLoader />
+              </div>
+            )}
+          </div>
+        </PageAnimationWrapper>
+      </FormWrapper>
+    </>
+  );
 }

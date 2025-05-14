@@ -13,6 +13,7 @@ import { FiCheck } from "react-icons/fi";
 import BackButton from "@/Components/BackButton/BackButton";
 import useGpDetailsStore from "@/store/gpDetailStore";
 import MUISelectField from "@/Components/SelectField/SelectField";
+import { motion } from "framer-motion";
 
 export default function GpDetail() {
   const [showLoader, setShowLoader] = useState(false);
@@ -266,10 +267,18 @@ export default function GpDetail() {
                       type="button"
                       onClick={handleAddressFetch}
                       disabled={searchLoading}
-                      className="absolute right-3 top-9 bg-primary text-white px-3 py-1 rounded w-28 flex items-center cursor-pointer"
+                      className="absolute right-3 top-9 bg-primary text-white px-3 py-1 rounded w-28 flex items-center cursor-pointer text-center justify-center"
                     >
                       {searchLoading ? (
-                        "Searching..."
+                        <motion.div
+                          animate={{ rotate: 360 }}
+                          transition={{
+                            repeat: Infinity,
+                            duration: 1,
+                            ease: "linear",
+                          }}
+                          className="w-6 h-6 border-4 border-t-transparent rounded-full text-white"
+                        />
                       ) : (
                         <>
                           <FaSearch className="mr-2" />
