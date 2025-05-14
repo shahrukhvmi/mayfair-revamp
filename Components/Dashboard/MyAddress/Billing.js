@@ -153,6 +153,7 @@ export default function Billing({ billingCountries }) {
               label="Select Country"
               name="billingCountry"
               value={field.value}
+              required
               onChange={(e) => {
                 const id = e.target.value;
                 field.onChange(id);
