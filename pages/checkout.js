@@ -13,7 +13,6 @@ import useCheckoutStep from "../store/useCheckoutStep";
 import BillingAddress from "@/Components/checkout/BillingAddress";
 import useShippingOrBillingStore from "@/store/shipingOrbilling";
 
-
 const Checkout = () => {
   const { isPasswordReset } = usePasswordReset();
   const [showThankYouModal, setShowThankYouModal] = useState(false);
@@ -22,6 +21,9 @@ const Checkout = () => {
   const [isStep3Completed, setIsStep3Completed] = useState(false);
   const [productConsentAccepted, setProductConsentAccepted] = useState(false);
   const { step, setStep, resetStep } = useCheckoutStep();
+  const [hasInitialized, setHasInitialized] = useState(false);
+
+  const actualStep = step + (isPasswordReset ? 0 : -1);
 
   const { shipping, setShipping, billingSameAsShipping } = useShippingOrBillingStore();
 
@@ -30,6 +32,8 @@ const Checkout = () => {
   const billingRef = useRef(null);
   const paymentRef = useRef(null);
   const summaryRef = useRef(null);
+  const isFirstRender = useRef(true);
+  const headingRef = useRef(null);
 
   const scrollToRef = (ref) => {
     if (ref?.current) {
@@ -38,39 +42,45 @@ const Checkout = () => {
   };
 
   useEffect(() => {
-    if (step === 1) scrollToRef(personalRef);
-    else if (step === 2) scrollToRef(addressRef);
-    else if (step === 3) {
-      if (billingSameAsShipping == true) {
-        scrollToRef(paymentRef);
-      } else {
-        scrollToRef(billingRef);
-      }
-    } else if (step === 4) {
-      if (billingSameAsShipping == true) {
-        scrollToRef(paymentRef);
-        scrollToRef(summaryRef);
-      } else {
-        scrollToRef(paymentRef);
-      }
-    } else if (billingSameAsShipping == false && step === 5) scrollToRef(summaryRef);
-  }, [step]);
+    setStep(1); // ✅ Always reset step to 1 when arriving here
+  }, []);
 
+  useEffect(() => {
+    if (step === 1) return; // 🚫 Don't scroll on initial load
+
+    const delayScroll = setTimeout(() => {
+      // Step 2: password OR shipping
+      if (!isPasswordReset && step === 2) scrollToRef(personalRef);
+      else if (isPasswordReset && step === 2) scrollToRef(addressRef);
+      // Step 3: Billing or skip to Payment
+      else if (step === 3) {
+        if (billingSameAsShipping) scrollToRef(paymentRef);
+        else scrollToRef(billingRef);
+      }
+
+      // Step 4: Payment
+      else if (step === 4) scrollToRef(paymentRef);
+      // Step 5: Summary
+      else if (step === 5) scrollToRef(summaryRef);
+    }, 800);
+
+    return () => clearTimeout(delayScroll);
+  }, [step, isPasswordReset, billingSameAsShipping]);
 
   const handleCheckOut = (data) => {
     console.log("Final Collected Data:", data);
     setShowThankYouModal(true);
   };
+
   useEffect(() => {
-    if (isPasswordReset == true) {
-      setIsStep1Completed(true);
-      setStep(2); // ✅ Persist ho gaya now
+    if (isPasswordReset === true) {
+      setIsStep1Completed(true); // Mark password as already completed
     }
   }, [isPasswordReset]);
-  // handle Payment 
 
-
-  
+  useEffect(() => {
+    headingRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+  }, []);
 
   return (
     <>
@@ -111,8 +121,8 @@ const Checkout = () => {
         )}
       </AnimatePresence>
 
-      <div className="max-w-2xl mx-auto px-4 py-10 space-y-10">
-        <div className="px-6 text-center">
+      <div className="max-w-2xl mx-auto px-4 pb-10 space-y-10">
+        <div ref={headingRef} className="px-6 pt-10 text-center">
           <h1 className="px-6 text-2xl niba-reg-font heading mb-2 text-gray-900">Checkout to kick-start your weight loss journey</h1>
           <p className="text-sm px-6 reg-font paragraph mb-6">
             Complete your details below to secure your consultation. If you decide not to proceed after your consult for any reason, you will be fully
@@ -121,24 +131,25 @@ const Checkout = () => {
         </div>
 
         {/* Step 1 - Password */}
-        <div ref={personalRef} className={`relative ${isPasswordReset ? "hidden " : ""}`}>
-          <SetAPassword
-            isCompleted={isStep1Completed}
-            onComplete={() => {
-              setIsStep1Completed(true);
-              setStep(step + 1);
-            }}
-          // onComplete={() => setStep(step + 1)}
-          />
-        </div>
+        {!isPasswordReset && (
+          <div ref={personalRef} className="relative">
+            <SetAPassword
+              isCompleted={isStep1Completed}
+              onComplete={() => {
+                setIsStep1Completed(true);
+                setStep(1);
+              }}
+            />
+          </div>
+        )}
 
         {/* Step 2 - Address */}
-        <div ref={addressRef} className={`${step < 2 ? "opacity-50 pointer-events-none" : ""}`}>
+        <div ref={addressRef} className={`${actualStep < 1 ? "opacity-50 pointer-events-none" : ""}`}>
           <ShippingAddress
             isCompleted={isStep1Completed}
             onComplete={() => {
-              setIsStep1Completed(true);
-              setStep(step + 1);
+              setIsStep2Completed(true);
+              setStep(2);
             }}
           />
 
@@ -151,27 +162,24 @@ const Checkout = () => {
           /> */}
         </div>
 
-        <div ref={billingRef} className={`${step < 2 ? "opacity-50 pointer-events-none" : ""}`}>
+        <div ref={billingRef} className={`${actualStep < 1 ? "opacity-50 pointer-events-none" : ""}`}>
           <BillingAddress
             isCompleted={isStep1Completed}
-            onComplete={() => {
-              setIsStep1Completed(true);
-              setStep(step + 1);
-            }}
             sameAsShipping={billingSameAsShipping}
+            onComplete={() => {
+              setStep(3); // ✅ Always go to payment next
+            }}
           />
         </div>
 
         {/* Step 3 - Payment */}
-        <div ref={paymentRef} className={`${step < 3 ? "opacity-50 pointer-events-none" : ""}`}>
+        <div ref={paymentRef} className={`${actualStep < 2 ? "opacity-50 pointer-events-none" : ""}`}>
           <ProductConsent
             isCompleted={isStep3Completed}
+            onConsentChange={(isChecked) => setProductConsentAccepted(isChecked)}
             onComplete={() => {
               setIsStep3Completed(true);
-              setStep(step + 1);
-            }}
-            onConsentChange={(isChecked) => {
-              setProductConsentAccepted(isChecked);
+              setStep(4); // ✅ Summary is last
             }}
           />
           {/* {step === 3 && (
@@ -193,8 +201,6 @@ const Checkout = () => {
         </div>
 
         {/* </form> */}
-
-
       </div>
     </>
   );

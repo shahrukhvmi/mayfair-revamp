@@ -12,12 +12,14 @@ import PageLoader from "@/Components/PageLoader/PageLoader";
 import { FiCheck } from "react-icons/fi";
 import BackButton from "@/Components/BackButton/BackButton";
 import useGpDetailsStore from "@/store/gpDetailStore";
+import MUISelectField from "@/Components/SelectField/SelectField";
 
 export default function GpDetail() {
   const [showLoader, setShowLoader] = useState(false);
   const [manual, setManual] = useState(false);
   const [searchLoading, setSearchLoading] = useState(false);
   const [searchResults, setSearchResults] = useState([]);
+  const [selectedIndex, setSelectedIndex] = useState("");
 
   const { gpdetails, setGpDetails } = useGpDetailsStore();
   const router = useRouter();
@@ -47,6 +49,26 @@ export default function GpDetail() {
   const gpDetails = watch("gpDetails");
   const gepTreatMent = watch("gepTreatMent");
   const postalCode = watch("postalCode");
+  const gpName = watch("gpName");
+  const addressLine1 = watch("addressLine1");
+  const city = watch("city");
+  const state = watch("state");
+
+  const isManualAddressRequired = gpDetails === "yes" && gepTreatMent === "yes" && manual;
+  const isNextEnabled = (() => {
+    if (gpDetails === "no") return true; // ✅ Allow next if GP not registered
+    if (gpDetails === "yes" && gepTreatMent === "no") return true; // ✅ Allow next if patient will inform GP
+
+    if (gpDetails === "yes" && gepTreatMent === "yes") {
+      // ✅ If manual is OFF, user must select from dropdown (which fills values)
+      if (!manual) return false;
+
+      // ✅ If manual is ON, check required fields
+      return !!gpName?.trim() && !!addressLine1?.trim() && !!city?.trim() && !!state?.trim();
+    }
+
+    return false; // fallback: disable
+  })();
 
   useEffect(() => {
     if (gpdetails) {
@@ -244,7 +266,7 @@ export default function GpDetail() {
                       type="button"
                       onClick={handleAddressFetch}
                       disabled={searchLoading}
-                      className="absolute right-3 top-9 bg-violet-700 text-white px-3 py-1 rounded w-32 flex items-center"
+                      className="absolute right-3 top-9 bg-violet-700 text-white px-3 py-1 rounded w-32 flex items-center cursor-pointer"
                     >
                       {searchLoading ? (
                         "Searching..."
@@ -259,23 +281,34 @@ export default function GpDetail() {
 
                   {searchResults.length > 0 && (
                     <div className="mt-4">
-                      <label className="block mb-2 text-gray-700">Select GP Address</label>
-                      <select
-                        onChange={(e) => handleSelectAddress(searchResults[e.target.value])}
-                        className="w-full p-3 border rounded border-black text-black"
-                      >
-                        <option value="">Select GP Address</option>
-                        {searchResults.map((result, index) => (
-                          <option key={result.Id} value={index}>
-                            {result.OrganisationName} - {result.Address1}, {result.Town}
-                          </option>
-                        ))}
-                      </select>
+                      <MUISelectField
+                        label="Select GP Address"
+                        name="gpAddressSelect"
+                        value={selectedIndex}
+                        onChange={(e) => {
+                          const idx = e.target.value;
+                          const selected = searchResults[idx];
+                          setSelectedIndex(idx);
+
+                          // Fill form with selected address
+                          setValue("gpName", selected.OrganisationName || "", { shouldValidate: true });
+                          setValue("addressLine1", selected.Address1 || "", { shouldValidate: true });
+                          setValue("addressLine2", selected.Address2 || "", { shouldValidate: true });
+                          setValue("city", selected.City || "", { shouldValidate: true });
+                          setValue("state", selected.County || "", { shouldValidate: true });
+
+                          setManual(true); // force manual section open so user sees populated fields
+                        }}
+                        options={searchResults.map((item, idx) => ({
+                          value: idx,
+                          label: `${item.OrganisationName} - ${item.Address1}, ${item.City}`,
+                        }))}
+                      />
                     </div>
                   )}
 
                   <div className="text-sm text-right mt-4">
-                    <button type="button" onClick={() => setManual(!manual)} className="text-black font-bold underline">
+                    <button type="button" onClick={() => setManual(!manual)} className="text-black font-bold underline cursor-pointer">
                       {manual ? "Hide manual address entry" : "Enter your address manually"}
                     </button>
                   </div>
@@ -284,7 +317,7 @@ export default function GpDetail() {
                     <div className="space-y-4 mt-4">
                       <TextField label="GP Name" name="gpName" placeholder="The Elmhurst..." register={register} required errors={errors} />
                       <TextField label="Address 1" name="addressLine1" placeholder="123 Main Street" register={register} required errors={errors} />
-                      <TextField label="Address 2" name="addressLine2" placeholder="Flat 14" register={register} required errors={errors} />
+                      <TextField label="Address 2" name="addressLine2" placeholder="Flat 14" register={register} errors={errors} />
                       <TextField label="City" name="city" placeholder="London" register={register} required errors={errors} />
                       <TextField label="State" name="state" placeholder="Essex" register={register} required errors={errors} />
                     </div>
@@ -292,7 +325,7 @@ export default function GpDetail() {
                 </>
               )}
 
-              <NextButton label="Next" disabled={!isValid} className="mt-5" />
+              <NextButton label="Next" disabled={!isNextEnabled} className="mt-5" />
               <BackButton label="Back" className="mt-2" onClick={() => router.back()} />
             </form>
 
