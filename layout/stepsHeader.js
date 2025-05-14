@@ -86,7 +86,7 @@ const StepsHeader = ({ isOpen, toggleSidebar }) => {
     clearMedicalQuestions();
     clearConfirmationQuestions();
     clearToken();
-    setIsPasswordReset(false)
+    setIsPasswordReset(false);
     router.push("/login/");
   };
 
@@ -100,7 +100,7 @@ const StepsHeader = ({ isOpen, toggleSidebar }) => {
       setShowLoader(false);
       closeLoginModal();
       router.push("/dashboard");
-      setIsPasswordReset(true)
+      setIsPasswordReset(true);
     },
     onError: (error) => {
       const errors = error?.response?.data?.errors;
@@ -121,16 +121,6 @@ const StepsHeader = ({ isOpen, toggleSidebar }) => {
   });
   return (
     <>
-      <LoginModal
-        modes="login"
-        show={showLoginModal}
-        onClose={closeLoginModal}
-        onLogin={(data) => {
-          setShowLoader(true);
-          loginMutation.mutate({ ...data, company_id: 1 });
-        }}
-        isLoading={showLoader}
-      />
       <div className="bg-white px-4 sm:px-6 lg:px-6 flex items-center justify-between relative py-2">
         {/* Hamburger Button (only visible on mobile) */}
         <button onClick={toggleSidebar} className="text-2xl text-violet-700 sm:hidden">
@@ -188,6 +178,17 @@ const StepsHeader = ({ isOpen, toggleSidebar }) => {
           )}
         </div>
       </div>
+
+      <LoginModal
+        modes="login"
+        show={showLoginModal}
+        onClose={closeLoginModal}
+        onLogin={(data) => {
+          setShowLoader(true);
+          loginMutation.mutate({ ...data, company_id: 1 });
+        }}
+        isLoading={showLoader}
+      />
     </>
   );
 };

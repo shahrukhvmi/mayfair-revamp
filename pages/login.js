@@ -42,6 +42,7 @@ export default function LoginScreen() {
     },
   });
   const { showLoginModal, closeLoginModal, openLoginModal } = useLoginModalStore();
+
   const loginMutation = useMutation(Login, {
     onSuccess: (data) => {
       const user = data?.data?.data;
@@ -98,6 +99,43 @@ export default function LoginScreen() {
 
   return (
     <>
+      <StepsHeader />
+      {/* <FormWrapper
+        heading="Login"
+        description="In order for our doctors to assess your suitability for treatment, you will be asked to complete a short medical questionnaire at the next step."
+        percentage="0"
+      > */}
+      <div className={`flex justify-center bg-[#DACFFF] p-6`}>
+        <div className={`bg-white rounded-xl shadow-md w-full max-w-lg p-8`}>
+          {/* Title */}
+          <h1 className="niba-reg-font heading mb-2">Login</h1>
+
+          {/* Description */}
+          <p className="mb-6 reg-font paragraph">
+            In order for our doctors to assess your suitability for treatment, you will be asked to complete a short medical questionnaire at the next
+            step.
+          </p>
+
+          <PageAnimationWrapper>
+            <div className={`relative ${showLoader ? "pointer-events-none cursor-not-allowed" : ""}`}>
+              <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+                <TextField label="Email Address" name="email" placeholder="Email Address" type="email" register={register} required errors={errors} />
+
+                <TextField label="Password" name="password" placeholder="Password" type="password" register={register} required errors={errors} />
+                <BackButton onClick={openLoginModal} label="Forgot password" />
+                <NextButton label="Login" disabled={!isValid} type="submit" />
+                {/* <BackButton label="Back" className="mt-2" onClick={() => router.back()} /> */}
+              </form>
+
+              {showLoader && (
+                <div className="absolute inset-0 z-20 flex justify-center items-center bg-white/60 rounded-lg cursor-not-allowed">
+                  <PageLoader />
+                </div>
+              )}
+            </div>
+          </PageAnimationWrapper>
+        </div>
+      </div>
 
       <LoginModal
         modes="forgot"
@@ -121,52 +159,12 @@ export default function LoginScreen() {
             router.push("/dashboard");
           } catch (error) {
             const errorMsg = error?.response?.data?.errors;
-            const firstMsg = errorMsg && typeof errorMsg === "object"
-              ? Object.values(errorMsg)[0]
-              : "Something went wrong.";
+            const firstMsg = errorMsg && typeof errorMsg === "object" ? Object.values(errorMsg)[0] : "Something went wrong.";
             toast.error(firstMsg);
             setShowLoader(false);
           }
         }}
-
       />
-      <StepsHeader />
-      {/* <FormWrapper
-        heading="Login"
-        description="In order for our doctors to assess your suitability for treatment, you will be asked to complete a short medical questionnaire at the next step."
-        percentage="0"
-      > */}
-      <div className={`flex justify-center bg-[#DACFFF] p-6`}>
-        <div className={`bg-white rounded-xl shadow-md w-full max-w-lg p-8`}>
-
-          {/* Title */}
-          <h1 className="niba-reg-font heading mb-2">Login</h1>
-
-          {/* Description */}
-          <p className="mb-6 reg-font paragraph">In order for our doctors to assess your suitability for treatment, you will be asked to complete a short medical questionnaire at the next step.
-
-          </p>
-
-          <PageAnimationWrapper>
-            <div className={`relative ${showLoader ? "pointer-events-none cursor-not-allowed" : ""}`}>
-              <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-                <TextField label="Email Address" name="email" placeholder="Email Address" type="email" register={register} required errors={errors} />
-
-                <TextField label="Password" name="password" placeholder="Password" type="password" register={register} required errors={errors} />
-                <BackButton onClick={openLoginModal} label="Forgot password" />
-                <NextButton label="Login" disabled={!isValid} type="submit" />
-                {/* <BackButton label="Back" className="mt-2" onClick={() => router.back()} /> */}
-              </form>
-
-              {showLoader && (
-                <div className="absolute inset-0 z-20 flex justify-center items-center bg-white/60 rounded-lg cursor-not-allowed">
-                  <PageLoader />
-                </div>
-              )}
-            </div>
-          </PageAnimationWrapper>
-        </div>
-      </div>
     </>
   );
 }
