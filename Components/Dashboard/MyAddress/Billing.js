@@ -100,6 +100,9 @@ export default function Billing({ billingCountries }) {
       if (result && result.addresses?.addresses?.length) {
         setAddressOptions(result.addresses.addresses);
         setManual(true);
+      } else {
+        setAddressSearchLoading(false);
+        toast.error("Invalid Postal Code");
       }
     } catch (error) {
       console.error("API error:", error);
@@ -181,7 +184,7 @@ export default function Billing({ billingCountries }) {
             <button
               type="button"
               onClick={handleSearch}
-              className={`absolute right-3 transform -translate-y-1/2 text-white bg-violet-700 px-3 py-1 rounded cursor-pointer w-32 flex items-center justify-center ${
+              className={`absolute right-3 transform -translate-y-1/2 text-white bg-primary px-3 py-1 rounded cursor-pointer w-32 flex items-center justify-center ${
                 errors.postalcode ? "top-2/4" : "top-2/3"
               }`}
               disabled={addressSearchLoading}
@@ -194,7 +197,7 @@ export default function Billing({ billingCountries }) {
                     duration: 1,
                     ease: "linear",
                   }}
-                  className="w-6 h-6 border-4 border-t-transparent border-primary rounded-full text-white"
+                  className="w-6 h-6 border-4 border-t-transparent rounded-full text-white"
                 />
               ) : (
                 <span className="flex items-center">

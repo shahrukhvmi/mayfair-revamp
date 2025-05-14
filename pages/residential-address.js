@@ -136,7 +136,7 @@ export default function ResidentialAddress() {
                             duration: 1,
                             ease: "linear",
                           }}
-                          className="w-6 h-6 border-4 border-t-transparent border-primary rounded-full text-white"
+                          className="w-6 h-6 border-4 border-t-transparent rounded-full text-white"
                         />
                       ) : (
                         <span className="flex items-center reg-font">
