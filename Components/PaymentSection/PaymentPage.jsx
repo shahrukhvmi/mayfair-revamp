@@ -68,7 +68,7 @@ const PaymentPage = ({ paymentData }) => {
 
           {/* Text */}
           <p className="text-xl bold-font text-gray-800">
-           Please wait
+            Please wait
           </p>
           <p className="bold-font text-base text-gray-600 mt-2">
             Redirecting in {countdown}...

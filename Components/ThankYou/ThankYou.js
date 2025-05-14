@@ -12,7 +12,7 @@ const ThankYou = () => {
   };
 
   return (
-    <div className="flex items-center justify-center h-screen bg-[#dacfff] px-6 sm:px-44">
+    <div className="flex items-center justify-center h-screen bg-[#F2EEFF] px-6 sm:px-44">
 
       <div className="bg-white rounded-lg shadow-lg p-8 text-center w-full max-w-2xl">
 

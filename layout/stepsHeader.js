@@ -29,7 +29,8 @@ const StepsHeader = ({ isOpen, toggleSidebar }) => {
   const [isOpenDrop, setIsOpenDrop] = useState(false);
   const [showLoader, setShowLoader] = useState(false);
   const { showLoginModal, closeLoginModal, openLoginModal } = useLoginModalStore();
-  const { firstName } = useSignupStore();
+
+  const { firstName, setEmail } = useSignupStore();
   const [name, setUserData] = useState("");
 
   const { clearBmi } = useBmiStore();
@@ -123,69 +124,76 @@ const StepsHeader = ({ isOpen, toggleSidebar }) => {
   });
   return (
     <>
-      <div className="bg-white px-4 sm:px-6 lg:px-6 flex items-center justify-between relative py-2">
-        {/* Hamburger Button (only visible on mobile) */}
-        <button onClick={toggleSidebar} className="text-2xl text-violet-700 sm:hidden">
-          {isOpen ? <FiX /> : <FiMenu />}
-        </button>
+      <header className="bg-white  w-full py-2 sm:px-14 px-4">
 
-        {/* Logo */}
-        <div className="w-32 sm:w-40">
-          <Link href="/">
-            <ApplicationLogo width={140} height={80} />
-          </Link>
+
+        <div className="sm:px-6 lg:px-6 flex items-center justify-between py-2">
+          {/* Hamburger Button (only visible on mobile) */}
+          <button onClick={toggleSidebar} className="text-2xl text-violet-700 sm:hidden">
+            {isOpen ? <FiX /> : <FiMenu />}
+          </button>
+
+
+
+          {/* Logo */}
+          <div className="w-32 sm:w-40">
+            <Link href="/">
+              <ApplicationLogo width={140} height={80} />
+            </Link>
+          </div>
+
+          {/* User Info */}
+          <div className="relative">
+            {/* Dropdown Trigger */}
+            {token && (
+              <div className="flex items-center space-x-2 cursor-pointer" onClick={toggleDropdown}>
+                <ApplicationUser className="w-10 h-10 rounded-full" />
+                <span className="reg-font text-[#1C1C29] truncate">{firstName ? firstName : ""}</span>
+              </div>
+            )}
+
+            {token && isOpenDrop && (
+              <div className="dropdown-menu absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-md shadow-lg z-50">
+                <ul className="py-1">
+                  <li className="reg-font px-4 py-2 text-[#1C1C29] hover:bg-gray-100 cursor-pointer">
+                    <Link href="/dashboard" onClick={toggleDropdown}>
+                      My Account
+                    </Link>
+                  </li>
+                  <li className="reg-font px-4 py-2 text-[#1C1C29] hover:bg-gray-100 cursor-pointer">
+                    <Link href="/profile" onClick={toggleDropdown}>
+                      My Profile
+                    </Link>
+                  </li>
+                  <li className="reg-font px-4 py-2 text-[#1C1C29] hover:bg-gray-100 cursor-pointer" onClick={handleLogout}>
+                    Logout
+                  </li>
+                </ul>
+              </div>
+            )}
+
+
+            {!pathname.startsWith("/login") && !token && (
+              <div className="w-1/2 items-center justify-end lg:w-[100%] sm:flex hidden">
+                <p className="hidden md:block text-black reg-font">Already have an account?</p>
+                <span
+                  className="cursor-pointer inline-flex items-center px-6 py-2 bg-violet-800 border border-transparent rounded-full font-semibold text-xs text-white uppercase tracking-widest hover:bg-violet-700 focus:bg-bg-violet-700 active:bg-violet-900 focus:outline-none focus:ring-2 focus:ring-violet-500 focus:ring-offset-2 transition ease-in-out duration-150 false ml-4"
+                  onClick={openLoginModal}
+                >
+                  Login
+                </span>
+              </div>
+            )}
+          </div>
         </div>
 
-        {/* User Info */}
-        <div className="relative">
-          {/* Dropdown Trigger */}
-          {token && (
-            <div className="flex items-center space-x-2 cursor-pointer" onClick={toggleDropdown}>
-              <ApplicationUser className="w-10 h-10 rounded-full" />
-              <span className="reg-font text-[#1C1C29] truncate">{firstName ? firstName : ""}</span>
-            </div>
-          )}
-
-          {token && isOpenDrop && (
-            <div className="dropdown-menu absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-md shadow-lg z-50">
-              <ul className="py-1">
-                <li className="reg-font px-4 py-2 text-[#1C1C29] hover:bg-gray-100 cursor-pointer">
-                  <Link href="/dashboard" onClick={toggleDropdown}>
-                    My Account
-                  </Link>
-                </li>
-                <li className="reg-font px-4 py-2 text-[#1C1C29] hover:bg-gray-100 cursor-pointer">
-                  <Link href="/profile" onClick={toggleDropdown}>
-                    My Profile
-                  </Link>
-                </li>
-                <li className="reg-font px-4 py-2 text-[#1C1C29] hover:bg-gray-100 cursor-pointer" onClick={handleLogout}>
-                  Logout
-                </li>
-              </ul>
-            </div>
-          )}
-
-
-         {!pathname.startsWith("/login") && !token && (
-            <div className="w-1/2 items-center justify-end lg:w-[100%] sm:flex hidden">
-              <p className="hidden md:block text-black reg-font">Already have an account?</p>
-              <span
-                className="cursor-pointer inline-flex items-center px-6 py-2 bg-violet-800 border border-transparent rounded-full font-semibold text-xs text-white uppercase tracking-widest hover:bg-violet-700 focus:bg-bg-violet-700 active:bg-violet-900 focus:outline-none focus:ring-2 focus:ring-violet-500 focus:ring-offset-2 transition ease-in-out duration-150 false ml-4"
-                onClick={openLoginModal}
-              >
-                Login
-              </span>
-            </div>
-          )}
-        </div>
-      </div>
-
+      </header>
       <LoginModal
         modes="login"
         show={showLoginModal}
         onClose={closeLoginModal}
         onLogin={(data) => {
+          setEmail(data.email);
           setShowLoader(true);
           loginMutation.mutate({ ...data, company_id: 1 });
         }}

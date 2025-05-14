@@ -204,7 +204,7 @@ export default function GpDetail() {
                   <label
                     key={option}
                     className={`cursor-pointer w-1/2 flex items-center gap-3 px-4 py-3 border rounded-lg text-black ${
-                      gpDetails === option ? "bg-[#DACFFF] border-violet-700" : "border-gray-300 hover:bg-gray-50"
+                      gpDetails === option ? "bg-[#F2EEFF] border-violet-700" : "border-gray-300 hover:bg-gray-50"
                     }`}
                   >
                     <input type="radio" value={option} {...register("gpDetails", { required: true })} className="hidden" />
@@ -238,7 +238,7 @@ export default function GpDetail() {
                       <label
                         key={option.value}
                         className={`cursor-pointer w-full flex items-center gap-3 px-4 py-4 border rounded-lg mb-4 text-black ${
-                          gepTreatMent === option.value ? "bg-[#DACFFF] border-violet-700" : "border-gray-300 hover:bg-gray-50"
+                          gepTreatMent === option.value ? "bg-[#F2EEFF] border-violet-700" : "border-gray-300 hover:bg-gray-50"
                         }`}
                       >
                         <input type="radio" value={option.value} {...register("gepTreatMent", { required: true })} className="hidden" />
@@ -258,7 +258,7 @@ export default function GpDetail() {
 
               {gpDetails === "yes" && gepTreatMent === "yes" && (
                 <>
-                  <TextField label="Email (optional)" name="email" placeholder="Email" register={register} errors={errors} />
+                  <TextField label="Email" name="email" placeholder="Email" register={register} errors={errors} />
 
                   <div className="relative">
                     <TextField label="Postal Code" name="postalCode" placeholder="W1A 1AA" register={register} required errors={errors} />

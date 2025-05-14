@@ -117,7 +117,7 @@ const ConfirmationSummary = () => {
         <PageAnimationWrapper>
           <div className="space-y-6">
             {/* Summary Box */}
-            <div className="bg-[#DACFFF] border border-green-100 rounded-md p-5 text-sm text-gray-800">
+            <div className="bg-[#F2EEFF] border border-green-100 rounded-md p-5 text-sm text-gray-800">
               <p className="bold-font text-black mb-1">
                 <span className="bold-font paragraph">Full Name: </span>{" "}
                 {firstName ? (

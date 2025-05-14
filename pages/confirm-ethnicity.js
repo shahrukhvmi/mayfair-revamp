@@ -99,7 +99,7 @@ export default function ConfirmEthnicity() {
                       <label
                         key={option}
                         className={`flex items-center gap-3 px-4 py-3 border rounded-lg transition-all cursor-pointer text-sm
-                      ${isSelected ? "bg-[#DACFFF] border-black bold-font paragraph" : "border-gray-300 bold-font paragraph hover:bg-gray-50"}`}
+                      ${isSelected ? "bg-[#F2EEFF] border-black bold-font paragraph" : "border-gray-300 bold-font paragraph hover:bg-gray-50"}`}
                       >
                         <div
                           className={`w-5 h-5 rounded-sm flex items-center justify-center border transition

@@ -123,7 +123,7 @@ export default function PersonalDetails() {
                           key={option}
                           className={`flex items-center gap-3 px-4 py-3 border rounded-lg transition-all cursor-pointer text-sm
                             ${
-                              selected ? "bg-[#DACFFF] border-black text-black bold-font paragraph" : "border-gray-300 text-gray-900 hover:bg-gray-50"
+                              selected ? "bg-[#F2EEFF] border-black text-black bold-font paragraph" : "border-gray-300 text-gray-900 hover:bg-gray-50"
                             } bold-font paragraph`}
                         >
                           <div

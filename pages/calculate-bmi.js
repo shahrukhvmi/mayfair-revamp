@@ -319,6 +319,7 @@ export default function CalculateBmi() {
                   (heightUnit === "imperial" ? (
                     <div className="grid grid-cols-2 gap-4">
                       <BmiTextField
+                        required
                         label="Feet (ft)"
                         name="heightFt"
                         fieldProps={register("heightFt", {
@@ -332,6 +333,7 @@ export default function CalculateBmi() {
                         onBlur={handleHeightBlur}
                       />
                       <BmiTextField
+                        required
                         label="Inches (in)"
                         name="heightIn"
                         fieldProps={register("heightIn", {
@@ -347,6 +349,7 @@ export default function CalculateBmi() {
                     </div>
                   ) : (
                     <BmiTextField
+                      required
                       label="Centimetres (cm)"
                       name="heightCm"
                       fieldProps={register("heightCm", {
@@ -370,6 +373,7 @@ export default function CalculateBmi() {
                   (weightUnit === "stlb" ? (
                     <div className="grid grid-cols-2 gap-4">
                       <BmiTextField
+                        required
                         label="Stone (st)"
                         name="weightSt"
                         fieldProps={register("weightSt", {
@@ -383,6 +387,7 @@ export default function CalculateBmi() {
                         onBlur={handleWeightBlur}
                       />
                       <BmiTextField
+                        required
                         label="Pounds (lb)"
                         name="weightLbs"
                         fieldProps={register("weightLbs", {
@@ -398,6 +403,7 @@ export default function CalculateBmi() {
                     </div>
                   ) : (
                     <BmiTextField
+                      required
                       label="Kilograms (kg)"
                       name="weightKg"
                       fieldProps={register("weightKg", {

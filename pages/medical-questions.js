@@ -121,7 +121,7 @@ const MedicalQuestions = () => {
                           <label
                             key={option}
                             className={`bold-font paragraph flex items-center justify-start border px-6 py-2 transition-all cursor-pointer w-full sm:w-auto rounded-md
-                                ${isSelected ? "bg-[#DACFFF] border-violet-700" : "border-gray-300 bg-white hover:bg-gray-50"}`}
+                                ${isSelected ? "bg-[#F2EEFF] border-violet-700" : "border-gray-300 bg-white hover:bg-gray-50"}`}
                           >
                             <Controller
                               name={`responses[${q.id}].answer`}

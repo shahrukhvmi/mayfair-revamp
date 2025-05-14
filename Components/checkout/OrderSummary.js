@@ -24,7 +24,6 @@ import useSignupStore from "@/store/signupStore";
 const OrderSummary = () => {
   const router = useRouter();
   const [discountCode, setDiscountCode] = useState("");
-
   // Get some data to store✌✌
   const { items, totalAmount } = useCartStore();
   const { Coupon, setCoupon, clearCoupon } = useCouponStore();
@@ -94,6 +93,7 @@ const OrderSummary = () => {
     onSuccess: (data) => {
       if (data) {
         setPaymentData(data?.data?.paymentData);
+      
       }
     },
     onError: (error) => {

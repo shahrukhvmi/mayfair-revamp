@@ -65,8 +65,8 @@ export default function SignUp() {
                   rules={{ required: "Phone number is required" }}
                   render={({ field }) => (
                     <div className="mb-4">
-                      <label htmlFor="phoneNo" className="bold-font paragraph mb-2">
-                        Phone Number
+                      <label htmlFor="phoneNo" className="bold-font paragraph mb-2 relative">
+                        Phone Number <span className="text-red-500 absolute  m-1 niba-semibold-font"> *</span>
                       </label>
 
                       <div

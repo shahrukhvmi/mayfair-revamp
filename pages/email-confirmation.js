@@ -91,12 +91,14 @@ export default function EmailConfirmation() {
         onClose={closeLoginModal}
         isLoading={showLoader}
         onLogin={async (data) => {
+          console.log(data,"dfkjdskjjkffskj")
           setShowLoader(true);
           try {
             const response = await loginMutation.mutateAsync({ ...data, company_id: 1 });
             const user = response?.data?.data;
             setIsPasswordReset(true);
             setUserData(user);
+            setEmail(data.email);
             setToken(user.token);
             toast.success("Login Successfully");
 
@@ -107,7 +109,7 @@ export default function EmailConfirmation() {
             setShowLoader(false);
 
             // ✅ Then redirect
-            router.push("/dashboard");
+            // router.push("/dashboard");
           } catch (error) {
             const errorMsg = error?.response?.data?.errors;
             const firstMsg = errorMsg && typeof errorMsg === "object" ? Object.values(errorMsg)[0] : "Something went wrong.";

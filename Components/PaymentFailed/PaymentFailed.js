@@ -11,7 +11,7 @@ const PaymentFailed = () => {
   };
 
   return (
-    <div className="flex items-center justify-center h-screen bg-[#dacfff] px-6 sm:px-44">
+    <div className="flex items-center justify-center h-screen bg-[#F2EEFF] px-6 sm:px-44">
       <div className="bg-white rounded-lg shadow-lg p-8 text-center w-full max-w-2xl">
         <LuBadgeX className="inline w-16 h-16 text-gray-200 fill-purple-600 mx-auto mb-4" />
         <h2 className="text-3xl niba-bold-font text-gray-800 mb-4">Payment Failed</h2>

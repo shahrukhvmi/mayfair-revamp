@@ -63,7 +63,7 @@ export default function Index() {
     <>
       <StepsHeader />
 
-      <section className="my-8">
+      <section className="my-16">
         <div className="bg-white max-w-xl mx-auto rounded-3xl p-10 shadow-lg border border-gray-100 relative">
           {/* Icon */}
           <div className="flex justify-center mb-8">
@@ -99,7 +99,7 @@ export default function Index() {
               name="action"
               value="Accept and re-order"
               disabled={!isValid}
-              className=" w-full px-12   bold-font text-sm border-in duration-150 ease-in-out hover:bg-violet-700  py-3 rounded-full bold-font  transition my-3 border-2 text-violet-700 hover:text-white border-violet-700 cursor-pointer"
+              className=" w-full px-12   bold-font text-sm border-in duration-150 ease-in-out hover:bg-primary  py-3 rounded-full bold-font  transition my-3 border-2 text-primary hover:text-white border-primary cursor-pointer"
             >
               Accept and re-order
             </button>
