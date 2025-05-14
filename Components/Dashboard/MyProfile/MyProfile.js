@@ -82,8 +82,10 @@ const MyProfile = () => {
   return (
     <div className="p-6 sm:bg-[#F9FAFB] sm:min-h-screen sm:rounded-md sm:shadow-md my-5 sm:me-5">
       <div className="mb-8">
-        <h2 className="md:text-xl text-lg mb-2 font-semibold text-black">Profile Information</h2>
-        <p className="reg-font text-gray-600 text-left text-sm xl:w-3/4 mt-2">Update your account's profile information and email address.</p>
+
+      
+      <h1 className="md:text-3xl text-lg mb-2 niba-bold-font heading">Profile Information</h1>
+                <p className="reg-font paragraph  text-left text-sm xl:w-3/4 mt-2">Update your account's profile information and email address.</p>
       </div>
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
