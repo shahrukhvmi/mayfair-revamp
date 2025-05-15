@@ -25,7 +25,7 @@ const OrderSummary = () => {
   const router = useRouter();
   const [discountCode, setDiscountCode] = useState("");
   // Get some data to store✌✌
-  const { items, totalAmount, setFinalTotal } = useCartStore();
+  const { items, totalAmount, setFinalTotal, setOrderId } = useCartStore();
   const { Coupon, setCoupon, clearCoupon } = useCouponStore();
   const { shipping, billing, billingSameAsShipping } = useShippingOrBillingStore();
 
@@ -94,6 +94,7 @@ const OrderSummary = () => {
     onSuccess: (data) => {
       if (data) {
         setPaymentData(data?.data?.paymentData);
+        setOrderId(data?.data?.paymentData?.order_id)
       }
     },
     onError: (error) => {
@@ -158,6 +159,7 @@ const OrderSummary = () => {
     };
 
     setFinalTotal(finalTotal);
+
 
     const formData = {
       checkout,
@@ -319,9 +321,8 @@ const OrderSummary = () => {
                           type="button"
                           onClick={handleApplyCoupon}
                           disabled={!isApplyEnabled}
-                          className={`cursor-pointer px-6 text-sm bold-font text-white transition-all duration-200 ${
-                            isApplyEnabled ? "bg-primary hover:bg-primary" : "bg-gray-300 cursor-not-allowed"
-                          }`}
+                          className={`cursor-pointer px-6 text-sm bold-font text-white transition-all duration-200 ${isApplyEnabled ? "bg-primary hover:bg-primary" : "bg-gray-300 cursor-not-allowed"
+                            }`}
                         >
                           {couponLoading ? "Applying..." : "Apply"}
                         </button>
