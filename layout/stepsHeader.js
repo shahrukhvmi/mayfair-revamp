@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { FiMenu, FiX } from "react-icons/fi";
 import ApplicationLogo from "@/config/ApplicationLogo";
 import ApplicationUser from "@/config/ApplicationUser";
@@ -25,14 +25,15 @@ import useBmiStore from "@/store/bmiStore";
 import usePasswordReset from "@/store/usePasswordReset";
 import { usePathname } from "next/navigation";
 import useProductId from "@/store/useProductIdStore";
+import { Menu, MenuItem } from "@mui/material";
+import { IoIosArrowDown } from "react-icons/io";
 
 const StepsHeader = ({ isOpen, toggleSidebar }) => {
-  const [isOpenDrop, setIsOpenDrop] = useState(false);
-  const [showLoader, setShowLoader] = useState(false);
+  const [anchorEl, setAnchorEl] = useState(null);
   const { showLoginModal, closeLoginModal, openLoginModal } = useLoginModalStore();
 
   const { firstName, setEmail } = useSignupStore();
-  const [name, setUserData] = useState("");
+  const [showLoader, setShowLoader] = useState(false);
 
   const { clearBmi } = useBmiStore();
   const { clearCheckout } = useCheckoutStore();
@@ -50,35 +51,9 @@ const StepsHeader = ({ isOpen, toggleSidebar }) => {
 
   const router = useRouter();
   const { setIsPasswordReset } = usePasswordReset();
-  const toggleDropdown = () => {
-    setIsOpenDrop((prev) => !prev);
-  };
-
-  // Close dropdown when clicking outside
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      const dropdownMenu = document.querySelector(".dropdown-menu");
-      if (dropdownMenu && !dropdownMenu.contains(event.target)) {
-        setIsOpenDrop(false);
-      }
-    };
-
-    if (isOpenDrop) {
-      document.addEventListener("mousedown", handleClickOutside);
-    } else {
-      document.removeEventListener("mousedown", handleClickOutside);
-    }
-
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [isOpenDrop]);
 
   const handleLogout = () => {
-    setIsOpenDrop(false);
-    // logout();
-    setIsOpenDrop(false);
-    // logout();
+    setAnchorEl(null);
     clearBmi();
     clearCheckout();
     clearConfirmationInfo();
@@ -93,13 +68,19 @@ const StepsHeader = ({ isOpen, toggleSidebar }) => {
     clearToken();
     setIsPasswordReset(false);
     clearProductId();
-    router.push("/login/");
+    router.push("/login");
   };
+
+  const validPathDashboard =
+    pathname === "/dashboard/" ||
+    pathname === "/profile/" ||
+    pathname === "/orders/" ||
+    pathname === "/address/" ||
+    pathname === "/change-password/";
 
   const loginMutation = useMutation(Login, {
     onSuccess: (data) => {
       const user = data?.data?.data;
-      setUserData(user);
       setToken(user.token);
       toast.success("Login Successfully");
       Fetcher.axiosSetup.defaults.headers.common.Authorization = `Bearer ${user.token}`;
@@ -110,10 +91,8 @@ const StepsHeader = ({ isOpen, toggleSidebar }) => {
     },
     onError: (error) => {
       const errors = error?.response?.data?.errors;
-
       if (errors && typeof errors === "object") {
         Object.values(errors).forEach((err) => {
-          // If error is an array (like from Laravel validation), loop through that too
           if (Array.isArray(err)) {
             err.forEach((msg) => toast.error(msg));
           } else {
@@ -121,22 +100,21 @@ const StepsHeader = ({ isOpen, toggleSidebar }) => {
           }
         });
       }
-
       setShowLoader(false);
     },
   });
+
   return (
     <>
-      <header className="bg-white  w-full py-2 sm:px-14 px-4">
-
-
+      <header className="bg-white w-full py-2 sm:px-14 px-4">
         <div className="sm:px-6 lg:px-6 flex items-center justify-between py-2">
-          {/* Hamburger Button (only visible on mobile) */}
-          <button onClick={toggleSidebar} className="text-2xl text-violet-700 sm:hidden">
-            {isOpen ? <FiX /> : <FiMenu />}
-          </button>
+          {/* Hamburger (Mobile) */}
+          {validPathDashboard &&
 
-
+            <button onClick={toggleSidebar} className="text-2xl text-violet-700 sm:hidden">
+              {isOpen ? <FiX /> : <FiMenu />}
+            </button>
+          }
 
           {/* Logo */}
           <div className="w-32 sm:w-40">
@@ -145,42 +123,58 @@ const StepsHeader = ({ isOpen, toggleSidebar }) => {
             </Link>
           </div>
 
-          {/* User Info */}
+          {/* User Info or Login CTA */}
           <div className="relative">
-            {/* Dropdown Trigger */}
             {token && (
-              <div className="flex items-center space-x-2 cursor-pointer" onClick={toggleDropdown}>
-                <ApplicationUser className="w-10 h-10 rounded-full" />
-                <span className="reg-font text-[#1C1C29] truncate">{firstName ? firstName : ""}</span>
-              </div>
-            )}
+              <>
+                <div
+                  className="flex items-center space-x-2 cursor-pointer"
+                  onClick={(e) => setAnchorEl(e.currentTarget)}
+                >
+                  <ApplicationUser className="w-10 h-10 rounded-full" />
+                  <span className="reg-font text-[#1C1C29] truncate">{firstName ?? ""}</span>
+                  <IoIosArrowDown
+                    className={`text-gray-700 transform transition-transform duration-200 ${Boolean(anchorEl) ? "rotate-180" : ""
+                      }`}
+                    size={20} />
+                </div>
 
-            {token && isOpenDrop && (
-              <div className="dropdown-menu absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-md shadow-lg z-50">
-                <ul className="py-1">
-                  <li className="reg-font px-4 py-2 text-[#1C1C29] hover:bg-gray-100 cursor-pointer">
-                    <Link href="/dashboard" onClick={toggleDropdown}>
-                      My Account
-                    </Link>
-                  </li>
-                  <li className="reg-font px-4 py-2 text-[#1C1C29] hover:bg-gray-100 cursor-pointer">
-                    <Link href="/profile" onClick={toggleDropdown}>
-                      My Profile
-                    </Link>
-                  </li>
-                  <li className="reg-font px-4 py-2 text-[#1C1C29] hover:bg-gray-100 cursor-pointer" onClick={handleLogout}>
-                    Logout
-                  </li>
-                </ul>
-              </div>
+                <Menu
+                  anchorEl={anchorEl}
+                  open={Boolean(anchorEl)}
+                  onClose={() => setAnchorEl(null)}
+                  anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+                  transformOrigin={{ vertical: "top", horizontal: "right" }}
+                  PaperProps={{ style: { width: 200 } }}
+                >
+                  <MenuItem
+                    onClick={() => {
+                      router.push("/dashboard");
+                      setAnchorEl(null);
+                    }}
+                    className="reg-font"
+                  >
+                    My Account
+                  </MenuItem>
+                  <MenuItem
+                    onClick={() => {
+                      router.push("/profile");
+                      setAnchorEl(null);
+                    }}
+                     className="reg-font"
+                  >
+                    My Profile
+                  </MenuItem>
+                  <MenuItem onClick={handleLogout}  className="reg-font">Logout</MenuItem>
+                </Menu>
+              </>
             )}
-
 
             {!pathname.startsWith("/login") && !token && (
               <div className="w-1/2 items-center justify-end lg:w-[100%] sm:flex hidden">
                 <p className="hidden md:block text-black reg-font">Already have an account?</p>
                 <span
-                  className="cursor-pointer inline-flex items-center px-6 py-2 bg-primary border border-transparent rounded-full font-semibold text-xs text-white uppercase tracking-widest hover:bg-violet-700 focus:bg-bg-violet-700 active:bg-primary focus:outline-none focus:ring-2 focus:ring-violet-500 focus:ring-offset-2 transition ease-in-out duration-150 false ml-4"
+                  className="cursor-pointer inline-flex items-center px-6 py-2 bg-primary border border-transparent rounded-full font-semibold text-xs text-white uppercase tracking-widest hover:bg-violet-700 focus:bg-bg-violet-700 active:bg-primary focus:outline-none focus:ring-2 focus:ring-violet-500 focus:ring-offset-2 transition ease-in-out duration-150 ml-4"
                   onClick={openLoginModal}
                 >
                   Login
@@ -189,8 +183,8 @@ const StepsHeader = ({ isOpen, toggleSidebar }) => {
             )}
           </div>
         </div>
-
       </header>
+
       <LoginModal
         modes="login"
         show={showLoginModal}

@@ -28,6 +28,7 @@ const OrderSummary = () => {
   const { items, totalAmount } = useCartStore();
   const { Coupon, setCoupon, clearCoupon } = useCouponStore();
   const { shipping, billing, billingSameAsShipping } = useShippingOrBillingStore();
+
   const { patientInfo } = usePatientInfoStore();
   const { medicalInfo } = useMedicalInfoStore();
   const { gpdetails } = useGpDetailsStore();
@@ -259,7 +260,11 @@ const OrderSummary = () => {
                     </div>
                   )}
                   <div className="flex justify-between items-center mt-4">
-                    <p className="bold-font paragraph !text-black">Shipping</p>
+                    <p className="bold-font paragraph !text-black">Shipping
+                      <span className="reg-font paragraph ms-2">
+                        ( {shipping?.country_name} )
+                      </span>
+                    </p>
                     <p className="bold-font text-black">£{shipping?.country_price}</p>
                   </div>
 
@@ -334,7 +339,7 @@ const OrderSummary = () => {
                           duration: 1,
                           ease: "linear",
                         }}
-                        className="w-5 h-5 border-4 border-t-transparent border-primary rounded-full text-white"
+                        className="w-5 h-5 border-4 border-t-transparent rounded-full text-white"
                       />
                     </div>
                   ) : (

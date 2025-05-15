@@ -22,7 +22,7 @@ const ProductCard = ({ id, title, image, price, status, buttonText, lastOrderDat
   const router = useRouter();
   const { productId, setProductId } = useProductId();
   const { setReorder } = useReorder();
-
+  console.log(productId, "productId")
   const [isButtonLoading, setIsButtonLoading] = useState(false);
 
   const { setBmi, clearBmi } = useBmiStore();
@@ -41,6 +41,7 @@ const ProductCard = ({ id, title, image, price, status, buttonText, lastOrderDat
       console.log(data, "Dataaaaaaaaaa");
 
       if (data?.data?.data == null) {
+
         console.log("true");
         clearBmi();
         clearCheckout();
@@ -72,7 +73,7 @@ const ProductCard = ({ id, title, image, price, status, buttonText, lastOrderDat
         router.push("/acknowledgment");
       }
 
-      setProductId(id);
+
 
       setIsButtonLoading(false);
       return;
@@ -87,6 +88,7 @@ const ProductCard = ({ id, title, image, price, status, buttonText, lastOrderDat
   });
 
   const handleClick = () => {
+    setProductId(id);
     setIsButtonLoading(true);
     const formData = {
       clinic_id: 1,
@@ -126,7 +128,7 @@ const ProductCard = ({ id, title, image, price, status, buttonText, lastOrderDat
             src={image}
             alt={title}
             className="w-full p-5 h-52 object-contain"
-            // onError={(e) => (e.target.src = "/images/default.png")}
+          // onError={(e) => (e.target.src = "/images/default.png")}
           />
         </div>
 

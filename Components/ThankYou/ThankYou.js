@@ -8,7 +8,7 @@ const ThankYou = () => {
   const GO = useRouter();
 
   const handleGoBack = () => {
-    GO.push("/");
+    GO.push("/dashboard");
   };
 
   return (

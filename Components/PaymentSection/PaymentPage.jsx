@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import useCartStore from "@/store/useCartStore";
 
 const PaymentPage = ({ paymentData }) => {
   const [countdown, setCountdown] = useState(3);

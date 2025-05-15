@@ -37,25 +37,42 @@ const AddOn = ({ addon, onAdd, onIncrement, onDecrement, isSelected, quantity })
       setShowModal(true);
     }
   };
+  const addonsStatus = addon?.stock?.status;
+  const isOutOfStock = addon?.stock?.status == 0;
+
 
 
   const handleDelete = () => {
     setShowModal(false);
     removeItemCompletely(addon?.id, "addon");
   };
-  
+
 
   return (
     <>
       <div
-        onClick={handleAdd}
-        className={`relative flex items-center justify-between p-5 border-2 cursor-pointer mt-3 transition-all duration-300 ease-in-out rounded-md ${stockStatus === 0
-          ? "opacity-70 cursor-not-allowed bg-white border-black"
-          : isSelected
-            ? "border-primary bg-violet-100 hover:bg-violet-100"
-            : "border-gray-300 bg-white hover:bg-gray-50"
+        onClick={!isOutOfStock && !isSelected ? handleAdd : undefined}
+        className={`flex items-center justify-between p-4 border-2 mt-3 transition-all duration-300 ease-in-out relative rounded-lg 
+    ${isOutOfStock
+            ? "opacity-50 cursor-not-allowed bg-white border-gray-400"
+            : isSelected
+              ? "border-primary bg-violet-100 cursor-pointer"
+              : "border-primary bg-white hover:bg-gray-50 cursor-pointer"
           }`}
       >
+
+
+        {isOutOfStock && (
+          <>
+            {/* Overlay to disable interaction */}
+            <div className="absolute inset-0 z-10 bg-white/10  cursor-not-allowed rounded-md"></div>
+
+            {/* Out of stock badge */}
+            <div className="absolute left-[14px] top-[-10px] bg-primary text-white px-3 py-0.5 text-xs font-semibold rounded z-20">
+              Out of stock
+            </div>
+          </>
+        )}
         {/* Check badge */}
         {isSelected && (
           <div className="absolute -top-2 -right-2 bg-primary text-white rounded-full w-6 h-6 flex items-center justify-center">

@@ -10,6 +10,7 @@ import useVariationStore from "@/store/useVariationStore";
 import useCartStore from "@/store/useCartStore";
 import toast from "react-hot-toast";
 import { motion, AnimatePresence } from "framer-motion";
+import BackButton from "@/Components/BackButton/BackButton";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 
@@ -138,9 +139,16 @@ export default function DosageSelection() {
       isSelected: true,
     });
   };
+  const back = () => {
+    router.push("/confirmation-summary")
 
+  }
   return (
     <>
+      <div className="top-[520px] fixed">
+
+        <BackButton label="Back" onClick={back} />
+      </div>
       <AnimatePresence>
         {showDoseModal && selectedDose && (
           <motion.div
@@ -192,7 +200,13 @@ export default function DosageSelection() {
                       <img src={variation?.img} alt={variation?.name} className="w-full h-40 object-contain" />
                     </div>
                     <div className="p-6">
-                      <h2 className="text-2xl mb-4 bold-font text-gray-800">{variation?.name}</h2>
+                      <h2 className="text-2xl mb-2 bold-font text-gray-800">{variation?.name}</h2>
+                      {variation?.name === "Mounjaro (Tirzepatide)" && (
+
+                        <p className="text-sm text-gray-500 thin-font mb-2">Pack of 5 Needles is included with every dose
+                        </p>
+                      )
+                      }
                       <span className="bold-font text-black">From £{variation?.price}</span>
                       {/* <div
                         className="reg-font text-gray-600 bg-red-50  p-3 rounded-md text-sm"
@@ -242,23 +256,33 @@ export default function DosageSelection() {
                         <h1 className="my-4 niba-reg-font text-2xl text-gray-800">
                           Select <span className="font-bold text-2xl">Add-ons</span>
                         </h1>
-                        {variation?.addons.map((addon) => {
-                          const cartAddon = items.addons.find((item) => item.id === addon.id);
-                          const cartQty = cartAddon?.qty || 0;
 
-                          return (
-                            <AddOn
-                              addon={addon}
-                              quantity={cartQty} // ✅ yeh change krna hoga DosageSelection me
-                              isSelected={cartQty > 0}
-                              onAdd={() => handleAddAddon(addon)}
-                              onIncrement={() => increaseQuantity(addon.id, "addon")}
-                              onDecrement={() => decreaseQuantity(addon.id, "addon")}
-                            />
-                          );
-                        })}
+                        {variation?.addons
+                          .slice() // make a copy to avoid mutating original
+                          .sort((a, b) => {
+                            const aOut = a?.stock?.status === 0 ? 1 : 0;
+                            const bOut = b?.stock?.status === 0 ? 1 : 0;
+                            return aOut - bOut; // move out-of-stock (1) below in-stock (0)
+                          })
+                          .map((addon) => {
+                            const cartAddon = items.addons.find((item) => item.id === addon.id);
+                            const cartQty = cartAddon?.qty || 0;
+
+                            return (
+                              <AddOn
+                                key={addon.id}
+                                addon={addon}
+                                quantity={cartQty}
+                                isSelected={cartQty > 0}
+                                onAdd={() => handleAddAddon(addon)}
+                                onIncrement={() => increaseQuantity(addon.id, "addon")}
+                                onDecrement={() => decreaseQuantity(addon.id, "addon")}
+                              />
+                            );
+                          })}
                       </>
                     )}
+
                   </div>
                 </div>
               </div>
@@ -274,8 +298,9 @@ export default function DosageSelection() {
             <div className="text-black leading-tight">
               <div className="text-lg bold-font">{variation?.name}</div>
               <div className="text-lg bold-font">
-                £{totalAmount}
-                <span className="text-lg bold-font">.00</span>
+                <span className="me-2 text-lg reg-font paragraph">Order total </span>
+                £{parseFloat(totalAmount)?.toFixed(2)}
+
               </div>
             </div>
           </div>

@@ -4,7 +4,7 @@ import { persist } from "zustand/middleware";
 const useProductId = create(
   persist(
     (set) => ({
-      productId: 1,
+      productId: null,
       setProductId: (productId) => set({ productId }),
       clearProductId: () => set({ productId: null }),
     }),

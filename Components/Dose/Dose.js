@@ -69,14 +69,14 @@ const Dose = ({ doseData, onAdd, onIncrement, onDecrement, isSelected, qty, allo
     <>
       <div
         onClick={(isOutOfStock || isAllowExceeded) ? undefined : handleAdd}
-        className={`flex items-center justify-between p-4 border-2 mt-3 transition-all duration-300 ease-in-out relative rounded-lg 
+        className={`flex items-center justify-between p-4 border-2 mt-3 transition-all duration-300 ease-in-out relative rounded-lg  border-primary
           ${isOutOfStock
-            ? "opacity-50 cursor-not-allowed bg-white border-black"
+            ? "opacity-50 cursor-not-allowed bg-white border-gray-400"
             : isSelected
               ? "border-primary bg-violet-100 cursor-pointer"
               : isAllowExceeded
-                ? "border-gray-300 bg-white cursor-not-allowed opacity-60"
-                : "border-gray-300 bg-white hover:bg-gray-50 cursor-pointer"
+                ? "border-primary bg-white cursor-not-allowed opacity-60"
+                : "border-primary bg-white hover:bg-gray-50 cursor-pointer"
           }`}
       >
         {/* Overlay when out of stock */}

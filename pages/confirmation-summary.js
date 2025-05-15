@@ -106,6 +106,10 @@ const ConfirmationSummary = () => {
   const reviewAll = () => {
     router.push("/review-answers");
   };
+
+  const back = () => {
+    router.push("/gp-detail");
+  };
   return (
     <>
       <StepsHeader />
@@ -173,6 +177,7 @@ const ConfirmationSummary = () => {
             <div className="space-y-3">
               <NextButton label="Confirm and proceed" onClick={hanldeConfirm} />
               <BackButton label="Review all" className="mt-2" onClick={reviewAll} />
+              <BackButton label="Back" onClick={back} />
             </div>
             {showLoader && (
               <div className="absolute inset-0 z-20 flex justify-center items-center bg-white/60 rounded-lg cursor-not-allowed">

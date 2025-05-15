@@ -91,7 +91,7 @@ export default function EmailConfirmation() {
         onClose={closeLoginModal}
         isLoading={showLoader}
         onLogin={async (data) => {
-          console.log(data,"dfkjdskjjkffskj")
+          console.log(data, "dfkjdskjjkffskj")
           setShowLoader(true);
           try {
             const response = await loginMutation.mutateAsync({ ...data, company_id: 1 });
@@ -143,9 +143,9 @@ export default function EmailConfirmation() {
 
               {already && (
                 <div className="text-sm text-red-600 bg-red-50 border border-red-200 p-3 rounded-md">
-                  This email is already registered.{" "}
+                  This email address is already taken.{" "}
                   <span onClick={openLoginModal} className="text-blue-600 underline cursor-pointer font-medium hover:text-blue-800">
-                    Click here to login.
+                    Please click here to login.
                   </span>
                 </div>
               )}
