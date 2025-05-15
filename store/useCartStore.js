@@ -13,6 +13,7 @@ const useCartStore = create(
       totalAddons: 0,
       totalAmount: 0,
       finalTotal: 0,
+      orderId: 0,
 
       // Add to cart
       addToCart: (product) => {
@@ -56,6 +57,7 @@ const useCartStore = create(
       },
 
       setFinalTotal: (finalTotal) => set({ finalTotal }),
+      setOrderId: (orderId) => set({ orderId }),
 
       // Completely remove item regardless of qty
       removeItemCompletely: (id, typeRaw) => {

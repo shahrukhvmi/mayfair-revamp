@@ -28,7 +28,7 @@ export default function EmailConfirmation() {
   // const [showLoginModal, setShowLoginModal] = useState(false);
   console.log(showLoader, "showLoader");
   const router = useRouter();
-  const { firstName, lastName, email, confirmationEmail, setEmail, setConfirmationEmail } = useSignupStore();
+  const { firstName, lastName, setLastName, setFirstName, email, confirmationEmail, setEmail, setConfirmationEmail } = useSignupStore();
   const { setUserData } = useUserDataStore();
   const { token, setToken } = useAuthStore();
   const { setIsPasswordReset, isPasswordReset } = usePasswordReset();
@@ -98,18 +98,17 @@ export default function EmailConfirmation() {
             const user = response?.data?.data;
             setIsPasswordReset(false);
             setUserData(user);
-            setEmail(data.email);
-            setToken(user.token);
-            toast.success("Login Successfully");
+            setToken(user?.token);
+            setFirstName(user?.fname);
+            setLastName(user?.lname);
 
+            toast.success("Login Successfully");
             Fetcher.axiosSetup.defaults.headers.common.Authorization = `Bearer ${user.token}`;
             closeLoginModal();
 
             // ✅ Hide loader immediately after success
             setShowLoader(false);
-
-            // ✅ Then redirect
-            // router.push("/dashboard");
+            router.push("/dashboard");
           } catch (error) {
             const errorMsg = error?.response?.data?.errors;
             const firstMsg = errorMsg && typeof errorMsg === "object" ? Object.values(errorMsg)[0] : "Something went wrong.";

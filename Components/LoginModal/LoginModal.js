@@ -13,7 +13,6 @@ import ResetForm from "./ResetForm";
 import ForgotForm from "./ForgotForm";
 import LoginForm from "./LoginForm";
 import PageLoader from "../PageLoader/PageLoader";
-import useSignupStore from "@/store/signupStore";
 
 export default function LoginModal({ show = false, onClose = () => {}, onLogin = () => {}, isLoading = false, modes }) {
   const {

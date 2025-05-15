@@ -18,6 +18,7 @@ import { Login } from "@/api/loginApi";
 import usePasswordReset from "@/store/usePasswordReset";
 import LoginModal from "@/Components/LoginModal/LoginModal";
 import useLoginModalStore from "@/store/useLoginModalStore";
+import Link from "next/link";
 
 export default function LoginScreen() {
   const [showLoader, setShowLoader] = useState(false);
@@ -97,6 +98,7 @@ export default function LoginScreen() {
     loginMutation.mutate(formData);
   };
 
+
   return (
     <>
       <StepsHeader />
@@ -122,8 +124,13 @@ export default function LoginScreen() {
                 <TextField label="Email Address" name="email" placeholder="Email Address" type="email" register={register} required errors={errors} />
 
                 <TextField label="Password" name="password" placeholder="Password" type="password" register={register} required errors={errors} />
+                <NextButton label="Login" disabled={!isValid} type="submit" className="mb-5" />
+                <p className="reg-font text-black text-sm text-center">
+
+                  Are you a new patient? <Link href={"/acknowledgment"} className="text-primary underline">Get started with the consultation</Link>
+                </p>
+                {/* <BackButton onClick={startConsultation} label="Are you a new patient? Get started with the consultation." /> */}
                 <BackButton onClick={openLoginModal} label="Forgot password" />
-                <NextButton label="Login" disabled={!isValid} type="submit" />
                 {/* <BackButton label="Back" className="mt-2" onClick={() => router.back()} /> */}
               </form>
 
@@ -149,7 +156,9 @@ export default function LoginScreen() {
             const user = response?.data?.data;
             setIsPasswordReset(false);
             setUserData(user);
-            setToken(user.token);
+            setToken(user?.token);
+            setFirstName(user?.fname);
+            setLastName(user?.lname);
             toast.success("Login Successfully");
 
             Fetcher.axiosSetup.defaults.headers.common.Authorization = `Bearer ${user.token}`;

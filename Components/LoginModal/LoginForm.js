@@ -2,6 +2,7 @@ import TextField from "../TextField/TextField";
 import NextButton from "../NextButton/NextButton";
 import { useForm } from "react-hook-form"; // 🟢 ADD THIS
 import BackButton from "../BackButton/BackButton";
+import Link from "next/link";
 
 export default function LoginForm({ register, handleSubmit, errors, isLoading, onLogin, onForgot }) {
 
@@ -27,7 +28,10 @@ export default function LoginForm({ register, handleSubmit, errors, isLoading, o
       />
       <NextButton label="Login" type="submit" disabled={isLoading} />
 
+      <p className="reg-font text-black text-sm text-center mt-5">
 
+        Are you a new patient? <a href={"/acknowledgment"} className="text-primary underline">Get started with the consultation</a>
+      </p>
       <div className="mt-2">
         <BackButton
           onClick={onForgot}
