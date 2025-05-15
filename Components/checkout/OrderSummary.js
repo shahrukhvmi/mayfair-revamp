@@ -265,7 +265,7 @@ const OrderSummary = () => {
                   <div className="flex justify-between items-center mt-4">
                     <p className="bold-font paragraph !text-black">
                       Shipping
-                      <span className="reg-font paragraph ms-2">( {shipping?.country_name} )</span>
+                      <span className="reg-font paragraph ms-2">({shipping?.country_name})</span>
                     </p>
                     <p className="bold-font text-black">£{shipping?.country_price}</p>
                   </div>

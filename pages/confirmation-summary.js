@@ -51,8 +51,9 @@ const ConfirmationSummary = () => {
         setPatientInfo(data?.data?.lastConsultation?.fields?.patientInfo);
         setLastBmi(data?.data?.lastConsultation?.fields?.bmi);
       }
+      
 
-      router.push("/gathering-data");
+      // router.push("/gathering-data");
       return;
     },
     onError: (error) => {

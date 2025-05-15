@@ -133,7 +133,7 @@ const ProductCard = ({ id, title, image, price, status, buttonText, lastOrderDat
         <div className="bg-[#EDE9FE] p-5 text-center rounded-2xl">
           <h2 className="text-lg bold-font mb-3 text-gray-900">{title}</h2>
 
-          <p className="mb-3 text-sm font-semibold">{lastOrderDate && `Last Ordered: ${lastOrderDate}`}</p>
+          <p className="mb-3 text-sm font-semibold text-gray-700">{lastOrderDate && `Last Ordered: ${lastOrderDate}`}</p>
 
           <div className="w-full text-center">
             <button

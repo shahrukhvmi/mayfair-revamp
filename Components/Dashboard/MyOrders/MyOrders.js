@@ -6,19 +6,17 @@ import GetOrdersApi from "@/api/getOrders";
 import { useMutation } from "@tanstack/react-query";
 import useOrderId from "@/store/useOrderIdStore";
 import { useRouter } from "next/router";
+import usePaginationStore from "@/store/pagination";
 
 const MyOrders = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [data, setOrderList] = useState(null);
-  const [page, setPage] = useState(1);
+  const { currentPage, setCurrentPage } = usePaginationStore(); // ✅ from Zustand
+
 
   const { setOrderId } = useOrderId();
 
   const router = useRouter();
-
-  useEffect(() => {
-    getOrderList.mutate({ data: {}, page });
-  }, [page]);
 
   console.log(data, "data");
   const getOrderList = useMutation(GetOrdersApi, {
@@ -35,8 +33,8 @@ const MyOrders = () => {
   });
 
   useEffect(() => {
-    getOrderList.mutate({ data: {}, page });
-  }, [page]);
+    getOrderList.mutate({ data: {}, page: currentPage });
+  }, [currentPage]);
 
   // const [orderData] = useState(data?.myorders.allorders);
   const [searchValue, setSearchValue] = useState("");
@@ -250,17 +248,16 @@ const MyOrders = () => {
                   </td>
                   <td>
                     <span
-                      className={`${
-                        order.status === "Processing"
+                      className={`${order.status === "Processing"
                           ? "bg-yellow-100 border-yellow-500 text-yellow-800"
                           : order.status === "Incomplete"
-                          ? "bg-orange-100 border-orange-500 text-orange-800"
-                          : order.status === "Cancelled"
-                          ? "bg-red-100 text-red-800"
-                          : order.status === "Approved"
-                          ? "bg-green-100 border-green-500 text-green-800"
-                          : "bg-gray-100 text-gray-800"
-                      } text-xs font-medium px-2.5 py-0.5 rounded-full`}
+                            ? "bg-orange-100 border-orange-500 text-orange-800"
+                            : order.status === "Cancelled"
+                              ? "bg-red-100 text-red-800"
+                              : order.status === "Approved"
+                                ? "bg-green-100 border-green-500 text-green-800"
+                                : "bg-gray-100 text-gray-800"
+                        } text-xs font-medium px-2.5 py-0.5 rounded-full`}
                     >
                       {order.status}
                     </span>
@@ -285,7 +282,7 @@ const MyOrders = () => {
         </table>
       </div>
 
-      <Pagination pagination={data} setPage={setPage} />
+      <Pagination pagination={data} setPage={setCurrentPage} />
     </div>
   );
 };

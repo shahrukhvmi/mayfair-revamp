@@ -1,17 +1,22 @@
 import React from "react";
 import { Pagination as MUIPagination } from "@mui/material";
+import usePaginationStore from "@/store/pagination";
 
-const Pagination = ({ pagination, setPage }) => {
+const Pagination = ({ pagination }) => {
+  const { currentPage, setCurrentPage } = usePaginationStore();
+
   if (!pagination) return null;
 
-  const { current_page, last_page } = pagination;
+  const { last_page } = pagination;
 
   return (
     <div className="w-full flex justify-center sm:justify-start my-5">
       <MUIPagination
         count={last_page}
-        page={current_page}
-        onChange={(event, value) => setPage(value)}
+        page={currentPage}
+        onChange={(event, value) => {
+          setCurrentPage(value);
+        }}
         color="primary"
         variant="outlined"
         shape="rounded"

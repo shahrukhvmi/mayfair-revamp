@@ -46,6 +46,8 @@ export default function DosageSelection() {
   // ✅ Put here → outside your component or at the top inside your component file
   const generateProductConcent = (variations, selectedDoseName) => {
     const sortedVariations = [...variations].sort((a, b) => {
+
+      console.log(a,b,"sfkjefjfsj")
       const aMg = parseFloat(a.name);
       const bMg = parseFloat(b.name);
       return aMg - bMg;
@@ -75,7 +77,7 @@ export default function DosageSelection() {
       return;
     }
 
-    const firstTwoDoses = variation?.variations?.slice(0, 2).map((v) => v.name);
+    const firstTwoDoses = variation?.variations?.slice(0, 1).map((v) => v.name);
     const isFirstTwoDose = firstTwoDoses.includes(dose?.name);
 
     if (isFirstTwoDose) {
