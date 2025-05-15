@@ -55,7 +55,7 @@ export default function LoginScreen() {
         toast.success("Login Successfully");
         Fetcher.axiosSetup.defaults.headers.common.Authorization = `Bearer ${user.token}`;
         setShowLoader(false);
-        setIsPasswordReset(true);
+        setIsPasswordReset(false);
         router.push("/dashboard");
       }
     },
@@ -147,7 +147,7 @@ export default function LoginScreen() {
           try {
             const response = await loginMutation.mutateAsync({ ...data, company_id: 1 });
             const user = response?.data?.data;
-            setIsPasswordReset(true);
+            setIsPasswordReset(false);
             setUserData(user);
             setToken(user.token);
             toast.success("Login Successfully");

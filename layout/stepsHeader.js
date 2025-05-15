@@ -91,7 +91,7 @@ const StepsHeader = ({ isOpen, toggleSidebar }) => {
     clearMedicalQuestions();
     clearConfirmationQuestions();
     clearToken();
-    setIsPasswordReset(false);
+    setIsPasswordReset(true);
     clearProductId();
     router.push("/login/");
   };
@@ -106,7 +106,7 @@ const StepsHeader = ({ isOpen, toggleSidebar }) => {
       setShowLoader(false);
       closeLoginModal();
       router.push("/dashboard");
-      setIsPasswordReset(true);
+      setIsPasswordReset(false);
     },
     onError: (error) => {
       const errors = error?.response?.data?.errors;
@@ -128,15 +128,11 @@ const StepsHeader = ({ isOpen, toggleSidebar }) => {
   return (
     <>
       <header className="bg-white  w-full py-2 sm:px-14 px-4">
-
-
         <div className="sm:px-6 lg:px-6 flex items-center justify-between py-2">
           {/* Hamburger Button (only visible on mobile) */}
           <button onClick={toggleSidebar} className="text-2xl text-violet-700 sm:hidden">
             {isOpen ? <FiX /> : <FiMenu />}
           </button>
-
-
 
           {/* Logo */}
           <div className="w-32 sm:w-40">
@@ -175,8 +171,7 @@ const StepsHeader = ({ isOpen, toggleSidebar }) => {
               </div>
             )}
 
-
-            {!pathname.startsWith("/login") && !token && (
+            {!pathname?.startsWith("/login") && !token && (
               <div className="w-1/2 items-center justify-end lg:w-[100%] sm:flex hidden">
                 <p className="hidden md:block text-black reg-font">Already have an account?</p>
                 <span
@@ -189,7 +184,6 @@ const StepsHeader = ({ isOpen, toggleSidebar }) => {
             )}
           </div>
         </div>
-
       </header>
       <LoginModal
         modes="login"

@@ -70,8 +70,8 @@ export default function StepsInformation() {
         setGpDetails(data?.data?.data?.gpdetails);
         setMedicalInfo(data?.data?.data?.medicalInfo);
         setPatientInfo(data?.data?.data?.patientInfo);
-        setShipping(data?.data?.data?.billing);
-        setBilling(data?.data?.data?.shipping);
+        setShipping(data?.data?.data?.shipping);
+        setBilling(data?.data?.data?.billing);
         setAuthUserDetail(data?.data?.data?.auth_user);
         setLastBmi(data?.data?.data?.bmi);
       }
