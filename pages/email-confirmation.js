@@ -91,12 +91,12 @@ export default function EmailConfirmation() {
         onClose={closeLoginModal}
         isLoading={showLoader}
         onLogin={async (data) => {
-          console.log(data, "dfkjdskjjkffskj")
+          console.log(data, "dfkjdskjjkffskj");
           setShowLoader(true);
           try {
             const response = await loginMutation.mutateAsync({ ...data, company_id: 1 });
             const user = response?.data?.data;
-            setIsPasswordReset(true);
+            setIsPasswordReset(false);
             setUserData(user);
             setEmail(data.email);
             setToken(user.token);

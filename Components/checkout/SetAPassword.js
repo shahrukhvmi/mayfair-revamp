@@ -44,7 +44,7 @@ const SetAPassword = ({ isCompleted, onComplete }) => {
       if (data?.status) {
         toast.success("Account created successfully!");
         if (onComplete) onComplete();
-        setIsPasswordReset(true);
+        setIsPasswordReset(false);
       }
     },
     onError: (error) => {
@@ -79,12 +79,7 @@ const SetAPassword = ({ isCompleted, onComplete }) => {
 
   return (
     <SectionWrapper>
-      <SectionHeader
-        stepNumber={1}
-        title="Set a Password"
-        description="Please create a strong password for your account."
-        completed={isCompleted}
-      />
+      <SectionHeader stepNumber={1} title="Set a Password" description="Please create a strong password for your account." completed={isCompleted} />
 
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="relative mt-4">
@@ -92,7 +87,9 @@ const SetAPassword = ({ isCompleted, onComplete }) => {
             type={showPassword ? "text" : "password"}
             placeholder="Password"
             {...register("password", { required: true })}
-            className={`reg-font w-full text-black px-3 py-4 border rounded-sm placeholder-gray-400 focus:outline-none ${password.length > 0 ? "border-violet-600" : "border-black"}`}
+            className={`reg-font w-full text-black px-3 py-4 border rounded-sm placeholder-gray-400 focus:outline-none ${
+              password.length > 0 ? "border-violet-600" : "border-black"
+            }`}
           />
           <button
             type="button"
@@ -109,7 +106,9 @@ const SetAPassword = ({ isCompleted, onComplete }) => {
             placeholder="Confirm Password"
             {...register("confirmPassword", { required: true })}
             onPaste={(e) => e.preventDefault()}
-            className={`reg-font w-full text-black px-3 py-4 border rounded-sm placeholder-gray-400 focus:outline-none ${confirmPassword.length > 0 ? "border-violet-600" : "border-black"}`}
+            className={`reg-font w-full text-black px-3 py-4 border rounded-sm placeholder-gray-400 focus:outline-none ${
+              confirmPassword.length > 0 ? "border-violet-600" : "border-black"
+            }`}
           />
           <button
             type="button"
@@ -129,11 +128,7 @@ const SetAPassword = ({ isCompleted, onComplete }) => {
         </div>
 
         <div className="mt-6">
-          <NextButton
-            label="Continue"
-            disabled={!isPasswordStrongAndMatch || isLoading || isPasswordReset}
-            type="submit"
-          />
+          <NextButton label="Continue" disabled={!isPasswordStrongAndMatch || isLoading || !isPasswordReset} type="submit" />
         </div>
       </form>
     </SectionWrapper>

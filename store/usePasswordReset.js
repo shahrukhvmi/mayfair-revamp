@@ -4,7 +4,7 @@ import { persist } from "zustand/middleware";
 const usePasswordReset = create(
   persist(
     (set) => ({
-      isPasswordReset: false,
+      isPasswordReset: true,
       setIsPasswordReset: (isPasswordReset) => set({ isPasswordReset }),
       clearIsPasswordReset: () => set({ isPasswordReset: false }),
     }),

@@ -36,6 +36,8 @@ export default function SignUp() {
 
   // 🛒 Set default values from Zustand on load
   useEffect(() => {
+    console.log(firstName, "FirstName");
+
     setValue("firstName", firstName);
     setValue("lastName", lastName);
 
@@ -57,9 +59,7 @@ export default function SignUp() {
     await new Promise((resolve) => setTimeout(resolve, 500)); // Wait 2s
     if (token) {
       router.push("/steps-information");
-
     } else {
-
       router.push("/email-confirmation");
     }
   };

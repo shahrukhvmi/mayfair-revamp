@@ -66,7 +66,7 @@ const StepsHeader = ({ isOpen, toggleSidebar }) => {
     clearMedicalQuestions();
     clearConfirmationQuestions();
     clearToken();
-    setIsPasswordReset(false);
+    setIsPasswordReset(true);
     clearProductId();
     router.push("/login");
   };
@@ -87,7 +87,7 @@ const StepsHeader = ({ isOpen, toggleSidebar }) => {
       setShowLoader(false);
       closeLoginModal();
       router.push("/dashboard");
-      setIsPasswordReset(true);
+      setIsPasswordReset(false);
     },
     onError: (error) => {
       const errors = error?.response?.data?.errors;
@@ -170,7 +170,7 @@ const StepsHeader = ({ isOpen, toggleSidebar }) => {
               </>
             )}
 
-            {!pathname.startsWith("/login") && !token && (
+            {!pathname?.startsWith("/login") && !token && (
               <div className="w-1/2 items-center justify-end lg:w-[100%] sm:flex hidden">
                 <p className="hidden md:block text-black reg-font">Already have an account?</p>
                 <span
