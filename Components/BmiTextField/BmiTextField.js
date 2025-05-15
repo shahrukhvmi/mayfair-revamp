@@ -2,10 +2,10 @@ const BmiTextField = ({ required, label, name, type = "text", fieldProps = {}, e
   return (
     <div className="mb-4">
       {label && (
-        <label htmlFor={name} className="bold-font paragraph mb-2">
+        <label htmlFor={name} className="bold-font paragraph mb-2 relative">
           {label}
           {required ? (
-            <span className="text-red-500 absolute top-1 ms-1 niba-semibold-font"> *</span>
+            <span className="text-red-500 absolute m-1 niba-semibold-font"> *</span>
           ) : (
             <span className="text-gray-500 text-sm font-normal ml-1">(optional)</span>
           )}
