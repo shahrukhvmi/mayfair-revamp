@@ -41,7 +41,7 @@ const ProductCard = ({ id, title, image, price, status, buttonText, lastOrderDat
       console.log(data, "Dataaaaaaaaaa");
 
       if (data?.data?.data == null) {
-
+      
         console.log("true");
         clearBmi();
         clearCheckout();
@@ -59,8 +59,8 @@ const ProductCard = ({ id, title, image, price, status, buttonText, lastOrderDat
         setGpDetails(data?.data?.data?.gpdetails);
         setMedicalInfo(data?.data?.data?.medicalInfo);
         setPatientInfo(data?.data?.data?.patientInfo);
-        setShipping(data?.data?.data?.shipping);
-        setBilling(data?.data?.data?.billing);
+        setShipping(data?.data?.data?.billing);
+        setBilling(data?.data?.data?.shipping);
         setAuthUserDetail(data?.data?.data?.auth_user);
         setLastBmi(data?.data?.data?.bmi);
       }
@@ -88,11 +88,11 @@ const ProductCard = ({ id, title, image, price, status, buttonText, lastOrderDat
   });
 
   const handleClick = () => {
-    setProductId(id);
+      setProductId(id);
     setIsButtonLoading(true);
     const formData = {
       clinic_id: 1,
-      product_id: productId,
+      product_id: id,
     };
     consultationMutation.mutate(formData);
   };
