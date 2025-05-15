@@ -22,7 +22,7 @@ const ProductCard = ({ id, title, image, price, status, buttonText, lastOrderDat
   const router = useRouter();
   const { productId, setProductId } = useProductId();
   const { setReorder } = useReorder();
-  console.log(productId, "productId")
+  console.log(productId, "productId");
   const [isButtonLoading, setIsButtonLoading] = useState(false);
 
   const { setBmi, clearBmi } = useBmiStore();
@@ -41,7 +41,6 @@ const ProductCard = ({ id, title, image, price, status, buttonText, lastOrderDat
       console.log(data, "Dataaaaaaaaaa");
 
       if (data?.data?.data == null) {
-      
         console.log("true");
         clearBmi();
         clearCheckout();
@@ -59,8 +58,8 @@ const ProductCard = ({ id, title, image, price, status, buttonText, lastOrderDat
         setGpDetails(data?.data?.data?.gpdetails);
         setMedicalInfo(data?.data?.data?.medicalInfo);
         setPatientInfo(data?.data?.data?.patientInfo);
-        setShipping(data?.data?.data?.billing);
-        setBilling(data?.data?.data?.shipping);
+        setShipping(data?.data?.data?.shipping);
+        setBilling(data?.data?.data?.billing);
         setAuthUserDetail(data?.data?.data?.auth_user);
         setLastBmi(data?.data?.data?.bmi);
       }
@@ -72,8 +71,6 @@ const ProductCard = ({ id, title, image, price, status, buttonText, lastOrderDat
         setReorder(false);
         router.push("/acknowledgment");
       }
-
-
 
       setIsButtonLoading(false);
       return;
@@ -88,7 +85,7 @@ const ProductCard = ({ id, title, image, price, status, buttonText, lastOrderDat
   });
 
   const handleClick = () => {
-      setProductId(id);
+    setProductId(id);
     setIsButtonLoading(true);
     const formData = {
       clinic_id: 1,
@@ -128,7 +125,7 @@ const ProductCard = ({ id, title, image, price, status, buttonText, lastOrderDat
             src={image}
             alt={title}
             className="w-full p-5 h-52 object-contain"
-          // onError={(e) => (e.target.src = "/images/default.png")}
+            // onError={(e) => (e.target.src = "/images/default.png")}
           />
         </div>
 
