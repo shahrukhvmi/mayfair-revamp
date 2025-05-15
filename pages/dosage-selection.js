@@ -88,7 +88,7 @@ export default function DosageSelection() {
         item_id: dose.id,
         product: dose?.product_name || "Dose Product",
         product_concent: null,
-        label: dose?.name,
+        label: `${dose?.product_name} ${dose?.name}`,
         expiry: dose.expiry,
         isSelected: true,
       });
