@@ -214,6 +214,7 @@ export default function Billing({ billingCountries }) {
             label="Select Your Address"
             name="addressSelect"
             value={selectedIndex}
+            required
             onChange={(e) => {
               const idx = e.target.value;
               const selected = addressOptions[idx];

@@ -25,7 +25,7 @@ const OrderSummary = () => {
   const router = useRouter();
   const [discountCode, setDiscountCode] = useState("");
   // Get some data to store✌✌
-  const { items, totalAmount } = useCartStore();
+  const { items, totalAmount, setFinalTotal } = useCartStore();
   const { Coupon, setCoupon, clearCoupon } = useCouponStore();
   const { shipping, billing, billingSameAsShipping } = useShippingOrBillingStore();
 
@@ -94,7 +94,6 @@ const OrderSummary = () => {
     onSuccess: (data) => {
       if (data) {
         setPaymentData(data?.data?.paymentData);
-
       }
     },
     onError: (error) => {
@@ -157,6 +156,8 @@ const OrderSummary = () => {
         taggable_id: "1",
       },
     };
+
+    setFinalTotal(finalTotal);
 
     const formData = {
       checkout,
@@ -260,14 +261,12 @@ const OrderSummary = () => {
                     </div>
                   )}
                   <div className="flex justify-between items-center mt-4">
-                    <p className="bold-font paragraph !text-black">Shipping
-                      <span className="reg-font paragraph ms-2">
-                        ( {shipping?.country_name} )
-                      </span>
+                    <p className="bold-font paragraph !text-black">
+                      Shipping
+                      <span className="reg-font paragraph ms-2">( {shipping?.country_name} )</span>
                     </p>
                     <p className="bold-font text-black">£{shipping?.country_price}</p>
                   </div>
-
 
                   <hr className="my-4 border-gray-200" />
 
@@ -320,8 +319,9 @@ const OrderSummary = () => {
                           type="button"
                           onClick={handleApplyCoupon}
                           disabled={!isApplyEnabled}
-                          className={`cursor-pointer px-6 text-sm bold-font text-white transition-all duration-200 ${isApplyEnabled ? "bg-primary hover:bg-primary" : "bg-gray-300 cursor-not-allowed"
-                            }`}
+                          className={`cursor-pointer px-6 text-sm bold-font text-white transition-all duration-200 ${
+                            isApplyEnabled ? "bg-primary hover:bg-primary" : "bg-gray-300 cursor-not-allowed"
+                          }`}
                         >
                           {couponLoading ? "Applying..." : "Apply"}
                         </button>
