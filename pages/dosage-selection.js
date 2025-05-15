@@ -145,7 +145,7 @@ export default function DosageSelection() {
   }
   return (
     <>
-      <div className="top-[520px] fixed">
+      <div className="bottom-[100px] fixed">
 
         <BackButton label="Back" onClick={back} />
       </div>
