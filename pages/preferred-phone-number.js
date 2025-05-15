@@ -52,7 +52,11 @@ export default function SignUp() {
   return (
     <>
       <StepsHeader />
-      <FormWrapper heading={"Enter your phone number"} description={"Please provide an active phone number to ensure smooth delivery of your order."} percentage={"50"}>
+      <FormWrapper
+        heading={"Enter your phone number"}
+        description={"Please provide an active phone number to ensure smooth delivery of your order."}
+        percentage={"50"}
+      >
         <PageAnimationWrapper>
           <div>
             <div className={`relative ${showLoader ? "pointer-events-none cursor-not-allowed" : ""}`}>
@@ -62,7 +66,14 @@ export default function SignUp() {
                 <Controller
                   name="phoneNo"
                   control={control}
-                  rules={{ required: "Phone number is required" }}
+                  rules={{
+                    required: "Phone number is required",
+                    validate: (value) => {
+                      const onlyDigits = value?.replace(/\D/g, "");
+                      if (!onlyDigits || onlyDigits.length <= 5) return "Enter a valid phone number";
+                      return true;
+                    },
+                  }}
                   render={({ field }) => (
                     <div className="mb-4">
                       <label htmlFor="phoneNo" className="bold-font paragraph mb-2 relative">
@@ -75,12 +86,7 @@ export default function SignUp() {
           ${errors.phoneNo ? "border-red-500" : "border-black"}
         `}
                       >
-                        <PhoneInput
-                          {...field}
-                          country="gb"
-                          placeholder="Enter your number"
-                          inputStyle={{ border: "none", width: "100%" }} // remove PhoneInput own border
-                        />
+                        <PhoneInput {...field} country="gb" placeholder="Enter your number" inputStyle={{ border: "none", width: "100%" }} />
                       </div>
 
                       {errors.phoneNo && <p className="text-red-500 text-sm mt-1">{errors.phoneNo.message}</p>}

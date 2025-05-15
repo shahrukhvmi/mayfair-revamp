@@ -61,10 +61,6 @@ export default function GpDetail() {
     if (gpDetails === "yes" && gepTreatMent === "no") return true; // ✅ Allow next if patient will inform GP
 
     if (gpDetails === "yes" && gepTreatMent === "yes") {
-      // ✅ If manual is OFF, user must select from dropdown (which fills values)
-      if (!manual) return false;
-
-      // ✅ If manual is ON, check required fields
       return !!gpName?.trim() && !!addressLine1?.trim() && !!city?.trim() && !!state?.trim();
     }
 

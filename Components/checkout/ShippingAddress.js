@@ -219,7 +219,7 @@ export default function ShippingAddress({ isCompleted, onComplete }) {
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 mt-5">
           <TextField label="First Name" name="first_name" placeholder="Enter your first name" register={register} required errors={errors} />
-          <TextField label="Last Name" name="last_name" placeholder="Enter your last name" register={register} errors={errors} />
+          <TextField label="Last Name" name="last_name" placeholder="Enter your last name" register={register} required errors={errors} />
 
           <Controller
             name="shippingCountry"
@@ -290,6 +290,7 @@ export default function ShippingAddress({ isCompleted, onComplete }) {
               label="Select Your Address"
               name="addressSelect"
               value={selectedIndex}
+              required
               onChange={(e) => {
                 const idx = e.target.value;
                 const selected = addressOptions[idx];
