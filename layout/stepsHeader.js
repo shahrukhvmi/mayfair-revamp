@@ -165,12 +165,12 @@ const StepsHeader = ({ isOpen, toggleSidebar }) => {
                   </MenuItem>
                   <MenuItem
                     onClick={() => {
-                      router.push("/profile");
+                      router.push("/orders");
                       setAnchorEl(null);
                     }}
                     className="reg-font"
                   >
-                    My Profile
+                    My Orders
                   </MenuItem>
                   <MenuItem onClick={handleLogout} className="reg-font">
                     Logout

@@ -74,7 +74,7 @@ const PasswordChange = () => {
 
     return (
         <div className="p-6 sm:bg-[#F9FAFB] sm:min-h-screen sm:rounded-md sm:shadow-md my-5 sm:me-5">
-            <div className="max-w-2xl bg-[#ffff] p-5 rounded-md">
+            <div className="max-w-2xl p-5 rounded-md">
                 <h1 className="text-3xl bold-font headingDashBoard mb-2">Update Password</h1>
                 <p className="paragraph mb-6 reg-font">
                     Please create a strong password for your account.
