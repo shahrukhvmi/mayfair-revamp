@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { HiOutlinePencilAlt } from "react-icons/hi";
 import SectionHeader from "./SectionHeader";
 import { useRouter } from "next/router";
@@ -22,7 +22,7 @@ import { useMutation } from "@tanstack/react-query";
 import useSignupStore from "@/store/signupStore";
 import useProductId from "@/store/useProductIdStore";
 
-const OrderSummary = () => {
+const OrderSummary = ({ isConcentCheck }) => {
   const router = useRouter();
   const [discountCode, setDiscountCode] = useState("");
   // Get some data to store✌✌
@@ -44,6 +44,10 @@ const OrderSummary = () => {
   const [couponLoading, setCouponLoading] = useState(false);
   const [paymentData, setPaymentData] = useState(null);
   const [isButtonLoading, setIsButtonLoading] = useState(false);
+
+  useEffect(() => {
+    console.log(isConcentCheck);
+  });
 
   const handleApplyCoupon = async () => {
     setCouponLoading(true);
@@ -95,7 +99,7 @@ const OrderSummary = () => {
     onSuccess: (data) => {
       if (data) {
         setPaymentData(data?.data?.paymentData);
-        setOrderId(data?.data?.paymentData?.order_id)
+        setOrderId(data?.data?.paymentData?.order_id);
       }
     },
     onError: (error) => {
@@ -160,7 +164,6 @@ const OrderSummary = () => {
     };
 
     setFinalTotal(finalTotal);
-
 
     const formData = {
       checkout,
@@ -322,8 +325,9 @@ const OrderSummary = () => {
                           type="button"
                           onClick={handleApplyCoupon}
                           disabled={!isApplyEnabled}
-                          className={`cursor-pointer px-6 text-sm bold-font text-white transition-all duration-200 ${isApplyEnabled ? "bg-primary hover:bg-primary" : "bg-gray-300 cursor-not-allowed"
-                            }`}
+                          className={`cursor-pointer px-6 text-sm bold-font text-white transition-all duration-200 ${
+                            isApplyEnabled ? "bg-primary hover:bg-primary" : "bg-gray-300 cursor-not-allowed"
+                          }`}
                         >
                           {couponLoading ? "Applying..." : "Apply"}
                         </button>
@@ -345,7 +349,7 @@ const OrderSummary = () => {
                       />
                     </div>
                   ) : (
-                    <NextButton label="Proceed to Payment " onClick={handlePayment} />
+                    <NextButton disabled={!isConcentCheck} label="Proceed to Payment " onClick={handlePayment} />
                   )}
                 </div>
               </div>

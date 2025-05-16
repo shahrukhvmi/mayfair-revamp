@@ -1,11 +1,10 @@
-// components/PageTransitionEvent.jsx
 import { motion, AnimatePresence } from "framer-motion";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 
 const variants = {
   initial: {
-    x: 100, // coming from right
+    x: 100,
     opacity: 0,
   },
   animate: {
@@ -14,7 +13,7 @@ const variants = {
     transition: { duration: 0.5, ease: "easeInOut" },
   },
   exit: {
-    x: -100, // moving left
+    x: -100,
     opacity: 0,
     transition: { duration: 0.4, ease: "easeInOut" },
   },
@@ -23,10 +22,28 @@ const variants = {
 export default function PageAnimationWrapper({ children }) {
   const router = useRouter();
   const [currentRoute, setCurrentRoute] = useState(router.asPath);
+  const [isAnimationEnabled, setIsAnimationEnabled] = useState(true);
 
   useEffect(() => {
     setCurrentRoute(router.asPath);
   }, [router.asPath]);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsAnimationEnabled(window.innerWidth >= 500);
+    };
+
+    // Initial check
+    handleResize();
+
+    // Optional: Watch for resize
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  if (!isAnimationEnabled) {
+    return <div className="w-full">{children}</div>;
+  }
 
   return (
     <AnimatePresence mode="wait">
