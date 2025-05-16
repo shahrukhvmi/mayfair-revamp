@@ -21,6 +21,8 @@ const Checkout = () => {
 
   const [showThankYouModal, setShowThankYouModal] = useState(false);
 
+  const router = useRouter();
+
   const personalRef = useRef(null);
   const addressRef = useRef(null);
   const billingRef = useRef(null);
@@ -58,10 +60,19 @@ const Checkout = () => {
     setShowThankYouModal(true);
   };
 
+  const back = () => {
+    router.push("/dosage-selection");
+  };
+
   return (
     <>
       <StepsHeader />
-
+      <div className="bottom-[30px] fixed left-10 cursor-pointer py-2 rounded-full border-2 border-violet-700 sm:block hidden">
+        {/* <BackButton label="Back" onClick={back} className="mt-2 sm:block hidden " /> */}
+        <button label="Back" onClick={back} className="text-violet-700 reg-font px-6 cursor-pointer">
+          <span>Back</span>
+        </button>
+      </div>
       <AnimatePresence>
         {showThankYouModal && (
           <motion.div
@@ -104,11 +115,11 @@ const Checkout = () => {
           </p>
         </div>
 
-        {isPasswordReset && (
-          <div ref={personalRef}>
+        <div ref={personalRef} className={`${!isPasswordReset ? "cursor-not-allowed" : ""}`}>
+          <div className={`${!isPasswordReset ? "opacity-50 pointer-events-none" : ""}`}>
             <SetAPassword onComplete={goToNextStep} />
           </div>
-        )}
+        </div>
 
         <div ref={addressRef}>
           <ShippingAddress onComplete={goToNextStep} />

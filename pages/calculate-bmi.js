@@ -317,6 +317,7 @@ export default function CalculateBmi() {
                     setValue("heightIn", inch ? Math.round(inch) : "");
                   }
                   setHeightUnit(value);
+                  setHeightUnitKey(value);
                 } else {
                   if (value === "kg") {
                     const st = parseFloat(watch("weightSt")) || 0;
@@ -334,6 +335,7 @@ export default function CalculateBmi() {
                     setValue("weightLbs", lbs ? Math.round(lbs) : "");
                   }
                   setWeightUnit(value);
+                  setWeightUnitKey(value);
                 }
               }}
             />
