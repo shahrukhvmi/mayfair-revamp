@@ -187,11 +187,7 @@ export default function GpDetail() {
   return (
     <>
       <StepsHeader />
-      <FormWrapper
-        heading={"GP Details"}
-        description="If you are registered with a GP in the UK then we can inform them on your behalf."
-        percentage={"90"}
-      >
+      <FormWrapper heading={"GP Details"} description="" percentage={"90"}>
         <PageAnimationWrapper>
           <div className={`relative ${showLoader ? "pointer-events-none cursor-not-allowed" : ""}`}>
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
@@ -200,13 +196,15 @@ export default function GpDetail() {
                 {["yes", "no"].map((option) => (
                   <label
                     key={option}
-                    className={`cursor-pointer w-1/2 flex items-center gap-3 px-4 py-3 border rounded-lg text-black ${gpDetails === option ? "bg-[#F2EEFF] border-primary" : "border-gray-300 hover:bg-gray-50"
-                      }`}
+                    className={`cursor-pointer w-1/2 flex items-center gap-3 px-4 py-3 border rounded-lg text-black ${
+                      gpDetails === option ? "bg-[#F2EEFF] border-primary" : "border-gray-300 hover:bg-gray-50"
+                    }`}
                   >
                     <input type="radio" value={option} {...register("gpDetails", { required: true })} className="hidden" />
                     <div
-                      className={`w-5 h-5 rounded-sm flex items-center justify-center border ${gpDetails === option ? "bg-primary border-[#47317c] text-white" : "border-gray-400"
-                        }`}
+                      className={`w-5 h-5 rounded-sm flex items-center justify-center border ${
+                        gpDetails === option ? "bg-primary border-[#47317c] text-white" : "border-gray-400"
+                      }`}
                     >
                       {gpDetails === option && <FiCheck />}
                     </div>
@@ -224,7 +222,8 @@ export default function GpDetail() {
 
               {gpDetails === "yes" && (
                 <>
-                  <p className="text-gray-500 mt-6">Do you consent for us to inform your GP about the treatment?</p>
+                  <p className="text-gray-500 mt-6 mb-3">If you are registered with a GP in the UK then we can inform them on your behalf.</p>
+                  <p className="text-gray-500 mt-0">Do you consent for us to inform your GP about the treatment?</p>
                   <div className="mt-4 flex flex-col sm:flex-row sm:gap-4">
                     {[
                       { value: "yes", label: "Yes – Please inform my GP" },
@@ -232,22 +231,15 @@ export default function GpDetail() {
                     ].map((option) => (
                       <label
                         key={option.value}
-                        className={`cursor-pointer flex-1 flex items-center gap-3 px-4 sm:my-0 my-2 py-3 border rounded-lg text-black ${gepTreatMent === option.value
-                          ? "bg-[#F2EEFF] border-[#47317c]"
-                          : "border-gray-300 hover:bg-gray-50"
-                          }`}
+                        className={`cursor-pointer flex-1 flex items-center gap-3 px-4 sm:my-0 my-2 py-3 border rounded-lg text-black ${
+                          gepTreatMent === option.value ? "bg-[#F2EEFF] border-[#47317c]" : "border-gray-300 hover:bg-gray-50"
+                        }`}
                       >
-                        <input
-                          type="radio"
-                          value={option.value}
-                          {...register("gepTreatMent", { required: true })}
-                          className="hidden"
-                        />
+                        <input type="radio" value={option.value} {...register("gepTreatMent", { required: true })} className="hidden" />
                         <div
-                          className={`min-w-5 h-5 rounded-sm flex items-center justify-center border ${gepTreatMent === option.value
-                              ? "bg-primary border-[#47317c] text-white"
-                              : "border-gray-400"
-                            }`}
+                          className={`min-w-5 h-5 rounded-sm flex items-center justify-center border ${
+                            gepTreatMent === option.value ? "bg-primary border-[#47317c] text-white" : "border-gray-400"
+                          }`}
                         >
                           {gepTreatMent === option.value && <FiCheck size={16} />}
                         </div>
@@ -256,17 +248,12 @@ export default function GpDetail() {
                       </label>
                     ))}
                   </div>
-
                 </>
               )}
 
               {gpDetails === "yes" && gepTreatMent === "yes" && (
                 <>
-                  <TextField 
-                  label="Email"
-                   name="email" 
-                   placeholder="Email"
-                    register={register} errors={errors} />
+                  <TextField label="Email" name="email" placeholder="Email" register={register} errors={errors} />
 
                   <div className="relative">
                     <TextField label="Postal Code" name="postalCode" placeholder="W1A 1AA" register={register} required errors={errors} />
@@ -335,7 +322,7 @@ export default function GpDetail() {
                       <TextField label="Address 1" name="addressLine1" placeholder="123 Main Street" register={register} required errors={errors} />
                       <TextField label="Address 2" name="addressLine2" placeholder="Flat 14" register={register} errors={errors} />
                       <TextField label="City" name="city" placeholder="London" register={register} required errors={errors} />
-                      <TextField label="State" name="state" placeholder="Essex" register={register} required errors={errors} />
+                      <TextField label="County" name="state" placeholder="Essex" register={register} required errors={errors} />
                     </div>
                   )}
                 </>

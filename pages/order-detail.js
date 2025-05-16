@@ -208,15 +208,14 @@ const OrderDetail = () => {
 
               {/* Table Body */}
               <TableBody>
-                  {/* // ?.filter((product) => product.name.includes("mg")) */}
-                {products
-                  ?.map((product) => (
-                    <TableRow key={product.id} className="hover:bg-gray-50">
-                      <TableCell className="text-gray-800 capitalize py-3">{product.label}</TableCell>
-                      <TableCell className="text-gray-800 py-3">{product.quantity}</TableCell>
-                      <TableCell className="text-gray-800 py-3">£{(parseFloat(product.price) * product.quantity).toFixed(2)}</TableCell>
-                    </TableRow>
-                  ))}
+                {/* // ?.filter((product) => product.name.includes("mg")) */}
+                {products?.map((product) => (
+                  <TableRow key={product.id} className="hover:bg-gray-50">
+                    <TableCell className="text-gray-800 capitalize py-3">{product.label}</TableCell>
+                    <TableCell className="text-gray-800 py-3">{product.quantity}</TableCell>
+                    <TableCell className="text-gray-800 py-3">£{(parseFloat(product.price) * product.quantity).toFixed(2)}</TableCell>
+                  </TableRow>
+                ))}
 
                 <TableRow className="hover:bg-gray-50">
                   <TableCell className="text-gray-800 py-3">Shipping Fee</TableCell>
@@ -302,7 +301,7 @@ const OrderDetail = () => {
                   </TableCell>
                 </TableRow>
                 <TableRow>
-                  <TableCell className="reg-font  paragraph">State</TableCell>
+                  <TableCell className="reg-font  paragraph">County</TableCell>
                   <TableCell className="reg-font  text-[#1C1C29] capitalize">
                     {gpDetails?.state || "N/A"}
                     {/* {gpDetails.addresstwo ? gpDetails?.addresstwo : "N/A"} */}
@@ -358,7 +357,7 @@ const OrderDetail = () => {
                   <TableCell className="reg-font  text-[#1C1C29] capitalize">{shippingData?.city ? shippingData?.city : "N/A"}</TableCell>
                 </TableRow>
                 <TableRow>
-                  <TableCell className="reg-font  paragraph">State / Province / Region:</TableCell>
+                  <TableCell className="reg-font  paragraph">County / Province / Region:</TableCell>
                   <TableCell className="reg-font  text-[#1C1C29] capitalize">{shippingData?.state ? shippingData?.state : "N/A"}</TableCell>
                 </TableRow>
                 <TableRow>

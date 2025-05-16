@@ -256,7 +256,7 @@ export default function Shipping({ shipmentCountries }) {
           <TextField label="Address 1" name="addressone" placeholder="123 Main Street" register={register} required errors={errors} />
           <TextField label="Address 2" name="addresstwo" placeholder="Flat 14" register={register} errors={errors} />
           <TextField label="City" name="city" placeholder="e.g., London" register={register} required errors={errors} />
-          <TextField label="State" name="state" placeholder="e.g., Essex" register={register} required errors={errors} />
+          <TextField label="County" name="state" placeholder="e.g., Essex" register={register} required errors={errors} />
 
           <NextButton label="Continue" disabled={!isValid} />
         </form>

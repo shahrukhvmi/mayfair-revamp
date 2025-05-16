@@ -11,6 +11,7 @@ import useCartStore from "@/store/useCartStore";
 import toast from "react-hot-toast";
 import { motion, AnimatePresence } from "framer-motion";
 import BackButton from "@/Components/BackButton/BackButton";
+import { IoIosArrowBack } from "react-icons/io";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 
@@ -30,7 +31,6 @@ export default function DosageSelection() {
   // Variation From zustand
   const { variation } = useVariationStore();
 
-
   const allowed = variation?.allowed;
   const [showDoseModal, setShowDoseModal] = useState(false);
   const [selectedDose, setSelectedDose] = useState(null);
@@ -45,8 +45,7 @@ export default function DosageSelection() {
   // ✅ Put here → outside your component or at the top inside your component file
   const generateProductConcent = (variations, selectedDoseName) => {
     const sortedVariations = [...variations].sort((a, b) => {
-
-      console.log(a, b, "sfkjefjfsj")
+      console.log(a, b, "sfkjefjfsj");
       const aMg = parseFloat(a.name);
       const bMg = parseFloat(b.name);
       return aMg - bMg;
@@ -141,14 +140,15 @@ export default function DosageSelection() {
     });
   };
   const back = () => {
-    router.push("/confirmation-summary")
-
-  }
+    router.push("/confirmation-summary");
+  };
   return (
     <>
-      <div className="bottom-[100px] fixed">
-
-        <BackButton label="Back" onClick={back} className="mt-2 sm:block hidden" />
+      <div className="bottom-[100px] fixed left-10 cursor-pointer py-2 rounded-full border-2 border-violet-700 sm:block hidden">
+        {/* <BackButton label="Back" onClick={back} className="mt-2 sm:block hidden " /> */}
+        <button label="Back" onClick={back} className="text-violet-700 reg-font px-6 cursor-pointer">
+          <span>Back</span>
+        </button>
       </div>
       <AnimatePresence>
         {showDoseModal && selectedDose && (
@@ -203,11 +203,8 @@ export default function DosageSelection() {
                     <div className="p-6">
                       <h2 className="text-2xl mb-2 bold-font text-gray-800">{variation?.name}</h2>
                       {variation?.name === "Mounjaro (Tirzepatide)" && (
-
-                        <p className="text-sm text-gray-500 thin-font mb-2">Pack of 5 Needles is included with every dose
-                        </p>
-                      )
-                      }
+                        <p className="text-sm text-gray-500 thin-font mb-2">Pack of 5 Needles is included with every dose</p>
+                      )}
                       <span className="bold-font text-black">From £{variation?.price}</span>
                       {/* <div
                         className="reg-font text-gray-600 bg-red-50  p-3 rounded-md text-sm"
@@ -283,7 +280,6 @@ export default function DosageSelection() {
                           })}
                       </>
                     )}
-
                   </div>
                 </div>
               </div>
@@ -296,16 +292,11 @@ export default function DosageSelection() {
         <div className="max-w-xl mx-auto flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           {/* Product Info */}
           <div className="flex items-start sm:items-center space-x-3 me-5">
-            <img
-              src={variation?.img}
-              alt={variation?.name}
-              className="w-10 h-10 rounded-md object-contain"
-            />
+            <img src={variation?.img} alt={variation?.name} className="w-10 h-10 rounded-md object-contain" />
             <div className="text-black leading-tight">
               <div className="text-lg bold-font">{variation?.name}</div>
               <div className="text-lg bold-font">
-                <span className="me-2 sm:text-lg text-md reg-font paragraph">Order total</span>
-                £{parseFloat(totalAmount)?.toFixed(2)}
+                <span className="me-2 sm:text-lg text-md reg-font paragraph">Order total</span>£{parseFloat(totalAmount)?.toFixed(2)}
               </div>
             </div>
           </div>
@@ -337,7 +328,6 @@ export default function DosageSelection() {
           </div>
         </div>
       </div>
-
     </>
   );
 }

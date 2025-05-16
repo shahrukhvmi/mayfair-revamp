@@ -183,7 +183,7 @@ export default function ResidentialAddress() {
                       <TextField label="Address 1" name="address1" placeholder="123 Main Street" register={register} required errors={errors} />
                       <TextField label="Address 2" name="address2" placeholder="Flat 14" register={register} errors={errors} />
                       <TextField label="City" name="city" placeholder="e.g., London" register={register} required errors={errors} />
-                      <TextField label="State" name="state" placeholder="Essex" register={register} required errors={errors} />
+                      <TextField label="County" name="state" placeholder="Essex" register={register} required errors={errors} />
                     </div>
                   )}
                 </div>
