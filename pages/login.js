@@ -53,6 +53,7 @@ export default function LoginScreen() {
         setToken(user?.token);
         setFirstName(user?.fname);
         setLastName(user?.lname);
+        setEmail(user?.lname);
         toast.success("Login Successfully");
         Fetcher.axiosSetup.defaults.headers.common.Authorization = `Bearer ${user.token}`;
         setShowLoader(false);
@@ -98,7 +99,6 @@ export default function LoginScreen() {
     loginMutation.mutate(formData);
   };
 
-
   return (
     <>
       <StepsHeader />
@@ -126,8 +126,10 @@ export default function LoginScreen() {
                 <TextField label="Password" name="password" placeholder="Password" type="password" register={register} required errors={errors} />
                 <NextButton label="Login" disabled={!isValid} type="submit" className="mb-5" />
                 <p className="reg-font text-black text-sm text-center">
-
-                  Are you a new patient? <Link href={"/acknowledgment"} className="text-primary underline">Get started with the consultation</Link>
+                  Are you a new patient?{" "}
+                  <Link href={"/acknowledgment"} className="text-primary underline">
+                    Get started with the consultation
+                  </Link>
                 </p>
                 {/* <BackButton onClick={startConsultation} label="Are you a new patient? Get started with the consultation." /> */}
                 <BackButton onClick={openLoginModal} label="Forgot password" />
@@ -159,6 +161,7 @@ export default function LoginScreen() {
             setToken(user?.token);
             setFirstName(user?.fname);
             setLastName(user?.lname);
+            setEmail(user?.email);
             toast.success("Login Successfully");
 
             Fetcher.axiosSetup.defaults.headers.common.Authorization = `Bearer ${user.token}`;

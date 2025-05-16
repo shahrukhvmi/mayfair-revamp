@@ -298,6 +298,7 @@ export default function CalculateBmi() {
                     const ft = parseFloat(watch("heightFt")) || 0;
                     const inch = parseFloat(watch("heightIn")) || 0;
                     const cm = ft * 30.48 + inch * 2.54;
+                    console.log(cm, "cm value in tabs saving in hidden before round If metric");
                     setValue("hiddenCm", cm);
                     setValue("heightCm", cm ? Math.round(cm) : "");
                   } else {
@@ -305,6 +306,7 @@ export default function CalculateBmi() {
                     const totalInches = cm / 2.54;
                     const ft = Math.floor(totalInches / 12);
                     const inch = totalInches % 12;
+                    console.log(cm, "cm value in tabs saving in hidden before round If imperial");
                     setValue("hiddenCm", cm);
                     setValue("heightFt", ft ? Math.round(ft) : "");
                     setValue("heightIn", inch ? Math.round(inch) : "");

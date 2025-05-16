@@ -27,12 +27,13 @@ import { usePathname } from "next/navigation";
 import useProductId from "@/store/useProductIdStore";
 import { Menu, MenuItem } from "@mui/material";
 import { IoIosArrowDown } from "react-icons/io";
+import useLastBmi from "@/store/useLastBmiStore";
+import useUserDataStore from "@/store/userDataStore";
 
 const StepsHeader = ({ isOpen, toggleSidebar }) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const { showLoginModal, closeLoginModal, openLoginModal } = useLoginModalStore();
 
-  const { firstName, setEmail } = useSignupStore();
   const [showLoader, setShowLoader] = useState(false);
 
   const { clearBmi } = useBmiStore();
@@ -47,6 +48,9 @@ const StepsHeader = ({ isOpen, toggleSidebar }) => {
   const { token, clearToken, setToken } = useAuthStore();
   const { clearShipping, clearBilling } = useShippingOrBillingStore();
   const { clearProductId } = useProductId();
+  const { clearLastBmi } = useLastBmi();
+  const { clearUserData } = useUserDataStore();
+  const { firstName, setFirstName, setLastName, setEmail, clearFirstName, clearLastName, clearEmail, clearConfirmationEmail } = useSignupStore();
   const pathname = usePathname();
 
   const router = useRouter();
@@ -68,24 +72,30 @@ const StepsHeader = ({ isOpen, toggleSidebar }) => {
     clearToken();
     setIsPasswordReset(true);
     clearProductId();
+    clearLastBmi();
+    clearUserData();
+    clearFirstName();
+    clearLastName();
+    clearEmail();
+    clearConfirmationEmail();
     router.push("/login");
   };
 
   const validPathDashboard =
-    pathname === "/dashboard/" ||
-    pathname === "/profile/" ||
-    pathname === "/orders/" ||
-    pathname === "/address/" ||
-    pathname === "/change-password/";
+    pathname === "/dashboard/" || pathname === "/profile/" || pathname === "/orders/" || pathname === "/address/" || pathname === "/change-password/";
 
   const loginMutation = useMutation(Login, {
     onSuccess: (data) => {
       const user = data?.data?.data;
+      console.log(data?.data?.data, "data?.data?.data");
       setToken(user.token);
       toast.success("Login Successfully");
       Fetcher.axiosSetup.defaults.headers.common.Authorization = `Bearer ${user.token}`;
       setShowLoader(false);
       closeLoginModal();
+      setFirstName(data?.data?.data?.fname);
+      setLastName(data?.data?.data?.lname);
+      setEmail(data?.data?.data?.email);
       router.push("/dashboard");
       setIsPasswordReset(false);
     },
@@ -109,12 +119,11 @@ const StepsHeader = ({ isOpen, toggleSidebar }) => {
       <header className="bg-white w-full py-2 sm:px-14 px-4">
         <div className="sm:px-6 lg:px-6 flex items-center justify-between py-2">
           {/* Hamburger (Mobile) */}
-          {validPathDashboard &&
-
+          {validPathDashboard && (
             <button onClick={toggleSidebar} className="text-2xl text-violet-700 sm:hidden">
               {isOpen ? <FiX /> : <FiMenu />}
             </button>
-          }
+          )}
 
           {/* Logo */}
           <div className="w-32 sm:w-40">
@@ -127,16 +136,13 @@ const StepsHeader = ({ isOpen, toggleSidebar }) => {
           <div className="relative">
             {token && (
               <>
-                <div
-                  className="flex items-center space-x-2 cursor-pointer"
-                  onClick={(e) => setAnchorEl(e.currentTarget)}
-                >
+                <div className="flex items-center space-x-2 cursor-pointer" onClick={(e) => setAnchorEl(e.currentTarget)}>
                   <ApplicationUser className="w-10 h-10 rounded-full" />
                   <span className="reg-font text-[#1C1C29] truncate">{firstName ?? ""}</span>
                   <IoIosArrowDown
-                    className={`text-gray-700 transform transition-transform duration-200 ${Boolean(anchorEl) ? "rotate-180" : ""
-                      }`}
-                    size={20} />
+                    className={`text-gray-700 transform transition-transform duration-200 ${Boolean(anchorEl) ? "rotate-180" : ""}`}
+                    size={20}
+                  />
                 </div>
 
                 <Menu
@@ -161,11 +167,13 @@ const StepsHeader = ({ isOpen, toggleSidebar }) => {
                       router.push("/profile");
                       setAnchorEl(null);
                     }}
-                     className="reg-font"
+                    className="reg-font"
                   >
                     My Profile
                   </MenuItem>
-                  <MenuItem onClick={handleLogout}  className="reg-font">Logout</MenuItem>
+                  <MenuItem onClick={handleLogout} className="reg-font">
+                    Logout
+                  </MenuItem>
                 </Menu>
               </>
             )}
