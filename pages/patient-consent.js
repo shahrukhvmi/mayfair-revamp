@@ -99,18 +99,18 @@ export default function PatientConsent() {
                         />
                         <label htmlFor={`question-${q.id}`} className="flex items-start gap-2 cursor-pointer">
                           {selectedAnswer ? (
-                            <FaDotCircle className="text-primary w-9 h-9 mt-1" />
+                            <FaDotCircle  className="text-primary sm:w-9 w-14 h-14 sm:h-9 mt-1" />
                           ) : (
-                            <FaRegCircle className="text-violet-700 w-9 h-9 mt-1" />
+                            <FaRegCircle className="text-violet-700 sm:w-9 sm:h-9 w-14 h-14 mt-1" />
                           )}
-                          <span className="bold-font text-gray-700">{q.question}</span>
+                          <span className="bold-font text-gray-700 sm:text-lg text-sm">{q.question}</span>
                         </label>
                       </div>
 
                       {/* Checklist (if exists) */}
                       {q.checklist && (
                         <div
-                          className="list-disc list-outside pl-5 text-sm text-gray-700 space-y-2 reg-font paragraph [&>ul]:list-disc [&>ul]:ml-6 [&>li]:mt-0.5"
+                          className="list-disc list-outside sm:pl-5 text-sm text-gray-700 space-y-2 reg-font paragraph [&>ul]:list-disc [&>ul]:ml-6 [&>li]:mt-0.5"
                           dangerouslySetInnerHTML={{ __html: q.checklist }}
                         ></div>
                       )}

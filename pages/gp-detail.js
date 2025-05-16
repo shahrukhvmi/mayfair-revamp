@@ -200,15 +200,13 @@ export default function GpDetail() {
                 {["yes", "no"].map((option) => (
                   <label
                     key={option}
-                    className={`cursor-pointer w-1/2 flex items-center gap-3 px-4 py-3 border rounded-lg text-black ${
-                      gpDetails === option ? "bg-[#F2EEFF] border-primary" : "border-gray-300 hover:bg-gray-50"
-                    }`}
+                    className={`cursor-pointer w-1/2 flex items-center gap-3 px-4 py-3 border rounded-lg text-black ${gpDetails === option ? "bg-[#F2EEFF] border-primary" : "border-gray-300 hover:bg-gray-50"
+                      }`}
                   >
                     <input type="radio" value={option} {...register("gpDetails", { required: true })} className="hidden" />
                     <div
-                      className={`w-5 h-5 rounded-sm flex items-center justify-center border ${
-                        gpDetails === option ? "bg-primary border-violet-700 text-white" : "border-gray-400"
-                      }`}
+                      className={`w-5 h-5 rounded-sm flex items-center justify-center border ${gpDetails === option ? "bg-primary border-[#47317c] text-white" : "border-gray-400"
+                        }`}
                     >
                       {gpDetails === option && <FiCheck />}
                     </div>
@@ -227,35 +225,48 @@ export default function GpDetail() {
               {gpDetails === "yes" && (
                 <>
                   <p className="text-gray-500 mt-6">Do you consent for us to inform your GP about the treatment?</p>
-                  <div className="mt-4 gap-2">
+                  <div className="mt-4 flex flex-col sm:flex-row sm:gap-4">
                     {[
                       { value: "yes", label: "Yes – Please inform my GP" },
                       { value: "no", label: "No – I will inform my GP prior to starting treatment" },
                     ].map((option) => (
                       <label
                         key={option.value}
-                        className={`cursor-pointer w-full flex items-center gap-3 px-4 py-4 border rounded-lg mb-4 text-black ${
-                          gepTreatMent === option.value ? "bg-[#F2EEFF] border-violet-700" : "border-gray-300 hover:bg-gray-50"
-                        }`}
-                      >
-                        <input type="radio" value={option.value} {...register("gepTreatMent", { required: true })} className="hidden" />
-                        <div
-                          className={`w-5 h-5 rounded-sm flex items-center justify-center border ${
-                            gepTreatMent === option.value ? "bg-primary border-violet-700 text-white" : "border-gray-400"
+                        className={`cursor-pointer flex-1 flex items-center gap-3 px-4 sm:my-0 my-2 py-3 border rounded-lg text-black ${gepTreatMent === option.value
+                          ? "bg-[#F2EEFF] border-[#47317c]"
+                          : "border-gray-300 hover:bg-gray-50"
                           }`}
+                      >
+                        <input
+                          type="radio"
+                          value={option.value}
+                          {...register("gepTreatMent", { required: true })}
+                          className="hidden"
+                        />
+                        <div
+                          className={`min-w-5 h-5 rounded-sm flex items-center justify-center border ${gepTreatMent === option.value
+                              ? "bg-primary border-[#47317c] text-white"
+                              : "border-gray-400"
+                            }`}
                         >
-                          {gepTreatMent === option.value && <FiCheck />}
+                          {gepTreatMent === option.value && <FiCheck size={16} />}
                         </div>
-                        {option.label}
+
+                        <span className="text-sm">{option.label}</span>
                       </label>
                     ))}
                   </div>
+
                 </>
               )}
 
               {gpDetails === "yes" && gepTreatMent === "yes" && (
                 <>
-                  <TextField label="Email" name="email" placeholder="Email" register={register} errors={errors} />
+                  <TextField 
+                  label="Email"
+                   name="email" 
+                   placeholder="Email"
+                    register={register} errors={errors} />
 
                   <div className="relative">
                     <TextField label="Postal Code" name="postalCode" placeholder="W1A 1AA" register={register} required errors={errors} />

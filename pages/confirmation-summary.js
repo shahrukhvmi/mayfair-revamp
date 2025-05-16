@@ -139,7 +139,8 @@ const ConfirmationSummary = () => {
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-2 gap-x-8">
                 <p className="bold-font text-black">
-                  <span className="bold-font paragraph">Postal Code:</span> {patientInfo?.address?.postalcode}
+                  <span className="bold-font paragraph">Postal Code:</span> 
+                  {patientInfo?.address?.postalcode}
                 </p>
                 <p className="bold-font text-black">
                   <span className="bold-font paragraph">Date of Birth:</span> {patientInfo?.dob}

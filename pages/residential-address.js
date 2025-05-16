@@ -59,7 +59,7 @@ export default function ResidentialAddress() {
     setAddressSearchLoading(true);
     const postal = watch("postalCode");
     if (!postal) {
-      alert("Please enter a postal code.");
+      // alert("Please enter a postal code.");
       setAddressSearchLoading(false);
     }
 
@@ -171,7 +171,7 @@ export default function ResidentialAddress() {
                     />
                   )}
 
-                  <div className="text-sm text-right">
+                  <div className="text-sm sm:text-right text-center">
                     <button type="button" onClick={() => setManual(!manual)} className="bold-font paragraph underline transition cursor-pointer">
                       {manual ? "Hide manual address entry" : "Enter your address manually"}
                     </button>

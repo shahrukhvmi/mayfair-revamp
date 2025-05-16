@@ -30,7 +30,6 @@ export default function DosageSelection() {
   // Variation From zustand
   const { variation } = useVariationStore();
 
-  console.log(variation?.variations, "variation");
 
   const allowed = variation?.allowed;
   const [showDoseModal, setShowDoseModal] = useState(false);
@@ -47,7 +46,7 @@ export default function DosageSelection() {
   const generateProductConcent = (variations, selectedDoseName) => {
     const sortedVariations = [...variations].sort((a, b) => {
 
-      console.log(a,b,"sfkjefjfsj")
+      console.log(a, b, "sfkjefjfsj")
       const aMg = parseFloat(a.name);
       const bMg = parseFloat(b.name);
       return aMg - bMg;

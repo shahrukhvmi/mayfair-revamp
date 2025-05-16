@@ -20,6 +20,7 @@ import PaymentPage from "../PaymentSection/PaymentPage";
 import sendStepData from "@/api/stepsDataApi";
 import { useMutation } from "@tanstack/react-query";
 import useSignupStore from "@/store/signupStore";
+import useProductId from "@/store/useProductIdStore";
 
 const OrderSummary = () => {
   const router = useRouter();
@@ -35,7 +36,7 @@ const OrderSummary = () => {
   const { bmi } = useBmiStore();
   const { confirmationInfo } = useConfirmationInfoStore();
   const { email } = useSignupStore();
-
+  const { productId } = useProductId();
   const isApplyEnabled = discountCode.trim().length > 0;
   const handleEdit = () => {
     router.push("dosage-selection");
@@ -172,13 +173,13 @@ const OrderSummary = () => {
         ...a,
         quantity: a.quantity || a.qty || 1,
       })),
-      pid: 1,
+      pid: productId,
       medicalInfo,
       gpdetails,
       bmi,
       confirmationInfo,
       reorder_concent: null,
-      product_id: 1,
+      product_id: productId,
     };
 
     checkoutMutation.mutate(formData);

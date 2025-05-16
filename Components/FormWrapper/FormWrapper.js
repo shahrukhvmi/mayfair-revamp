@@ -10,7 +10,7 @@ const FormWrapper = ({ children, width = "", heading = "", description = "", per
           {/* ✅ Move ProgressBar inside the card */}
           <ProgressBar percentage={percentage} />
 
-          <div className="px-8 pt-6 pb-6">
+          <div className="px-4 sm:px-8 pt-6 pb-6">
             {/* Title */}
             <h1 className="niba-reg-font heading mb-2">{heading}</h1>
 

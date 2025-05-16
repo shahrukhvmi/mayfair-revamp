@@ -11,7 +11,7 @@ const PaymentPage = ({ paymentData }) => {
       setCountdown((prev) => {
         if (prev <= 1) {
           localStorage.removeItem("p_id");
-          document.getElementById("process-payment-form").submit();
+          // document.getElementById("process-payment-form").submit();
           return 0;
         }
         setTimeout(updateCountdown, 1000);
