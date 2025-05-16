@@ -13,6 +13,11 @@ const useSignupStore = create(
       setLastName: (lastName) => set({ lastName }),
       setEmail: (email) => set({ email }),
       setConfirmationEmail: (confirmationEmail) => set({ confirmationEmail }),
+
+      clearFirstName: () => set({ firstName: null }),
+      clearLastName: () => set({ lastName: null }),
+      clearEmail: () => set({ email: null }),
+      clearConfirmationEmail: () => set({ confirmationEmail: null }),
     }),
     {
       name: "signup-storage", // Storage key

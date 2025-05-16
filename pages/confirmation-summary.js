@@ -40,7 +40,7 @@ const ConfirmationSummary = () => {
 
   const stepsDataMutation = useMutation(sendStepData, {
     onSuccess: (data) => {
-      console.log(data, "Medical Questions");
+      console.log(data, "dataaaaaaaaaaaaaa");
 
       if (data?.data?.lastConsultation) {
         console.log(data?.data?.lastConsultation?.fields, "data?.data?.data");
