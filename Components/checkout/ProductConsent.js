@@ -5,7 +5,7 @@ import SectionWrapper from "./SectionWrapper";
 import SectionHeader from "./SectionHeader";
 import NextButton from "../NextButton/NextButton";
 
-const ProductConsent = ({ isCompleted, onComplete, onConsentChange }) => {
+const ProductConsent = ({ isCompleted, onComplete, onConsentChange, setIsConcentCheck }) => {
   const [isValid, setIsValid] = useState();
   const [isChecked, setIsChecked] = useState(false);
 
@@ -15,6 +15,8 @@ const ProductConsent = ({ isCompleted, onComplete, onConsentChange }) => {
 
   useEffect(() => {
     setIsValid(isChecked);
+    console.log(isValid, "isValid");
+    setIsConcentCheck(isChecked);
   }, [isChecked]);
 
   return (
@@ -71,7 +73,9 @@ const ProductConsent = ({ isCompleted, onComplete, onConsentChange }) => {
             </div>
 
             {/* Checkbox Label */}
-            <span className="leading-snug bold-font paragraph">I confirm that I have read, understood and accepted all of the above information.</span>
+            <span className="leading-snug bold-font paragraph">
+              I confirm that I have read, understood and accepted all of the above information.
+            </span>
           </label>
 
           {/* Error Message */}

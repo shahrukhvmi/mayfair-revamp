@@ -17,6 +17,7 @@ const inter = Inter({ subsets: ["latin"] });
 const Checkout = () => {
   const { isPasswordReset } = usePasswordReset();
   const { billingSameAsShipping } = useShippingOrBillingStore();
+  const [isConcentCheck, setIsConcentCheck] = useState(false);
 
   const [showThankYouModal, setShowThankYouModal] = useState(false);
 
@@ -120,11 +121,11 @@ const Checkout = () => {
         )}
 
         <div ref={paymentRef}>
-          <ProductConsent onComplete={goToNextStep} />
+          <ProductConsent onComplete={goToNextStep} setIsConcentCheck={setIsConcentCheck} />
         </div>
 
         <div ref={summaryRef}>
-          <OrderSummary />
+          <OrderSummary isConcentCheck={isConcentCheck} />
         </div>
       </div>
     </>

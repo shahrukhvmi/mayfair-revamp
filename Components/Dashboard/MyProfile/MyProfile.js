@@ -13,7 +13,7 @@ import NextButton from "@/Components/NextButton/NextButton";
 
 const MyProfile = () => {
   const [userEmail, setUserEmail] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [isLoading, setLoading] = useState(false);
 
   const {
     register,
@@ -36,6 +36,7 @@ const MyProfile = () => {
   // GET Profile
   const getProfileDataMutation = useMutation(getProfileData, {
     onSuccess: (res) => {
+      console.log(res, "res res res");
       const user = res?.data?.profile?.user;
       if (user) {
         console.log(user);
@@ -83,8 +84,6 @@ const MyProfile = () => {
   return (
     <div className="p-6 sm:bg-[#F9FAFB] sm:min-h-screen sm:rounded-md sm:shadow-md my-5 sm:me-5">
       <div className="mb-8">
-
-
         <h1 className="md:text-3xl text-lg mb-2 niba-bold-font heading">Profile Information</h1>
         <p className="reg-font paragraph  text-left text-sm xl:w-3/4 mt-2">Update your account's profile information and email address.</p>
       </div>
@@ -100,14 +99,15 @@ const MyProfile = () => {
         {/* Gender & DOB */}
         <div className="grid sm:grid-cols-2 gap-4 items-start">
           <div>
-            <label className="bold-font paragraph mb-2 relative">Gender
-              <span className="text-red-500 absolute m-1 niba-semibold-font"> *</span></label>
+            <label className="bold-font paragraph mb-2 relative">
+              Gender
+              <span className="text-red-500 absolute m-1 niba-semibold-font"> *</span>
+            </label>
             <FormControl fullWidth error={!!errors.gender}>
               <Controller
                 name="gender"
                 control={control}
                 rules={{ required: "Gender is required" }}
-
                 render={({ field }) => (
                   <Select
                     {...field}
@@ -133,8 +133,10 @@ const MyProfile = () => {
           </div>
 
           <div>
-            <label className="bold-font paragraph mb-2 relative">Date of Birth
-              <span className="text-red-500 absolute  m-1 niba-semibold-font"> *</span></label>
+            <label className="bold-font paragraph mb-2 relative">
+              Date of Birth
+              <span className="text-red-500 absolute  m-1 niba-semibold-font"> *</span>
+            </label>
             <MuiDatePickerField
               name="dob"
               //   label="Date of Birth"
@@ -159,8 +161,9 @@ const MyProfile = () => {
               rules={{ required: "Phone number is required" }}
               render={({ field }) => (
                 <div
-                  className={`w-full text-black px-3 py-3 border rounded-sm placeholder-gray-400 focus-within:ring-2 focus-within:ring-violet-300 focus-within:border-violet-800 ${errors.phoneNumber ? "border-red-500" : "border-gray-400"
-                    }`}
+                  className={`w-full text-black px-3 py-3 border rounded-sm placeholder-gray-400 focus-within:ring-2 focus-within:ring-violet-300 focus-within:border-violet-800 ${
+                    errors.phoneNumber ? "border-red-500" : "border-gray-400"
+                  }`}
                 >
                   <PhoneInput
                     {...field}
@@ -187,11 +190,7 @@ const MyProfile = () => {
         {/* Submit Button */}
         <div className="mt-4 sm:max-w-20">
           <div className="text-center my-3">
-
-            <NextButton  disabled={!isValid}  label="Save" type="submit"/>
-
-
-           
+            <NextButton type="submit" disabled={!isValid || isLoading} label={isLoading ? "Saving..." : "Save"} />
           </div>
         </div>
       </form>
