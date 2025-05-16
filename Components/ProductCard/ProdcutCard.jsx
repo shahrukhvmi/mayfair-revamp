@@ -17,11 +17,13 @@ import useCheckoutStore from "@/store/checkoutStore";
 import useShippingOrBillingStore from "@/store/shipingOrbilling";
 import useReorder from "@/store/useReorderStore";
 import useLastBmi from "@/store/useLastBmiStore";
+import useCouponStore from "@/store/couponStore";
 
 const ProductCard = ({ id, title, image, price, status, buttonText, lastOrderDate, reorder }) => {
   const router = useRouter();
   const { productId, setProductId } = useProductId();
   const { setReorder } = useReorder();
+  const { clearCoupon } = useCouponStore();
   console.log(productId, "productId");
   const [isButtonLoading, setIsButtonLoading] = useState(false);
 
@@ -67,6 +69,7 @@ const ProductCard = ({ id, title, image, price, status, buttonText, lastOrderDat
       if (reorder) {
         router.push("/re-order");
         setReorder(true);
+        clearCoupon();
       } else {
         setReorder(false);
         router.push("/acknowledgment");
@@ -125,7 +128,7 @@ const ProductCard = ({ id, title, image, price, status, buttonText, lastOrderDat
             src={image}
             alt={title}
             className="w-full p-5 h-52 object-contain"
-            // onError={(e) => (e.target.src = "/images/default.png")}
+          // onError={(e) => (e.target.src = "/images/default.png")}
           />
         </div>
 
