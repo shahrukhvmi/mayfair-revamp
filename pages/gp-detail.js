@@ -323,7 +323,7 @@ export default function GpDetail() {
                     </div>
                   )}
 
-                  <div className="text-sm text-right mt-4">
+                  <div className="text-sm  text-center sm:text-right mt-4">
                     <button type="button" onClick={() => setManual(!manual)} className="text-black font-bold underline cursor-pointer">
                       {manual ? "Hide manual address entry" : "Enter your address manually"}
                     </button>
