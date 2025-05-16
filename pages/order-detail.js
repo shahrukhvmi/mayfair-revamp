@@ -208,9 +208,9 @@ const OrderDetail = () => {
 
               {/* Table Body */}
               <TableBody>
+                  {/* // ?.filter((product) => product.name.includes("mg")) */}
                 {products
-                  ?.filter((product) => product.name.includes("mg"))
-                  .map((product) => (
+                  ?.map((product) => (
                     <TableRow key={product.id} className="hover:bg-gray-50">
                       <TableCell className="text-gray-800 capitalize py-3">{product.label}</TableCell>
                       <TableCell className="text-gray-800 py-3">{product.quantity}</TableCell>
