@@ -53,7 +53,7 @@ export default function LoginScreen() {
         setToken(user?.token);
         setFirstName(user?.fname);
         setLastName(user?.lname);
-        setEmail(user?.lname);
+        setEmail(user?.email);
         toast.success("Login Successfully");
         Fetcher.axiosSetup.defaults.headers.common.Authorization = `Bearer ${user.token}`;
         setShowLoader(false);
