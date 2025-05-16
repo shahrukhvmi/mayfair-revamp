@@ -11,6 +11,9 @@ import BackButton from "@/Components/BackButton/BackButton";
 import SwitchTabs from "@/Components/Tabs/SwitchTabs";
 import useBmiStore from "@/store/bmiStore";
 import BmiTextField from "@/Components/BmiTextField/BmiTextField";
+import useReorder from "@/store/useReorderStore";
+import useLastBmi from "@/store/useLastBmiStore";
+import { BsInfoCircle } from "react-icons/bs";
 
 const validateRange = (value, min, max, wholeOnly, message) => {
   const num = Number(value);
@@ -27,6 +30,8 @@ export default function CalculateBmi() {
   const [showLoader, setShowLoader] = useState(false);
   const [heightUnitKey, setHeightUnitKey] = useState(""); // Will be "imperial" or "metrics"
   const [weightUnitKey, setWeightUnitKey] = useState("");
+  const { reorder, reorderStatus } = useReorder();
+  const { lastBmi } = useLastBmi();
 
   const { bmi, setBmi } = useBmiStore();
   const router = useRouter();
@@ -64,9 +69,9 @@ export default function CalculateBmi() {
     setValue("heightFt", bmi?.ft);
     setValue("heightIn", bmi?.inch);
     setValue("heightCm", bmi?.cm);
-    setValue("weightSt", bmi?.stones);
-    setValue("weightLbs", bmi?.pound);
-    setValue("weightKg", bmi?.kg);
+    // setValue("weightSt", bmi?.stones);
+    // setValue("weightLbs", bmi?.pound);
+    // setValue("weightKg", bmi?.kg);
 
     // Detect units based on which fields are filled
     if (bmi?.cm) {
@@ -389,54 +394,79 @@ export default function CalculateBmi() {
                     />
                   ))}
 
-                {localStep === 2 &&
-                  (weightUnit === "stlb" ? (
-                    <div className="grid grid-cols-2 gap-4">
+                {localStep === 2 && (
+                  <>
+                    {weightUnit === "stlb" ? (
+                      <div className="grid grid-cols-2 gap-4">
+                        <BmiTextField
+                          required
+                          label="Stone (st)"
+                          name="weightSt"
+                          fieldProps={register("weightSt", {
+                            required: "This field is required",
+                            validate: (value) => validateRange(value, 4, 80, false, "Only valid numbers (4–80) are allowed"),
+                            onChange: (e) => {
+                              if (e.target.value !== "") setWeightUnitKey("imperial");
+                            },
+                          })}
+                          errors={errors}
+                          onBlur={handleWeightBlur}
+                        />
+                        <BmiTextField
+                          required
+                          label="Pounds (lb)"
+                          name="weightLbs"
+                          fieldProps={register("weightLbs", {
+                            required: "This field is required",
+                            validate: (value) => validateRange(value, 0, 20, false, "Only valid numbers (0–20) are allowed"),
+                            onChange: (e) => {
+                              if (e.target.value !== "") setWeightUnitKey("imperial");
+                            },
+                          })}
+                          errors={errors}
+                          onBlur={handleWeightBlur}
+                        />
+                      </div>
+                    ) : (
                       <BmiTextField
                         required
-                        label="Stone (st)"
-                        name="weightSt"
-                        fieldProps={register("weightSt", {
+                        label="Kilograms (kg)"
+                        name="weightKg"
+                        fieldProps={register("weightKg", {
                           required: "This field is required",
-                          validate: (value) => validateRange(value, 4, 80, false, "Only valid numbers (4–80) are allowed"),
+                          validate: (value) => validateRange(value, 40, 500, true, "Only whole numbers from 40 to 500 are allowed"),
                           onChange: (e) => {
-                            if (e.target.value !== "") setWeightUnitKey("imperial");
+                            if (e.target.value !== "") setWeightUnitKey("metrics");
                           },
                         })}
                         errors={errors}
-                        onBlur={handleWeightBlur}
+                        onBlur={handleKgBlur}
                       />
-                      <BmiTextField
-                        required
-                        label="Pounds (lb)"
-                        name="weightLbs"
-                        fieldProps={register("weightLbs", {
-                          required: "This field is required",
-                          validate: (value) => validateRange(value, 0, 20, false, "Only valid numbers (0–20) are allowed"),
-                          onChange: (e) => {
-                            if (e.target.value !== "") setWeightUnitKey("imperial");
-                          },
-                        })}
-                        errors={errors}
-                        onBlur={handleWeightBlur}
-                      />
-                    </div>
-                  ) : (
-                    <BmiTextField
-                      required
-                      label="Kilograms (kg)"
-                      name="weightKg"
-                      fieldProps={register("weightKg", {
-                        required: "This field is required",
-                        validate: (value) => validateRange(value, 40, 500, true, "Only whole numbers from 40 to 500 are allowed"),
-                        onChange: (e) => {
-                          if (e.target.value !== "") setWeightUnitKey("metrics");
-                        },
-                      })}
-                      errors={errors}
-                      onBlur={handleKgBlur}
-                    />
-                  ))}
+                    )}
+
+                    {reorder && lastBmi ? (
+                      lastBmi?.weight_unit == "metric" ? (
+                        <div className="bg-[#FFF3CD] px-4 py-4 mt-6 mb-6 text-gray-700 rounded shadow-md">
+                          <p className="flex items-center">
+                            <BsInfoCircle className="me-2" /> Your previous recorded weight was{" "}
+                            <span className="font-bold ms-1">{lastBmi?.kg} kg</span>
+                          </p>
+                        </div>
+                      ) : (
+                        <div className="bg-[#FFF3CD] px-4 py-4 mt-6 mb-6 text-gray-700 rounded shadow-md">
+                          <p className="flex items-center">
+                            <BsInfoCircle className="me-2" /> Your previous recorded weight was{" "}
+                            <span className="font-bold ms-1">
+                              {lastBmi?.stones} st & {lastBmi?.pound} lbs
+                            </span>
+                          </p>
+                        </div>
+                      )
+                    ) : (
+                      ""
+                    )}
+                  </>
+                )}
 
                 <NextButton label="Next" onClick={handleNext} type="button" disabled={!isStepValid()} />
 

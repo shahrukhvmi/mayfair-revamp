@@ -39,8 +39,12 @@ export default function PersonalDetails() {
     defaultValues: {
       dob: "",
       gender: "",
+      pregnancy: "",
     },
   });
+
+  const gender = watch("gender");
+  const pregnancy = watch("pregnancy");
 
   const validateAge = (date) => {
     if (!date) return "Date of birth is required";
@@ -71,10 +75,20 @@ export default function PersonalDetails() {
       setValue("gender", fixedGender);
     }
 
+    if (patientInfo?.pregnancy) {
+      setValue("pregnancy", patientInfo.pregnancy);
+    }
+
     if (patientInfo?.dob) {
-      trigger(["dob"]);
+      trigger(["dob", "pregnancy"]);
     }
   }, [patientInfo, patientInfo?.gender]);
+
+  useEffect(() => {
+    if (watch("gender") === "Male") {
+      setValue("pregnancy", "");
+    }
+  }, [watch("gender")]);
 
   const onSubmit = async (data) => {
     const formattedDOB = format(data.dob, "dd-MM-yyyy");
@@ -83,15 +97,12 @@ export default function PersonalDetails() {
       ...patientInfo, // 🧠 keep old data
       dob: formattedDOB,
       gender: data.gender,
+      pregnancy: data.pregnancy || "", // Add this
     });
 
     setShowLoader(true);
     await new Promise((resolve) => setTimeout(resolve, 500)); // Wait 2s
-    if (data.gender == "Male") {
-      router.push("/residential-address");
-    } else {
-      router.push("/pregnancy-check");
-    }
+    router.push("/residential-address");
   };
 
   return (
@@ -138,6 +149,44 @@ export default function PersonalDetails() {
                         </label>
                       );
                     })}
+
+                    {gender === "Female" && (
+                      <div className="space-y-4 mt-6">
+                        <p className="mb-3 reg-font paragraph !text-black !text-lg">Are you pregnant, breastfeeding, or trying to conceive?</p>
+                        <p className="mb-6 reg-font paragraph">
+                          Our treatment programme is not suitable while breastfeeding, pregnant, or trying to conceive.
+                        </p>
+
+                        <div className="flex gap-4 mt-2 w-full">
+                          {["yes", "no"].map((option) => {
+                            const isSelected = pregnancy === option;
+                            return (
+                              <label
+                                key={option}
+                                className={`reg-font flex items-center px-4 py-4 rounded-md border justify-start cursor-pointer transition-all duration-200 flex-1
+              ${isSelected ? "bg-violet-100 border-primary text-violet-700" : "bg-white border-gray-300 hover:border-gray-400 text-gray-800"}`}
+                              >
+                                <input type="radio" value={option} {...register("pregnancy", { required: true })} className="hidden" />
+                                <div
+                                  className={`w-5 h-5 mr-2 rounded-md border flex items-center justify-center
+                ${isSelected ? "bg-primary border-[#47317c] text-white" : "border-gray-400 bg-white"}`}
+                                >
+                                  {isSelected && <FiCheck className="text-md" />}
+                                </div>
+                                <span className="text-black bold-font paragraph capitalize">{option}</span>
+                              </label>
+                            );
+                          })}
+                        </div>
+
+                        {pregnancy === "yes" && (
+                          <p className="text-red-600 text-sm mt-2">
+                            This treatment is not suitable if you are pregnant, trying to get pregnant or breastfeeding. We recommend you speak to
+                            your GP in person.
+                          </p>
+                        )}
+                      </div>
+                    )}
                   </div>
 
                   {errors.gender && <p className="text-red-500 text-sm mt-1 text-center">Please select your gender</p>}
@@ -150,7 +199,7 @@ export default function PersonalDetails() {
                   {/* {errors.dob && <p className="text-red-500 text-sm mt-1">Date of birth is required</p>} */}
                 </div>
 
-                <NextButton label="Next" disabled={!isValid} />
+                <NextButton label="Next" disabled={!isValid || (gender === "Female" && pregnancy === "yes")} />
               </form>
               {showLoader && (
                 <div className="absolute inset-0 z-20 flex justify-center items-center bg-white/60 rounded-lg cursor-not-allowed">

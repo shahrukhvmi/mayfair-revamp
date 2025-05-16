@@ -14,12 +14,13 @@ import BackButton from "@/Components/BackButton/BackButton";
 import useReorder from "@/store/useReorderStore";
 import useLastBmi from "@/store/useLastBmiStore";
 import { BsInfoCircle } from "react-icons/bs";
+import { FaLessThan } from "react-icons/fa";
 
 export default function BmiDetail() {
   const [showLoader, setShowLoader] = useState(false);
   const { bmi, setBmi } = useBmiStore();
   const { patientInfo } = usePatientInfoStore();
-  const { reorder } = useReorder();
+  const { reorder, reorderStatus } = useReorder();
   const { lastBmi } = useLastBmi();
   const router = useRouter();
 
@@ -46,7 +47,7 @@ export default function BmiDetail() {
   const noneOfTheAbove = watch("noneOfTheAbove");
   const explanation = watch("weight_related_comorbidity_explanation");
 
-  const bmiValue = parseFloat(Number(bmi?.bmi).toFixed(2));
+  const bmiValue = parseFloat(Number(bmi?.bmi).toFixed(1));
   const shouldShowCheckboxes = patientInfo?.ethnicity === "Yes" ? bmiValue >= 25.5 && bmiValue <= 27.4 : bmiValue >= 27.5 && bmiValue <= 29.9;
   const shouldShowInfoMessage = patientInfo?.ethnicity === "Yes" && bmiValue >= 27.5 && bmiValue <= 29.9;
 
@@ -138,9 +139,16 @@ export default function BmiDetail() {
     console.log("Form Submitted:", consent);
 
     setShowLoader(true);
-    setTimeout(() => {
-      router.push("/medical-questions");
-    }, 500);
+
+    if (reorder == true && reorderStatus == false) {
+      setTimeout(() => {
+        router.push("/confirmation-summary");
+      }, 500);
+    } else {
+      setTimeout(() => {
+        router.push("/medical-questions");
+      }, 500);
+    }
   };
 
   return (
@@ -149,28 +157,8 @@ export default function BmiDetail() {
       <FormWrapper heading={"Your BMI:"} percentage={"70"}>
         <PageAnimationWrapper>
           <div className="py-12 mb-5 border text-center bg-violet-100 rounded-2xl shadow">
-            <h1 className="text-black text-3xl bold-font">BMI: {bmi?.bmi}</h1>
+            <h1 className="text-black text-3xl bold-font">BMI: {bmiValue}</h1>
           </div>
-          {reorder && lastBmi ? (
-            lastBmi?.weight_unit == "metric" ? (
-              <div className="bg-[#FFF3CD] px-4 py-4 mt-6 mb-6 text-gray-700 rounded shadow-md">
-                <p className="flex items-center">
-                  <BsInfoCircle className="me-2" /> Your previous recorded weight was <span className="font-bold ms-1">{lastBmi?.kg} kg</span>
-                </p>
-              </div>
-            ) : (
-              <div className="bg-[#FFF3CD] px-4 py-4 mt-6 mb-6 text-gray-700 rounded shadow-md">
-                <p className="flex items-center">
-                  <BsInfoCircle className="me-2" /> Your previous recorded weight was{" "}
-                  <span className="font-bold ms-1">
-                    {lastBmi?.stones} st & {lastBmi?.pound} lbs
-                  </span>
-                </p>
-              </div>
-            )
-          ) : (
-            ""
-          )}
 
           {isReorderAndBmiLow && (
             <div className="bg-red-100 text-red-700 p-4 rounded-md mb-4 border border-red-300">

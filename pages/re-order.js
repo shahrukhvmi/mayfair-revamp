@@ -8,9 +8,11 @@ import NextButton from "@/Components/NextButton/NextButton";
 import StepsHeader from "@/layout/stepsHeader";
 import PageAnimationWrapper from "@/Components/PageAnimationWrapper/PageAnimationWrapper";
 import PageLoader from "@/Components/PageLoader/PageLoader";
+import useReorder from "@/store/useReorderStore";
 
 export default function Acknowledgment() {
   const router = useRouter();
+  const { setReorderStatus } = useReorder();
   const [showLoader, setShowLoader] = useState(false);
 
   const {
@@ -33,8 +35,10 @@ export default function Acknowledgment() {
 
     if (data.personalUse === "yes") {
       router.push("/signup");
+      setReorderStatus(true);
     } else {
       router.push("/calculate-bmi");
+      setReorderStatus(false);
     }
   };
 

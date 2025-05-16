@@ -23,6 +23,8 @@ export default function GatherData() {
   const { clearCart } = useCartStore();
   const { productId } = useProductId();
 
+  console.log(productId, "productId productId");
+
   // Variations fetch mutation
   const variationMutation = useMutation(getVariationsApi, {
     onSuccess: (data) => {
@@ -49,8 +51,11 @@ export default function GatherData() {
   // Call mutation on mount
   useEffect(() => {
     setShowLoader(true);
-    variationMutation.mutate({ id: productId, data: {} });
-  }, []);
+    if (productId != null) {
+      // console.log("Api Run");
+      variationMutation.mutate({ id: productId, data: {} });
+    }
+  }, [productId]);
 
   return (
     <>

@@ -16,6 +16,7 @@ import { RiRadioButtonFill } from "react-icons/ri";
 import { IoRadioButtonOff } from "react-icons/io5";
 import { motion } from "framer-motion";
 import toast from "react-hot-toast";
+import { MdOutlineCheckBox, MdOutlineCheckBoxOutlineBlank } from "react-icons/md";
 
 const api = new Client("_UFb05P76EyMidU1VHIQ_A42976");
 
@@ -311,15 +312,19 @@ export default function ShippingAddress({ isCompleted, onComplete }) {
           <TextField label="Address 1" name="addressone" placeholder="123 Main Street" register={register} required errors={errors} />
           <TextField label="Address 2" name="addresstwo" placeholder="Flat 14" register={register} errors={errors} />
           <TextField label="City" name="city" placeholder="e.g., London" register={register} required errors={errors} />
-          <TextField label="State" name="state" placeholder="e.g., Essex" register={register} required errors={errors} />
+          <TextField label="County" name="state" placeholder="e.g., Essex" register={register} required errors={errors} />
 
           <Controller
             name="same_as_shipping"
             control={control}
             render={({ field }) => (
-              <div className="flex items-center space-x-3 cursor-pointer" onClick={() => field.onChange(!field.value)}>
-                {field.value ? <RiRadioButtonFill className="text-primary text-xl" /> : <IoRadioButtonOff className="text-gray-400 text-xl" />}
-                <span className="text-gray-700 reg-font">Make billing address same as shipping</span>
+              <div className="flex items-center space-x-2 cursor-pointer" onClick={() => field.onChange(!field.value)}>
+                {field.value ? (
+                  <MdOutlineCheckBox className="text-primary text-xl" />
+                ) : (
+                  <MdOutlineCheckBoxOutlineBlank className="text-primary text-xl" />
+                )}
+                <span className="text-gray-700 reg-font mt-1">Make billing address same as shipping Address</span>
               </div>
             )}
           />
