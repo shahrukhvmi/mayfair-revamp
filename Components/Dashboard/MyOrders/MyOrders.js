@@ -88,7 +88,7 @@ const MyOrders = () => {
     <div className="md:p-6 sm:px-2 sm:bg-[#F9FAFB] sm:min-h-screen sm:rounded-md sm:shadow-md my-5 md:me-5">
       {/* Search and Filter Section */}
       <header className="p-4">
-        <h1 className="md:text-3xl text-lg mb-2 niba-bold-font heading">My Orders</h1>
+        <h1 className="md:text-3xl text-lg mb-2 headingDashBoard bold-font">My Orders</h1>
         <p className="reg-font paragraph  text-left text-sm xl:w-3/4 mt-2">View your order history</p>
       </header>
       <div className="flex flex-col md:flex-row items-center justify-between space-y-3 md:space-y-0 md:space-x-4">
@@ -173,7 +173,7 @@ const MyOrders = () => {
               <th scope="col">Order ID</th>
               <th scope="col">Order Date</th>
               <th scope="col">Treatment</th>
-              <th scope="col">Variation</th>
+              <th scope="col">Items</th>
               <th scope="col">Status</th>
               <th scope="col">Total</th>
               <th scope="col">
@@ -212,8 +212,7 @@ const MyOrders = () => {
             ) : filteredData?.length === 0 ? (
               <tr>
                 <td colSpan="7" className="text-center py-4">
-                  Orders are not available
-                </td>
+                  No orders found                </td>
               </tr>
             ) : (
               filteredData?.map((order) => (
@@ -249,14 +248,14 @@ const MyOrders = () => {
                   <td>
                     <span
                       className={`${order.status === "Processing"
-                          ? "bg-yellow-100 border-yellow-500 text-yellow-800"
-                          : order.status === "Incomplete"
-                            ? "bg-orange-100 border-orange-500 text-orange-800"
-                            : order.status === "Cancelled"
-                              ? "bg-red-100 text-red-800"
-                              : order.status === "Approved"
-                                ? "bg-green-100 border-green-500 text-green-800"
-                                : "bg-gray-100 text-gray-800"
+                        ? "bg-yellow-100 border-yellow-500 text-yellow-800"
+                        : order.status === "Incomplete"
+                          ? "bg-orange-100 border-orange-500 text-orange-800"
+                          : order.status === "Cancelled"
+                            ? "bg-red-100 text-red-800"
+                            : order.status === "Approved"
+                              ? "bg-green-100 border-green-500 text-green-800"
+                              : "bg-gray-100 text-gray-800"
                         } text-xs font-medium px-2.5 py-0.5 rounded-full`}
                     >
                       {order.status}

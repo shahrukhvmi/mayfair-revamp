@@ -272,7 +272,7 @@ const OrderDetail = () => {
               <TableBody>
                 <TableRow>
                   <TableCell style={{ width: "50%" }} className="reg-font  paragraph ">
-                    Gp Consent
+                    GP Consent
                   </TableCell>
                   <TableCell style={{ width: "50%" }} className="reg-font  text-[#1C1C29] capitalize">
                     {gpDetails?.gpConsent || "N/A"}

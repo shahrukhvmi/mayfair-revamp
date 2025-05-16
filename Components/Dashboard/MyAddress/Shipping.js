@@ -157,7 +157,7 @@ export default function Shipping({ shipmentCountries }) {
     <>
       <SectionWrapper>
         <header className="pb-4">
-          <h1 className="md:text-3xl text-lg mb-2 niba-bold-font text-black">Shipping Information</h1>
+          <h1 className="headingDashBoard bold-font md:text-3xl text-lg mb-2  text-black">Shipping Information</h1>
           <p className="reg-font paragraph  text-left text-sm xl:w-3/4 mt-2">Update your shipping information</p>
         </header>
 

@@ -14,15 +14,15 @@ import ForgotForm from "./ForgotForm";
 import LoginForm from "./LoginForm";
 import PageLoader from "../PageLoader/PageLoader";
 
-export default function LoginModal({ show = false, onClose = () => {}, onLogin = () => {}, isLoading = false, modes }) {
+export default function LoginModal({ show = false, onClose = () => { }, onLogin = () => { }, isLoading = false, modes }) {
   const {
     register,
     handleSubmit,
     reset,
+    getValues,
     formState: { errors },
   } = useForm();
 
-  const pathname = usePathname();
 
   const [mode, setMode] = useState(modes);
 
@@ -158,6 +158,8 @@ export default function LoginModal({ show = false, onClose = () => {}, onLogin =
                 register={register}
                 handleSubmit={handleSubmit}
                 errors={errors}
+                getValues={getValues} // ✅ pass it
+
                 isLoading={forgotMutation.isLoading}
                 onSubmit={(data) =>
                   forgotMutation.mutate({

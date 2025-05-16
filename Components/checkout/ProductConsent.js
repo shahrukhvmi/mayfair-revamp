@@ -9,12 +9,17 @@ const ProductConsent = ({ isCompleted, onComplete, onConsentChange, setIsConcent
   const [isValid, setIsValid] = useState();
   const [isChecked, setIsChecked] = useState(false);
 
-  const handleSubmit = () => {
-    onComplete();
-  };
+  // const handleSubmit = () => {
+  //   onComplete();
+  // };
 
   useEffect(() => {
     setIsValid(isChecked);
+
+    if (isChecked) {
+      onComplete();
+    }
+
     console.log(isValid, "isValid");
     setIsConcentCheck(isChecked);
   }, [isChecked]);
@@ -81,7 +86,7 @@ const ProductConsent = ({ isCompleted, onComplete, onConsentChange, setIsConcent
           {/* Error Message */}
           {!isChecked && <p className="text-xs text-red-600 mt-2">You must accept the terms to continue.</p>}
         </div>
-        <NextButton label="Continue" onClick={handleSubmit} disabled={!isValid} />
+        {/* <NextButton label="Continue" onClick={handleSubmit} disabled={!isValid} /> */}
       </div>
     </SectionWrapper>
   );

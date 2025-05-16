@@ -100,6 +100,7 @@ const OrderSummary = ({ isConcentCheck }) => {
       if (data) {
         setPaymentData(data?.data?.paymentData);
         setOrderId(data?.data?.paymentData?.order_id);
+        clearCoupon();
       }
     },
     onError: (error) => {
@@ -199,12 +200,14 @@ const OrderSummary = ({ isConcentCheck }) => {
               <div className="bg-white p-6 rounded-2xl shadow-lg mt-6 sm:mt-[110px] font-inter">
                 <div className="relative">
                   <SectionHeader stepNumber={4} title="Order Summary" completed />
-                  <div className="absolute right-0 top-0">
+                  <div className="absolute right-14 bottom-2 w-20">
                     <button
                       type="button"
                       onClick={handleEdit}
-                      className="cursor-pointer ml-2 p-2 rounded-full bg-white hover:bg-gray-100 text-primary shadow transition"
+                      className="flex justify-around align-middle cursor-pointer ml-2 p-2 w-30 rounded-lg bg-white hover:bg-gray-100 text-primary shadow transition"
                     >
+
+                      <span className="reg-font text-sm text-gray-500">Edit order</span>
                       <HiOutlinePencilAlt className="w-4 h-4" color="#47317c" />
                     </button>
                   </div>
@@ -259,6 +262,12 @@ const OrderSummary = ({ isConcentCheck }) => {
                     <p className="bold-font paragraph !text-black">Subtotal</p>
                     <p className="bold-font text-black">£{totalAmount?.toFixed(2)}</p>
                   </div>
+
+                  <div className="flex justify-between items-center mt-4">
+                    <p className="bold-font paragraph !text-black">VAT</p>
+                    <p className="bold-font text-black">£0.00</p>
+                  </div>
+
 
                   {Coupon && (
                     <div className="flex justify-between items-center mt-4">
@@ -325,9 +334,8 @@ const OrderSummary = ({ isConcentCheck }) => {
                           type="button"
                           onClick={handleApplyCoupon}
                           disabled={!isApplyEnabled}
-                          className={`cursor-pointer px-6 text-sm bold-font text-white transition-all duration-200 ${
-                            isApplyEnabled ? "bg-primary hover:bg-primary" : "bg-gray-300 cursor-not-allowed"
-                          }`}
+                          className={`cursor-pointer px-6 text-sm bold-font text-white transition-all duration-200 ${isApplyEnabled ? "bg-primary hover:bg-primary" : "bg-gray-300 cursor-not-allowed"
+                            }`}
                         >
                           {couponLoading ? "Applying..." : "Apply"}
                         </button>

@@ -30,7 +30,7 @@ const SetAPassword = ({ isCompleted, onComplete }) => {
   const confirmPassword = watch("confirmPassword") || "";
 
   const validations = {
-    length: password.length >= 10,
+    length: password.length >= 8,
     case: /[a-z]/.test(password) && /[A-Z]/.test(password),
     special: /[!@#$%^&*(),.?":{}|<>]/.test(password),
     number: /[0-9]/.test(password),
@@ -120,7 +120,7 @@ const SetAPassword = ({ isCompleted, onComplete }) => {
         </div>
 
         <div className="bg-gray-50 text-black thin-font border border-gray-200 rounded-lg p-4 mt-6 space-y-2">
-          <PasswordCheck valid={validations.length} label="At least 10 characters." />
+          <PasswordCheck valid={validations.length} label="At least 8 characters." />
           <PasswordCheck valid={validations.case} label="Upper and lower case characters." />
           <PasswordCheck valid={validations.special} label="At least 1 special character." />
           <PasswordCheck valid={validations.number} label="At least 1 number." />

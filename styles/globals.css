@@ -77,6 +77,13 @@ body {
   background-color: #47317c;
 }
 
+.headingDashBoard {
+  font-weight: 600;
+  word-break: break-word;
+  font-size: 1.8rem;
+  line-height: 125%;
+  color: darkslategray;
+}
 
 @media (max-width: 768px) {
   .heading {
@@ -89,6 +96,11 @@ body {
 
   .subHeading {
     font-size: 18px;
+  }
+
+  .headingDashBoard {
+    font-size: 1.6rem;
+
   }
 }
 
@@ -103,5 +115,10 @@ body {
 
   .subHeading {
     font-size: 16px;
+  }
+
+  .headingDashBoard {
+    font-size: 1.4rem;
+
   }
 }
