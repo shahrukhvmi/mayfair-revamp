@@ -95,9 +95,9 @@ const Checkout = () => {
       </AnimatePresence>
 
       <div className="max-w-2xl mx-auto px-4 pb-10 space-y-10">
-        <div ref={headingRef} className="px-6 pt-10 text-center">
-          <h1 className="px-6 text-2xl niba-reg-font heading mb-2 text-gray-900">Checkout to kick-start your weight loss journey</h1>
-          <p className="text-sm px-6 reg-font paragraph mb-6">
+        <div ref={headingRef} className="sm:px-6 px-0 pt-10 text-center">
+          <h1 className="sm:px-6 px-0 text-2xl niba-reg-font heading mb-2 text-gray-900">Checkout to kick-start your weight loss journey</h1>
+          <p className="text-sm sm:px-6 px-0  reg-font paragraph mb-6">
             Complete your details below to secure your consultation. If you decide not to proceed after your consult for any reason, you will be fully
             refunded.
           </p>

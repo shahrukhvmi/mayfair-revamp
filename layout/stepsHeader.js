@@ -131,6 +131,7 @@ const StepsHeader = ({ isOpen, toggleSidebar }) => {
               <ApplicationLogo width={140} height={80} />
             </Link>
           </div>
+          
 
           {/* User Info or Login CTA */}
           <div className="relative">
@@ -179,8 +180,8 @@ const StepsHeader = ({ isOpen, toggleSidebar }) => {
             )}
 
             {!pathname?.startsWith("/login") && !token && (
-              <div className="w-1/2 items-center justify-end lg:w-[100%] sm:flex hidden">
-                <p className="hidden md:block text-black reg-font">Already have an account?</p>
+              <div className="w-1/2 items-center justify-end lg:w-[100%] sm:flex">
+                <p className="md:block text-black reg-font lg:w-[100%] sm:flex hidden">Already have an account?</p>
                 <span
                   className="cursor-pointer inline-flex items-center px-6 py-2 bg-primary border border-transparent rounded-full font-semibold text-xs text-white uppercase tracking-widest hover:bg-violet-700 focus:bg-bg-violet-700 active:bg-primary focus:outline-none focus:ring-2 focus:ring-violet-500 focus:ring-offset-2 transition ease-in-out duration-150 ml-4"
                   onClick={openLoginModal}

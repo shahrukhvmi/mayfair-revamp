@@ -21,7 +21,7 @@ export default function GatherData() {
   const { setShipmentCountries } = useShipmentCountries();
   const { setBillingCountries } = useBillingCountries();
   const { clearCart } = useCartStore();
-  const { productId } = useProductId()
+  const { productId } = useProductId();
 
   // Variations fetch mutation
   const variationMutation = useMutation(getVariationsApi, {

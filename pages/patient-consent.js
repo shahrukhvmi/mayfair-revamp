@@ -99,9 +99,9 @@ export default function PatientConsent() {
                         />
                         <label htmlFor={`question-${q.id}`} className="flex items-start gap-2 cursor-pointer">
                           {selectedAnswer ? (
-                            <FaDotCircle  className="text-primary sm:w-9 w-14 h-14 sm:h-9 mt-1" />
+                            <FaDotCircle  className="text-primary sm:w-9 w-18 h-18 sm:h-9 mt-1" />
                           ) : (
-                            <FaRegCircle className="text-violet-700 sm:w-9 sm:h-9 w-14 h-14 mt-1" />
+                            <FaRegCircle className="text-violet-700 sm:w-9 sm:h-9 w-18 h-18 mt-1" />
                           )}
                           <span className="bold-font text-gray-700 sm:text-lg text-sm">{q.question}</span>
                         </label>

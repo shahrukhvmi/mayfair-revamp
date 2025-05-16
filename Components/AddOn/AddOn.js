@@ -37,7 +37,7 @@ const AddOn = ({ addon, onAdd, onIncrement, onDecrement, isSelected, quantity })
       setShowModal(true);
     }
   };
-  const addonsStatus = addon?.stock?.status;
+
   const isOutOfStock = addon?.stock?.status == 0;
 
 
@@ -52,7 +52,7 @@ const AddOn = ({ addon, onAdd, onIncrement, onDecrement, isSelected, quantity })
     <>
       <div
         onClick={!isOutOfStock && !isSelected ? handleAdd : undefined}
-        className={`flex items-center justify-between p-4 border-2 mt-3 transition-all duration-300 ease-in-out relative rounded-lg 
+        className={`flex flex-col sm:flex-row sm:items-center justify-between w-full p-4 border-2 mt-3 transition-all duration-300 ease-in-out relative rounded-lg border-primary
     ${isOutOfStock
             ? "opacity-50 cursor-not-allowed bg-white border-gray-400"
             : isSelected
@@ -60,6 +60,7 @@ const AddOn = ({ addon, onAdd, onIncrement, onDecrement, isSelected, quantity })
               : "border-primary bg-white hover:bg-gray-50 cursor-pointer"
           }`}
       >
+
 
 
         {isOutOfStock && (
@@ -81,39 +82,46 @@ const AddOn = ({ addon, onAdd, onIncrement, onDecrement, isSelected, quantity })
         )}
 
         {/* Left Content */}
-        <div className="flex flex-col space-y-1">
-          <div className="flex items-center space-x-2">
-            {isSelected ? (
-              <FaDotCircle className="text-primary w-4 h-4 mt-1" />
-            ) : (
-              <FaRegCircle className="text-gray-800 w-4 h-4 mt-1" />
-            )}
-            <span className={`font-semibold ${isSelected ? "text-primary" : "text-gray-800"}`}>
-              {addon?.title}
-            </span>
+        <div className="flex items-start sm:items-center gap-3 w-full sm:w-auto">
+          {isSelected ? (
+            <FaDotCircle className="text-primary w-4 h-4 mt-1" />
+          ) : (
+            <FaRegCircle className="text-gray-800 w-4 h-4 mt-1" />
+          )}
+
+          <div className="text-sm sm:text-base text-gray-800">
+            <div className="capitalize font-semibold text-md sm:text-lg text-black">{addon?.product_name}</div>
+            <div className="text-sm text-gray-700">{addon.name}</div>
+
           </div>
-
-
         </div>
 
         {/* Right Content */}
-        <div className="flex items-center space-x-3">
-          <span className={`font-bold text-lg ${isSelected ? "text-primary" : "text-gray-700"}`}>
+        <div className="flex items-center justify-end gap-3 w-full sm:w-auto">
+          <span className={`font-semibold text-md sm:text-lg ${isSelected ? "text-primary" : "text-gray-700"}`}>
             £{parseFloat(addon?.price).toFixed(2)}
           </span>
 
           {isSelected && (
             <>
-              <div className="flex items-center space-x-2 bg-white rounded-full p-1 shadow-sm">
-                <button type="button" onClick={handleDecrement} className="bg-gray-100 hover:bg-gray-200 p-2 rounded-full cursor-pointer">
+              <div className="flex items-center space-x-2 bg-white rounded-full px-2 py-1 shadow-md">
+                <button
+                  type="button"
+                  onClick={handleDecrement}
+                  className="bg-gray-100 hover:bg-gray-200 p-2 rounded-full"
+                >
                   <FaMinus size={10} className="text-black" />
                 </button>
-                <span className="px-3 py-1 text-black text-sm font-bold">{quantity}</span>
+
+                <span className="px-2 text-sm font-bold text-black">{quantity}</span>
+
                 <button
                   type="button"
                   onClick={handleIncrement}
-                  className={`bg-gray-100 hover:bg-gray-200 p-2 rounded-full ${quantity >= allowed ? "cursor-not-allowed opacity-60" : "cursor-pointer"}`}
-                  disabled={quantity >= allowed}
+                  className={`p-2 rounded-full ${quantity >= allowed
+                    ? "cursor-not-allowed bg-gray-100 opacity-50"
+                    : "bg-gray-100 hover:bg-gray-200"
+                    }`}
                 >
                   <FaPlus size={10} className="text-black" />
                 </button>
@@ -125,13 +133,14 @@ const AddOn = ({ addon, onAdd, onIncrement, onDecrement, isSelected, quantity })
                   e.stopPropagation();
                   setShowModal(true);
                 }}
-                className="bg-red-100 hover:bg-red-200 text-red-500 rounded-md p-2 cursor-pointer"
+                className="bg-red-100 hover:bg-red-200 text-red-500 rounded-full p-2"
               >
                 <MdDelete />
               </button>
             </>
           )}
         </div>
+
       </div>
 
       <ConfirmationModal showModal={showModal} onConfirm={handleDelete} onCancel={() => setShowModal(false)} />

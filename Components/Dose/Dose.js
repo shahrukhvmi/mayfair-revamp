@@ -69,8 +69,8 @@ const Dose = ({ doseData, onAdd, onIncrement, onDecrement, isSelected, qty, allo
     <>
       <div
         onClick={(isOutOfStock || isAllowExceeded) ? undefined : handleAdd}
-        className={`flex items-center justify-between p-4 border-2 mt-3 transition-all duration-300 ease-in-out relative rounded-lg  border-primary
-          ${isOutOfStock
+        className={`flex flex-col sm:flex-row items-start sm:items-center justify-between w-full p-4 border-2 mt-3 transition-all duration-300 ease-in-out relative rounded-md border-primary gap-4 sm:gap-0
+    ${isOutOfStock
             ? "opacity-50 cursor-not-allowed bg-white border-gray-400"
             : isSelected
               ? "border-primary bg-violet-100 cursor-pointer"
@@ -79,6 +79,7 @@ const Dose = ({ doseData, onAdd, onIncrement, onDecrement, isSelected, qty, allo
                 : "border-primary bg-white hover:bg-gray-50 cursor-pointer"
           }`}
       >
+
         {/* Overlay when out of stock */}
         {isOutOfStock && (
           <>
@@ -103,54 +104,52 @@ const Dose = ({ doseData, onAdd, onIncrement, onDecrement, isSelected, qty, allo
         )}
 
         {/* Left Side - Product Details */}
-        <div className="flex items-center space-x-3">
+        <div className="flex items-start sm:items-center gap-3 w-full sm:w-auto">
           {isSelected ? (
             <FaDotCircle className="text-primary w-4 h-4 mt-1" />
           ) : (
             <FaRegCircle className="text-gray-800 w-4 h-4 mt-1" />
           )}
-          <span className={`reg-font text-black text-sm sm:text-md ${isSelected ? "text-primary" : "text-gray-800"} text-lg`}>
-            <span className="capitalize font-semibold">{doseData?.product_name}</span> <br />
-            <span className="text-sm">{doseData.name}</span>
-            <br />
-            {doseData?.expiry == null ?
-              <p className="mb-2"></p> :
-              <span className="text-xs text-gray-500">Expiry: {doseData?.expiry ? moment(doseData?.expiry).format("DD/MM/YYYY") : "-"}</span>
-            }
 
-          </span>
-        </div >
+          <div className="text-sm sm:text-base text-gray-800">
+            <div className="capitalize font-semibold text-md sm:text-lg text-black">{doseData?.product_name}</div>
+            <div className="text-sm text-gray-700">{doseData.name}</div>
+            {doseData?.expiry && (
+              <div className="text-xs text-gray-500 mt-1">Expiry: {moment(doseData?.expiry).format("DD/MM/YYYY")}</div>
+            )}
+          </div>
+        </div>
+
 
         {/* Right Side - Price and Quantity */}
-        < div className="flex items-center space-x-3" >
-          <span className={`font-bold ${isSelected ? "text-primary" : "text-gray-700"}`}>
+        <div className="flex items-center justify-end gap-3 w-full sm:w-auto">
+          <span className={`font-semibold text-md sm:text-lg ${isSelected ? "text-primary" : "text-gray-700"}`}>
             £{parseFloat(doseData?.price).toFixed(2)}
           </span>
 
           {isSelected && (
             <>
-              <div className="flex items-center space-x-2 bg-white rounded-full p-1 shadow-sm">
+              <div className="flex items-center space-x-2 bg-white rounded-full px-2 py-1 shadow-md">
                 <button
                   type="button"
                   onClick={handleDecrement}
-                  className="bg-gray-100 hover:bg-gray-200 p-2 rounded-full cursor-pointer"
+                  className="bg-gray-100 hover:bg-gray-200 p-2 rounded-full"
                 >
                   <FaMinus size={10} className="text-black" />
                 </button>
 
-                <span className="px-3 py-1 !text-black text-sm font-bold">{qty}</span>
+                <span className="px-2 text-sm font-bold text-black">{qty}</span>
 
                 <button
                   type="button"
                   onClick={handleIncrement}
                   className={`p-2 rounded-full ${qty >= allowed
-                    ? "cursor-not-allowed bg-gray-100 opacity-50 "
-                    : "bg-gray-100 hover:bg-gray-200 cursor-pointer"
+                    ? "cursor-not-allowed bg-gray-100 opacity-50"
+                    : "bg-gray-100 hover:bg-gray-200"
                     }`}
                 >
                   <FaPlus size={10} className="text-black" />
                 </button>
-
               </div>
 
               <button
@@ -159,14 +158,14 @@ const Dose = ({ doseData, onAdd, onIncrement, onDecrement, isSelected, qty, allo
                   e.stopPropagation();
                   setShowModal(true);
                 }}
-                className="bg-red-100 hover:bg-red-200 text-red-500 rounded-md p-2 cursor-pointer"
+                className="bg-red-100 hover:bg-red-200 text-red-500 rounded-full p-2"
               >
                 <MdDelete />
               </button>
             </>
           )}
+        </div>
 
-        </div >
       </div >
 
       <ConfirmationModal showModal={showModal} onConfirm={handleDelete} onCancel={() => setShowModal(false)} />

@@ -148,7 +148,7 @@ export default function DosageSelection() {
     <>
       <div className="bottom-[100px] fixed">
 
-        <BackButton label="Back" onClick={back} />
+        <BackButton label="Back" onClick={back} className="mt-2 sm:block hidden" />
       </div>
       <AnimatePresence>
         {showDoseModal && selectedDose && (
@@ -187,8 +187,8 @@ export default function DosageSelection() {
 
       <StepsHeader />
 
-      <div className={`${inter.className} flex items-center justify-center bg-[#F2EEFF] px-4 sm:px-6 lg:px-8 `}>
-        <div className="rounded-xl w-full max-w-2xl my-10">
+      <div className={`${inter.className} flex items-center justify-center bg-[#F2EEFF] px-4 sm:px-6 lg:px-8 mb-40 sm:mb-0`}>
+        <div className="rounded-xl w-full max-w-2xl sm:my-10">
           <div className="w-full mx-auto sm:px-8 my-6 rounded-md">
             <div className="flex justify-center">
               <h1 className="niba-reg-font heading text-center my-3">You’re ready to start your personal weight loss journey</h1>
@@ -292,22 +292,28 @@ export default function DosageSelection() {
         </div>
       </div>
 
-      <div className="fixed bottom-0 left-0 right-0 z-50 bg-[#ffffff] px-4 py-3 shadow-[0_-2px_10px_rgba(0,0,0,0.1)] ">
-        <div className="max-w-xl mx-auto flex items-center justify-between">
-          <div className="flex items-center space-x-3 me-5">
-            <img src={variation?.img} alt={variation?.name} className="w-10 h-10 rounded-md object-contain" />
+      <div className="fixed bottom-0 left-0 right-0 z-50 bg-[#ffffff] px-4 py-3 shadow-[0_-2px_10px_rgba(0,0,0,0.1)]">
+        <div className="max-w-xl mx-auto flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          {/* Product Info */}
+          <div className="flex items-start sm:items-center space-x-3 me-5">
+            <img
+              src={variation?.img}
+              alt={variation?.name}
+              className="w-10 h-10 rounded-md object-contain"
+            />
             <div className="text-black leading-tight">
               <div className="text-lg bold-font">{variation?.name}</div>
               <div className="text-lg bold-font">
-                <span className="me-2 text-lg reg-font paragraph">Order total </span>
+                <span className="me-2 sm:text-lg text-md reg-font paragraph">Order total</span>
                 £{parseFloat(totalAmount)?.toFixed(2)}
-
               </div>
             </div>
           </div>
-          <div>
-            {isButtonLoading == true ? (
-              <div className="w-full px-28  py-3 rounded-full text-white bg-primary">
+
+          {/* Button */}
+          <div className="w-full sm:w-auto">
+            {isButtonLoading === true ? (
+              <div className="w-full px-28 py-3 rounded-full text-white bg-primary flex justify-center">
                 <motion.div
                   animate={{ rotate: 360 }}
                   transition={{
@@ -319,12 +325,19 @@ export default function DosageSelection() {
                 />
               </div>
             ) : (
-              <NextButton onClick={handleSubmit(onSubmit)} disabled={totalSelectedQty() === 0} label="Proceed to Checkout" />
+              <NextButton
+                onClick={handleSubmit(onSubmit)}
+                disabled={totalSelectedQty() === 0}
+                label="Proceed to Checkout"
+                className="w-full sm:w-auto"
+              />
             )}
-            {/* <NextButton onClick={handleSubmit(onSubmit)} disabled={totalSelectedQty() === 0} label="Proceed to Checkout" /> */}
+
+            <BackButton label="Back" className="mt-2 sm:hidden block" onClick={back} />
           </div>
         </div>
       </div>
+
     </>
   );
 }
