@@ -113,10 +113,7 @@ export default function LoginScreen() {
           <h1 className="niba-reg-font heading mb-2">Login</h1>
 
           {/* Description */}
-          <p className="mb-6 reg-font paragraph">
-            In order for our doctors to assess your suitability for treatment, you will be asked to complete a short medical questionnaire at the next
-            step.
-          </p>
+          <p className="mb-6 reg-font paragraph">Returning patient? Login now to re-order your treatment.</p>
 
           <PageAnimationWrapper>
             <div className={`relative ${showLoader ? "pointer-events-none cursor-not-allowed" : ""}`}>

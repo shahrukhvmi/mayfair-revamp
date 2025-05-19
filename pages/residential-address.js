@@ -59,7 +59,7 @@ export default function ResidentialAddress() {
     setAddressSearchLoading(true);
     const postal = watch("postalCode");
     if (!postal) {
-      // alert("Please enter a postal code.");
+      // alert("Please enter a postcode.");
       setAddressSearchLoading(false);
     }
 
@@ -71,7 +71,7 @@ export default function ResidentialAddress() {
         setAddressSearchLoading(false);
       } else {
         setAddressSearchLoading(false);
-        toast.error("Invalid Postal Code");
+        toast.error("Invalid Postcode");
       }
     } catch (error) {
       console.error("API error:", error);
@@ -119,7 +119,7 @@ export default function ResidentialAddress() {
               <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
                 <div className="space-y-6">
                   <div className="relative">
-                    <TextField label="Postal Code" name="postalCode" placeholder="W1A 1AA" register={register} required errors={errors} />
+                    <TextField label="Postcode" name="postalCode" placeholder="W1A 1AA" register={register} required errors={errors} />
                     <button
                       type="button"
                       onClick={handleSearch}

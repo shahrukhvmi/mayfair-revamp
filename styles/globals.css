@@ -85,6 +85,10 @@ body {
   color: darkslategray;
 }
 
+.product-concent-list ol {
+    list-style: outside;
+}
+
 @media (max-width: 768px) {
   .heading {
     font-size: 2rem;

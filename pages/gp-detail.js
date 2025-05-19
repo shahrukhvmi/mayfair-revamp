@@ -256,7 +256,7 @@ export default function GpDetail() {
                   <TextField label="Email" name="email" placeholder="Email" register={register} errors={errors} />
 
                   <div className="relative">
-                    <TextField label="Postal Code" name="postalCode" placeholder="W1A 1AA" register={register} required errors={errors} />
+                    <TextField label="Postcode" name="postalCode" placeholder="W1A 1AA" register={register} required errors={errors} />
                     <button
                       type="button"
                       onClick={handleAddressFetch}

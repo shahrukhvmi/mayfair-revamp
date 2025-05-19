@@ -18,23 +18,38 @@ import useGpDetailsStore from "@/store/gpDetailStore";
 import useSignupStore from "@/store/signupStore";
 import useLastBmi from "@/store/useLastBmiStore";
 import toast from "react-hot-toast";
+import useMedicalQuestionsStore from "@/store/medicalQuestionStore";
+import useConfirmationQuestionsStore from "@/store/confirmationQuestionStore";
+import useShippingOrBillingStore from "@/store/shipingOrbilling";
+import useAuthStore from "@/store/authStore";
+import usePasswordReset from "@/store/usePasswordReset";
+import useUserDataStore from "@/store/userDataStore";
+import useCheckoutStore from "@/store/checkoutStore";
 
 const ConfirmationSummary = () => {
   const router = useRouter();
   const [showLoader, setShowLoader] = useState(false);
 
   // Zustand States
-  const { patientInfo, setPatientInfo } = usePatientInfoStore();
-  const { authUserDetail, setAuthUserDetail } = useAuthUserDetailStore();
-  const { bmi, setBmi } = useBmiStore();
-  const { medicalInfo, setMedicalInfo } = useMedicalInfoStore();
-  const { confirmationInfo, setConfirmationInfo } = useConfirmationInfoStore();
-  const { gpdetails, setGpDetails } = useGpDetailsStore();
-  const { productId } = useProductId();
-  const { setLastBmi } = useLastBmi();
+  const { patientInfo, setPatientInfo, clearPatientInfo } = usePatientInfoStore();
+  const { authUserDetail, setAuthUserDetail, clearAuthUserDetail } = useAuthUserDetailStore();
+  const { bmi, setBmi, clearBmi } = useBmiStore();
+  const { medicalInfo, setMedicalInfo, clearMedicalInfo } = useMedicalInfoStore();
+  const { confirmationInfo, setConfirmationInfo, clearConfirmationInfo } = useConfirmationInfoStore();
+  const { gpdetails, setGpDetails, clearGpDetails } = useGpDetailsStore();
+
+  const { clearCheckout } = useCheckoutStore();
+  const { clearMedicalQuestions } = useMedicalQuestionsStore();
+  const { clearConfirmationQuestions } = useConfirmationQuestionsStore();
+  const { clearShipping, clearBilling } = useShippingOrBillingStore();
+  const { clearToken } = useAuthStore();
+  const { setIsPasswordReset } = usePasswordReset();
+  const { productId, clearProductId } = useProductId();
+  const { setLastBmi, clearLastBmi } = useLastBmi();
+  const { clearUserData } = useUserDataStore();
 
   //To get firstname and lastName from signup store
-  const { firstName, lastName } = useSignupStore();
+  const { clearFirstName, clearLastName, clearEmail, clearConfirmationEmail, firstName, lastName } = useSignupStore();
 
   console.log(bmi);
 
@@ -59,8 +74,46 @@ const ConfirmationSummary = () => {
       // setLoading(false);
       setShowLoader(false);
       if (error) {
-        toast.error("Something went wrong");
-        setShowLoader(false);
+        console.log("error", error?.response?.data?.message);
+        if (error?.response?.data?.message == "Unauthenticated.") {
+          toast.error("Session Expired");
+          clearBmi();
+          clearCheckout();
+          clearConfirmationInfo();
+          clearGpDetails();
+          clearMedicalInfo();
+          clearPatientInfo();
+          clearBilling();
+          clearShipping();
+          clearAuthUserDetail();
+          clearMedicalQuestions();
+          clearConfirmationQuestions();
+          clearToken();
+          setIsPasswordReset(true);
+          clearProductId();
+          clearLastBmi();
+          clearUserData();
+          clearFirstName();
+          clearLastName();
+          clearEmail();
+          clearConfirmationEmail();
+          router.push("/login");
+        } else if (error?.response?.data?.original?.errors) {
+          console.log(error?.response?.data?.original?.errors, "error");
+          // toast.error("Something went wrong");
+          // toast.error(error?.response?.data?.original?.errors);
+          const errorMessages = error?.response?.data?.original?.errors;
+          Object.keys(errorMessages).forEach((key) => {
+            const errorMessage = errorMessages[key];
+            Array.isArray(errorMessage) ? errorMessage.forEach((msg) => toast.error(msg)) : toast.error(errorMessage);
+          });
+        } else if (error?.response?.data?.errors) {
+          const errorMessages = error?.response?.data?.original?.errors;
+          Object.keys(errorMessages).forEach((key) => {
+            const errorMessage = errorMessages[key];
+            Array.isArray(errorMessage) ? errorMessage.forEach((msg) => toast.error(msg)) : toast.error(errorMessage);
+          });
+        }
       }
     },
   });
@@ -139,7 +192,7 @@ const ConfirmationSummary = () => {
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-2 gap-x-8">
                 <p className="bold-font text-black">
-                  <span className="bold-font paragraph">Postal Code: </span>
+                  <span className="bold-font paragraph">Postcode: </span>
                   {patientInfo?.address?.postalcode}
                 </p>
                 <p className="bold-font text-black">

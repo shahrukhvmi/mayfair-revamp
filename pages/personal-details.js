@@ -55,11 +55,11 @@ export default function PersonalDetails() {
       return "You must be at least 18 years old";
     }
 
-    if (productId === 4 && age > 75) {
+    if (productId === 1 && age > 75) {
       return "Wegovy (Semaglutide) is not recommended for individuals above 75 years of age";
     }
 
-    if (productId === 1 && age > 85) {
+    if (productId === 4 && age > 85) {
       return "Mounjaro (Tirzepatide) is not recommended for individuals above 85 years of age";
     }
 

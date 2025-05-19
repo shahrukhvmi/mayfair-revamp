@@ -3,7 +3,7 @@ import FormWrapper from "@/Components/FormWrapper/FormWrapper";
 import NextButton from "@/Components/NextButton/NextButton";
 import PageAnimationWrapper from "@/Components/PageAnimationWrapper/PageAnimationWrapper";
 import { useRouter } from "next/router";
-import React from "react";
+import React, { useState } from "react";
 import StepsHeader from "@/layout/stepsHeader";
 import usePatientInfoStore from "@/store/patientInfoStore";
 import useBmiStore from "@/store/bmiStore";
@@ -17,18 +17,37 @@ import useProductId from "@/store/useProductIdStore";
 import useAuthUserDetailStore from "@/store/useAuthUserDetailStore";
 import useCheckoutStore from "@/store/checkoutStore";
 import useLastBmi from "@/store/useLastBmiStore";
+import useMedicalQuestionsStore from "@/store/medicalQuestionStore";
+import useConfirmationQuestionsStore from "@/store/confirmationQuestionStore";
+import useShippingOrBillingStore from "@/store/shipingOrbilling";
+import useAuthStore from "@/store/authStore";
+import usePasswordReset from "@/store/usePasswordReset";
+import useUserDataStore from "@/store/userDataStore";
+import useSignupStore from "@/store/signupStore";
+import PageLoader from "@/Components/PageLoader/PageLoader";
 
 const ReviewAnswers = () => {
   const router = useRouter();
+  const [showLoader, setShowLoader] = useState(false);
 
-  const { patientInfo, setPatientInfo } = usePatientInfoStore();
-  const { authUserDetail, setAuthUserDetail } = useAuthUserDetailStore();
-  const { bmi, setBmi } = useBmiStore();
-  const { medicalInfo, setMedicalInfo } = useMedicalInfoStore();
-  const { confirmationInfo, setConfirmationInfo } = useConfirmationInfoStore();
-  const { gpdetails, setGpDetails } = useGpDetailsStore();
-  const { productId } = useProductId();
-  const { setLastBmi } = useLastBmi();
+  const { patientInfo, setPatientInfo, clearPatientInfo } = usePatientInfoStore();
+  const { authUserDetail, setAuthUserDetail, clearAuthUserDetail } = useAuthUserDetailStore();
+  const { bmi, setBmi, clearBmi } = useBmiStore();
+  const { medicalInfo, setMedicalInfo, clearMedicalInfo } = useMedicalInfoStore();
+  const { confirmationInfo, setConfirmationInfo, clearConfirmationInfo } = useConfirmationInfoStore();
+  const { gpdetails, setGpDetails, clearGpDetails } = useGpDetailsStore();
+
+  const { clearCheckout } = useCheckoutStore();
+  const { clearMedicalQuestions } = useMedicalQuestionsStore();
+  const { clearConfirmationQuestions } = useConfirmationQuestionsStore();
+  const { clearShipping, clearBilling } = useShippingOrBillingStore();
+  const { clearToken } = useAuthStore();
+  const { setIsPasswordReset } = usePasswordReset();
+  const { productId, clearProductId } = useProductId();
+  const { setLastBmi, clearLastBmi } = useLastBmi();
+  const { clearUserData } = useUserDataStore();
+
+  const { clearFirstName, clearLastName, clearEmail, clearConfirmationEmail } = useSignupStore();
 
   console.log(confirmationInfo);
 
@@ -54,8 +73,47 @@ const ReviewAnswers = () => {
       // setLoading(false);
       console.log("error", error?.response?.data?.message);
       if (error) {
-        toast.error(error?.response?.data?.message);
-        setShowLoader(false);
+        if (error?.response?.data?.message == "Unauthenticated.") {
+          toast.error("Session Expired");
+          clearBmi();
+          clearCheckout();
+          clearConfirmationInfo();
+          clearGpDetails();
+          clearMedicalInfo();
+          clearPatientInfo();
+          clearBilling();
+          clearShipping();
+          clearAuthUserDetail();
+          clearMedicalQuestions();
+          clearConfirmationQuestions();
+          clearToken();
+          setIsPasswordReset(true);
+          clearProductId();
+          clearLastBmi();
+          clearUserData();
+          clearFirstName();
+          clearLastName();
+          clearEmail();
+          clearConfirmationEmail();
+          router.push("/login");
+        } else if (error?.response?.data?.original?.errors) {
+          console.log(error?.response?.data?.original?.errors, "error");
+          // toast.error("Something went wrong");
+          // toast.error(error?.response?.data?.original?.errors);
+          setShowLoader(false);
+          const errorMessages = error?.response?.data?.original?.errors;
+          Object.keys(errorMessages).forEach((key) => {
+            const errorMessage = errorMessages[key];
+            Array.isArray(errorMessage) ? errorMessage.forEach((msg) => toast.error(msg)) : toast.error(errorMessage);
+          });
+        } else if (error?.response?.data?.errors) {
+          setShowLoader(false);
+          const errorMessages = error?.response?.data?.original?.errors;
+          Object.keys(errorMessages).forEach((key) => {
+            const errorMessage = errorMessages[key];
+            Array.isArray(errorMessage) ? errorMessage.forEach((msg) => toast.error(msg)) : toast.error(errorMessage);
+          });
+        }
       }
     },
   });
@@ -65,6 +123,8 @@ const ReviewAnswers = () => {
   };
 
   const handleSubmit = () => {
+    setShowLoader(true);
+
     const formattedMedicalInfo = medicalInfo.map((item) => ({
       question: item.question,
       qsummary: item.qsummary,
@@ -165,6 +225,12 @@ const ReviewAnswers = () => {
                 <NextButton label="Confirm and Proceed" onClick={handleSubmit} />
                 <BackButton label="Edit answers" className="mt-2" onClick={handleRestart} />
               </div>
+
+              {showLoader && (
+                <div className="absolute inset-0 z-20 flex justify-center items-center bg-white/60 rounded-lg cursor-not-allowed">
+                  <PageLoader />
+                </div>
+              )}
             </div>
           </div>
         </PageAnimationWrapper>

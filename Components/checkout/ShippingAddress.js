@@ -126,7 +126,7 @@ export default function ShippingAddress({ isCompleted, onComplete }) {
     setAddressSearchLoading(true);
     const postal = watch("postalcode");
     if (!postal) {
-      alert("Please enter a postal code.");
+      alert("Please enter a postcode.");
       setAddressSearchLoading(false);
     }
 
@@ -138,7 +138,7 @@ export default function ShippingAddress({ isCompleted, onComplete }) {
         setAddressSearchLoading(false);
       } else {
         setAddressSearchLoading(false);
-        toast.error("Invalid Postal Code");
+        toast.error("Invalid Postcode");
       }
     } catch (error) {
       setAddressSearchLoading(false);
@@ -258,7 +258,7 @@ export default function ShippingAddress({ isCompleted, onComplete }) {
           />
 
           <div className="relative">
-            <TextField label="Postal Code" name="postalcode" placeholder="W1A 1AA" register={register} required errors={errors} />
+            <TextField label="Postcode" name="postalcode" placeholder="W1A 1AA" register={register} required errors={errors} />
             <button
               type="button"
               onClick={handleSearch}
@@ -324,7 +324,7 @@ export default function ShippingAddress({ isCompleted, onComplete }) {
                 ) : (
                   <MdOutlineCheckBoxOutlineBlank className="text-primary text-xl" />
                 )}
-                <span className="text-gray-700 reg-font mt-1">Make billing address same as shipping Address</span>
+                <span className="text-gray-700 reg-font mt-1">Make billing address same as shipping address</span>
               </div>
             )}
           />

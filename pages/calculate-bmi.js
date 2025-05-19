@@ -191,7 +191,7 @@ export default function CalculateBmi() {
 
         if (heightInMeters > 0 && weightKg > 0) {
           calculatedBmi = weightKg / (heightInMeters * heightInMeters);
-          calculatedBmi = +calculatedBmi.toFixed(2);
+          calculatedBmi = +calculatedBmi.toFixed(1);
 
           if (calculatedBmi < 18.5) {
             bmiLevel = "Underweight";

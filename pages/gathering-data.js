@@ -11,6 +11,21 @@ import useShipmentCountries from "@/store/useShipmentCountriesStore";
 import useBillingCountries from "@/store/useBillingCountriesStore";
 import useCartStore from "@/store/useCartStore";
 import useProductId from "@/store/useProductIdStore";
+import usePatientInfoStore from "@/store/patientInfoStore";
+import useAuthUserDetailStore from "@/store/useAuthUserDetailStore";
+import useMedicalInfoStore from "@/store/medicalInfoStore";
+import useConfirmationInfoStore from "@/store/confirmationInfoStore";
+import useGpDetailsStore from "@/store/gpDetailStore";
+import useCheckoutStore from "@/store/checkoutStore";
+import useMedicalQuestionsStore from "@/store/medicalQuestionStore";
+import useConfirmationQuestionsStore from "@/store/confirmationQuestionStore";
+import useShippingOrBillingStore from "@/store/shipingOrbilling";
+import useAuthStore from "@/store/authStore";
+import usePasswordReset from "@/store/usePasswordReset";
+import useLastBmi from "@/store/useLastBmiStore";
+import useSignupStore from "@/store/signupStore";
+import useBmiStore from "@/store/bmiStore";
+import useUserDataStore from "@/store/userDataStore";
 
 export default function GatherData() {
   const router = useRouter();
@@ -21,14 +36,32 @@ export default function GatherData() {
   const { setShipmentCountries } = useShipmentCountries();
   const { setBillingCountries } = useBillingCountries();
   const { clearCart } = useCartStore();
-  const { productId } = useProductId();
+
+  const { clearPatientInfo } = usePatientInfoStore();
+  const { clearAuthUserDetail } = useAuthUserDetailStore();
+  const { clearBmi } = useBmiStore();
+  const { clearMedicalInfo } = useMedicalInfoStore();
+  const { clearConfirmationInfo } = useConfirmationInfoStore();
+  const { clearGpDetails } = useGpDetailsStore();
+
+  const { clearCheckout } = useCheckoutStore();
+  const { clearMedicalQuestions } = useMedicalQuestionsStore();
+  const { clearConfirmationQuestions } = useConfirmationQuestionsStore();
+  const { clearShipping, clearBilling } = useShippingOrBillingStore();
+  const { clearToken } = useAuthStore();
+  const { setIsPasswordReset } = usePasswordReset();
+  const { productId, clearProductId } = useProductId();
+  const { clearLastBmi } = useLastBmi();
+  const { clearUserData } = useUserDataStore();
+
+  const { clearFirstName, clearLastName, clearEmail, clearConfirmationEmail } = useSignupStore();
 
   console.log(productId, "productId productId");
 
   // Variations fetch mutation
   const variationMutation = useMutation(getVariationsApi, {
     onSuccess: (data) => {
-      console.log(data, "ckdsjksdkjsd");
+      console.log(data, "getVariationsApi");
       if (data) {
         clearCart();
         // toast.success("User registered successfully!");
@@ -41,9 +74,34 @@ export default function GatherData() {
       }
     },
     onError: (error) => {
-      if (error?.response?.data?.errors) {
-        toast.error(error?.response?.data?.errors);
-        setShowLoader(false);
+      if (error) {
+        if (error?.response?.data?.message == "Unauthenticated.") {
+          toast.error("Session Expired");
+          clearBmi();
+          clearCheckout();
+          clearConfirmationInfo();
+          clearGpDetails();
+          clearMedicalInfo();
+          clearPatientInfo();
+          clearBilling();
+          clearShipping();
+          clearAuthUserDetail();
+          clearMedicalQuestions();
+          clearConfirmationQuestions();
+          clearToken();
+          setIsPasswordReset(true);
+          clearProductId();
+          clearLastBmi();
+          clearUserData();
+          clearFirstName();
+          clearLastName();
+          clearEmail();
+          clearConfirmationEmail();
+          // router.push("/login");
+        } else {
+          toast.error("Something went wrong");
+          setShowLoader(false);
+        }
       }
     },
   });
