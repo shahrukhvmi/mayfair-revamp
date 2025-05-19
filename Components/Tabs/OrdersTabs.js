@@ -34,7 +34,7 @@ const OrdersTabs = ({ activeTab, onTabChange, tabs }) => {
 
       {/* Normal Content Area (Tabs visible on larger screens) */}
       <div className="sm:block hidden">
-        <div className="flex space-x-8 justify-center p-4">
+        <div className="flex space-x-8 justify-start p-4">
           {tabs.map((tab, index) => (
             <motion.div
               key={index}

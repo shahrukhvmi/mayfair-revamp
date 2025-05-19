@@ -135,7 +135,6 @@ const OrderDetail = () => {
           tabs={["Order Details",
             "Patient Details",
             "Medical Questions",
-            "Consent / Confirmation",
             "Shipping / Billing"]}
         />
 
@@ -416,7 +415,7 @@ const OrderDetail = () => {
           }
 
           {
-            activeTab === 3 && (
+            activeTab === 5 && (
               <>
                 <h1 className="text-2xl font-light my-4">
                   <span className="niba-bold-font text-black">User Consent</span>
@@ -710,7 +709,7 @@ const OrderDetail = () => {
 
 
           {
-            activeTab === 4 && (
+            activeTab === 3 && (
               <>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   {/* Patient Information Section */}
