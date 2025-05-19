@@ -40,7 +40,7 @@ const ProductConsent = ({ isCompleted, onComplete, onConsentChange, setIsConcent
       <div>
         {/* Consent List */}
         <div
-          className="list-disc list-outside pl-5 text-sm text-gray-700 space-y-2 reg-font paragraph my-3 product-concent-list"
+          className="list-disc list-outside pl-5 text-sm text-gray-700 space-y-2 reg-font paragraph my-3 product-concent-list concent-anchor"
           dangerouslySetInnerHTML={{ __html: variation?.terms_and_conditon }}
         ></div>
         {/* {variation?.terms_and_conditon} */}

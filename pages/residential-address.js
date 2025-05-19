@@ -42,6 +42,7 @@ export default function ResidentialAddress() {
       address1: "",
       address2: "",
       city: "",
+      country: "",
     },
   });
 
@@ -49,9 +50,10 @@ export default function ResidentialAddress() {
   // 👇 Watch individual address fields
   const address1 = watch("address1");
   const city = watch("city");
+  const country = watch("country");
 
   // 👇 Enable Next only when required fields are filled
-  const isNextEnabled = !!address1?.trim() && !!city?.trim();
+  const isNextEnabled = !!address1?.trim() && !!city?.trim() && !!country?.trim();
 
   const handleSearch = async () => {
     setAddressSearchLoading(true);
@@ -86,14 +88,9 @@ export default function ResidentialAddress() {
       setValue("address1", patientInfo.address.addressone || "");
       setValue("address2", patientInfo.address.addresstwo || "");
       setValue("city", patientInfo.address.city || "");
+      setValue("country", patientInfo.address.country || "");
 
-      if (
-        patientInfo.address.addressone ||
-        patientInfo.address.addresstwo ||
-        patientInfo.address.city ||
-        patientInfo.address.state ||
-        patientInfo.address.country
-      ) {
+      if (patientInfo.address.addressone || patientInfo.address.addresstwo || patientInfo.address.city || patientInfo.address.country) {
         setManual(true);
       }
     }
@@ -106,6 +103,7 @@ export default function ResidentialAddress() {
       addresstwo: data.address2,
       city: data.city,
       state: "",
+      country: data.country,
     };
 
     setPatientInfo({ ...patientInfo, address: fullAddress });
@@ -167,6 +165,7 @@ export default function ResidentialAddress() {
                         setValue("address1", selected.line_1 || "", { shouldValidate: true });
                         setValue("address2", selected.line_2 || "", { shouldValidate: true }); // optional but still validate
                         setValue("city", selected.town_or_city || "", { shouldValidate: true });
+                        setValue("country", selected.country || "", { shouldValidate: true });
                       }}
                       options={addressOptions.map((addr, idx) => ({
                         value: idx,
@@ -187,7 +186,7 @@ export default function ResidentialAddress() {
                       <TextField label="Address" name="address1" placeholder="123 Main Street" register={register} required errors={errors} />
                       <TextField label="Address 2" name="address2" placeholder="Flat 14" register={register} errors={errors} />
                       <TextField label="Town / City" name="city" placeholder="e.g., London" register={register} required errors={errors} />
-                      {/* <TextField label="County" name="state" placeholder="Essex" register={register} required errors={errors} /> */}
+                      <TextField label="Country" name="country" placeholder="Essex" register={register} required errors={errors} />
                     </div>
                   )}
                 </div>

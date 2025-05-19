@@ -68,7 +68,7 @@ export default function SignUp() {
     <>
       <StepsHeader />
       <FormWrapper
-        heading={"Enter Your Full Legal Name"}
+        heading={"Enter your full legal name"}
         description={"We require this to generate your prescription if you qualify for the treatment."}
         percentage={"10"}
       >

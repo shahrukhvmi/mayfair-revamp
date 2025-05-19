@@ -88,6 +88,9 @@ body {
 .product-concent-list ol {
     list-style: outside;
 }
+.concent-anchor a {
+  color: rgb(0, 0, 238);
+}
 
 @media (max-width: 768px) {
   .heading {
