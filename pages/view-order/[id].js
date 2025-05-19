@@ -289,7 +289,7 @@ const OrderDetails = () => {
                   </TableCell>
                 </TableRow>
                 <TableRow>
-                  <TableCell className="reg-font  paragraph">City</TableCell>
+                  <TableCell className="reg-font  paragraph">Town / City</TableCell>
                   <TableCell className="reg-font  text-[#1C1C29] capitalize">
                     {gpDetails?.city || "N/A"}
                     {/* {gpDetails.addresstwo ? gpDetails?.addresstwo : "N/A"} */}
@@ -355,7 +355,7 @@ const OrderDetails = () => {
                   </TableCell>
                 </TableRow>
                 <TableRow>
-                  <TableCell className="reg-font  paragraph">City</TableCell>
+                  <TableCell className="reg-font  paragraph">Town / City</TableCell>
                   <TableCell className="reg-font  text-[#1C1C29] capitalize">{shippingData?.city ? shippingData?.city : "N/A"}</TableCell>
                 </TableRow>
                 <TableRow>

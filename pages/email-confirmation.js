@@ -31,7 +31,7 @@ export default function EmailConfirmation() {
   const { firstName, lastName, setLastName, setFirstName, email, confirmationEmail, setEmail, setConfirmationEmail } = useSignupStore();
   const { setUserData } = useUserDataStore();
   const { token, setToken } = useAuthStore();
-  const { setIsPasswordReset, isPasswordReset } = usePasswordReset();
+  const { setIsPasswordReset, isPasswordReset, setShowResetPassword } = usePasswordReset();
   const { showLoginModal, closeLoginModal, openLoginModal } = useLoginModalStore();
 
   const {
@@ -102,6 +102,7 @@ export default function EmailConfirmation() {
             setFirstName(user?.fname);
             setLastName(user?.lname);
             setEmail(user?.email);
+            setShowResetPassword(user?.show_password_reset);
 
             toast.success("Login Successfully");
             Fetcher.axiosSetup.defaults.headers.common.Authorization = `Bearer ${user.token}`;

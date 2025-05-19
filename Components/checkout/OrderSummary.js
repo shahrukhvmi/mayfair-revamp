@@ -21,6 +21,14 @@ import sendStepData from "@/api/stepsDataApi";
 import { useMutation } from "@tanstack/react-query";
 import useSignupStore from "@/store/signupStore";
 import useProductId from "@/store/useProductIdStore";
+import useAuthUserDetailStore from "@/store/useAuthUserDetailStore";
+import useCheckoutStore from "@/store/checkoutStore";
+import useMedicalQuestionsStore from "@/store/medicalQuestionStore";
+import useConfirmationQuestionsStore from "@/store/confirmationQuestionStore";
+import useAuthStore from "@/store/authStore";
+import usePasswordReset from "@/store/usePasswordReset";
+import useLastBmi from "@/store/useLastBmiStore";
+import useUserDataStore from "@/store/userDataStore";
 
 const OrderSummary = ({ isConcentCheck }) => {
   const router = useRouter();
@@ -28,15 +36,31 @@ const OrderSummary = ({ isConcentCheck }) => {
   // Get some data to store✌✌
   const { items, totalAmount, setCheckOut, setOrderId } = useCartStore();
   const { Coupon, setCoupon, clearCoupon } = useCouponStore();
-  const { shipping, billing, billingSameAsShipping } = useShippingOrBillingStore();
+  const { shipping, billing, billingSameAsShipping, clearShipping, clearBilling } = useShippingOrBillingStore();
 
-  const { patientInfo } = usePatientInfoStore();
-  const { medicalInfo } = useMedicalInfoStore();
-  const { gpdetails } = useGpDetailsStore();
-  const { bmi } = useBmiStore();
-  const { confirmationInfo } = useConfirmationInfoStore();
+  const { patientInfo, clearPatientInfo } = usePatientInfoStore();
+  const { medicalInfo, clearMedicalInfo } = useMedicalInfoStore();
+  const { gpdetails, clearGpDetails } = useGpDetailsStore();
+  const { bmi, clearBmi } = useBmiStore();
+  const { confirmationInfo, clearConfirmationInfo } = useConfirmationInfoStore();
   const { email } = useSignupStore();
-  const { productId } = useProductId();
+  const { productId, clearProductId } = useProductId();
+
+  // store addons or dose here 🔥🔥
+
+  const { clearAuthUserDetail } = useAuthUserDetailStore();
+
+  const { clearCheckout } = useCheckoutStore();
+  const { clearMedicalQuestions } = useMedicalQuestionsStore();
+  const { clearConfirmationQuestions } = useConfirmationQuestionsStore();
+
+  const { clearToken } = useAuthStore();
+  const { setIsPasswordReset } = usePasswordReset();
+  const { clearLastBmi } = useLastBmi();
+  const { clearUserData } = useUserDataStore();
+
+  const { clearFirstName, clearLastName, clearEmail, clearConfirmationEmail } = useSignupStore();
+
   const isApplyEnabled = discountCode.trim().length > 0;
   const handleEdit = () => {
     router.push("dosage-selection");
@@ -108,7 +132,32 @@ const OrderSummary = ({ isConcentCheck }) => {
       const errors = error?.response?.data?.original?.errors;
       const product_error = error?.response?.data?.errors?.Product;
 
-      if (errors && typeof errors === "object") {
+      if (error?.response?.data?.message == "Unauthenticated.") {
+        console.log("error here");
+        toast.error("Session Expired");
+        clearBmi();
+        clearCheckout();
+        clearConfirmationInfo();
+        clearGpDetails();
+        clearMedicalInfo();
+        clearPatientInfo();
+        clearBilling();
+        clearShipping();
+        clearAuthUserDetail();
+        clearMedicalQuestions();
+        clearConfirmationQuestions();
+        clearToken();
+        setIsPasswordReset(true);
+        clearProductId();
+        clearLastBmi();
+        clearUserData();
+        clearFirstName();
+        clearLastName();
+        clearEmail();
+        clearConfirmationEmail();
+        setIsButtonLoading(false);
+        router.push("/login");
+      } else if (errors && typeof errors === "object") {
         setIsButtonLoading(false);
         Object.keys(errors).forEach((key) => {
           const errorMessage = errors[key];
@@ -206,7 +255,6 @@ const OrderSummary = ({ isConcentCheck }) => {
                       onClick={handleEdit}
                       className="flex justify-around align-middle cursor-pointer ml-2 p-2 w-30 rounded-lg bg-white hover:bg-gray-100 text-primary shadow transition"
                     >
-
                       <span className="reg-font text-sm text-gray-500">Edit order</span>
                       <HiOutlinePencilAlt className="w-4 h-4" color="#47317c" />
                     </button>
@@ -267,7 +315,6 @@ const OrderSummary = ({ isConcentCheck }) => {
                     <p className="bold-font paragraph !text-black">VAT</p>
                     <p className="bold-font text-black">£0.00</p>
                   </div>
-
 
                   {Coupon && (
                     <div className="flex justify-between items-center mt-4">
@@ -334,8 +381,9 @@ const OrderSummary = ({ isConcentCheck }) => {
                           type="button"
                           onClick={handleApplyCoupon}
                           disabled={!isApplyEnabled}
-                          className={`cursor-pointer px-6 text-sm bold-font text-white transition-all duration-200 ${isApplyEnabled ? "bg-primary hover:bg-primary" : "bg-gray-300 cursor-not-allowed"
-                            }`}
+                          className={`cursor-pointer px-6 text-sm bold-font text-white transition-all duration-200 ${
+                            isApplyEnabled ? "bg-primary hover:bg-primary" : "bg-gray-300 cursor-not-allowed"
+                          }`}
                         >
                           {couponLoading ? "Applying..." : "Apply"}
                         </button>

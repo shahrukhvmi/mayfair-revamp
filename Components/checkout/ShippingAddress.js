@@ -50,7 +50,6 @@ export default function ShippingAddress({ isCompleted, onComplete }) {
       addressone: "",
       addresstwo: "",
       city: "",
-      state: "",
       shippingCountry: "",
       same_as_shipping: false,
       first_name: "",
@@ -78,7 +77,7 @@ export default function ShippingAddress({ isCompleted, onComplete }) {
         first_name: shipping?.first_name,
         last_name: shipping?.last_name,
         city: shipping?.city,
-        state: shipping?.state,
+        state: "",
         same_as_shipping: true,
       });
     }
@@ -101,7 +100,6 @@ export default function ShippingAddress({ isCompleted, onComplete }) {
       setValue("last_name", shipping.last_name);
     }
     setValue("city", shipping.city || "");
-    setValue("state", shipping.state || "");
 
     // ✅ Find country by name
     const country = shipmentCountries.find((c) => c.name === shipping.country_name);
@@ -138,7 +136,7 @@ export default function ShippingAddress({ isCompleted, onComplete }) {
         setAddressSearchLoading(false);
       } else {
         setAddressSearchLoading(false);
-        toast.error("Invalid Postcode");
+        toast.error("Invalid Post code");
       }
     } catch (error) {
       setAddressSearchLoading(false);
@@ -165,7 +163,7 @@ export default function ShippingAddress({ isCompleted, onComplete }) {
       first_name: data.first_name,
       last_name: data.last_name,
       city: data.city,
-      state: data.state,
+      state: "",
       same_as_shipping: data.same_as_shipping, // ✅ ADD THIS LINE
     });
 
@@ -178,7 +176,7 @@ export default function ShippingAddress({ isCompleted, onComplete }) {
         addressone: data.addressone,
         addresstwo: data.addresstwo,
         city: data.city,
-        state: data.state,
+        state: "",
         same_as_shipping: data.same_as_shipping, // ✅ Save this also
       });
     }
@@ -205,7 +203,7 @@ export default function ShippingAddress({ isCompleted, onComplete }) {
         first_name: values.first_name || "",
         last_name: values.last_name || "",
         city: values.city || "",
-        state: values.state || "",
+        state: "",
         same_as_shipping: values.same_as_shipping ?? false,
       });
     });
@@ -258,7 +256,7 @@ export default function ShippingAddress({ isCompleted, onComplete }) {
           />
 
           <div className="relative">
-            <TextField label="Postcode" name="postalcode" placeholder="W1A 1AA" register={register} required errors={errors} />
+            <TextField label="Post code" name="postalcode" placeholder="W1A 1AA" register={register} required errors={errors} />
             <button
               type="button"
               onClick={handleSearch}
@@ -300,7 +298,6 @@ export default function ShippingAddress({ isCompleted, onComplete }) {
                 setValue("addressone", selected.line_1 || "", { shouldValidate: true });
                 setValue("addresstwo", selected.line_2 || "", { shouldValidate: true });
                 setValue("city", selected.town_or_city || "", { shouldValidate: true });
-                setValue("state", selected.county || "", { shouldValidate: true });
               }}
               options={addressOptions.map((addr, idx) => ({
                 value: idx,
@@ -309,10 +306,9 @@ export default function ShippingAddress({ isCompleted, onComplete }) {
             />
           )}
 
-          <TextField label="Address 1" name="addressone" placeholder="123 Main Street" register={register} required errors={errors} />
+          <TextField label="Address" name="addressone" placeholder="123 Main Street" register={register} required errors={errors} />
           <TextField label="Address 2" name="addresstwo" placeholder="Flat 14" register={register} errors={errors} />
-          <TextField label="City" name="city" placeholder="e.g., London" register={register} required errors={errors} />
-          <TextField label="County" name="state" placeholder="e.g., Essex" register={register} required errors={errors} />
+          <TextField label="Town / City" name="city" placeholder="e.g., London" register={register} required errors={errors} />
 
           <Controller
             name="same_as_shipping"
