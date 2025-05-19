@@ -47,7 +47,6 @@ export default function Shipping({ shipmentCountries }) {
       addressone: "",
       addresstwo: "",
       city: "",
-      state: "",
       shippingCountry: "",
     },
   });
@@ -66,7 +65,6 @@ export default function Shipping({ shipmentCountries }) {
       setValue("addressone", shippingData.addressone || "");
       setValue("addresstwo", shippingData.addresstwo || "");
       setValue("city", shippingData.city || "");
-      setValue("state", shippingData.state || "");
 
       // Match country by name from static list
       const country = shipmentCountries?.find((c) => c.name === shippingData.country);
@@ -91,7 +89,6 @@ export default function Shipping({ shipmentCountries }) {
       setValue("addressone", "");
       setValue("addresstwo", "");
       setValue("city", "");
-      setValue("state", "");
     }
   }, [shippingIndex]);
 
@@ -111,7 +108,7 @@ export default function Shipping({ shipmentCountries }) {
         setAddressSearchLoading(false);
       } else {
         setAddressSearchLoading(false);
-        toast.error("Invalid Postcode");
+        toast.error("Invalid Post code");
       }
     } catch (error) {
       console.error("API error:", error);
@@ -146,7 +143,7 @@ export default function Shipping({ shipmentCountries }) {
       addressone: data.addressone,
       addresstwo: data.addresstwo,
       city: data.city,
-      state: data.state,
+      state: "",
     };
 
     sendProfileDataMutation.mutate(formData);
@@ -182,7 +179,6 @@ export default function Shipping({ shipmentCountries }) {
                   setValue("addressone", "");
                   setValue("addresstwo", "");
                   setValue("city", "");
-                  setValue("state", "");
 
                   const selectedCountry = shipmentCountries.find((c) => c.id.toString() === id);
                   if (selectedCountry) {
@@ -202,7 +198,7 @@ export default function Shipping({ shipmentCountries }) {
           />
 
           <div className="relative">
-            <TextField label="Postcode" name="postalcode" placeholder="W1A 1AA" register={register} required errors={errors} />
+            <TextField label="Post code" name="postalcode" placeholder="W1A 1AA" register={register} required errors={errors} />
             <button
               type="button"
               onClick={handleSearch}
@@ -244,7 +240,6 @@ export default function Shipping({ shipmentCountries }) {
                 setValue("addressone", selected.line_1 || "", { shouldValidate: true });
                 setValue("addresstwo", selected.line_2 || "", { shouldValidate: true });
                 setValue("city", selected.town_or_city || "", { shouldValidate: true });
-                setValue("state", selected.county || "", { shouldValidate: true });
               }}
               options={addressOptions.map((addr, idx) => ({
                 value: idx,
@@ -253,10 +248,9 @@ export default function Shipping({ shipmentCountries }) {
             />
           )}
 
-          <TextField label="Address 1" name="addressone" placeholder="123 Main Street" register={register} required errors={errors} />
+          <TextField label="Address" name="addressone" placeholder="123 Main Street" register={register} required errors={errors} />
           <TextField label="Address 2" name="addresstwo" placeholder="Flat 14" register={register} errors={errors} />
-          <TextField label="City" name="city" placeholder="e.g., London" register={register} required errors={errors} />
-          <TextField label="County" name="state" placeholder="e.g., Essex" register={register} required errors={errors} />
+          <TextField label="Town / City" name="city" placeholder="e.g., London" register={register} required errors={errors} />
 
           <NextButton label="Continue" disabled={!isValid} />
         </form>

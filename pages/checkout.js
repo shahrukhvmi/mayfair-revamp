@@ -15,7 +15,7 @@ import { Inter } from "next/font/google";
 const inter = Inter({ subsets: ["latin"] });
 
 const Checkout = () => {
-  const { isPasswordReset } = usePasswordReset();
+  const { isPasswordReset, showResetPassword } = usePasswordReset();
   const { billingSameAsShipping } = useShippingOrBillingStore();
   const [isConcentCheck, setIsConcentCheck] = useState(false);
 
@@ -115,11 +115,13 @@ const Checkout = () => {
           </p>
         </div>
 
-        <div ref={personalRef} className={`${!isPasswordReset ? "cursor-not-allowed" : ""}`}>
-          <div className={`${!isPasswordReset ? "opacity-50 pointer-events-none" : ""}`}>
-            <SetAPassword onComplete={goToNextStep} />
+        {showResetPassword && (
+          <div ref={personalRef} className={`${!isPasswordReset ? "cursor-not-allowed" : ""}`}>
+            <div className={`${!isPasswordReset ? "opacity-50 pointer-events-none" : ""}`}>
+              <SetAPassword onComplete={goToNextStep} />
+            </div>
           </div>
-        </div>
+        )}
 
         <div ref={addressRef}>
           <ShippingAddress onComplete={goToNextStep} />

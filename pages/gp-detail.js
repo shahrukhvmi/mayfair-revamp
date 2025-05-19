@@ -42,7 +42,6 @@ export default function GpDetail() {
       addressLine1: "",
       addressLine2: "",
       city: "",
-      state: "",
       gpName: "",
     },
   });
@@ -53,7 +52,6 @@ export default function GpDetail() {
   const gpName = watch("gpName");
   const addressLine1 = watch("addressLine1");
   const city = watch("city");
-  const state = watch("state");
 
   const isManualAddressRequired = gpDetails === "yes" && gepTreatMent === "yes" && manual;
   const isNextEnabled = (() => {
@@ -61,7 +59,7 @@ export default function GpDetail() {
     if (gpDetails === "yes" && gepTreatMent === "no") return true; // ✅ Allow next if patient will inform GP
 
     if (gpDetails === "yes" && gepTreatMent === "yes") {
-      return !!gpName?.trim() && !!addressLine1?.trim() && !!city?.trim() && !!state?.trim();
+      return !!gpName?.trim() && !!addressLine1?.trim() && !!city?.trim();
     }
 
     return false; // fallback: disable
@@ -76,10 +74,9 @@ export default function GpDetail() {
       setValue("addressLine1", gpdetails.addressLine1 || "");
       setValue("addressLine2", gpdetails.addressLine2 || "");
       setValue("city", gpdetails.city || "");
-      setValue("state", gpdetails.state || "");
       setValue("gpName", gpdetails.gpName || "");
 
-      if (gpdetails.zipcode || gpdetails.addressLine1 || gpdetails.addressLine2 || gpdetails.city || gpdetails.gpName || gpdetails.state) {
+      if (gpdetails.zipcode || gpdetails.addressLine1 || gpdetails.addressLine2 || gpdetails.city || gpdetails.gpName) {
         setManual(true);
       }
     }
@@ -95,8 +92,6 @@ export default function GpDetail() {
       setValue("addressLine1", "");
       setValue("addressLine2", "");
       setValue("city", "");
-      setValue("state", "");
-      setValue("country", "");
       setManual(false); // Hide manual if open
       setSearchResults([]); // Clear search results
     }
@@ -111,8 +106,6 @@ export default function GpDetail() {
       setValue("addressLine1", "");
       setValue("addressLine2", "");
       setValue("city", "");
-      setValue("state", "");
-      setValue("country", "");
       setManual(false);
       setSearchResults([]);
     }
@@ -161,7 +154,6 @@ export default function GpDetail() {
     setValue("addressLine1", address.Address1 || "");
     setValue("addressLine2", address.Address2 || "");
     setValue("city", address.City || "");
-    setValue("state", address.County || "");
     setManual(true);
   };
 
@@ -175,7 +167,7 @@ export default function GpDetail() {
       addressLine1: data.addressLine1 || "",
       addressLine2: data.addressLine2 || "",
       city: data.city || "",
-      state: data.state || "",
+      state: "",
     };
 
     setShowLoader(true);
@@ -256,7 +248,7 @@ export default function GpDetail() {
                   <TextField label="Email" name="email" placeholder="Email" register={register} errors={errors} />
 
                   <div className="relative">
-                    <TextField label="Postcode" name="postalCode" placeholder="W1A 1AA" register={register} required errors={errors} />
+                    <TextField label="Post code" name="postalCode" placeholder="W1A 1AA" register={register} required errors={errors} />
                     <button
                       type="button"
                       onClick={handleAddressFetch}
@@ -298,7 +290,6 @@ export default function GpDetail() {
                           setValue("addressLine1", selected.Address1 || "", { shouldValidate: true });
                           setValue("addressLine2", selected.Address2 || "", { shouldValidate: true });
                           setValue("city", selected.City || "", { shouldValidate: true });
-                          setValue("state", selected.County || "", { shouldValidate: true });
 
                           setManual(true); // force manual section open so user sees populated fields
                         }}
@@ -319,10 +310,9 @@ export default function GpDetail() {
                   {manual && (
                     <div className="space-y-4 mt-4">
                       <TextField label="GP Name" name="gpName" placeholder="The Elmhurst..." register={register} required errors={errors} />
-                      <TextField label="Address 1" name="addressLine1" placeholder="123 Main Street" register={register} required errors={errors} />
+                      <TextField label="Address" name="addressLine1" placeholder="123 Main Street" register={register} required errors={errors} />
                       <TextField label="Address 2" name="addressLine2" placeholder="Flat 14" register={register} errors={errors} />
-                      <TextField label="City" name="city" placeholder="London" register={register} required errors={errors} />
-                      <TextField label="County" name="state" placeholder="Essex" register={register} required errors={errors} />
+                      <TextField label="Town / City" name="city" placeholder="London" register={register} required errors={errors} />
                     </div>
                   )}
                 </>

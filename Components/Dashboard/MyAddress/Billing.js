@@ -102,7 +102,7 @@ export default function Billing({ billingCountries }) {
         setManual(true);
       } else {
         setAddressSearchLoading(false);
-        toast.error("Invalid Postcode");
+        toast.error("Invalid Post code");
       }
     } catch (error) {
       console.error("API error:", error);
@@ -179,7 +179,7 @@ export default function Billing({ billingCountries }) {
         />
 
         <div className="relative">
-          <TextField label="Postcode" name="postalcode" placeholder="W1A 1AA" register={register} required errors={errors} />
+          <TextField label="Post code" name="postalcode" placeholder="W1A 1AA" register={register} required errors={errors} />
           {isSearchAllowed && (
             <button
               type="button"
@@ -232,10 +232,10 @@ export default function Billing({ billingCountries }) {
           />
         )}
 
-        <TextField label="Address 1" name="addressone" placeholder="123 Main Street" register={register} required errors={errors} />
+        <TextField label="Address" name="addressone" placeholder="123 Main Street" register={register} required errors={errors} />
         <TextField label="Address 2" name="addresstwo" placeholder="Flat 14" register={register} errors={errors} />
-        <TextField label="City" name="city" placeholder="e.g., London" register={register} required errors={errors} />
-        <TextField label="County" name="state" placeholder="e.g., Essex" register={register} required errors={errors} />
+        <TextField label="Town / City" name="city" placeholder="e.g., London" register={register} required errors={errors} />
+        <TextField label="State / County" name="state" placeholder="e.g., Essex" register={register} errors={errors} />
 
         <NextButton label="Continue" disabled={!isValid} />
       </form>

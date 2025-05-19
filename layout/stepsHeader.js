@@ -54,7 +54,7 @@ const StepsHeader = ({ isOpen, toggleSidebar }) => {
   const pathname = usePathname();
 
   const router = useRouter();
-  const { setIsPasswordReset } = usePasswordReset();
+  const { setIsPasswordReset, setShowResetPassword } = usePasswordReset();
 
   const handleLogout = () => {
     setAnchorEl(null);
@@ -78,6 +78,7 @@ const StepsHeader = ({ isOpen, toggleSidebar }) => {
     clearLastName();
     clearEmail();
     clearConfirmationEmail();
+    setShowResetPassword(true);
     router.push("/login");
   };
 
@@ -98,6 +99,7 @@ const StepsHeader = ({ isOpen, toggleSidebar }) => {
       setEmail(data?.data?.data?.email);
       router.push("/dashboard");
       setIsPasswordReset(false);
+      setShowResetPassword(data?.data?.data?.show_password_reset);
     },
     onError: (error) => {
       const errors = error?.response?.data?.errors;
@@ -131,7 +133,6 @@ const StepsHeader = ({ isOpen, toggleSidebar }) => {
               <ApplicationLogo width={140} height={80} />
             </Link>
           </div>
-          
 
           {/* User Info or Login CTA */}
           <div className="relative">

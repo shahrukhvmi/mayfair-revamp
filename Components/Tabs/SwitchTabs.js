@@ -1,27 +1,22 @@
-import { motion } from "framer-motion";
-
-const SwitchTabs = ({ activeTab, onTabChange, tabs }) => {
+const SwitchTabs = ({ tabs, selectedTab, onTabChange }) => {
   return (
-    <div className="flex space-x-4 border-b-2 border-gray-300">
-      {tabs.map((tab, index) => (
-        <motion.button
-          key={index}
-          onClick={() => onTabChange(index)}
-          className={`px-6 py-2 text-lg font-semibold transition-all duration-300 ${
-            activeTab === index
-              ? "text-blue-500 border-b-4 border-blue-500"
-              : "text-gray-600 hover:text-blue-500"
-          }`}
-          initial={{ opacity: 0 }}  // Set initial state of tab (optional)
-          animate={{ opacity: 1 }}  // Animate opacity to 1 when visible
-          exit={{ opacity: 0 }}    // Fade out the tab when it is not active
-          transition={{ duration: 0.3 }}  // Adjust the transition time
-        >
-          {tab}
-        </motion.button>
-      ))}
+    <div className="w-full flex rounded-md overflow-hidden border border-green-700 mb-6">
+      {tabs.map((tab) => {
+        const isActive = selectedTab === tab.value;
+        return (
+          <button
+            key={tab.value}
+            type="button"
+            onClick={() => onTabChange(tab.value)}
+            className={`w-full py-2 text-sm font-semibold border-r border-black last:border-none transition-all
+                ${isActive ? "bg-green-100 text-black" : "bg-white text-black hover:bg-gray-100"}
+              `}
+          >
+            {tab.label}
+          </button>
+        );
+      })}
     </div>
   );
 };
-
 export default SwitchTabs;

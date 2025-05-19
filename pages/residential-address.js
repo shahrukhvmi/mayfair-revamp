@@ -42,7 +42,6 @@ export default function ResidentialAddress() {
       address1: "",
       address2: "",
       city: "",
-      state: "",
     },
   });
 
@@ -50,10 +49,9 @@ export default function ResidentialAddress() {
   // 👇 Watch individual address fields
   const address1 = watch("address1");
   const city = watch("city");
-  const state = watch("state");
 
   // 👇 Enable Next only when required fields are filled
-  const isNextEnabled = !!address1?.trim() && !!city?.trim() && !!state?.trim();
+  const isNextEnabled = !!address1?.trim() && !!city?.trim();
 
   const handleSearch = async () => {
     setAddressSearchLoading(true);
@@ -65,13 +63,15 @@ export default function ResidentialAddress() {
 
     try {
       const result = await api.find(postal);
+      console.log(result, "result");
+
       if (result && result.addresses?.addresses?.length) {
         setAddressOptions(result.addresses.addresses);
         setManual(true);
         setAddressSearchLoading(false);
       } else {
         setAddressSearchLoading(false);
-        toast.error("Invalid Postcode");
+        toast.error("Invalid Post code");
       }
     } catch (error) {
       console.error("API error:", error);
@@ -86,9 +86,14 @@ export default function ResidentialAddress() {
       setValue("address1", patientInfo.address.addressone || "");
       setValue("address2", patientInfo.address.addresstwo || "");
       setValue("city", patientInfo.address.city || "");
-      setValue("state", patientInfo.address.state || "");
 
-      if (patientInfo.address.addressone || patientInfo.address.addresstwo || patientInfo.address.city || patientInfo.address.state) {
+      if (
+        patientInfo.address.addressone ||
+        patientInfo.address.addresstwo ||
+        patientInfo.address.city ||
+        patientInfo.address.state ||
+        patientInfo.address.country
+      ) {
         setManual(true);
       }
     }
@@ -100,7 +105,7 @@ export default function ResidentialAddress() {
       addressone: data.address1,
       addresstwo: data.address2,
       city: data.city,
-      state: data.state,
+      state: "",
     };
 
     setPatientInfo({ ...patientInfo, address: fullAddress });
@@ -119,7 +124,7 @@ export default function ResidentialAddress() {
               <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
                 <div className="space-y-6">
                   <div className="relative">
-                    <TextField label="Postcode" name="postalCode" placeholder="W1A 1AA" register={register} required errors={errors} />
+                    <TextField label="Post code" name="postalCode" placeholder="W1A 1AA" register={register} required errors={errors} />
                     <button
                       type="button"
                       onClick={handleSearch}
@@ -162,7 +167,6 @@ export default function ResidentialAddress() {
                         setValue("address1", selected.line_1 || "", { shouldValidate: true });
                         setValue("address2", selected.line_2 || "", { shouldValidate: true }); // optional but still validate
                         setValue("city", selected.town_or_city || "", { shouldValidate: true });
-                        setValue("state", selected.county || "", { shouldValidate: true });
                       }}
                       options={addressOptions.map((addr, idx) => ({
                         value: idx,
@@ -180,10 +184,10 @@ export default function ResidentialAddress() {
 
                   {manual && (
                     <div className="space-y-4">
-                      <TextField label="Address 1" name="address1" placeholder="123 Main Street" register={register} required errors={errors} />
+                      <TextField label="Address" name="address1" placeholder="123 Main Street" register={register} required errors={errors} />
                       <TextField label="Address 2" name="address2" placeholder="Flat 14" register={register} errors={errors} />
-                      <TextField label="City" name="city" placeholder="e.g., London" register={register} required errors={errors} />
-                      <TextField label="County" name="state" placeholder="Essex" register={register} required errors={errors} />
+                      <TextField label="Town / City" name="city" placeholder="e.g., London" register={register} required errors={errors} />
+                      {/* <TextField label="County" name="state" placeholder="Essex" register={register} required errors={errors} /> */}
                     </div>
                   )}
                 </div>

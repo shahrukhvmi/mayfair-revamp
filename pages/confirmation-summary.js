@@ -192,7 +192,7 @@ const ConfirmationSummary = () => {
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-2 gap-x-8">
                 <p className="bold-font text-black">
-                  <span className="bold-font paragraph">Postcode: </span>
+                  <span className="bold-font paragraph">Post code: </span>
                   {patientInfo?.address?.postalcode}
                 </p>
                 <p className="bold-font text-black">
@@ -222,7 +222,7 @@ const ConfirmationSummary = () => {
                   )}
                 </p>
                 <p className="bold-font text-black">
-                  <span className="text-sm text-gray-700 mt-1">BMI: </span> {bmi?.bmi}
+                  <span className="text-sm text-gray-700 mt-1">BMI: </span> {bmi?.bmi?.toFixed(1)}
                 </p>
               </div>
             </div>

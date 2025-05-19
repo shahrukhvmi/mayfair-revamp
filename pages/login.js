@@ -25,7 +25,7 @@ export default function LoginScreen() {
   const { userData, setUserData } = useUserDataStore();
   const { setLastName, setFirstName, setEmail } = useSignupStore();
   const { token, setToken } = useAuthStore();
-  const { setIsPasswordReset } = usePasswordReset();
+  const { setIsPasswordReset, setShowResetPassword } = usePasswordReset();
   const router = useRouter();
 
   const {
@@ -58,6 +58,7 @@ export default function LoginScreen() {
         Fetcher.axiosSetup.defaults.headers.common.Authorization = `Bearer ${user.token}`;
         setShowLoader(false);
         setIsPasswordReset(false);
+        setShowResetPassword(user?.show_password_reset);
         router.push("/dashboard");
       }
     },

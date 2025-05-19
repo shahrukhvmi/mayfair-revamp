@@ -97,7 +97,7 @@ export default function GatherData() {
           clearLastName();
           clearEmail();
           clearConfirmationEmail();
-          // router.push("/login");
+          router.push("/login");
         } else {
           toast.error("Something went wrong");
           setShowLoader(false);
