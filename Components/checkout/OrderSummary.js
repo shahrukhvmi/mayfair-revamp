@@ -26,7 +26,7 @@ const OrderSummary = ({ isConcentCheck }) => {
   const router = useRouter();
   const [discountCode, setDiscountCode] = useState("");
   // Get some data to store✌✌
-  const { items, totalAmount, setFinalTotal, setOrderId } = useCartStore();
+  const { items, totalAmount, setCheckOut, setOrderId } = useCartStore();
   const { Coupon, setCoupon, clearCoupon } = useCouponStore();
   const { shipping, billing, billingSameAsShipping } = useShippingOrBillingStore();
 
@@ -164,7 +164,7 @@ const OrderSummary = ({ isConcentCheck }) => {
       },
     };
 
-    setFinalTotal(finalTotal);
+    setCheckOut(checkout);
 
     const formData = {
       checkout,

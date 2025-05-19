@@ -1,18 +1,23 @@
-import React, { useEffect, useState } from "react";
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Skeleton } from "@mui/material";
+import React, { useState, useEffect } from "react";
+import { Table, TableBody, TableCell, TableContainer, TableRow, Paper, TableHead } from "@mui/material";
 import moment from "moment";
 import getOrderByIdApi from "@/api/getOrderByIdApi";
+import { motion } from "framer-motion";
 import StepsHeader from "@/layout/stepsHeader";
+import SwitchTabs from "@/Components/Tabs/SwitchTabs"; // Ensure correct path
 import Link from "next/link";
 import useOrderId from "@/store/useOrderIdStore";
 
 const OrderDetail = () => {
-  const { orderId } = useOrderId();
-
   const [order, setOrder] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
+  const [activeTab, setActiveTab] = useState(0); // State for active tab
+  const { orderId } = useOrderId();
+  const [isOpen, setIsOpen] = useState(false);
 
+  const toggleSidebar = () => {
+    setIsOpen((prev) => !prev);
+  };
   useEffect(() => {
     if (orderId) {
       setLoading(true);
@@ -22,16 +27,16 @@ const OrderDetail = () => {
           setLoading(false);
         })
         .catch((err) => {
-          setError("Failed to fetch order");
           setLoading(false);
         });
     }
   }, [orderId]);
 
-  console.log(order, "sdsdsdsdsd");
-
   // Destructure data properly
   const shippingData = order?.data?.order?.shipping;
+  const bmiData = order?.data?.order?.consultation?.fields?.bmi;
+  const medicalInfo = order?.data?.order?.consultation?.fields?.medicalInfo;
+  const BillingData = order?.data?.order?.billing;
   const patientData = order?.data?.order?.consultation?.fields?.patientInfo;
   const gpDetails = order?.data?.order?.consultation?.fields?.gpdetails;
   const date = order?.data?.order?.created_at;
@@ -41,39 +46,17 @@ const OrderDetail = () => {
   const total = order?.data?.order?.total_price;
   const orders = order?.data?.order?.consultation?.fields?.checkout?.discount;
 
-  const [isOpen, setIsOpen] = useState(false);
 
-  const toggleSidebar = () => {
-    setIsOpen((prev) => !prev);
+  // Tab Transition Animation Variants
+  const tabContentVariants = {
+    initial: { opacity: 0, y: 20 }, // Start below and hidden
+    animate: { opacity: 1, y: 0 },   // Animate to visible position
+    exit: { opacity: 0, y: 20 },     // Fade out and move below
   };
 
   if (loading) {
-    return (
-      <div className="p-3 sm:bg-[#F9FAFB] sm:min-h-screen sm:rounded-md sm:shadow-md my-5 me-5 space-y-6">
-        {/* Header Skeleton */}
-        <Skeleton variant="text" width={200} height={40} />
-        {/* Buttons Skeleton */}
-        <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0 md:space-x-4">
-          <Skeleton variant="rounded" width={250} height={40} />
-          <div className="flex flex-wrap space-x-2 space-y-2 md:space-y-0">
-            <Skeleton variant="rounded" width={150} height={40} />
-            <Skeleton variant="rounded" width={150} height={40} />
-            <Skeleton variant="rounded" width={150} height={40} />
-          </div>
-        </div>
-        {/* Section Title Skeleton */}
-        <Skeleton variant="text" width={300} height={30} />
-        {/* Tables Skeletons */}
-        <div className="space-y-4">
-          <Skeleton variant="rectangular" width="100%" height={200} />
-          <Skeleton variant="rectangular" width="100%" height={200} />
-          <Skeleton variant="rectangular" width="100%" height={200} />
-        </div>
-      </div>
-    );
+    return <div>Loading...</div>;
   }
-
-  console.log(order, "dssdfsdfefew");
 
   return (
     <>
@@ -136,255 +119,98 @@ const OrderDetail = () => {
           </div>
         </div>
 
-        {/* Patient Information */}
-        <div className="sm:bg-gray-50 rounded-lg mb-6">
-          <h2 className="text-xl niba-bold-font text-[#1C1C29] mb-4">Patient Information</h2>
-          <TableContainer component={Paper}>
-            <Table>
-              <TableBody>
-                <TableRow>
-                  <TableCell style={{ width: "50%" }} className="reg-font  paragraph">
-                    First Name
-                  </TableCell>
-                  <TableCell style={{ width: "50%" }} className="reg-font  text-[#1C1C29] capitalize">
-                    {patientData?.firstName ? patientData?.firstName : "N/A"}
-                    {/* {shippingData.addresstwo ? shippingData?.addresstwo : "N/A"} */}
-                  </TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell className="reg-font  paragraph">Last name</TableCell>
-                  <TableCell className="reg-font  text-[#1C1C29] capitalize">{patientData?.lastName ? patientData?.lastName : "N/A"}</TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell className="reg-font  paragraph">Ethnicity</TableCell>
-                  <TableCell className="reg-font  text-[#1C1C29] capitalize">{patientData?.ethnicity ? patientData?.ethnicity : "N/A"}</TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell className="reg-font  paragraph">Pregnancy</TableCell>
-                  <TableCell className="reg-font  text-[#1C1C29] capitalize">{patientData?.pregnancy ? patientData?.pregnancy : "N/A"}</TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell className="reg-font  paragraph">Gender</TableCell>
-                  <TableCell className="reg-font  text-[#1C1C29] capitalize">{patientData?.gender ? patientData?.gender : "N/A"}</TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell className="reg-font  paragraph">Date of birth</TableCell>
-                  <TableCell className="reg-font text-[#1C1C29] capitalize">
-                    {moment(patientData?.dob, "DD-MM-YYYY", true).isValid() ? moment(patientData.dob, "DD-MM-YYYY").format("DD-MM-YYYY") : "N/A"}
-                  </TableCell>
-                </TableRow>
 
-                <TableRow>
-                  <TableCell className="reg-font  paragraph">Phone</TableCell>
 
-                  <TableCell className="reg-font text-[#1C1C29] capitalize">{patientData?.phoneNo ? patientData?.phoneNo : "N/A"}</TableCell>
-                </TableRow>
-              </TableBody>
-            </Table>
-          </TableContainer>
-        </div>
 
-        {/* Product Detail */}
 
-        <div className="rounded-lg mb-6 ">
-          <h2 className="text-xl niba-bold-font text-[#1C1C29] mb-4">Product Details</h2>
 
-          <TableContainer component={Paper} className="rounded-lg shadow">
-            <Table>
-              {/* Table Head */}
-              <TableHead className="bg-gray-100">
-                <TableRow>
-                  <TableCell className="text-black font-semibold uppercase py-3">
-                    <span className="font-bold ">Treatment</span>
-                  </TableCell>
-                  <TableCell className="text-black font-semibold uppercase py-3">
-                    <span className="font-bold ">Qty</span>
-                  </TableCell>
-                  <TableCell className="text-black font-semibold uppercase py-3">
-                    <span className="font-bold ">Price</span>
-                  </TableCell>
-                </TableRow>
-              </TableHead>
+        {/* Tabs */}
+        <SwitchTabs
+          activeTab={activeTab}
+          onTabChange={setActiveTab}
+          tabs={["Patient Info", "Shipping & Billing", "Products"]}
+        />
 
-              {/* Table Body */}
-              <TableBody>
-                {/* // ?.filter((product) => product.name.includes("mg")) */}
-                {products?.map((product) => (
-                  <TableRow key={product.id} className="hover:bg-gray-50">
-                    <TableCell className="text-gray-800 capitalize py-3">{product.label}</TableCell>
-                    <TableCell className="text-gray-800 py-3">{product.quantity}</TableCell>
-                    <TableCell className="text-gray-800 py-3">£{(parseFloat(product.price) * product.quantity).toFixed(2)}</TableCell>
-                  </TableRow>
-                ))}
-
-                <TableRow className="hover:bg-gray-50">
-                  <TableCell className="text-gray-800 py-3">Shipping Fee</TableCell>
-                  <TableCell></TableCell>
-                  <TableCell className="text-gray-800 py-3">£{shipmentFee}</TableCell>
-                </TableRow>
-
-                {/* Shipping Fee (Optional) */}
-                {orders?.discount > 0 && (
-                  <>
-                    <TableRow className="hover:bg-gray-50">
-                      <TableCell className="text-gray-800 py-3 font-medium">Discount Amount</TableCell>
-                      <TableCell></TableCell>
-                      <TableCell className="text-gray-800 py-3">
-                        {orders?.type === "Fixed" ? `-£${orders?.discount_value}` : `-${parseFloat(orders?.discount_value).toFixed(1)}%`}
-                      </TableCell>
+        {/* Tab Content with Animation */}
+        <motion.div
+          className="tab-content mt-6"
+          variants={tabContentVariants}
+          initial="initial"
+          animate="animate"
+          exit="exit"
+          transition={{ duration: 0.5 }}  // Adjust transition duration
+        >
+          {activeTab === 0 && (
+            <div>
+              <h2 className="text-xl font-semibold mb-4">Patient Information</h2>
+              <TableContainer component={Paper}>
+                <Table>
+                  <TableBody>
+                    <TableRow>
+                      <TableCell>First Name</TableCell>
+                      <TableCell>{patientData?.firstName || "N/A"}</TableCell>
                     </TableRow>
-
-                    <TableRow className="hover:bg-gray-50">
-                      <TableCell className="text-gray-800 py-3 font-medium">Coupon Code</TableCell>
-                      <TableCell></TableCell>
-                      <TableCell className="text-gray-800 py-3">{orders?.code || "N/A"}</TableCell>
+                    <TableRow>
+                      <TableCell>Last Name</TableCell>
+                      <TableCell>{patientData?.lastName || "N/A"}</TableCell>
                     </TableRow>
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            </div>
+          )}
 
-                    <TableRow className="hover:bg-gray-50">
-                      <TableCell className="text-gray-800 py-3 font-medium">Discount Type</TableCell>
-                      <TableCell></TableCell>
-                      <TableCell className="text-gray-800 py-3">{`${orders?.type === "Fixed" ? "Fixed" : "Percentage"}`}</TableCell>
+          {activeTab === 1 && (
+            <div>
+              <h2 className="text-xl font-semibold mb-4">Shipping & Billing Information</h2>
+              <TableContainer component={Paper}>
+                <Table>
+                  <TableBody>
+                    <TableRow>
+                      <TableCell>Shipping Address</TableCell>
+                      <TableCell>{shippingData?.addressone || "N/A"}</TableCell>
                     </TableRow>
-                  </>
-                )}
+                    <TableRow>
+                      <TableCell>Billing Address</TableCell>
+                      {/* <TableCell>{billingData?.addressone || "N/A"}</TableCell> */}
+                    </TableRow>
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            </div>
+          )}
 
-                {/* Total Row */}
-                <TableRow className="font-bold ">
-                  <TableCell className="py-3 font-serif">
-                    <span className="bold-font ">Total</span>
-                  </TableCell>
-                  <TableCell></TableCell>
-                  <TableCell className="py-3">
-                    <span className="font-bold ">£{total}</span>
-                  </TableCell>
-                </TableRow>
-              </TableBody>
-            </Table>
-          </TableContainer>
-        </div>
-
-        {/* GP Details */}
-        <div className="sm:bg-gray-50 rounded-lg mb-6">
-          <h2 className="text-xl niba-bold-font text-[#1C1C29] mb-4">GP Details</h2>
-          <TableContainer component={Paper}>
-            <Table>
-              <TableBody>
-                <TableRow>
-                  <TableCell style={{ width: "50%" }} className="reg-font  paragraph ">
-                    GP Consent
-                  </TableCell>
-                  <TableCell style={{ width: "50%" }} className="reg-font  text-[#1C1C29] capitalize">
-                    {gpDetails?.gpConsent || "N/A"}
-                  </TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell style={{ width: "50%" }} className="reg-font  paragraph">
-                    Address
-                  </TableCell>
-                  <TableCell style={{ width: "50%" }} className="reg-font  text-[#1C1C29] capitalize">
-                    {gpDetails?.addressLine1 || "N/A"}
-                    {/* {gpDetails.addresstwo ? gpDetails?.addresstwo : "N/A"} */}
-                  </TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell className="reg-font  paragraph">City</TableCell>
-                  <TableCell className="reg-font  text-[#1C1C29] capitalize">
-                    {gpDetails?.city || "N/A"}
-                    {/* {gpDetails.addresstwo ? gpDetails?.addresstwo : "N/A"} */}
-                  </TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell className="reg-font  paragraph">Email</TableCell>
-                  <TableCell className="reg-font  text-[#1C1C29] capitalize">
-                    {gpDetails?.email || "N/A"}
-                    {/* {gpDetails.addresstwo ? gpDetails?.addresstwo : "N/A"} */}
-                  </TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell className="reg-font  paragraph">County</TableCell>
-                  <TableCell className="reg-font  text-[#1C1C29] capitalize">
-                    {gpDetails?.state || "N/A"}
-                    {/* {gpDetails.addresstwo ? gpDetails?.addresstwo : "N/A"} */}
-                  </TableCell>
-                </TableRow>
-              </TableBody>
-            </Table>
-          </TableContainer>
-        </div>
-
-        <div className="sm:bg-gray-50 rounded-lg mb-6">
-          <h2 className="text-xl niba-bold-font text-[#1C1C29] mb-4">Shipping Information</h2>
-          <TableContainer component={Paper}>
-            <Table>
-              <TableBody>
-                <TableRow>
-                  <TableCell style={{ width: "50%" }} className="reg-font  paragraph">
-                    First Name
-                  </TableCell>
-                  <TableCell style={{ width: "50%" }} className="reg-font  text-[#1C1C29] capitalize">
-                    {shippingData?.first_name ? shippingData?.first_name : patientData?.firstName ? patientData?.firstName : "N/A"}
-                  </TableCell>
-                </TableRow>
-
-                <TableRow>
-                  <TableCell style={{ width: "50%" }} className="reg-font  paragraph">
-                    Last Name
-                  </TableCell>
-                  <TableCell style={{ width: "50%" }} className="reg-font  text-[#1C1C29] capitalize">
-                    {shippingData?.last_name ? shippingData?.last_name : patientData?.lastName ? patientData?.lastName : "N/A"}
-                  </TableCell>
-                </TableRow>
-
-                <TableRow>
-                  <TableCell style={{ width: "50%" }} className="reg-font  paragraph">
-                    Address1
-                  </TableCell>
-                  <TableCell style={{ width: "50%" }} className="reg-font  text-[#1C1C29] capitalize">
-                    {shippingData?.addressone ? shippingData?.addressone : "N/A"}
-                  </TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell style={{ width: "50%" }} className="reg-font  paragraph">
-                    Address2
-                  </TableCell>
-                  <TableCell style={{ width: "50%" }} className="reg-font  text-[#1C1C29] capitalize">
-                    {shippingData?.addresstwo ? shippingData?.addresstwo : "N/A"}
-                    {/* {shippingData.addresstwo ? shippingData?.addresstwo : "N/A"} */}
-                  </TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell className="reg-font  paragraph">City</TableCell>
-                  <TableCell className="reg-font  text-[#1C1C29] capitalize">{shippingData?.city ? shippingData?.city : "N/A"}</TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell className="reg-font  paragraph">County / Province / Region:</TableCell>
-                  <TableCell className="reg-font  text-[#1C1C29] capitalize">{shippingData?.state ? shippingData?.state : "N/A"}</TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell className="reg-font  paragraph">Postalcode</TableCell>
-                  <TableCell className="reg-font  text-[#1C1C29] capitalize">{shippingData?.postalcode ? shippingData?.postalcode : "N/A"}</TableCell>
-                </TableRow>
-
-                <TableRow>
-                  <TableCell className="reg-font  paragraph">Country</TableCell>
-                  <TableCell className="reg-font  text-[#1C1C29] capitalize">{shippingData?.country ? shippingData?.country : "N/A"}</TableCell>
-                </TableRow>
-
-                <TableRow>
-                  <TableCell className="reg-font  paragraph">Phone Number</TableCell>
-                  <TableCell className="reg-font  text-[#1C1C29] capitalize">{patientData?.phoneNo ? patientData?.phoneNo : "N/A"}</TableCell>
-                </TableRow>
-              </TableBody>
-            </Table>
-          </TableContainer>
-        </div>
+          {activeTab === 2 && (
+            <div>
+              <h2 className="text-xl font-semibold mb-4">Products</h2>
+              <TableContainer component={Paper}>
+                <Table>
+                  <TableHead>
+                    <TableRow>
+                      <TableCell>Product</TableCell>
+                      <TableCell>Quantity</TableCell>
+                      <TableCell>Price</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {products?.map((product) => (
+                      <TableRow key={product.id}>
+                        <TableCell>{product.label}</TableCell>
+                        <TableCell>{product.quantity}</TableCell>
+                        <TableCell>£{(product.price * product.quantity).toFixed(2)}</TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            </div>
+          )}
+        </motion.div>
 
         {/* Back Button */}
-        <div className="flex justify-start">
-          <Link href="/orders/">
-            <button className="reg-font px-6 py-2 bg-primary cursor-pointer text-white rounded-md hover:bg-primary transition">Back</button>
-          </Link>
-        </div>
+        <Link href="/orders/">
+          <button className="px-6 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 mt-6">Back</button>
+        </Link>
       </div>
     </>
   );

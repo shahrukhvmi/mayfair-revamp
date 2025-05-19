@@ -7,18 +7,18 @@ import useCartStore from "@/store/useCartStore";
 
 const ThankYou = () => {
   const GO = useRouter();
-  const { items, orderId, finalTotal } = useCartStore();
+  const { items, orderId, checkOut } = useCartStore();
 
   const handleGoBack = () => {
     GO.push("/dashboard");
   };
-
+  console.log(checkOut, "checkOut")
   return (
     <div className="min-h-screen flex items-center justify-center bg-[#F2EEFF] px-4 sm:px-8 md:px-20 my-16">
       <div className="bg-white shadow-2xl rounded-3xl p-8 md:p-12 w-full max-w-3xl transition-all duration-300">
         <div className="text-center mb-10">
           <HiBadgeCheck className="w-20 h-20 text-gray-200 fill-purple-600 mx-auto mb-5" />
-          <h2 className="text-4xl font-bold text-gray-800 mb-4">Thank you for your order</h2>
+          <h2 className="text-4xl font-bold text-gray-800 mb-4"> Order Placed Successfully</h2>
           <span className="text-gray-800 font-bold text-2xl"> Order #{orderId}</span>
         </div>
 
@@ -29,8 +29,8 @@ const ThankYou = () => {
               <table className="min-w-full divide-y divide-gray-200 text-sm text-gray-700">
                 <thead className="bg-gray-100 text-gray-700 font-semibold">
                   <tr>
-                    <th className="px-6 py-4 text-left bold-font">Product</th>
-                    <th className="px-6 py-4 text-right bold-font">Price</th>
+                    <th className="px-6 py-4 text-left bold-font">Items</th>
+                    <th className="px-6 py-4 text-right bold-font">Amount</th>
                     <th className="px-6 py-4 text-right"></th>
                   </tr>
                 </thead>
@@ -50,10 +50,30 @@ const ThankYou = () => {
                         <td className="px-6 py-3 text-right thin-font">£{parseFloat(item?.price).toFixed(2)}</td>
                       </tr>
                     ))}
+                  {checkOut?.shipment &&
+                    <tr className="hover:bg-gray-50">
+                      <td className="px-6 py-3 reg-font text-black">Shipping  <span className="text-black mx-2">({checkOut?.shipment?.name})</span></td>
+                      <td className="px-6 py-3 text-right thin-font "> £{parseFloat(checkOut?.shipment?.price).toFixed(2)}</td>
+                    </tr>
+                  }
+                  {checkOut?.discount?.discount !== null &&
+                    <tr className="hover:bg-gray-50">
+                      <td className="px-6 py-3 reg-font text-black">Discount
+
+                        {checkOut?.discount?.type && ` (${checkOut?.discount?.type})`}
+                        {checkOut?.discount?.code && ` - Code: ${checkOut?.discount?.code}`}
+                      </td>
+                      <td className="px-6 py-3 text-right thin-font">
+                        £{parseFloat(checkOut?.discount?.discount).toFixed(2)}
+                      </td>
+                    </tr>
+                  }
+
+
 
                   <tr className="bg-gray-100 font-bold text-gray-900">
                     <td colSpan={2} className="px-6 py-3 text-right bold-font">Total</td>
-                    <td className="px-6 py-3 text-right bold-font">£{parseFloat(finalTotal).toFixed(2)}</td>
+                    <td className="px-6 py-3 text-right bold-font">£{parseFloat(checkOut?.total).toFixed(2)}</td>
                   </tr>
                 </tbody>
               </table>

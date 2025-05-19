@@ -12,7 +12,7 @@ const useCartStore = create(
       totalDoses: 0,
       totalAddons: 0,
       totalAmount: 0,
-      finalTotal: 0,
+      checkOut: 0,
       orderId: 0,
 
       // Add to cart
@@ -56,7 +56,7 @@ const useCartStore = create(
         });
       },
 
-      setFinalTotal: (finalTotal) => set({ finalTotal }),
+      setCheckOut: (checkOut) => set({ checkOut }),
       setOrderId: (orderId) => set({ orderId }),
 
       // Completely remove item regardless of qty
@@ -182,7 +182,7 @@ const useCartStore = create(
         });
       },
 
-      clearFinalTotal: () => set({ finalTotal: null }),
+      clearCheckOutClear: () => set({ checkOut: null }),
     }),
     {
       name: "cart-storage",
