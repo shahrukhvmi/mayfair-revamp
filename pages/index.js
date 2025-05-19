@@ -66,12 +66,12 @@ export default function Index() {
       <section className="my-16 mx-6 sm:mx-0">
         <div className="bg-white max-w-xl mx-auto rounded-3xl p-10 shadow-lg border border-gray-100 relative">
           {/* Icon */}
-          <div className="flex justify-center mb-8">
+          <div className="flex justify-center">
             <Image
-              src="https://a.storyblok.com/f/263052/120x150/9bfb6f4c97/pod-conditions-icons__weight-loss_new.svg"
+              src="images/intro.svg"
               alt="Weight Loss Icon"
-              width={100}
-              height={125}
+              width={200}
+              height={50}
               className="rounded-lg"
             />
           </div>
