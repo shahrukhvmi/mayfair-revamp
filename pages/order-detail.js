@@ -189,11 +189,7 @@ const OrderDetail = () => {
                           </TableRow>
                         ))}
 
-                        <TableRow className="hover:bg-gray-50">
-                          <TableCell className="text-gray-800 py-3">Shipping Fee</TableCell>
-                          <TableCell></TableCell>
-                          <TableCell className="text-gray-800 py-3">£{shipmentFee}</TableCell>
-                        </TableRow>
+
 
                         {/* Shipping Fee (Optional) */}
                         {orders?.discount > 0 && (
@@ -220,6 +216,11 @@ const OrderDetail = () => {
                           </>
                         )}
 
+                        <TableRow className="hover:bg-gray-50">
+                          <TableCell className="text-gray-800 py-3">Shipping Fee</TableCell>
+                          <TableCell></TableCell>
+                          <TableCell className="text-gray-800 py-3">£{shipmentFee}</TableCell>
+                        </TableRow>
                         {/* Total Row */}
                         <TableRow className="font-bold ">
                           <TableCell className="py-3 font-serif">
@@ -426,7 +427,7 @@ const OrderDetail = () => {
                       <thead className="border-b text-md text-gray-700 bg-white  [&>tr:not(:last-child)]:border-b [&>tr]:border-gray-200">
                         <tr className="uppercase">
                           {/* <th scope="col" className="px-6 py-3">SNo#</th> */}
-                          
+
                           {/* <th scope="col" className="px-6 py-3">Answer</th> */}
                         </tr>
                       </thead>
@@ -498,7 +499,7 @@ const OrderDetail = () => {
                         <thead className="border-b text-md text-gray-700 bg-gray-50  [&>tr:not(:last-child)]:border-b [&>tr]:border-gray-200">
                           <tr className="uppercase">
                             {/* <th scope="col" className="px-6 py-3">SNo#</th> */}
-                          
+
                             {/* <th scope="col" className="px-6 py-3">Answer</th> */}
                           </tr>
                         </thead>
@@ -545,7 +546,7 @@ const OrderDetail = () => {
 
                     <TableContainer component={Paper} className="rounded-lg overflow-x-auto">
                       <Table aria-label="confirmation table">
-                     
+
 
                         <TableBody>
                           {confirmationInfo.map((item, index) => (

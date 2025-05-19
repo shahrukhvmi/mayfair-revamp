@@ -50,12 +50,7 @@ const ThankYou = () => {
                         <td className="px-6 py-3 text-right thin-font">£{parseFloat(item?.price).toFixed(2)}</td>
                       </tr>
                     ))}
-                  {checkOut?.shipment &&
-                    <tr className="hover:bg-gray-50">
-                      <td className="px-6 py-3 reg-font text-black">Shipping  <span className="text-black mx-2">({checkOut?.shipment?.name})</span></td>
-                      <td className="px-6 py-3 text-right thin-font "> £{parseFloat(checkOut?.shipment?.price).toFixed(2)}</td>
-                    </tr>
-                  }
+
                   {checkOut?.discount?.discount !== null &&
                     <tr className="hover:bg-gray-50">
                       <td className="px-6 py-3 reg-font text-black">Discount
@@ -69,7 +64,12 @@ const ThankYou = () => {
                     </tr>
                   }
 
-
+                  {checkOut?.shipment &&
+                    <tr className="hover:bg-gray-50">
+                      <td className="px-6 py-3 reg-font text-black">Shipping  <span className="text-black mx-2">({checkOut?.shipment?.name})</span></td>
+                      <td className="px-6 py-3 text-right thin-font "> £{parseFloat(checkOut?.shipment?.price).toFixed(2)}</td>
+                    </tr>
+                  }
 
                   <tr className="bg-gray-100 font-bold text-gray-900">
                     <td colSpan={2} className="px-6 py-3 text-right bold-font">Total</td>

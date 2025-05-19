@@ -282,7 +282,7 @@ const OrderSummary = ({ isConcentCheck }) => {
                           <li className="group flex items-center justify-between rounded-lg bg-[#ececec] hover:bg-violet-50 p-4 shadow-md transition-all duration-200 mt-2">
                             <div className="flex flex-col">
                               <span className="text-base bold-font text-gray-900 truncate">Pack of 5 Needle</span>
-                              <span className="bold-font text-sm text-gray-600 mt-1">{dose.qty}x</span>
+                              <span className="bold-font text-sm text-gray-600 mt-1">Quantity: x{dose.qty}</span>
                             </div>
 
                             <span className="text-base bold-font text-black px-4 py-1 rounded-full">£0.00</span>
