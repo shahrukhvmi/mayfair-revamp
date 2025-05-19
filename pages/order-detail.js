@@ -35,7 +35,14 @@ const OrderDetail = () => {
   // Destructure data properly
   const shippingData = order?.data?.order?.shipping;
   const bmiData = order?.data?.order?.consultation?.fields?.bmi;
-  const medicalInfo = order?.data?.order?.consultation?.fields?.medicalInfo;
+  const medicalInfo =
+    order?.data?.order?.consultation?.fields?.medicalInfo?.length > 0
+      ? order.data.order.consultation.fields.medicalInfo
+      : order?.data?.order?.consultation?.fields?.legacy_medicalInfo;
+
+
+
+
   const BillingData = order?.data?.order?.billing;
   const patientData = order?.data?.order?.consultation?.fields?.patientInfo;
   const gpDetails = order?.data?.order?.consultation?.fields?.gpdetails;
@@ -46,10 +53,15 @@ const OrderDetail = () => {
   const total = order?.data?.order?.total_price;
   const orders = order?.data?.order?.consultation?.fields?.checkout?.discount;
   const startConcent = order?.data?.order?.consultation?.start_concent;
-  const confirmationInfo = order?.consultation?.fields?.confirmationInfo;
+  // const confirmationInfo = order?.consultation?.fields?.confirmationInfo;
+  const confirmationInfo = order?.data?.order?.consultation?.fields?.confirmationInfo?.length > 0 ?
+    order?.data?.order?.consultation?.fields?.confirmationInfo :
+    order?.data?.order?.consultation?.fields?.legacy_confirmationInfo;
+  ;
   const product_terms_conditions = order?.data?.order?.product_terms_conditions;
 
 
+  console.log(order?.consultation?.fields, "confirmationInfo")
   // Tab Transition Animation Variants
   const tabContentVariants = {
     initial: { opacity: 0, y: 20 }, // Start below and hidden
@@ -360,7 +372,7 @@ const OrderDetail = () => {
                 {medicalInfo && medicalInfo.length > 0 ? (
                   <h2 className="text-xl reg-font text-[#1C1C29] mb-4 p-4">Medical Information</h2>
                 ) : (
-                 ""
+                  ""
                 )}
                 {medicalInfo && medicalInfo.length > 0 ? (
                   <TableContainer component={Paper} className="mb-6">
@@ -414,12 +426,7 @@ const OrderDetail = () => {
                       <thead className="border-b text-md text-gray-700 bg-white  [&>tr:not(:last-child)]:border-b [&>tr]:border-gray-200">
                         <tr className="uppercase">
                           {/* <th scope="col" className="px-6 py-3">SNo#</th> */}
-                          <th
-                            scope="col"
-                            className="px-6 py-3 min-w-[400px] thin-font text-sm text-black"
-                          >
-                            Response
-                          </th>
+                          
                           {/* <th scope="col" className="px-6 py-3">Answer</th> */}
                         </tr>
                       </thead>
@@ -491,12 +498,7 @@ const OrderDetail = () => {
                         <thead className="border-b text-md text-gray-700 bg-gray-50  [&>tr:not(:last-child)]:border-b [&>tr]:border-gray-200">
                           <tr className="uppercase">
                             {/* <th scope="col" className="px-6 py-3">SNo#</th> */}
-                            <th
-                              scope="col"
-                              className="px-6 py-3 min-w-[400px]"
-                            >
-                              Response
-                            </th>
+                          
                             {/* <th scope="col" className="px-6 py-3">Answer</th> */}
                           </tr>
                         </thead>
@@ -535,72 +537,20 @@ const OrderDetail = () => {
                 )}
 
 
-                {confirmationInfo && confirmationInfo.length > 0 ? (
-                  <h1 className="text-2xl font-light mt-8 mb-4">
-                    <span className="font-bold">Confirmation</span>
-                  </h1>
+                {confirmationInfo?.length > 0 && (
+                  <>
+                    <h1 className="text-2xl font-light mt-8 mb-4">
+                      <span className="niba-bold-font text-black">Confirmation</span>
+                    </h1>
 
-                ) : (
-                  ""
-                )}
-                <TableContainer component={Paper} className="rounded-lg overflow-x-auto">
-                  {confirmationInfo && confirmationInfo.length > 0 ? (
-                    <Table aria-label="confirmation table">
-                      <TableHead>
-                        <TableRow>
+                    <TableContainer component={Paper} className="rounded-lg overflow-x-auto">
+                      <Table aria-label="confirmation table">
+                     
 
-
-                          <h1 className="text-2xl reg-font mt-8 mb-4">
-                            <span className="bold-font text-black">
-                              Response
-                            </span>
-                          </h1>
-                          {/* <TableCell>Answer</TableCell> */}
-                        </TableRow>
-                      </TableHead>
-                      <TableBody>
-                        {confirmationInfo.map((item, index) => (
-                          <TableRow key={index}>
-                            {/* <TableCell>{index + 1}</TableCell> */}
-                            <TableCell>
-                              <div
-                                className="prose"
-                                dangerouslySetInnerHTML={{
-                                  __html: `
-                    <style>
-                      .prose ol {
-                        list-style-type: decimal;
-                        padding-left: 20px;
-                        margin-top: 0;
-                        margin-bottom: 1em;
-                      }
-                      .prose ul {
-                        list-style-type: disc;
-                        padding-left: 20px;
-                        margin-top: 0;
-                        margin-bottom: 1em;
-                      }
-                      .prose li {
-                        line-height: 2.5;
-                      }
-                      .prose p {
-                        margin-top: 0;
-                        margin-bottom: 1em;
-                        line-height: 1.8;
-                      }
-                      .prose a {
-                        color: blue;
-                        text-decoration: none;
-                      }
-                      .prose a:hover {
-                        text-decoration: underline;
-                      }
-                    </style>
-                    ${item.question}
-                  `,
-                                }}
-                              />
-                              {item.has_checklist && (
+                        <TableBody>
+                          {confirmationInfo.map((item, index) => (
+                            <TableRow key={index}>
+                              <TableCell>
                                 <div
                                   className="prose"
                                   dangerouslySetInnerHTML={{
@@ -634,21 +584,59 @@ const OrderDetail = () => {
                           text-decoration: underline;
                         }
                       </style>
-                      ${item.checklist}
+                      ${item.question}
                     `,
                                   }}
                                 />
-                              )}
-                            </TableCell>
-                            {/* <TableCell>{item.answer ? 'Yes' : 'No'}</TableCell> */}
-                          </TableRow>
-                        ))}
-                      </TableBody>
-                    </Table>
-                  ) : (
-                    ""
-                  )}
-                </TableContainer>
+
+                                {item.has_checklist && (
+                                  <div
+                                    className="prose"
+                                    dangerouslySetInnerHTML={{
+                                      __html: `
+                        <style>
+                          .prose ol {
+                            list-style-type: decimal;
+                            padding-left: 20px;
+                            margin-top: 0;
+                            margin-bottom: 1em;
+                          }
+                          .prose ul {
+                            list-style-type: disc;
+                            padding-left: 20px;
+                            margin-top: 0;
+                            margin-bottom: 1em;
+                          }
+                          .prose li {
+                            line-height: 2.5;
+                          }
+                          .prose p {
+                            margin-top: 0;
+                            margin-bottom: 1em;
+                            line-height: 1.8;
+                          }
+                          .prose a {
+                            color: blue;
+                            text-decoration: none;
+                          }
+                          .prose a:hover {
+                            text-decoration: underline;
+                          }
+                        </style>
+                        ${item.checklist}
+                      `,
+                                    }}
+                                  />
+                                )}
+                              </TableCell>
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
+                    </TableContainer>
+                  </>
+                )}
+
 
 
                 {product_terms_conditions && product_terms_conditions !== null && product_terms_conditions !== "" && (
