@@ -371,7 +371,7 @@ const OrderDetail = () => {
 
               <div className="sm:bg-gray-50 rounded-lg mb-6">
                 {medicalInfo && medicalInfo.length > 0 ? (
-                  <h2 className="text-xl reg-font text-[#1C1C29] mb-4 p-4">Medical Information</h2>
+                  <h2 className="text-xl niba-bold-font text-[#1C1C29] mb-4 p-4">Medical Information</h2>
                 ) : (
                   ""
                 )}
