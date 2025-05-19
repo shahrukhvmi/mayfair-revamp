@@ -200,11 +200,16 @@ export default function DosageSelection() {
                     <div className="bg-primary p-6">
                       <img src={variation?.img} alt={variation?.name} className="w-full h-40 object-contain" />
                     </div>
-                    <div className="p-6">
+                    <div className="sm:p-6 p-3">
                       <h2 className="text-2xl mb-2 bold-font text-gray-800">{variation?.name}</h2>
                       {variation?.name === "Mounjaro (Tirzepatide)" && (
-                        <p className="text-sm text-gray-500 thin-font mb-2">Pack of 5 Needles is included with every dose</p>
+                        <p className="inline-block px-3 py-1 text-xs font-semibold text-white bg-violet-500 rounded-full mb-2">
+                          Pack of 5 Needles is included with every dose
+                        </p >
                       )}
+
+                      <br />
+
                       <span className="bold-font text-black">From £{variation?.price}</span>
                       {/* <div
                         className="reg-font text-gray-600 bg-red-50  p-3 rounded-md text-sm"
