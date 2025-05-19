@@ -355,43 +355,49 @@ const OrderDetail = () => {
             <>
 
               {/* Medical info */}
+
               <div className="sm:bg-gray-50 rounded-lg mb-6">
-                <h2 className="text-xl niba-bold-font text-[#1C1C29] mb-4 p-4">Medical Information</h2>
-                <TableContainer component={Paper} className="mb-6">
-                  <Table>
-                    <TableHead>
-                      <TableRow>
-                        <TableCell className="font-semibold text-[#1C1C29]">SNO#</TableCell>
-                        <TableCell className="font-semibold text-[#1C1C29]">Question</TableCell>
-                        <TableCell className="font-semibold text-[#1C1C29]">Answer</TableCell>
-                      </TableRow>
-                    </TableHead>
-                    <TableBody>
-                      {medicalInfo?.map((item, index) => (
-                        <TableRow key={item.id || index}>
-                          <TableCell className="reg-font text-[#1C1C29]">{index + 1}</TableCell>
-
-                          <TableCell className="reg-font text-[#1C1C29]">
-                            {/* Main Question */}
-                            <div dangerouslySetInnerHTML={{ __html: item.question }} />
-
-                            {/* Subfield response as list item under the question */}
-                            {item.answer === "yes" && item.has_sub_field && item.subfield_response && (
-                              <ul className="list-disc pl-4 text-[#f59e0b] mt-1">
-                                <li>{item.subfield_response}</li>
-                              </ul>
-                            )}
-                          </TableCell>
-
-                          <TableCell className="reg-font text-[#1C1C29] capitalize">{item.answer}</TableCell>
+                {medicalInfo && medicalInfo.length > 0 ? (
+                  <h2 className="text-xl reg-font text-[#1C1C29] mb-4 p-4">Medical Information</h2>
+                ) : (
+                 ""
+                )}
+                {medicalInfo && medicalInfo.length > 0 ? (
+                  <TableContainer component={Paper} className="mb-6">
+                    <Table>
+                      <TableHead>
+                        <TableRow>
+                          <TableCell className="font-semibold text-[#1C1C29]">SNO#</TableCell>
+                          <TableCell className="font-semibold text-[#1C1C29]">Question</TableCell>
+                          <TableCell className="font-semibold text-[#1C1C29]">Answer</TableCell>
                         </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </TableContainer>
+                      </TableHead>
+                      <TableBody>
+                        {medicalInfo.map((item, index) => (
+                          <TableRow key={item.id || index}>
+                            <TableCell className="reg-font text-[#1C1C29]">{index + 1}</TableCell>
 
+                            <TableCell className="reg-font text-[#1C1C29]">
+                              <div dangerouslySetInnerHTML={{ __html: item.question }} />
 
+                              {item.answer === "yes" && item.has_sub_field && item.subfield_response && (
+                                <ul className="list-disc pl-4 text-[#f59e0b] mt-1">
+                                  <li>{item.subfield_response}</li>
+                                </ul>
+                              )}
+                            </TableCell>
+
+                            <TableCell className="reg-font text-[#1C1C29] capitalize">{item.answer}</TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </TableContainer>
+                ) : (
+                  <p className="text-center text-gray-500 px-4 pb-4">Medical information not found.</p>
+                )}
               </div>
+
             </>
           )
           }
@@ -400,7 +406,7 @@ const OrderDetail = () => {
             activeTab === 3 && (
               <>
                 <h1 className="text-2xl font-light my-4">
-                  <span className="bold-font text-black">User Consent</span>
+                  <span className="niba-bold-font text-black">User Consent</span>
                 </h1>
                 <div className="relative overflow-x-auto border rounded-lg">
                   {startConcent ? (
@@ -475,14 +481,14 @@ const OrderDetail = () => {
                 {order?.items?.some((item) => item.product_concent !== null) && (
                   <>
                     <h1 className="text-2xl font-light my-4">
-                      <span className="font-bold">
+                      <span className="niba-bold-font">
                         Product Related Consent
                       </span>
                     </h1>
 
                     <div className="relative overflow-x-auto border rounded-lg">
                       <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-                        <thead className="border-b text-md text-gray-700 bg-gray-50 dark:bg-gray-700 dark:text-gray-400 [&>tr:not(:last-child)]:border-b [&>tr]:border-gray-200">
+                        <thead className="border-b text-md text-gray-700 bg-gray-50  [&>tr:not(:last-child)]:border-b [&>tr]:border-gray-200">
                           <tr className="uppercase">
                             {/* <th scope="col" className="px-6 py-3">SNo#</th> */}
                             <th
@@ -498,7 +504,7 @@ const OrderDetail = () => {
                           {order?.items?.map((item, index) => {
                             return (
                               item.product_concent != null && (
-                                <tr className="border-b border-gray-200 bg-gray-50 dark:bg-gray-700 dark:text-gray-400 [&>tr:not(:last-child)]:border-b [&>tr]:border-gray-200">
+                                <tr className="border-b border-gray-200 bg-gray-50  [&>tr:not(:last-child)]:border-b [&>tr]:border-gray-200">
                                   <td className="px-6 py-3 text-gray-700 mt-1">
                                     <div
                                       dangerouslySetInnerHTML={{
@@ -537,7 +543,7 @@ const OrderDetail = () => {
                 ) : (
                   ""
                 )}
-                <TableContainer component={Paper} className="border rounded-lg overflow-x-auto">
+                <TableContainer component={Paper} className="rounded-lg overflow-x-auto">
                   {confirmationInfo && confirmationInfo.length > 0 ? (
                     <Table aria-label="confirmation table">
                       <TableHead>
@@ -648,7 +654,7 @@ const OrderDetail = () => {
                 {product_terms_conditions && product_terms_conditions !== null && product_terms_conditions !== "" && (
                   <>
                     <h1 className="text-2xl font-light mt-8 mb-4">
-                      <span className="bold-font text-black">
+                      <span className="niba-bold-font text-black">
                         Medication Terms & Conditions
                       </span>
                     </h1>
