@@ -75,10 +75,11 @@ export default function DosageSelection() {
       return;
     }
 
+    const isFiveMg = dose?.name === "5 mg";
     const firstTwoDoses = variation?.variations?.slice(0, 1).map((v) => v.name);
     const isFirstTwoDose = firstTwoDoses.includes(dose?.name);
 
-    if (isFirstTwoDose) {
+    if (isFirstTwoDose && !isFiveMg) {
       addToCart({
         id: dose.id,
         type: "dose",
@@ -205,7 +206,7 @@ export default function DosageSelection() {
                       {variation?.name === "Mounjaro (Tirzepatide)" && (
                         <p className="inline-block px-3 py-1 text-xs font-semibold text-white bg-violet-500 rounded-full mb-2">
                           Pack of 5 Needles is included with every dose
-                        </p >
+                        </p>
                       )}
 
                       <br />
