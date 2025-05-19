@@ -99,7 +99,7 @@ export default function Shipping({ shipmentCountries }) {
     setAddressSearchLoading(true);
     const postal = watch("postalcode");
     if (!postal) {
-      alert("Please enter a postal code.");
+      alert("Please enter a postcode.");
       setAddressSearchLoading(false);
     }
 
@@ -111,7 +111,7 @@ export default function Shipping({ shipmentCountries }) {
         setAddressSearchLoading(false);
       } else {
         setAddressSearchLoading(false);
-        toast.error("Invalid Postal Code");
+        toast.error("Invalid Postcode");
       }
     } catch (error) {
       console.error("API error:", error);
@@ -202,7 +202,7 @@ export default function Shipping({ shipmentCountries }) {
           />
 
           <div className="relative">
-            <TextField label="Postal Code" name="postalcode" placeholder="W1A 1AA" register={register} required errors={errors} />
+            <TextField label="Postcode" name="postalcode" placeholder="W1A 1AA" register={register} required errors={errors} />
             <button
               type="button"
               onClick={handleSearch}

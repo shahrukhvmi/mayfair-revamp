@@ -3,7 +3,7 @@ import MyAddress from "@/Components/Dashboard/MyAddress/MyAddress";
 import ProtectedPage from "@/Components/ProtectedPage/ProtectedPage";
 import React from "react";
 
-const address = () => {
+const Address = () => {
   return (
     <ProtectedPage>
       <DashBoardLayout>
@@ -13,4 +13,4 @@ const address = () => {
   );
 };
 
-export default address;
+export default Address;

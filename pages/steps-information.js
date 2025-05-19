@@ -23,6 +23,11 @@ import useShippingOrBillingStore from "@/store/shipingOrbilling";
 import useProductId from "@/store/useProductIdStore";
 import useAuthUserDetailStore from "@/store/useAuthUserDetailStore";
 import useLastBmi from "@/store/useLastBmiStore";
+import toast from "react-hot-toast";
+import useAuthStore from "@/store/authStore";
+import usePasswordReset from "@/store/usePasswordReset";
+import useUserDataStore from "@/store/userDataStore";
+import useSignupStore from "@/store/signupStore";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 
@@ -40,12 +45,16 @@ export default function StepsInformation() {
   const { setGpDetails, clearGpDetails } = useGpDetailsStore();
   const { setMedicalInfo, clearMedicalInfo } = useMedicalInfoStore();
   const { setPatientInfo, clearPatientInfo } = usePatientInfoStore();
-  const { setMedicalQuestions } = useMedicalQuestionsStore();
-  const { setConfirmationQuestions } = useConfirmationQuestionsStore();
+  const { setMedicalQuestions, clearMedicalQuestions } = useMedicalQuestionsStore();
+  const { setConfirmationQuestions, clearConfirmationQuestions } = useConfirmationQuestionsStore();
   const { setAuthUserDetail, clearAuthUserDetail } = useAuthUserDetailStore();
   const { billing, setBilling, shipping, setShipping, clearShipping, clearBilling } = useShippingOrBillingStore();
-  const { productId } = useProductId();
-  const { setLastBmi } = useLastBmi();
+  const { clearToken } = useAuthStore();
+  const { setIsPasswordReset } = usePasswordReset();
+  const { productId, clearProductId } = useProductId();
+  const { setLastBmi, clearLastBmi } = useLastBmi();
+  const { clearUserData } = useUserDataStore();
+  const { clearFirstName, clearLastName, clearEmail, clearConfirmationEmail } = useSignupStore();
 
   //Get Consultation Data
   const consultationMutation = useMutation(userConsultationApi, {
@@ -74,14 +83,37 @@ export default function StepsInformation() {
         setBilling(data?.data?.data?.billing);
         setAuthUserDetail(data?.data?.data?.auth_user);
         setLastBmi(data?.data?.data?.bmi);
+        router.push("/personal-details");
       }
 
       return;
     },
     onError: (error) => {
       // setLoading(false);
-      console.log("error", error?.response?.data?.errors?.email);
-      if (error) {
+      console.log("error", error?.response?.data?.message);
+      if (error?.response?.data?.message == "Unauthenticated.") {
+        toast.error("Session Expired");
+        clearBmi();
+        clearCheckout();
+        clearConfirmationInfo();
+        clearGpDetails();
+        clearMedicalInfo();
+        clearPatientInfo();
+        clearBilling();
+        clearShipping();
+        clearAuthUserDetail();
+        clearMedicalQuestions();
+        clearConfirmationQuestions();
+        clearToken();
+        setIsPasswordReset(true);
+        clearProductId();
+        clearLastBmi();
+        clearUserData();
+        clearFirstName();
+        clearLastName();
+        clearEmail();
+        clearConfirmationEmail();
+        router.push("/login");
       }
     },
   });
@@ -94,13 +126,11 @@ export default function StepsInformation() {
       if (data) {
         setMedicalQuestions(data?.data?.data?.medical_question);
         setConfirmationQuestions(data?.data?.data?.confirmation_question);
-        router.push("/personal-details");
       }
       return;
     },
     onError: (error) => {
       // setLoading(false);
-      console.log("error", error?.response?.data?.errors?.email);
       if (error) {
         setShowLoader(false);
       }

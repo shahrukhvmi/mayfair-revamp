@@ -86,7 +86,7 @@ export default function Billing({ billingCountries }) {
     }
   }, [billing, billingCountries]);
 
-  // 🟢 Handle postal code search
+  // 🟢 Handle postcode search
   const handleSearch = async () => {
     setAddressSearchLoading(true);
 
@@ -102,7 +102,7 @@ export default function Billing({ billingCountries }) {
         setManual(true);
       } else {
         setAddressSearchLoading(false);
-        toast.error("Invalid Postal Code");
+        toast.error("Invalid Postcode");
       }
     } catch (error) {
       console.error("API error:", error);
@@ -179,7 +179,7 @@ export default function Billing({ billingCountries }) {
         />
 
         <div className="relative">
-          <TextField label="Postal Code" name="postalcode" placeholder="W1A 1AA" register={register} required errors={errors} />
+          <TextField label="Postcode" name="postalcode" placeholder="W1A 1AA" register={register} required errors={errors} />
           {isSearchAllowed && (
             <button
               type="button"
