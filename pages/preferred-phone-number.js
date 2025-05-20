@@ -99,7 +99,7 @@ export default function SignUp() {
                   disabled={!isValid} // ✅ disables until valid
                   type="submit"
                 />
-                <BackButton label="Back" className="mt-2" onClick={() => router.back()} />
+                <BackButton label="Back" className="mt-2" onClick={() => router.push("/residential-address")} />
               </form>
 
               {showLoader && (

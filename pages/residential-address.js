@@ -186,13 +186,13 @@ export default function ResidentialAddress() {
                       <TextField label="Address" name="address1" placeholder="123 Main Street" register={register} required errors={errors} />
                       <TextField label="Address 2" name="address2" placeholder="Flat 14" register={register} errors={errors} />
                       <TextField label="Town / City" name="city" placeholder="e.g., London" register={register} required errors={errors} />
-                      <TextField label="Country" name="country" placeholder="Essex" register={register} required errors={errors} />
+                      <TextField label="Country" name="country" placeholder="England" register={register} required errors={errors} />
                     </div>
                   )}
                 </div>
 
                 <NextButton label="Next" disabled={!isNextEnabled} />
-                <BackButton label="Back" className="mt-2" onClick={() => router.back()} />
+                <BackButton label="Back" className="mt-2" onClick={() => router.push("/personal-details")} />
               </form>
 
               {showLoader && (

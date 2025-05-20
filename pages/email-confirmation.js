@@ -152,7 +152,7 @@ export default function EmailConfirmation() {
               )}
 
               <NextButton label="Next" type="submit" disabled={!isValid} />
-              <BackButton label="Back" className="mt-2" onClick={() => router.back()} />
+              <BackButton label="Back" className="mt-2" onClick={() => router.push("/signup")} />
             </form>
 
             {showLoader && (

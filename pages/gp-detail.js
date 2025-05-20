@@ -319,7 +319,7 @@ export default function GpDetail() {
               )}
 
               <NextButton label="Next" disabled={!isNextEnabled} className="mt-5" />
-              <BackButton label="Back" className="mt-2" onClick={() => router.back()} />
+              <BackButton label="Back" className="mt-2" onClick={() => router.push("/patient-consent")} />
             </form>
 
             {showLoader && (

@@ -127,7 +127,7 @@ export default function PatientConsent() {
                 {!isNextEnabled && <p className="text-sm text-red-500 mt-2">You must confirm before proceeding.</p>}
 
                 <NextButton label="Next" disabled={!isNextEnabled} />
-                <BackButton label="Back" className="mt-2" onClick={() => router.back()} />
+                <BackButton label="Back" className="mt-2" onClick={() => router.push("/medical-questions")} />
               </form>
 
               {showLoader && (

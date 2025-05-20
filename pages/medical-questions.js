@@ -167,7 +167,7 @@ const MedicalQuestions = () => {
 
               <div className="">
                 <NextButton disabled={!isNextEnabled} label="Next" />
-                <BackButton label="Back" className="mt-2" onClick={() => router.back()} />
+                <BackButton label="Back" className="mt-2" onClick={() => router.push("/bmi-detail")} />
               </div>
             </form>
 

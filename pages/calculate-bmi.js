@@ -213,10 +213,10 @@ export default function CalculateBmi() {
           pound: data?.weightLbs,
           kg: data?.weightKg,
           bmi: calculatedBmi,
-          hiddenInch: data?.heightIn,
-          hiddenLb: data?.weightLbs,
-          hiddenCm: data?.hiddenCm || cm,
-          hiddenKg: data?.hiddenKg || kg,
+          hiddeninch: data?.heightIn,
+          hiddenlb: data?.weightLbs,
+          hiddencm: data?.hiddenCm || cm,
+          hiddenkg: data?.hiddenKg || kg,
           height_unit: heightUnitKey || bmi?.height_unit, // default to metrics if blank
           weight_unit: weightUnitKey || bmi?.weight_unit, // default to kg if blank
         });
@@ -335,7 +335,7 @@ export default function CalculateBmi() {
                     setValue("weightLbs", lbs ? Math.round(lbs) : "");
                   }
                   setWeightUnit(value);
-                  setWeightUnitKey(value);
+                  setWeightUnitKey("imperial");
                 }
               }}
             />
@@ -475,7 +475,7 @@ export default function CalculateBmi() {
                 {localStep === 2 ? (
                   <BackButton type="button" label="Back" className="mt-3" onClick={() => setLocalStep(1)} />
                 ) : (
-                  <BackButton label="Back" className="mt-2" onClick={() => router.back()} />
+                  <BackButton label="Back" className="mt-2" onClick={() => router.push("/confirm-ethnicity")} />
                 )}
               </form>
 

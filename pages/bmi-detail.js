@@ -295,7 +295,7 @@ export default function BmiDetail() {
             )}
 
             <NextButton label="Next" type="submit" disabled={isNextDisabled} />
-            <BackButton label="Back" className="mt-3" onClick={() => router.back()} />
+            <BackButton label="Back" className="mt-3" onClick={() => router.push("/calculate-bmi")} />
 
             {showLoader && (
               <div className="absolute inset-0 z-20 flex justify-center items-center bg-white/60 rounded-lg">

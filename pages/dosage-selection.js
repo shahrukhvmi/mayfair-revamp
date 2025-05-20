@@ -12,6 +12,7 @@ import toast from "react-hot-toast";
 import { motion, AnimatePresence } from "framer-motion";
 import BackButton from "@/Components/BackButton/BackButton";
 import { IoIosArrowBack } from "react-icons/io";
+import useReorder from "@/store/useReorderStore";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 
@@ -21,6 +22,8 @@ export default function DosageSelection() {
   const router = useRouter();
   // const {  } = useCartStore();
   const { addToCart, increaseQuantity, decreaseQuantity, items, totalAmount } = useCartStore();
+
+  const { reorder } = useReorder();
 
   console.log(items, "items");
 
@@ -79,7 +82,7 @@ export default function DosageSelection() {
     const firstTwoDoses = variation?.variations?.slice(0, 1).map((v) => v.name);
     const isFirstTwoDose = firstTwoDoses.includes(dose?.name);
 
-    if (isFirstTwoDose && !isFiveMg) {
+    if ((isFirstTwoDose && !isFiveMg) || reorder == true) {
       addToCart({
         id: dose.id,
         type: "dose",

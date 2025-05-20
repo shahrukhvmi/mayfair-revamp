@@ -14,21 +14,23 @@ import ForgotForm from "./ForgotForm";
 import LoginForm from "./LoginForm";
 import PageLoader from "../PageLoader/PageLoader";
 
-export default function LoginModal({ show = false, onClose = () => { }, onLogin = () => { }, isLoading = false, modes }) {
+export default function LoginModal({ show = false, onClose = () => {}, onLogin = () => {}, isLoading = false, modes }) {
   const {
     register,
     handleSubmit,
     reset,
     getValues,
+    watch,
     formState: { errors },
   } = useForm();
-
 
   const [mode, setMode] = useState(modes);
 
   const searchParams = useSearchParams();
   const token = searchParams.get("token");
   const emailFromURL = searchParams.get("email");
+  const [submittedEmail, setSubmittedEmail] = useState("");
+
   // useEffect(() => {
   //     const pathname = window.location.pathname.replace(/\/+$/, "");
   //     console.log(pathname, "pathname");
@@ -159,7 +161,6 @@ export default function LoginModal({ show = false, onClose = () => { }, onLogin 
                 handleSubmit={handleSubmit}
                 errors={errors}
                 getValues={getValues} // ✅ pass it
-
                 isLoading={forgotMutation.isLoading}
                 onSubmit={(data) =>
                   forgotMutation.mutate({
@@ -179,15 +180,19 @@ export default function LoginModal({ show = false, onClose = () => { }, onLogin 
                 register={register}
                 handleSubmit={handleSubmit}
                 errors={errors}
+                submittedEmail={submittedEmail}
                 isLoading={forgotLinkMutation.isLoading}
                 isSuccess={forgotLinkMutation.isSuccess}
-                onSubmit={(data) =>
+                watch={watch}
+                passwordlink={passwordlink}
+                onSubmit={(data) => {
+                  setSubmittedEmail(data.email); // ✅ Save email for later
                   forgotLinkMutation.mutate({
                     email: data.email,
                     passwordlink,
                     clinic_id: 1,
-                  })
-                }
+                  });
+                }}
                 onBack={() => {
                   forgotLinkMutation.reset();
                   setMode("login");
