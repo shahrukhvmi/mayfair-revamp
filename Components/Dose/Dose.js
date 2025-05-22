@@ -12,7 +12,7 @@ const Dose = ({ doseData, onAdd, onIncrement, onDecrement, isSelected, qty, allo
 
   const allowed = parseInt(allow || 100);
   const doseStatus = doseData?.stock?.status;
-  const isOutOfStock = doseStatus === 0;
+   const isOutOfStock = doseStatus === 0 || doseData?.stock?.quantity === 0;
   const isAllowExceeded = totalSelectedQty() >= allowed;
 
   const handleAdd = (e) => {
@@ -81,7 +81,7 @@ const Dose = ({ doseData, onAdd, onIncrement, onDecrement, isSelected, qty, allo
       >
 
         {/* Overlay when out of stock */}
-        {isOutOfStock && (
+        {isOutOfStock &&  (
           <>
             {/* Overlay to disable interaction */}
             <div className="absolute inset-0 z-10 bg-white/10  cursor-not-allowed rounded-md"></div>

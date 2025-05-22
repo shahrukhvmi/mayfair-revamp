@@ -38,8 +38,8 @@ const AddOn = ({ addon, onAdd, onIncrement, onDecrement, isSelected, quantity })
     }
   };
 
-  const isOutOfStock = addon?.stock?.status == 0;
-
+  // const isOutOfStock = addon?.stock?.status == 0;
+  const isOutOfStock = stockStatus === 0 || addon?.stock?.quantity === 0;
 
 
   const handleDelete = () => {
