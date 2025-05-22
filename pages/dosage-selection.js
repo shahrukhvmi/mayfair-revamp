@@ -228,8 +228,12 @@ export default function DosageSelection() {
                       ?.sort((a, b) => {
                         const aOutOfStock = a?.stock?.status === 0;
                         const bOutOfStock = b?.stock?.status === 0;
+                        const qOutOfStock = b?.stock?.quantity === 0;
+                        const qaOutOfStock = a?.stock?.quantity === 0;
 
                         // Out of stock ko neeche le jao
+                        if (qaOutOfStock && !qOutOfStock) return 1;
+                        if (!qaOutOfStock && qOutOfStock) return -1;
                         if (aOutOfStock && !bOutOfStock) return 1;
                         if (!aOutOfStock && bOutOfStock) return -1;
                         return 0;
@@ -262,11 +266,12 @@ export default function DosageSelection() {
                         </h1>
 
                         {variation?.addons
-                          .slice() // make a copy to avoid mutating original
+                          .slice()
                           .sort((a, b) => {
-                            const aOut = a?.stock?.status === 0 ? 1 : 0;
-                            const bOut = b?.stock?.status === 0 ? 1 : 0;
-                            return aOut - bOut; // move out-of-stock (1) below in-stock (0)
+                            const aOutOfStock = a?.stock?.status === 0 || a?.stock?.quantity === 0 ? 1 : 0;
+                            const bOutOfStock = b?.stock?.status === 0 || b?.stock?.quantity === 0 ? 1 : 0;
+
+                            return aOutOfStock - bOutOfStock;
                           })
                           .map((addon) => {
                             const cartAddon = items.addons.find((item) => item.id === addon.id);
