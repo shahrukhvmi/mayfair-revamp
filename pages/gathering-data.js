@@ -56,7 +56,6 @@ export default function GatherData() {
 
   const { clearFirstName, clearLastName, clearEmail, clearConfirmationEmail } = useSignupStore();
 
-  console.log(productId, "productId productId");
 
   // Variations fetch mutation
   const variationMutation = useMutation(getVariationsApi, {
@@ -99,8 +98,10 @@ export default function GatherData() {
           clearConfirmationEmail();
           router.push("/login");
         } else {
-          toast.error("Something went wrong");
           setShowLoader(false);
+          toast.error(error?.response?.data?.errors?.Product);
+
+
         }
       }
     },
@@ -120,6 +121,7 @@ export default function GatherData() {
       <StepsHeader />
       {showLoader && (
         <div className="absolute inset-0 z-20 flex justify-center items-center bg-white/60 rounded-lg cursor-not-allowed">
+
           <PageLoader />
         </div>
       )}
