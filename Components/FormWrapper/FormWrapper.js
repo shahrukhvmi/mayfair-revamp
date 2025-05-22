@@ -5,7 +5,7 @@ const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 const FormWrapper = ({ children, width = "", heading = "", description = "", percentage = 0, showLoader = false }) => {
   return (
     <>
-      <div className={`${inter.className} my-16 flex justify-center bg-[#F2EEFF] p-6 sm:p-6 ${showLoader ? "cursor-not-allowed" : ""}`}>
+      <div className={`${inter.className} my-5 sm:my-16 flex justify-center bg-[#F2EEFF] p-6 sm:p-6 ${showLoader ? "cursor-not-allowed" : ""}`}>
         <div className={`bg-white rounded-xl shadow-md w-full max-w-3xl ${width}`}>
           {/* ✅ Move ProgressBar inside the card */}
           <ProgressBar percentage={percentage} />

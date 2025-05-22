@@ -40,9 +40,6 @@ const OrderDetail = () => {
       ? order.data.order.consultation.fields.medicalInfo
       : order?.data?.order?.consultation?.fields?.legacy_medicalInfo;
 
-
-
-
   const BillingData = order?.data?.order?.billing;
   const patientData = order?.data?.order?.consultation?.fields?.patientInfo;
   const gpDetails = order?.data?.order?.consultation?.fields?.gpdetails;
@@ -54,34 +51,34 @@ const OrderDetail = () => {
   const orders = order?.data?.order?.consultation?.fields?.checkout?.discount;
   const startConcent = order?.data?.order?.consultation?.start_concent;
   // const confirmationInfo = order?.consultation?.fields?.confirmationInfo;
-  const confirmationInfo = order?.data?.order?.consultation?.fields?.confirmationInfo?.length > 0 ?
-    order?.data?.order?.consultation?.fields?.confirmationInfo :
-    order?.data?.order?.consultation?.fields?.legacy_confirmationInfo;
-  ;
+  const confirmationInfo =
+    order?.data?.order?.consultation?.fields?.confirmationInfo?.length > 0
+      ? order?.data?.order?.consultation?.fields?.confirmationInfo
+      : order?.data?.order?.consultation?.fields?.legacy_confirmationInfo;
   const product_terms_conditions = order?.data?.order?.product_terms_conditions;
 
-
-  console.log(order?.consultation?.fields, "confirmationInfo")
+  console.log(order?.consultation?.fields, "confirmationInfo");
   // Tab Transition Animation Variants
   const tabContentVariants = {
     initial: { opacity: 0, y: 20 }, // Start below and hidden
-    animate: { opacity: 1, y: 0 },   // Animate to visible position
-    exit: { opacity: 0, y: 20 },     // Fade out and move below
+    animate: { opacity: 1, y: 0 }, // Animate to visible position
+    exit: { opacity: 0, y: 20 }, // Fade out and move below
   };
 
   if (loading) {
     return <div>Loading...</div>;
   }
   const formatHeight = (data) => {
-    if (data?.ft || data?.inch) return `${data.ft} ft ${data.inch} in`;
-    if (data?.cm) return `${data.cm} cm`;
-    return 'N/A';
+    console.log(data, "Dattaaaaaa");
+    if (data?.height_unit == "imperial") return `${data.ft} ft ${data.inch} in`;
+    if (data?.height_unit == "metrics") return `${data.cm} cm`;
+    return "N/A";
   };
 
   const formatWeight = (data) => {
-    if (data?.kg) return `${data.kg} kg`;
-    if (data?.stones || data?.pound) return `${data.stones} st ${data.pound} lbs`;
-    return 'N/A';
+    if (data?.weight_unit == "metrics") return `${data.kg} kg`;
+    if (data?.weight_unit == "imperial") return `${data.stones} st ${data.pound} lbs`;
+    return "N/A";
   };
   return (
     <>
@@ -92,9 +89,6 @@ const OrderDetail = () => {
           <p className="h-fit whitespace-nowrap inline-flex items-center px-6 py-2 bg-primary border border-transparent rounded-tr-full rounded-br-full font-semibold text-xs cursor-text text-white uppercase tracking-widest hover:bg-primary focus:bg-primary active:bg-primary focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 transition ease-in-out duration-150  absolute -left-4 -top-4 lg:relative lg:top-0 lg:left-0">
             {moment(date, "DD-MM-YYYY", true).isValid() ? moment(date, "DD-MM-YYYY").format("DD-MM-YYYY") : "N/A"} {time}
           </p>
-
-
-
         </div>
         <div className="flex flex-col md:flex-row justify-between items-center my-6">
           <h1 className="text-2xl bold-font text-[#1C1C29] my-4 sm:mb-4 md:mb-0">
@@ -106,42 +100,26 @@ const OrderDetail = () => {
           <div className="flex flex-col md:flex-row md:space-x-2 space-y-2 md:space-y-0">
             <button className="reg-font px-5 py-3 text-black rounded-full transition duration-300 ease-in-out w-full md:w-auto">
               <span className="mx-1 my-1">Order Status</span>
-              <span className="reg-font bg-violet-900 text-xs p-2 rounded-lg text-white">
-                {order?.data?.order?.status}
-              </span>
+              <span className="reg-font bg-violet-900 text-xs p-2 rounded-lg text-white">{order?.data?.order?.status}</span>
             </button>
 
             <button className="reg-font px-5 py-3 text-black rounded-full transition duration-300 ease-in-out w-full md:w-auto">
               <span className="mx-1 my-1">Payment Status</span>
-              <span className="reg-font bg-violet-900 text-xs p-2 rounded-lg text-white">
-                {order?.data?.order?.payments?.status}
-              </span>
+              <span className="reg-font bg-violet-900 text-xs p-2 rounded-lg text-white">{order?.data?.order?.payments?.status}</span>
             </button>
 
             <button className="reg-font px-5 py-3 text-black rounded-full transition duration-300 ease-in-out w-full md:w-auto">
               <span className="mx-1 my-1">Order Total</span>
-              <span className="reg-font bg-violet-900 text-xs p-2 rounded-lg text-white">
-                £{order?.data?.order?.total_price}
-              </span>
+              <span className="reg-font bg-violet-900 text-xs p-2 rounded-lg text-white">£{order?.data?.order?.total_price}</span>
             </button>
           </div>
-
-
         </div>
 
         <OrdersTabs
           activeTab={activeTab}
           onTabChange={setActiveTab}
-          tabs={["Order Details",
-            "Patient Details",
-            "Medical Questions",
-            "Shipping / Billing"]}
+          tabs={["Order Details", "Patient Details", "Medical Questions", "Shipping / Billing"]}
         />
-
-
-
-
-
 
         {/* Tab Content with Animation */}
         <motion.div
@@ -150,7 +128,7 @@ const OrderDetail = () => {
           initial="initial"
           animate="animate"
           exit="exit"
-          transition={{ duration: 0.5 }}  // Adjust transition duration
+          transition={{ duration: 0.5 }} // Adjust transition duration
         >
           {activeTab === 0 && (
             <>
@@ -187,8 +165,6 @@ const OrderDetail = () => {
                             <TableCell className="text-gray-800 py-3">£{(parseFloat(product.price) * product.quantity).toFixed(2)}</TableCell>
                           </TableRow>
                         ))}
-
-
 
                         {/* Shipping Fee (Optional) */}
                         {orders?.discount > 0 && (
@@ -235,7 +211,6 @@ const OrderDetail = () => {
                   </TableContainer>
                 </div>
               </div>
-
             </>
           )}
           {activeTab === 1 && (
@@ -257,21 +232,15 @@ const OrderDetail = () => {
                         </TableRow>
                         <TableRow>
                           <TableCell className="font-medium">Last Name</TableCell>
-                          <TableCell className="text-[#1C1C29] capitalize">
-                            {patientData?.lastName || "N/A"}
-                          </TableCell>
+                          <TableCell className="text-[#1C1C29] capitalize">{patientData?.lastName || "N/A"}</TableCell>
                         </TableRow>
                         <TableRow>
                           <TableCell className="font-medium">Pregnancy</TableCell>
-                          <TableCell className="text-[#1C1C29] capitalize">
-                            {patientData?.pregnancy || "N/A"}
-                          </TableCell>
+                          <TableCell className="text-[#1C1C29] capitalize">{patientData?.pregnancy || "N/A"}</TableCell>
                         </TableRow>
                         <TableRow>
                           <TableCell className="font-medium">Gender</TableCell>
-                          <TableCell className="text-[#1C1C29] capitalize">
-                            {patientData?.gender || "N/A"}
-                          </TableCell>
+                          <TableCell className="text-[#1C1C29] capitalize">{patientData?.gender || "N/A"}</TableCell>
                         </TableRow>
                         <TableRow>
                           <TableCell className="font-medium">Date of birth</TableCell>
@@ -283,9 +252,7 @@ const OrderDetail = () => {
                         </TableRow>
                         <TableRow>
                           <TableCell className="font-medium">Phone</TableCell>
-                          <TableCell className="text-[#1C1C29] capitalize">
-                            {patientData?.phoneNo || "N/A"}
-                          </TableCell>
+                          <TableCell className="text-[#1C1C29] capitalize">{patientData?.phoneNo || "N/A"}</TableCell>
                         </TableRow>
                       </TableBody>
                     </Table>
@@ -308,9 +275,7 @@ const OrderDetail = () => {
                         </TableRow>
                         <TableRow>
                           <TableCell className="font-medium">Address</TableCell>
-                          <TableCell className="text-[#1C1C29] capitalize">
-                            {gpDetails?.addressLine1 || "N/A"}
-                          </TableCell>
+                          <TableCell className="text-[#1C1C29] capitalize">{gpDetails?.addressLine1 || "N/A"}</TableCell>
                         </TableRow>
                         <TableRow>
                           <TableCell className="font-medium">City</TableCell>
@@ -365,15 +330,10 @@ const OrderDetail = () => {
 
           {activeTab === 2 && (
             <>
-
               {/* Medical info */}
 
               <div className="sm:bg-gray-50 rounded-lg mb-6">
-                {medicalInfo && medicalInfo.length > 0 ? (
-                  <h2 className="text-xl niba-bold-font text-[#1C1C29] mb-4 p-4">Medical Information</h2>
-                ) : (
-                  ""
-                )}
+                {medicalInfo && medicalInfo.length > 0 ? <h2 className="text-xl niba-bold-font text-[#1C1C29] mb-4 p-4">Medical Information</h2> : ""}
                 {medicalInfo && medicalInfo.length > 0 ? (
                   <TableContainer component={Paper} className="mb-6">
                     <Table>
@@ -409,21 +369,79 @@ const OrderDetail = () => {
                   <p className="text-center text-gray-500 px-4 pb-4">Medical information not found.</p>
                 )}
               </div>
-
             </>
-          )
-          }
+          )}
 
-          {
-            activeTab === 5 && (
-              <>
-                <h1 className="text-2xl font-light my-4">
-                  <span className="niba-bold-font text-black">User Consent</span>
-                </h1>
-                <div className="relative overflow-x-auto border rounded-lg">
-                  {startConcent ? (
+          {activeTab === 5 && (
+            <>
+              <h1 className="text-2xl font-light my-4">
+                <span className="niba-bold-font text-black">User Consent</span>
+              </h1>
+              <div className="relative overflow-x-auto border rounded-lg">
+                {startConcent ? (
+                  <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+                    <thead className="border-b text-md text-gray-700 bg-white  [&>tr:not(:last-child)]:border-b [&>tr]:border-gray-200">
+                      <tr className="uppercase">
+                        {/* <th scope="col" className="px-6 py-3">SNo#</th> */}
+
+                        {/* <th scope="col" className="px-6 py-3">Answer</th> */}
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {/* Confirmation Details */}
+                      <tr className="border-b border-gray-200 bg-white  [&>tr:not(:last-child)]:border-b [&>tr]:border-gray-200">
+                        {/* <td className="px-6 py-3 text-gray-700">2</td> */}
+                        <td className="px-6 py-3 text-gray-700 reg-font">
+                          <div
+                            dangerouslySetInnerHTML={{
+                              __html: startConcent.PatientAcknowledgment?.question,
+                            }}
+                          ></div>
+                        </td>
+                        {/* <td className="px-16 py-3 capitalize text-end text-gray-700">
+                                    {startConcent.PatientAcknowledgment?.response === "YES" ? "Yes" : "No"}
+                                </td> */}
+                      </tr>
+                      {startConcent.PatientAcknowledgment?.confirmation && (
+                        <tr className="border-b border-gray-200 bg-white">
+                          <td className="px-6 py-3 text-gray-700 mt-1 reg-font">
+                            <div
+                              dangerouslySetInnerHTML={{
+                                __html: startConcent.PatientAcknowledgment.confirmation.confirmation_details,
+                              }}
+                            />
+                          </td>
+                        </tr>
+                      )}
+
+                      {/* Main Question */}
+                    </tbody>
+                  </table>
+                ) : (
+                  <div className="p-6 text-center text-gray-500">No Consent here</div>
+                )}
+
+                {/* Additional styling for confirmation details */}
+                <style jsx>{`
+                  .mt-1 ul {
+                    list-style-type: disc;
+                    padding-left: 1.5rem;
+                  }
+                  .mt-1 li {
+                    margin-bottom: 0.5rem;
+                    color: #4a5568;
+                  }
+                `}</style>
+              </div>
+              {order?.items?.some((item) => item.product_concent !== null) && (
+                <>
+                  <h1 className="text-2xl font-light my-4">
+                    <span className="niba-bold-font">Product Related Consent</span>
+                  </h1>
+
+                  <div className="relative overflow-x-auto border rounded-lg">
                     <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-                      <thead className="border-b text-md text-gray-700 bg-white  [&>tr:not(:last-child)]:border-b [&>tr]:border-gray-200">
+                      <thead className="border-b text-md text-gray-700 bg-gray-50  [&>tr:not(:last-child)]:border-b [&>tr]:border-gray-200">
                         <tr className="uppercase">
                           {/* <th scope="col" className="px-6 py-3">SNo#</th> */}
 
@@ -431,130 +449,55 @@ const OrderDetail = () => {
                         </tr>
                       </thead>
                       <tbody>
-                        {/* Confirmation Details */}
-                        <tr className="border-b border-gray-200 bg-white  [&>tr:not(:last-child)]:border-b [&>tr]:border-gray-200">
-                          {/* <td className="px-6 py-3 text-gray-700">2</td> */}
-                          <td className="px-6 py-3 text-gray-700 reg-font">
-                            <div
-                              dangerouslySetInnerHTML={{
-                                __html: startConcent
-                                  .PatientAcknowledgment
-                                  ?.question,
-                              }}
-                            ></div>
-                          </td>
-                          {/* <td className="px-16 py-3 capitalize text-end text-gray-700">
-                                    {startConcent.PatientAcknowledgment?.response === "YES" ? "Yes" : "No"}
-                                </td> */}
-                        </tr>
-                        {startConcent.PatientAcknowledgment
-                          ?.confirmation && (
-                            <tr className="border-b border-gray-200 bg-white">
-                              <td className="px-6 py-3 text-gray-700 mt-1 reg-font">
-                                <div
-                                  dangerouslySetInnerHTML={{
-                                    __html: startConcent
-                                      .PatientAcknowledgment
-                                      .confirmation
-                                      .confirmation_details,
-                                  }}
-                                />
-                              </td>
-
-                            </tr>
-                          )}
-
-                        {/* Main Question */}
+                        {order?.items?.map((item, index) => {
+                          return (
+                            item.product_concent != null && (
+                              <tr className="border-b border-gray-200 bg-gray-50  [&>tr:not(:last-child)]:border-b [&>tr]:border-gray-200">
+                                <td className="px-6 py-3 text-gray-700 mt-1">
+                                  <div
+                                    dangerouslySetInnerHTML={{
+                                      __html: item.product_concent,
+                                    }}
+                                  />
+                                </td>
+                              </tr>
+                            )
+                          );
+                        })}
                       </tbody>
                     </table>
-                  ) : (
-                    <div className="p-6 text-center text-gray-500">
-                      No Consent here
-                    </div>
-                  )}
 
-                  {/* Additional styling for confirmation details */}
-                  <style jsx>{`
-                    .mt-1 ul {
+                    {/* Additional styling for confirmation details */}
+                    <style jsx>{`
+                      .mt-1 ul {
                         list-style-type: disc;
                         padding-left: 1.5rem;
-                    }
-                    .mt-1 li {
+                      }
+                      .mt-1 li {
                         margin-bottom: 0.5rem;
                         color: #4a5568;
-                    }
-                `}</style>
-                </div>
-                {order?.items?.some((item) => item.product_concent !== null) && (
-                  <>
-                    <h1 className="text-2xl font-light my-4">
-                      <span className="niba-bold-font">
-                        Product Related Consent
-                      </span>
-                    </h1>
+                      }
+                    `}</style>
+                  </div>
+                </>
+              )}
 
-                    <div className="relative overflow-x-auto border rounded-lg">
-                      <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-                        <thead className="border-b text-md text-gray-700 bg-gray-50  [&>tr:not(:last-child)]:border-b [&>tr]:border-gray-200">
-                          <tr className="uppercase">
-                            {/* <th scope="col" className="px-6 py-3">SNo#</th> */}
+              {confirmationInfo?.length > 0 && (
+                <>
+                  <h1 className="text-2xl font-light mt-8 mb-4">
+                    <span className="niba-bold-font text-black">Confirmation</span>
+                  </h1>
 
-                            {/* <th scope="col" className="px-6 py-3">Answer</th> */}
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {order?.items?.map((item, index) => {
-                            return (
-                              item.product_concent != null && (
-                                <tr className="border-b border-gray-200 bg-gray-50  [&>tr:not(:last-child)]:border-b [&>tr]:border-gray-200">
-                                  <td className="px-6 py-3 text-gray-700 mt-1">
-                                    <div
-                                      dangerouslySetInnerHTML={{
-                                        __html: item.product_concent,
-                                      }}
-                                    />
-                                  </td>
-                                </tr>
-                              )
-                            );
-                          })}
-                        </tbody>
-                      </table>
-
-                      {/* Additional styling for confirmation details */}
-                      <style jsx>{`
-                            .mt-1 ul {
-                                list-style-type: disc;
-                                padding-left: 1.5rem;
-                            }
-                            .mt-1 li {
-                                margin-bottom: 0.5rem;
-                                color: #4a5568;
-                            }
-                        `}</style>
-                    </div>
-                  </>
-                )}
-
-
-                {confirmationInfo?.length > 0 && (
-                  <>
-                    <h1 className="text-2xl font-light mt-8 mb-4">
-                      <span className="niba-bold-font text-black">Confirmation</span>
-                    </h1>
-
-                    <TableContainer component={Paper} className="rounded-lg overflow-x-auto">
-                      <Table aria-label="confirmation table">
-
-
-                        <TableBody>
-                          {confirmationInfo.map((item, index) => (
-                            <TableRow key={index}>
-                              <TableCell>
-                                <div
-                                  className="prose"
-                                  dangerouslySetInnerHTML={{
-                                    __html: `
+                  <TableContainer component={Paper} className="rounded-lg overflow-x-auto">
+                    <Table aria-label="confirmation table">
+                      <TableBody>
+                        {confirmationInfo.map((item, index) => (
+                          <TableRow key={index}>
+                            <TableCell>
+                              <div
+                                className="prose"
+                                dangerouslySetInnerHTML={{
+                                  __html: `
                       <style>
                         .prose ol {
                           list-style-type: decimal;
@@ -586,14 +529,14 @@ const OrderDetail = () => {
                       </style>
                       ${item.question}
                     `,
-                                  }}
-                                />
+                                }}
+                              />
 
-                                {item.has_checklist && (
-                                  <div
-                                    className="prose"
-                                    dangerouslySetInnerHTML={{
-                                      __html: `
+                              {item.has_checklist && (
+                                <div
+                                  className="prose"
+                                  dangerouslySetInnerHTML={{
+                                    __html: `
                         <style>
                           .prose ol {
                             list-style-type: decimal;
@@ -625,44 +568,38 @@ const OrderDetail = () => {
                         </style>
                         ${item.checklist}
                       `,
-                                    }}
-                                  />
-                                )}
-                              </TableCell>
-                            </TableRow>
-                          ))}
-                        </TableBody>
-                      </Table>
-                    </TableContainer>
-                  </>
-                )}
-
-
-
-                {product_terms_conditions && product_terms_conditions !== null && product_terms_conditions !== "" && (
-                  <>
-                    <h1 className="text-2xl font-light mt-8 mb-4">
-                      <span className="niba-bold-font text-black">
-                        Medication Terms & Conditions
-                      </span>
-                    </h1>
-
-                    <TableContainer component={Paper} sx={{ borderRadius: 2 }}>
-                      <Table>
-                        <TableHead>
-                          <TableRow>
-                            <TableCell sx={{ minWidth: 400, textTransform: 'uppercase' }}>
-                              Response
+                                  }}
+                                />
+                              )}
                             </TableCell>
                           </TableRow>
-                        </TableHead>
-                        <TableBody>
-                          <TableRow>
-                            <TableCell>
-                              <div
-                                className="prose"
-                                dangerouslySetInnerHTML={{
-                                  __html: `
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </TableContainer>
+                </>
+              )}
+
+              {product_terms_conditions && product_terms_conditions !== null && product_terms_conditions !== "" && (
+                <>
+                  <h1 className="text-2xl font-light mt-8 mb-4">
+                    <span className="niba-bold-font text-black">Medication Terms & Conditions</span>
+                  </h1>
+
+                  <TableContainer component={Paper} sx={{ borderRadius: 2 }}>
+                    <Table>
+                      <TableHead>
+                        <TableRow>
+                          <TableCell sx={{ minWidth: 400, textTransform: "uppercase" }}>Response</TableCell>
+                        </TableRow>
+                      </TableHead>
+                      <TableBody>
+                        <TableRow>
+                          <TableCell>
+                            <div
+                              className="prose"
+                              dangerouslySetInnerHTML={{
+                                __html: `
                     <style>
                       .prose ol {
                           list-style-type: decimal;
@@ -694,162 +631,150 @@ const OrderDetail = () => {
                     </style>
                     ${product_terms_conditions}
                   `,
-                                }}
-                              />
-                            </TableCell>
-                          </TableRow>
-                        </TableBody>
-                      </Table>
-                    </TableContainer>
-                  </>
-                )}
-              </>
-            )
-          }
+                              }}
+                            />
+                          </TableCell>
+                        </TableRow>
+                      </TableBody>
+                    </Table>
+                  </TableContainer>
+                </>
+              )}
+            </>
+          )}
 
+          {activeTab === 3 && (
+            <>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {/* Patient Information Section */}
 
-          {
-            activeTab === 3 && (
-              <>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  {/* Patient Information Section */}
+                <div className="sm:bg-gray-50 rounded-lg mb-6">
+                  <h2 className="text-xl niba-bold-font text-[#1C1C29] mb-4">Shipping Information</h2>
+                  <TableContainer component={Paper}>
+                    <Table>
+                      <TableBody>
+                        <TableRow>
+                          <TableCell style={{ width: "50%" }} className="reg-font  paragraph">
+                            First Name
+                          </TableCell>
+                          <TableCell style={{ width: "50%" }} className="reg-font  text-[#1C1C29] capitalize">
+                            {shippingData?.first_name ? shippingData?.first_name : patientData?.firstName ? patientData?.firstName : "N/A"}
+                          </TableCell>
+                        </TableRow>
 
+                        <TableRow>
+                          <TableCell style={{ width: "50%" }} className="reg-font  paragraph">
+                            Last Name
+                          </TableCell>
+                          <TableCell style={{ width: "50%" }} className="reg-font  text-[#1C1C29] capitalize">
+                            {shippingData?.last_name ? shippingData?.last_name : patientData?.lastName ? patientData?.lastName : "N/A"}
+                          </TableCell>
+                        </TableRow>
 
+                        <TableRow>
+                          <TableCell style={{ width: "50%" }} className="reg-font  paragraph">
+                            Address1
+                          </TableCell>
+                          <TableCell style={{ width: "50%" }} className="reg-font  text-[#1C1C29] capitalize">
+                            {shippingData?.addressone ? shippingData?.addressone : "N/A"}
+                          </TableCell>
+                        </TableRow>
+                        <TableRow>
+                          <TableCell style={{ width: "50%" }} className="reg-font  paragraph">
+                            Address2
+                          </TableCell>
+                          <TableCell style={{ width: "50%" }} className="reg-font  text-[#1C1C29] capitalize">
+                            {shippingData?.addresstwo ? shippingData?.addresstwo : "N/A"}
+                            {/* {shippingData.addresstwo ? shippingData?.addresstwo : "N/A"} */}
+                          </TableCell>
+                        </TableRow>
+                        <TableRow>
+                          <TableCell className="reg-font  paragraph">City</TableCell>
+                          <TableCell className="reg-font  text-[#1C1C29] capitalize">{shippingData?.city ? shippingData?.city : "N/A"}</TableCell>
+                        </TableRow>
+                        <TableRow>
+                          <TableCell className="reg-font  paragraph">County / Province / Region:</TableCell>
+                          <TableCell className="reg-font  text-[#1C1C29] capitalize">{shippingData?.state ? shippingData?.state : "N/A"}</TableCell>
+                        </TableRow>
+                        <TableRow>
+                          <TableCell className="reg-font  paragraph">Postalcode</TableCell>
+                          <TableCell className="reg-font  text-[#1C1C29] capitalize">
+                            {shippingData?.postalcode ? shippingData?.postalcode : "N/A"}
+                          </TableCell>
+                        </TableRow>
 
-                  <div className="sm:bg-gray-50 rounded-lg mb-6">
-                    <h2 className="text-xl niba-bold-font text-[#1C1C29] mb-4">Shipping Information</h2>
-                    <TableContainer component={Paper}>
-                      <Table>
-                        <TableBody>
-                          <TableRow>
-                            <TableCell style={{ width: "50%" }} className="reg-font  paragraph">
-                              First Name
-                            </TableCell>
-                            <TableCell style={{ width: "50%" }} className="reg-font  text-[#1C1C29] capitalize">
-                              {shippingData?.first_name ? shippingData?.first_name : patientData?.firstName ? patientData?.firstName : "N/A"}
-                            </TableCell>
-                          </TableRow>
+                        <TableRow>
+                          <TableCell className="reg-font  paragraph">Country</TableCell>
+                          <TableCell className="reg-font  text-[#1C1C29] capitalize">
+                            {shippingData?.country ? shippingData?.country : "N/A"}
+                          </TableCell>
+                        </TableRow>
 
-                          <TableRow>
-                            <TableCell style={{ width: "50%" }} className="reg-font  paragraph">
-                              Last Name
-                            </TableCell>
-                            <TableCell style={{ width: "50%" }} className="reg-font  text-[#1C1C29] capitalize">
-                              {shippingData?.last_name ? shippingData?.last_name : patientData?.lastName ? patientData?.lastName : "N/A"}
-                            </TableCell>
-                          </TableRow>
-
-                          <TableRow>
-                            <TableCell style={{ width: "50%" }} className="reg-font  paragraph">
-                              Address1
-                            </TableCell>
-                            <TableCell style={{ width: "50%" }} className="reg-font  text-[#1C1C29] capitalize">
-                              {shippingData?.addressone ? shippingData?.addressone : "N/A"}
-                            </TableCell>
-                          </TableRow>
-                          <TableRow>
-                            <TableCell style={{ width: "50%" }} className="reg-font  paragraph">
-                              Address2
-                            </TableCell>
-                            <TableCell style={{ width: "50%" }} className="reg-font  text-[#1C1C29] capitalize">
-                              {shippingData?.addresstwo ? shippingData?.addresstwo : "N/A"}
-                              {/* {shippingData.addresstwo ? shippingData?.addresstwo : "N/A"} */}
-                            </TableCell>
-                          </TableRow>
-                          <TableRow>
-                            <TableCell className="reg-font  paragraph">City</TableCell>
-                            <TableCell className="reg-font  text-[#1C1C29] capitalize">{shippingData?.city ? shippingData?.city : "N/A"}</TableCell>
-                          </TableRow>
-                          <TableRow>
-                            <TableCell className="reg-font  paragraph">County / Province / Region:</TableCell>
-                            <TableCell className="reg-font  text-[#1C1C29] capitalize">{shippingData?.state ? shippingData?.state : "N/A"}</TableCell>
-                          </TableRow>
-                          <TableRow>
-                            <TableCell className="reg-font  paragraph">Postalcode</TableCell>
-                            <TableCell className="reg-font  text-[#1C1C29] capitalize">{shippingData?.postalcode ? shippingData?.postalcode : "N/A"}</TableCell>
-                          </TableRow>
-
-                          <TableRow>
-                            <TableCell className="reg-font  paragraph">Country</TableCell>
-                            <TableCell className="reg-font  text-[#1C1C29] capitalize">{shippingData?.country ? shippingData?.country : "N/A"}</TableCell>
-                          </TableRow>
-
-                          <TableRow>
-                            <TableCell className="reg-font  paragraph">Phone Number</TableCell>
-                            <TableCell className="reg-font  text-[#1C1C29] capitalize">{patientData?.phoneNo ? patientData?.phoneNo : "N/A"}</TableCell>
-                          </TableRow>
-                        </TableBody>
-                      </Table>
-                    </TableContainer>
-                  </div>
-
-
-
-
-                  <div className="sm:bg-gray-50 rounded-lg mb-6">
-                    <h2 className="text-xl niba-bold-font text-[#1C1C29] mb-4">Billing Information</h2>
-                    <TableContainer component={Paper}>
-                      <Table>
-                        <TableBody>
-
-
-                          <TableRow>
-                            <TableCell style={{ width: "50%" }} className="reg-font  paragraph">
-                              Address1
-                            </TableCell>
-                            <TableCell style={{ width: "50%" }} className="reg-font  text-[#1C1C29] capitalize">
-                              {BillingData?.addressone ? BillingData?.addressone : "N/A"}
-                            </TableCell>
-                          </TableRow>
-                          <TableRow>
-                            <TableCell style={{ width: "50%" }} className="reg-font  paragraph">
-                              Address2
-                            </TableCell>
-                            <TableCell style={{ width: "50%" }} className="reg-font  text-[#1C1C29] capitalize">
-                              {BillingData?.addresstwo ? BillingData?.addresstwo : "N/A"}
-                              {/* {shippingData.addresstwo ? shippingData?.addresstwo : "N/A"} */}
-                            </TableCell>
-                          </TableRow>
-                          <TableRow>
-                            <TableCell className="reg-font  paragraph">City</TableCell>
-                            <TableCell className="reg-font  text-[#1C1C29] capitalize">{BillingData?.city ? BillingData?.city : "N/A"}</TableCell>
-                          </TableRow>
-                          <TableRow>
-                            <TableCell className="reg-font  paragraph">County / Province / Region:</TableCell>
-                            <TableCell className="reg-font  text-[#1C1C29] capitalize">{BillingData?.state ? BillingData?.state : "N/A"}</TableCell>
-                          </TableRow>
-                          <TableRow>
-                            <TableCell className="reg-font  paragraph">Postalcode</TableCell>
-                            <TableCell className="reg-font  text-[#1C1C29] capitalize">{BillingData?.postalcode ? BillingData?.postalcode : "N/A"}</TableCell>
-                          </TableRow>
-
-                          <TableRow>
-                            <TableCell className="reg-font  paragraph">Country</TableCell>
-                            <TableCell className="reg-font  text-[#1C1C29] capitalize">{BillingData?.country ? BillingData?.country : "N/A"}</TableCell>
-                          </TableRow>
-
-
-                        </TableBody>
-                      </Table>
-                    </TableContainer>
-                  </div>
+                        <TableRow>
+                          <TableCell className="reg-font  paragraph">Phone Number</TableCell>
+                          <TableCell className="reg-font  text-[#1C1C29] capitalize">{patientData?.phoneNo ? patientData?.phoneNo : "N/A"}</TableCell>
+                        </TableRow>
+                      </TableBody>
+                    </Table>
+                  </TableContainer>
                 </div>
-              </>
-            )
-          }
 
+                <div className="sm:bg-gray-50 rounded-lg mb-6">
+                  <h2 className="text-xl niba-bold-font text-[#1C1C29] mb-4">Billing Information</h2>
+                  <TableContainer component={Paper}>
+                    <Table>
+                      <TableBody>
+                        <TableRow>
+                          <TableCell style={{ width: "50%" }} className="reg-font  paragraph">
+                            Address1
+                          </TableCell>
+                          <TableCell style={{ width: "50%" }} className="reg-font  text-[#1C1C29] capitalize">
+                            {BillingData?.addressone ? BillingData?.addressone : "N/A"}
+                          </TableCell>
+                        </TableRow>
+                        <TableRow>
+                          <TableCell style={{ width: "50%" }} className="reg-font  paragraph">
+                            Address2
+                          </TableCell>
+                          <TableCell style={{ width: "50%" }} className="reg-font  text-[#1C1C29] capitalize">
+                            {BillingData?.addresstwo ? BillingData?.addresstwo : "N/A"}
+                            {/* {shippingData.addresstwo ? shippingData?.addresstwo : "N/A"} */}
+                          </TableCell>
+                        </TableRow>
+                        <TableRow>
+                          <TableCell className="reg-font  paragraph">City</TableCell>
+                          <TableCell className="reg-font  text-[#1C1C29] capitalize">{BillingData?.city ? BillingData?.city : "N/A"}</TableCell>
+                        </TableRow>
+                        <TableRow>
+                          <TableCell className="reg-font  paragraph">County / Province / Region:</TableCell>
+                          <TableCell className="reg-font  text-[#1C1C29] capitalize">{BillingData?.state ? BillingData?.state : "N/A"}</TableCell>
+                        </TableRow>
+                        <TableRow>
+                          <TableCell className="reg-font  paragraph">Postalcode</TableCell>
+                          <TableCell className="reg-font  text-[#1C1C29] capitalize">
+                            {BillingData?.postalcode ? BillingData?.postalcode : "N/A"}
+                          </TableCell>
+                        </TableRow>
 
-
-
-        </motion.div >
+                        <TableRow>
+                          <TableCell className="reg-font  paragraph">Country</TableCell>
+                          <TableCell className="reg-font  text-[#1C1C29] capitalize">{BillingData?.country ? BillingData?.country : "N/A"}</TableCell>
+                        </TableRow>
+                      </TableBody>
+                    </Table>
+                  </TableContainer>
+                </div>
+              </div>
+            </>
+          )}
+        </motion.div>
 
         <div className="flex justify-start my-3">
           <Link href="/orders/">
             <button className="reg-font px-6 py-2 bg-primary cursor-pointer text-white rounded-md hover:bg-primary transition">Back</button>
           </Link>
         </div>
-
-      </div >
+      </div>
     </>
   );
 };

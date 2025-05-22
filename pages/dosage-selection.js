@@ -13,15 +13,20 @@ import { motion, AnimatePresence } from "framer-motion";
 import BackButton from "@/Components/BackButton/BackButton";
 import { IoIosArrowBack } from "react-icons/io";
 import useReorder from "@/store/useReorderStore";
+import { abandonCart } from "@/api/abandonCartApi";
+import { useMutation } from "@tanstack/react-query";
+import useProductId from "@/store/useProductIdStore";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 
 export default function DosageSelection() {
   const [shownDoseIds, setShownDoseIds] = useState([]);
   const [isButtonLoading, setIsButtonLoading] = useState(false);
+  const [abandonData, setAbandonData] = useState([]);
   const router = useRouter();
   // const {  } = useCartStore();
   const { addToCart, increaseQuantity, decreaseQuantity, items, totalAmount } = useCartStore();
+  const { productId } = useProductId();
 
   const { reorder } = useReorder();
 
@@ -38,10 +43,30 @@ export default function DosageSelection() {
   const [showDoseModal, setShowDoseModal] = useState(false);
   const [selectedDose, setSelectedDose] = useState(null);
 
+  const abandonCartMutation = useMutation(abandonCart, {
+    onSuccess: (data) => {
+      if (data) {
+        router.push("/checkout");
+        console.log(data, "This is Abandon Cart Data");
+      }
+    },
+    onError: (error) => {
+      if (error) {
+        router.push("/checkout");
+        console.log(error, "This is error");
+      }
+    },
+  });
+
+  //Handle Submit Button
   const onSubmit = () => {
     setIsButtonLoading(true);
-    router.push("/checkout");
+    // router.push("/checkout");
+
+    abandonCartMutation.mutate(abandonData);
+    // console.log(abandonData, "Abbandon Cart Data");
   };
+
   //Allowed checking here 🔥
   const totalSelectedQty = () => items?.doses.reduce((total, v) => total + v.qty, 0);
 
@@ -96,6 +121,13 @@ export default function DosageSelection() {
         expiry: dose.expiry,
         isSelected: true,
       });
+      setAbandonData([
+        ...abandonData,
+        {
+          eid: dose.id,
+          pid: productId,
+        },
+      ]);
     } else {
       const productConcent = generateProductConcent(variation?.variations, dose?.name);
 
@@ -112,6 +144,14 @@ export default function DosageSelection() {
         expiry: dose.expiry,
         isSelected: true,
       });
+
+      setAbandonData([
+        ...abandonData,
+        {
+          eid: dose.id,
+          pid: productId,
+        },
+      ]);
 
       // ✅ ✅ ✅ Check if modal was already shown for this dose
       if (!shownDoseIds.includes(dose.id)) {

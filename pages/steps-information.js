@@ -143,9 +143,11 @@ export default function StepsInformation() {
       product_id: productId,
     };
     setShowLoader(true);
-    consultationMutation.mutate(formData);
-    medicalQuestionsMutation.mutate();
-  }, []);
+    if (productId != null) {
+      consultationMutation.mutate(formData);
+      medicalQuestionsMutation.mutate();
+    }
+  }, [productId]);
 
   //   setTimeout(() => {
   //     router.push("/step1");

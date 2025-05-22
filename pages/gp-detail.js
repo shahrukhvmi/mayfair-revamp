@@ -245,7 +245,7 @@ export default function GpDetail() {
 
               {gpDetails === "yes" && gepTreatMent === "yes" && (
                 <>
-                  <TextField label="Email" name="email" placeholder="Email" register={register} errors={errors} />
+                  <TextField label="Email" name="email" type="email" placeholder="Email" register={register} errors={errors} />
 
                   <div className="relative">
                     <TextField label="Post code" name="postalCode" placeholder="W1A 1AA" register={register} required errors={errors} />

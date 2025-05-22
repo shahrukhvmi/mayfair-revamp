@@ -16,6 +16,7 @@ class Fetcher {
       headers: {
         Accept: "application/json",
         "Content-type": "application/json",
+        "Company-Id": 1,
       },
     });
 

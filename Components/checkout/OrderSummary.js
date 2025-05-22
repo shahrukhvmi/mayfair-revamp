@@ -79,13 +79,16 @@ const OrderSummary = ({ isConcentCheck }) => {
       const res = await CouponApi({ coupon_code: discountCode });
       if (res?.data?.status === true) {
         toast.success("Coupon applied successfully!");
+        console.log(res, "coupon");
         setCoupon(res.data);
         setDiscountCode("");
       }
     } catch (error) {
       const err = error?.response?.data?.errors?.Coupon;
       if (err) {
+        console.log(err, "coupon error");
         toast.error(err);
+        clearCoupon();
       } else {
         toast.error("Something went wrong");
       }
@@ -131,6 +134,7 @@ const OrderSummary = ({ isConcentCheck }) => {
       console.log(error, "dsfdsdsdfsdf");
       const errors = error?.response?.data?.original?.errors;
       const product_error = error?.response?.data?.errors?.Product;
+      const singleOutOfStock = error?.response?.data?.errors?.OutOfStock;
 
       if (error?.response?.data?.message == "Unauthenticated.") {
         console.log("error here");
@@ -163,7 +167,20 @@ const OrderSummary = ({ isConcentCheck }) => {
           const errorMessage = errors[key];
           Array.isArray(errorMessage) ? errorMessage.forEach((msg) => toast.error(msg)) : toast.error(errorMessage);
         });
+      } else if (singleOutOfStock && typeof singleOutOfStock === "object") {
+        setIsButtonLoading(false);
+        Object.keys(singleOutOfStock).forEach((key) => {
+          const errorMessage = singleOutOfStock[key];
+          Array.isArray(errorMessage) ? errorMessage.forEach((msg) => toast.error(msg)) : toast.error(errorMessage);
+        });
+        router.push("/gathering-data");
+      } else if (singleOutOfStock && typeof singleOutOfStock != "object") {
+        toast.error(singleOutOfStock);
+        console.log("from single Out Of stock");
+        router.push("/gathering-data");
+        setIsButtonLoading(false);
       } else {
+        console.log("from other errors");
         toast.error(product_error);
         setIsButtonLoading(false);
       }
