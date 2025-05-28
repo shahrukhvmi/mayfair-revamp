@@ -285,7 +285,7 @@ export default function BillingAddress({ isCompleted, onComplete, sameAsShipping
         <TextField label="Address" name="addressone" placeholder="123 Main Street" register={register} required errors={errors} />
         <TextField label="Address 2" name="addresstwo" placeholder="Flat 14" register={register} errors={errors} />
         <TextField label="Town / City" name="city" placeholder="e.g., London" register={register} required errors={errors} />
-        <TextField label="County" name="state" placeholder="e.g., Essex" register={register} errors={errors} />
+        <TextField label="State / County" name="state" placeholder="e.g., Essex" register={register} errors={errors} />
 
         <NextButton label="Continue" disabled={!isValid} />
       </form>

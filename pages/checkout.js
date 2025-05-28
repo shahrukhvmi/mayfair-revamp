@@ -11,12 +11,14 @@ import usePasswordReset from "@/store/usePasswordReset";
 import useShippingOrBillingStore from "@/store/shipingOrbilling";
 import useCartStore from "@/store/useCartStore";
 import { Inter } from "next/font/google";
+import useReorder from "@/store/useReorderStore";
 
 const inter = Inter({ subsets: ["latin"] });
 
 const Checkout = () => {
   const { isPasswordReset, showResetPassword } = usePasswordReset();
   const { billingSameAsShipping } = useShippingOrBillingStore();
+  const { reorder } = useReorder();
   const [isConcentCheck, setIsConcentCheck] = useState(false);
 
   const [showThankYouModal, setShowThankYouModal] = useState(false);
@@ -35,6 +37,8 @@ const Checkout = () => {
   useEffect(() => {
     headingRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
   }, []);
+
+  console.log(reorder, "reorderrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr");
 
   const scrollToRef = (ref) => {
     if (ref?.current) {
@@ -108,10 +112,21 @@ const Checkout = () => {
 
       <div className="max-w-2xl mx-auto px-4 pb-10 space-y-10">
         <div ref={headingRef} className="sm:px-6 px-0 pt-10 text-center">
-          <h1 className="sm:px-6 px-0 text-2xl niba-reg-font heading mb-2 text-gray-900">Checkout to kick-start your weight loss journey</h1>
+          <h1 className="sm:px-6 px-0 text-2xl niba-reg-font heading mb-2 text-gray-900">
+            {reorder ? (
+              <>
+                Confirm your treatment
+                <br />
+                re-order
+              </>
+            ) : (
+              "Checkout to kick-start your weight loss journey"
+            )}
+          </h1>
           <p className="text-sm sm:px-6 px-0  reg-font paragraph mb-6">
-            Complete your details below to secure your consultation. If you decide not to proceed after your consult for any reason, you will be fully
-            refunded.
+            {reorder
+              ? "You're almost done. Complete your checkout to continue your weight loss journey without interruption."
+              : "Complete your details below to secure your consultation. If you decide not to proceed after your consult for any reason, you will be fully refunded."}
           </p>
         </div>
 

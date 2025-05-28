@@ -263,7 +263,7 @@ const OrderSummary = ({ isConcentCheck }) => {
         <>
           <div className="col-span-12 sm:col-span-4 mb-3">
             <div className="mb-24 sm:mb-0">
-              <div className="bg-white p-6 rounded-2xl shadow-lg mt-6 sm:mt-[110px] font-inter">
+              <div className="bg-white p-6 rounded-2xl shadow-lg font-inter">
                 <div className="relative">
                   <SectionHeader stepNumber={4} title="Order Summary" completed />
                   <div className="absolute right-14 bottom-2 w-20">

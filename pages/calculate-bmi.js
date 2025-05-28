@@ -149,7 +149,7 @@ export default function CalculateBmi() {
     } else {
       if (weightUnit === "kg") {
         // kg to st/lbs
-        const kg = parseFloat(watch("weightKg")) || 0;
+        const kg = parseFloat(watch("hiddenKg")) || 0;
         const totalLbs = kg / 0.453592;
         const st = Math.floor(totalLbs / 14);
         const lbs = totalLbs % 14;
@@ -262,7 +262,7 @@ export default function CalculateBmi() {
   };
 
   const handleKgBlur = () => {
-    const kg = parseFloat(watch("weightKg")) || 0;
+    const kg = parseFloat(watch("hiddenKg")) || 0;
     const totalLbs = kg / 0.453592;
     const st = Math.floor(totalLbs / 14);
     const lbs = totalLbs % 14;
@@ -323,14 +323,17 @@ export default function CalculateBmi() {
                     const st = parseFloat(watch("weightSt")) || 0;
                     const lbs = parseFloat(watch("weightLbs")) || 0;
                     const kg = st * 6.35029 + lbs * 0.453592;
+
+                    console.log(kg, "This is when I switch to kg.");
                     setValue("hiddenKg", kg);
                     setValue("weightKg", kg ? Math.round(kg) : "");
                   } else {
-                    const kg = parseFloat(watch("weightKg")) || 0;
+                    const kg = parseFloat(watch("hiddenKg")) || 0;
+                    console.log(kg, "This is when I switch to stones and pounds to see the KG value.");
                     const totalLbs = kg / 0.453592;
                     const st = Math.floor(totalLbs / 14);
                     const lbs = totalLbs % 14;
-                    setValue("hiddenKg", kg);
+                    // setValue("hiddenKg", kg);
                     setValue("weightSt", st ? Math.round(st) : "");
                     setValue("weightLbs", lbs ? Math.round(lbs) : "");
                   }
@@ -446,8 +449,8 @@ export default function CalculateBmi() {
                       />
                     )}
 
-                    {reorder && lastBmi ? (
-                      lastBmi?.weight_unit == "metric" ? (
+                    {lastBmi ? (
+                      lastBmi?.weight_unit == "metrics" ? (
                         <div className="bg-[#FFF3CD] px-4 py-4 mt-6 mb-6 text-gray-700 rounded shadow-md">
                           <p className="flex items-center">
                             <BsInfoCircle className="me-2" /> Your previous recorded weight was{" "}

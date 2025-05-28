@@ -18,6 +18,7 @@ import useShippingOrBillingStore from "@/store/shipingOrbilling";
 import useReorder from "@/store/useReorderStore";
 import useLastBmi from "@/store/useLastBmiStore";
 import useCouponStore from "@/store/couponStore";
+import useSignupStore from "@/store/signupStore";
 
 const ProductCard = ({ id, title, image, price, status, buttonText, lastOrderDate, reorder }) => {
   const router = useRouter();
@@ -36,6 +37,7 @@ const ProductCard = ({ id, title, image, price, status, buttonText, lastOrderDat
   const { setAuthUserDetail, clearAuthUserDetail } = useAuthUserDetailStore();
   const { billing, setBilling, shipping, setShipping, clearShipping, clearBilling } = useShippingOrBillingStore();
   const { setLastBmi } = useLastBmi();
+  const { firstName, lastName, setFirstName, setLastName } = useSignupStore();
 
   //Get Consultation Data
   const consultationMutation = useMutation(userConsultationApi, {
@@ -64,6 +66,8 @@ const ProductCard = ({ id, title, image, price, status, buttonText, lastOrderDat
         setBilling(data?.data?.data?.billing);
         setAuthUserDetail(data?.data?.data?.auth_user);
         setLastBmi(data?.data?.data?.bmi);
+        setFirstName(data?.data?.data?.patientInfo?.firstName);
+        setLastName(data?.data?.data?.patientInfo?.lastName);
       }
 
       if (reorder) {
@@ -128,7 +132,7 @@ const ProductCard = ({ id, title, image, price, status, buttonText, lastOrderDat
             src={image}
             alt={title}
             className="w-full p-5 h-52 object-contain"
-          // onError={(e) => (e.target.src = "/images/default.png")}
+            // onError={(e) => (e.target.src = "/images/default.png")}
           />
         </div>
 

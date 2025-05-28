@@ -92,6 +92,10 @@ body {
   color: rgb(0, 0, 238);
 }
 
+.product-concent-list li {
+    margin-bottom: 12px;
+}
+
 @media (max-width: 768px) {
   .heading {
     font-size: 2rem;

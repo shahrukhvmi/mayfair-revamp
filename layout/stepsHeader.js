@@ -44,7 +44,7 @@ const StepsHeader = ({ isOpen, toggleSidebar }) => {
   const { clearPatientInfo } = usePatientInfoStore();
   const { clearMedicalQuestions } = useMedicalQuestionsStore();
   const { clearConfirmationQuestions } = useConfirmationQuestionsStore();
-  const { clearAuthUserDetail } = useAuthUserDetailStore();
+  const { authUserDetail, clearAuthUserDetail } = useAuthUserDetailStore();
   const { token, clearToken, setToken } = useAuthStore();
   const { clearShipping, clearBilling } = useShippingOrBillingStore();
   const { clearProductId } = useProductId();
@@ -140,7 +140,7 @@ const StepsHeader = ({ isOpen, toggleSidebar }) => {
               <>
                 <div className="flex items-center space-x-2 cursor-pointer" onClick={(e) => setAnchorEl(e.currentTarget)}>
                   <ApplicationUser className="w-10 h-10 rounded-full" />
-                  <span className="reg-font text-[#1C1C29] truncate">{firstName ?? ""}</span>
+                  <span className="reg-font text-[#1C1C29] truncate">{authUserDetail?.fname?.trim() ? authUserDetail.fname : firstName}</span>
                   <IoIosArrowDown
                     className={`text-gray-700 transform transition-transform duration-200 ${Boolean(anchorEl) ? "rotate-180" : ""}`}
                     size={20}

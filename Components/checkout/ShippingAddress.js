@@ -130,6 +130,9 @@ export default function ShippingAddress({ isCompleted, onComplete }) {
 
     try {
       const result = await api.find(postal);
+
+      console.log(result, "Postal Code Search");
+
       if (result && result.addresses?.addresses?.length) {
         setAddressOptions(result.addresses.addresses);
         setManual(true);
