@@ -12,7 +12,7 @@ const Dose = ({ doseData, onAdd, onIncrement, onDecrement, isSelected, qty, allo
 
   const allowed = parseInt(allow || 100);
   const doseStatus = doseData?.stock?.status;
-   const isOutOfStock = doseStatus === 0 || doseData?.stock?.quantity === 0;
+  const isOutOfStock = doseStatus === 0 || doseData?.stock?.quantity === 0;
   const isAllowExceeded = totalSelectedQty() >= allowed;
 
   const handleAdd = (e) => {
@@ -49,8 +49,6 @@ const Dose = ({ doseData, onAdd, onIncrement, onDecrement, isSelected, qty, allo
     onIncrement(doseData?.id);
   };
 
-
-
   const handleDecrement = (e) => {
     e.stopPropagation();
     if (qty > 1) {
@@ -68,58 +66,49 @@ const Dose = ({ doseData, onAdd, onIncrement, onDecrement, isSelected, qty, allo
   return (
     <>
       <div
-        onClick={(isOutOfStock || isAllowExceeded) ? undefined : handleAdd}
+        onClick={isOutOfStock || isAllowExceeded ? undefined : handleAdd}
         className={`flex flex-col sm:flex-row items-start sm:items-center justify-between w-full p-4 border-2 mt-3 transition-all duration-300 ease-in-out relative rounded-md border-primary gap-4 sm:gap-0
-    ${isOutOfStock
-            ? "opacity-50 cursor-not-allowed bg-white border-gray-400"
-            : isSelected
-              ? "border-primary bg-violet-100 cursor-pointer"
-              : isAllowExceeded
-                ? "border-primary bg-white cursor-not-allowed opacity-60"
-                : "border-primary bg-white hover:bg-gray-50 cursor-pointer"
-          }`}
+    ${
+      isOutOfStock
+        ? "opacity-50 cursor-not-allowed bg-white border-gray-400"
+        : isSelected
+        ? "border-primary bg-violet-100 cursor-pointer"
+        : isAllowExceeded
+        ? "border-primary bg-white cursor-not-allowed opacity-60"
+        : "border-primary bg-white hover:bg-gray-50 cursor-pointer"
+    }`}
       >
-
         {/* Overlay when out of stock */}
-        {isOutOfStock &&  (
+        {isOutOfStock && (
           <>
             {/* Overlay to disable interaction */}
             <div className="absolute inset-0 z-10 bg-white/10  cursor-not-allowed rounded-md"></div>
 
             {/* Out of stock badge */}
-            <div className="absolute left-[14px] top-[-10px] bg-primary text-white px-3 py-0.5 text-xs font-semibold rounded z-20">
-              Out of stock
-            </div>
+            <div className="absolute left-[14px] top-[-10px] bg-primary text-white px-3 py-0.5 text-xs font-semibold rounded z-20">Out of stock</div>
           </>
         )}
 
-
         {/* Tick if selected */}
         {isSelected && (
-          <div className={`absolute -top-3 -right-3 bg-primary text-white rounded-full p-2 shadow-lg
-             ${isSelected ? "cursor-not-allowed" : "cursor-pointer"
-            }`}>
+          <div
+            className={`absolute -top-3 -right-3 bg-primary text-white rounded-full p-2 shadow-lg
+             ${isSelected ? "cursor-not-allowed" : "cursor-pointer"}`}
+          >
             <FaCheck size={12} />
           </div>
         )}
 
         {/* Left Side - Product Details */}
         <div className="flex items-start sm:items-center gap-3 w-full sm:w-auto">
-          {isSelected ? (
-            <FaDotCircle className="text-primary w-4 h-4 mt-1" />
-          ) : (
-            <FaRegCircle className="text-gray-800 w-4 h-4 mt-1" />
-          )}
+          {isSelected ? <FaDotCircle className="text-primary w-4 h-4 mt-1" /> : <FaRegCircle className="text-gray-800 w-4 h-4 mt-1" />}
 
           <div className="text-sm sm:text-base text-gray-800">
             <div className="capitalize font-semibold text-md sm:text-lg text-black">{doseData?.product_name}</div>
             <div className="text-sm text-gray-700">{doseData.name}</div>
-            {doseData?.expiry && (
-              <div className="text-xs text-gray-500 mt-1">Expiry: {moment(doseData?.expiry).format("DD/MM/YYYY")}</div>
-            )}
+            {doseData?.expiry && <div className="text-xs text-gray-500 mt-1">Expiry: {moment(doseData?.expiry).format("DD/MM/YYYY")}</div>}
           </div>
         </div>
-
 
         {/* Right Side - Price and Quantity */}
         <div className="flex items-center justify-end gap-3 w-full sm:w-auto">
@@ -130,11 +119,7 @@ const Dose = ({ doseData, onAdd, onIncrement, onDecrement, isSelected, qty, allo
           {isSelected && (
             <>
               <div className="flex items-center space-x-2 bg-white rounded-full px-2 py-1 shadow-md">
-                <button
-                  type="button"
-                  onClick={handleDecrement}
-                  className="bg-gray-100 hover:bg-gray-200 p-2 rounded-full"
-                >
+                <button type="button" onClick={handleDecrement} className="bg-gray-100 hover:bg-gray-200 p-2 rounded-full">
                   <FaMinus size={10} className="text-black" />
                 </button>
 
@@ -143,10 +128,7 @@ const Dose = ({ doseData, onAdd, onIncrement, onDecrement, isSelected, qty, allo
                 <button
                   type="button"
                   onClick={handleIncrement}
-                  className={`p-2 rounded-full ${qty >= allowed
-                    ? "cursor-not-allowed bg-gray-100 opacity-50"
-                    : "bg-gray-100 hover:bg-gray-200"
-                    }`}
+                  className={`p-2 rounded-full ${qty >= allowed ? "cursor-not-allowed bg-gray-100 opacity-50" : "bg-gray-100 hover:bg-gray-200"}`}
                 >
                   <FaPlus size={10} className="text-black" />
                 </button>
@@ -158,15 +140,14 @@ const Dose = ({ doseData, onAdd, onIncrement, onDecrement, isSelected, qty, allo
                   e.stopPropagation();
                   setShowModal(true);
                 }}
-                className="bg-red-100 hover:bg-red-200 text-red-500 rounded-full p-2"
+                className="bg-red-100 hover:bg-red-200 text-red-500 rounded-full p-2 cursor-pointer"
               >
                 <MdDelete />
               </button>
             </>
           )}
         </div>
-
-      </div >
+      </div>
 
       <ConfirmationModal showModal={showModal} onConfirm={handleDelete} onCancel={() => setShowModal(false)} />
     </>
