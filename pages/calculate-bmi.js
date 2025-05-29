@@ -149,7 +149,7 @@ export default function CalculateBmi() {
     } else {
       if (weightUnit === "kg") {
         // kg to st/lbs
-        const kg = parseFloat(watch("hiddenKg")) || 0;
+        const kg = parseFloat(watch("weightKg")) || 0;
         const totalLbs = kg / 0.453592;
         const st = Math.floor(totalLbs / 14);
         const lbs = totalLbs % 14;
@@ -213,10 +213,10 @@ export default function CalculateBmi() {
           pound: data?.weightLbs,
           kg: data?.weightKg,
           bmi: calculatedBmi,
-          hiddeninch: data?.heightIn,
-          hiddenlb: data?.weightLbs,
-          hiddencm: data?.hiddenCm || cm,
-          hiddenkg: data?.hiddenKg || kg,
+          hiddenInch: data?.heightIn,
+          hiddenLb: data?.weightLbs,
+          hiddenCm: data?.hiddenCm || cm,
+          hiddenKg: data?.hiddenKg || kg,
           height_unit: heightUnitKey || bmi?.height_unit, // default to metrics if blank
           weight_unit: weightUnitKey || bmi?.weight_unit, // default to kg if blank
         });
@@ -262,7 +262,7 @@ export default function CalculateBmi() {
   };
 
   const handleKgBlur = () => {
-    const kg = parseFloat(watch("hiddenKg")) || 0;
+    const kg = parseFloat(watch("weightKg")) || 0;
     const totalLbs = kg / 0.453592;
     const st = Math.floor(totalLbs / 14);
     const lbs = totalLbs % 14;
@@ -323,22 +323,19 @@ export default function CalculateBmi() {
                     const st = parseFloat(watch("weightSt")) || 0;
                     const lbs = parseFloat(watch("weightLbs")) || 0;
                     const kg = st * 6.35029 + lbs * 0.453592;
-
-                    console.log(kg, "This is when I switch to kg.");
                     setValue("hiddenKg", kg);
                     setValue("weightKg", kg ? Math.round(kg) : "");
                   } else {
-                    const kg = parseFloat(watch("hiddenKg")) || 0;
-                    console.log(kg, "This is when I switch to stones and pounds to see the KG value.");
+                    const kg = parseFloat(watch("weightKg")) || 0;
                     const totalLbs = kg / 0.453592;
                     const st = Math.floor(totalLbs / 14);
                     const lbs = totalLbs % 14;
-                    // setValue("hiddenKg", kg);
+                    setValue("hiddenKg", kg);
                     setValue("weightSt", st ? Math.round(st) : "");
                     setValue("weightLbs", lbs ? Math.round(lbs) : "");
                   }
                   setWeightUnit(value);
-                  setWeightUnitKey("imperial");
+                  setWeightUnitKey(value);
                 }
               }}
             />
@@ -478,7 +475,7 @@ export default function CalculateBmi() {
                 {localStep === 2 ? (
                   <BackButton type="button" label="Back" className="mt-3" onClick={() => setLocalStep(1)} />
                 ) : (
-                  <BackButton label="Back" className="mt-2" onClick={() => router.push("/confirm-ethnicity")} />
+                  <BackButton label="Back" className="mt-2" onClick={() => router.back()} />
                 )}
               </form>
 
