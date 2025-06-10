@@ -26,7 +26,7 @@ const validateRange = (value, min, max, wholeOnly, message) => {
 export default function CalculateBmi() {
   const [localStep, setLocalStep] = useState(1);
   const [heightUnit, setHeightUnit] = useState("metrics");
-  const [weightUnit, setWeightUnit] = useState("kg");
+  const [weightUnit, setWeightUnit] = useState("metrics");
   const [showLoader, setShowLoader] = useState(false);
   const [heightUnitKey, setHeightUnitKey] = useState(""); // Will be "imperial" or "metrics"
   const [weightUnitKey, setWeightUnitKey] = useState("");
@@ -83,10 +83,10 @@ export default function CalculateBmi() {
     }
 
     if (bmi?.kg) {
-      setWeightUnit("kg");
+      setWeightUnit("metrics");
       setWeightUnitKey("metrics");
     } else if (bmi?.stones || bmi?.pound) {
-      setWeightUnit("stlb");
+      setWeightUnit("imperial");
       setWeightUnitKey("imperial");
     }
 
@@ -103,7 +103,7 @@ export default function CalculateBmi() {
         return !errors.heightCm;
       }
     } else {
-      if (weightUnit === "kg") {
+      if (weightUnit === "metrics") {
         return !errors.weightKg;
       } else {
         return !errors.weightSt && !errors.weightLbs;
@@ -117,7 +117,7 @@ export default function CalculateBmi() {
         ? heightUnit === "imperial"
           ? ["heightFt", "heightIn"]
           : ["heightCm"]
-        : weightUnit === "stlb"
+        : weightUnit === "imperial"
         ? ["weightSt", "weightLbs"]
         : ["weightKg"];
 
@@ -147,7 +147,7 @@ export default function CalculateBmi() {
         setValue("heightCm", cm ? Math.round(cm) : "");
       }
     } else {
-      if (weightUnit === "kg") {
+      if (weightUnit === "metrics") {
         // kg to st/lbs
         const kg = parseFloat(watch("weightKg")) || 0;
         const totalLbs = kg / 0.453592;
@@ -218,7 +218,7 @@ export default function CalculateBmi() {
           hiddenCm: data?.hiddenCm || cm,
           hiddenKg: data?.hiddenKg || kg,
           height_unit: heightUnitKey || bmi?.height_unit, // default to metrics if blank
-          weight_unit: weightUnitKey || bmi?.weight_unit, // default to kg if blank
+          weight_unit: weightUnitKey || bmi?.weight_unit, // default to metrics if blank
         });
 
         setShowLoader(true);
@@ -319,7 +319,7 @@ export default function CalculateBmi() {
                   setHeightUnit(value);
                   setHeightUnitKey(value);
                 } else {
-                  if (value === "kg") {
+                  if (value === "metrics") {
                     const st = parseFloat(watch("weightSt")) || 0;
                     const lbs = parseFloat(watch("weightLbs")) || 0;
                     const kg = st * 6.35029 + lbs * 0.453592;
@@ -398,7 +398,7 @@ export default function CalculateBmi() {
 
                 {localStep === 2 && (
                   <>
-                    {weightUnit === "stlb" ? (
+                    {weightUnit === "imperial" ? (
                       <div className="grid grid-cols-2 gap-4">
                         <BmiTextField
                           required
