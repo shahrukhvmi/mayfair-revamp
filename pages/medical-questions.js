@@ -79,7 +79,7 @@ const MedicalQuestions = () => {
     if (answer === "yes" && q.has_sub_field) return subfield && subfield.trim() !== "";
     if (answer === "yes" && !q.has_sub_field && q.validation_error_msg) return false;
 
-    return true;
+    return false;
   });
 
   const onSubmit = async () => {

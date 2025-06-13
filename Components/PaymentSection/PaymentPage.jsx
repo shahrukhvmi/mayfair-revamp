@@ -39,19 +39,8 @@ const PaymentPage = ({ paymentData }) => {
           transition={{ duration: 0.3 }}
         >
           {/* Loader ring */}
-          <svg
-            className="w-16 h-16 text-violet-600 animate-spin mb-6"
-            viewBox="0 0 50 50"
-          >
-            <circle
-              className="opacity-25"
-              cx="25"
-              cy="25"
-              r="20"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="5"
-            />
+          <svg className="w-16 h-16 text-violet-600 animate-spin mb-6" viewBox="0 0 50 50">
+            <circle className="opacity-25" cx="25" cy="25" r="20" fill="none" stroke="currentColor" strokeWidth="5" />
             <circle
               className="opacity-100 text-violet-500"
               cx="25"
@@ -67,18 +56,12 @@ const PaymentPage = ({ paymentData }) => {
           </svg>
 
           {/* Text */}
-          <p className="text-xl bold-font text-gray-800">
-            Please wait
-          </p>
-          <p className="bold-font text-base text-gray-600 mt-2">
-            Redirecting in {countdown}...
-          </p>
+          <p className="text-xl bold-font text-gray-800">Please wait</p>
+          <p className="bold-font text-base text-gray-600 mt-2">Redirecting in {countdown}...</p>
 
           <hr className="w-full my-6 border-gray-200" />
 
-          <p className="reg-font text-sm text-gray-500">
-            Do not leave this page, you will be redirected to payment promptly.
-          </p>
+          <p className="reg-font text-sm text-gray-500">Do not leave this page, you will be redirected to payment promptly.</p>
         </motion.div>
 
         {/* Hidden form */}
@@ -101,9 +84,13 @@ const PaymentPage = ({ paymentData }) => {
               <label htmlFor="oid">Order ID:</label>
               <input type="hidden" name="oid" value={paymentData.oid} readOnly />
             </p>
-            <p>
+            {/* <p>
               <label htmlFor="companyId">Company ID:</label>
               <input type="hidden" name="companyId" value={1} readOnly />
+            </p> */}
+            <p>
+              <label htmlFor="company_id">Company ID:</label>
+              <input type="hidden" name="company_id" value={1} readOnly />
             </p>
             <p>
               <label htmlFor="storename">Store ID:</label>
