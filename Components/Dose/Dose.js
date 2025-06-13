@@ -119,7 +119,7 @@ const Dose = ({ doseData, onAdd, onIncrement, onDecrement, isSelected, qty, allo
           {isSelected && (
             <>
               <div className="flex items-center space-x-2 bg-white rounded-full px-2 py-1 shadow-md">
-                <button type="button" onClick={handleDecrement} className="bg-gray-100 hover:bg-gray-200 p-2 rounded-full">
+                <button type="button" onClick={handleDecrement} className="bg-gray-100 hover:bg-gray-200 p-2 rounded-full cursor-pointer">
                   <FaMinus size={10} className="text-black" />
                 </button>
 
@@ -128,7 +128,9 @@ const Dose = ({ doseData, onAdd, onIncrement, onDecrement, isSelected, qty, allo
                 <button
                   type="button"
                   onClick={handleIncrement}
-                  className={`p-2 rounded-full ${qty >= allowed ? "cursor-not-allowed bg-gray-100 opacity-50" : "bg-gray-100 hover:bg-gray-200"}`}
+                  className={`p-2 rounded-full ${
+                    qty >= allowed ? "cursor-not-allowed bg-gray-100 opacity-50" : "bg-gray-100 hover:bg-gray-200 cursor-pointer"
+                  }`}
                 >
                   <FaPlus size={10} className="text-black" />
                 </button>
