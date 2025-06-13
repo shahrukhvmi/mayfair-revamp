@@ -20,7 +20,7 @@ import { MdOutlineCheckBox, MdOutlineCheckBoxOutlineBlank } from "react-icons/md
 
 const api = new Client("_UFb05P76EyMidU1VHIQ_A42976");
 
-export default function ShippingAddress({ isCompleted, onComplete }) {
+export default function ShippingAddress({ isCompleted, onComplete, setIsShippingCheck, setIsBillingCheck }) {
   const [showLoader, setShowLoader] = useState(false);
   const [manual, setManual] = useState(false);
   const [addressOptions, setAddressOptions] = useState([]);
@@ -62,6 +62,12 @@ export default function ShippingAddress({ isCompleted, onComplete }) {
   const router = useRouter();
 
   const sameAsShippingValue = watch("same_as_shipping");
+
+  useEffect(() => {
+    if (typeof setIsBillingCheck === "function") {
+      setIsBillingCheck(!!sameAsShippingValue);
+    }
+  }, [sameAsShippingValue, setIsBillingCheck]);
 
   useEffect(() => {
     if (sameAsShippingValue) {
@@ -213,6 +219,20 @@ export default function ShippingAddress({ isCompleted, onComplete }) {
 
     return () => subscription.unsubscribe();
   }, [watch, shipmentCountries, shippingIndex, setShipping]);
+
+  // Watch all required fields
+  const watchedFields = watch(["first_name", "last_name", "shippingCountry", "postalcode", "addressone", "city"]);
+
+  // Check if all required fields are filled
+  useEffect(() => {
+    const allFilled = watchedFields.every((field) => field && field !== "");
+    setIsShippingCheck(allFilled);
+
+    // If "same as shipping" is checked and all shipping fields are filled, set billing check to true
+    if (typeof setIsBillingCheck === "function") {
+      setIsBillingCheck(allFilled && !!sameAsShippingValue);
+    }
+  }, [watchedFields, setIsShippingCheck, setIsBillingCheck, sameAsShippingValue]);
 
   return (
     <>

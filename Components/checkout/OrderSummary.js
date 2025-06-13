@@ -30,7 +30,7 @@ import usePasswordReset from "@/store/usePasswordReset";
 import useLastBmi from "@/store/useLastBmiStore";
 import useUserDataStore from "@/store/userDataStore";
 
-const OrderSummary = ({ isConcentCheck }) => {
+const OrderSummary = ({ isConcentCheck, isShippingCheck, isBillingCheck }) => {
   const router = useRouter();
   const [discountCode, setDiscountCode] = useState("");
   // Get some data to store✌✌
@@ -69,9 +69,9 @@ const OrderSummary = ({ isConcentCheck }) => {
   const [paymentData, setPaymentData] = useState(null);
   const [isButtonLoading, setIsButtonLoading] = useState(false);
 
-  useEffect(() => {
-    console.log(isConcentCheck);
-  });
+  console.log(isShippingCheck, "isShippingCheckkkkkkkkkkkkk");
+  console.log(isConcentCheck, "isConcentCheckkkkkkkkkkkkk");
+  console.log(isBillingCheck, "isBillingCheckkkkkkk");
 
   const handleApplyCoupon = async () => {
     setCouponLoading(true);
@@ -422,7 +422,11 @@ const OrderSummary = ({ isConcentCheck }) => {
                       />
                     </div>
                   ) : (
-                    <NextButton disabled={!isConcentCheck} label="Proceed to Payment " onClick={handlePayment} />
+                    <NextButton
+                      disabled={!(isConcentCheck && isShippingCheck && isBillingCheck)}
+                      label="Proceed to Payment "
+                      onClick={handlePayment}
+                    />
                   )}
                 </div>
               </div>

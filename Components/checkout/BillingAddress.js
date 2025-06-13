@@ -18,7 +18,7 @@ import toast from "react-hot-toast";
 
 const api = new Client("_UFb05P76EyMidU1VHIQ_A42976");
 
-export default function BillingAddress({ isCompleted, onComplete, sameAsShipping }) {
+export default function BillingAddress({ isCompleted, onComplete, sameAsShipping, setIsBillingCheck }) {
   const [showLoader, setShowLoader] = useState(false);
   const [manual, setManual] = useState(false);
   const [addressOptions, setAddressOptions] = useState([]);
@@ -195,6 +195,21 @@ export default function BillingAddress({ isCompleted, onComplete, sameAsShipping
 
     return () => subscription.unsubscribe();
   }, [watch, billingCountries, billingIndex, setBilling]);
+
+  // Watch all required fields
+  const watchedFields = watch([
+    "billingCountry",
+    "postalcode",
+    "addressone",
+    "city",
+    // add "state" if you want it to be required for the check
+  ]);
+
+  // Check if all required fields are filled
+  useEffect(() => {
+    const allFilled = watchedFields.every((field) => field && field !== "");
+    setIsBillingCheck(allFilled);
+  }, [watchedFields, setIsBillingCheck]);
 
   if (sameAsShipping) {
     return null; // ✅ Do not render anything if same as shipping

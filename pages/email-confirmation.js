@@ -127,7 +127,16 @@ export default function EmailConfirmation() {
         <PageAnimationWrapper>
           <div className={`relative ${showLoader ? "pointer-events-none cursor-not-allowed" : ""}`}>
             <form onSubmit={handleSubmit(handleSignupSubmit)} className="space-y-4">
-              <TextField label="Email Address" name="email" type="email" placeholder="Email Address" register={register} required errors={errors} />
+              <TextField
+                label="Email Address"
+                name="email"
+                type="email"
+                placeholder="Email Address"
+                register={register}
+                required
+                errors={errors}
+                disablePaste
+              />
 
               <TextField
                 label="Confirm Email Address"
@@ -140,6 +149,7 @@ export default function EmailConfirmation() {
                   validate: (value) => value === getValues("email") || "Email addresses must match.",
                 }}
                 errors={errors}
+                disablePaste
               />
 
               {already && (

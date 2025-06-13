@@ -20,6 +20,8 @@ const Checkout = () => {
   const { billingSameAsShipping } = useShippingOrBillingStore();
   const { reorder } = useReorder();
   const [isConcentCheck, setIsConcentCheck] = useState(false);
+  const [isShippingCheck, setIsShippingCheck] = useState(false);
+  const [isBillingCheck, setIsBillingCheck] = useState(false);
 
   const [showThankYouModal, setShowThankYouModal] = useState(false);
 
@@ -139,12 +141,16 @@ const Checkout = () => {
         )}
 
         <div ref={addressRef}>
-          <ShippingAddress onComplete={goToNextStep} />
+          <ShippingAddress
+            onComplete={goToNextStep}
+            setIsShippingCheck={setIsShippingCheck}
+            setIsBillingCheck={setIsBillingCheck} // <-- add this prop
+          />
         </div>
 
         {!billingSameAsShipping && (
           <div ref={billingRef}>
-            <BillingAddress onComplete={goToNextStep} />
+            <BillingAddress onComplete={goToNextStep} setIsBillingCheck={setIsBillingCheck} />
           </div>
         )}
 
@@ -153,7 +159,7 @@ const Checkout = () => {
         </div>
 
         <div ref={summaryRef}>
-          <OrderSummary isConcentCheck={isConcentCheck} />
+          <OrderSummary isConcentCheck={isConcentCheck} isShippingCheck={isShippingCheck} isBillingCheck={isBillingCheck} />
         </div>
       </div>
     </>
