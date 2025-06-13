@@ -32,10 +32,6 @@ export default function ShippingAddress({ isCompleted, onComplete, setIsShipping
   const { shipping, setShipping, setBillingSameAsShipping, setBilling } = useShippingOrBillingStore();
   const { shipmentCountries } = useShipmentCountries();
 
-  console.log(shipmentCountries, "shipmentCountries");
-
-  console.log(shipping, "shipping");
-
   const {
     register,
     handleSubmit,
@@ -130,8 +126,8 @@ export default function ShippingAddress({ isCompleted, onComplete, setIsShipping
     setAddressSearchLoading(true);
     const postal = watch("postalcode");
     if (!postal) {
-      alert("Please enter a postcode.");
       setAddressSearchLoading(false);
+      return;
     }
 
     try {

@@ -26,7 +26,6 @@ export default function EmailConfirmation() {
   const [showLoader, setShowLoader] = useState(false);
   const [already, setAlready] = useState(false);
   // const [showLoginModal, setShowLoginModal] = useState(false);
-  console.log(showLoader, "showLoader");
   const router = useRouter();
   const { firstName, lastName, setLastName, setFirstName, email, confirmationEmail, setEmail, setConfirmationEmail } = useSignupStore();
   const { setUserData } = useUserDataStore();

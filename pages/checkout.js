@@ -40,8 +40,6 @@ const Checkout = () => {
     headingRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
   }, []);
 
-  console.log(reorder, "reorderrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr");
-
   const scrollToRef = (ref) => {
     if (ref?.current) {
       ref.current.scrollIntoView({ behavior: "smooth", block: "start" });

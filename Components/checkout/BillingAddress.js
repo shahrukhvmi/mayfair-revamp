@@ -30,8 +30,6 @@ export default function BillingAddress({ isCompleted, onComplete, sameAsShipping
   const { billingCountries } = useBillingCountries();
   const prevBillingRef = useRef({});
 
-  console.log(billing, "billing");
-
   const allowedSearchCountryIds = ["1", "2", "3"];
 
   const isDisabled = sameAsShipping;

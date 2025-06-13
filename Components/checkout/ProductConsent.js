@@ -15,8 +15,6 @@ const ProductConsent = ({ isCompleted, onComplete, onConsentChange, setIsConcent
   //   onComplete();
   // };
 
-  console.log(variation, "variation");
-
   useEffect(() => {
     setIsValid(isChecked);
 

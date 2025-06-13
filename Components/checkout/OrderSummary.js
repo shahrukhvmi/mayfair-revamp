@@ -69,10 +69,6 @@ const OrderSummary = ({ isConcentCheck, isShippingCheck, isBillingCheck }) => {
   const [paymentData, setPaymentData] = useState(null);
   const [isButtonLoading, setIsButtonLoading] = useState(false);
 
-  console.log(isShippingCheck, "isShippingCheckkkkkkkkkkkkk");
-  console.log(isConcentCheck, "isConcentCheckkkkkkkkkkkkk");
-  console.log(isBillingCheck, "isBillingCheckkkkkkk");
-
   const handleApplyCoupon = async () => {
     setCouponLoading(true);
     try {
