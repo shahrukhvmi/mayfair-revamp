@@ -15,6 +15,7 @@ import useReorder from "@/store/useReorderStore";
 import useLastBmi from "@/store/useLastBmiStore";
 import { BsInfoCircle } from "react-icons/bs";
 import { FaLessThan } from "react-icons/fa";
+import useReturning from "@/store/useReturningPatient";
 
 export default function BmiDetail() {
   const [showLoader, setShowLoader] = useState(false);
@@ -22,6 +23,7 @@ export default function BmiDetail() {
   const { patientInfo } = usePatientInfoStore();
   const { reorder, reorderStatus } = useReorder();
   const { lastBmi } = useLastBmi();
+  const { isReturningPatient } = useReturning();
   const router = useRouter();
 
   console.log(lastBmi, "lastBmi");
@@ -52,11 +54,23 @@ export default function BmiDetail() {
   const shouldShowInfoMessage = patientInfo?.ethnicity === "Yes" && bmiValue >= 27.5 && bmiValue <= 29.9;
 
   // Check For reorder and low BMI
-  const isReorderAndBmiLow = reorder && bmiValue < 20;
+  const isReorderAndBmiLow = isReturningPatient && bmiValue < 20;
+
+  // Check if the ethnicity is "Yes" or "No" and if the BMI is below the required threshold
+  const isEthnicityYes = patientInfo?.ethnicity === "Yes";
+  const isEthnicityNo = patientInfo?.ethnicity === "No";
+  let bmiError = "";
+
+  if (isEthnicityYes && bmiValue < 25.5 && !isReturningPatient) {
+    bmiError = "BMI must be at least 25.5";
+  } else if (isEthnicityNo && bmiValue < 27 && !isReturningPatient) {
+    bmiError = "BMI must be at least 27";
+  }
 
   const isNextDisabled =
-    (!reorder && shouldShowCheckboxes && (noneOfTheAbove || (!checkbox1 && !checkbox2) || (checkbox2 && !explanation?.trim()))) ||
-    (reorder && bmiValue < 20);
+    (!isReturningPatient && shouldShowCheckboxes && (noneOfTheAbove || (!checkbox1 && !checkbox2) || (checkbox2 && !explanation?.trim()))) ||
+    (isReturningPatient && bmiValue < 20) ||
+    bmiError;
 
   // const isNextDisabled = shouldShowCheckboxes && (noneOfTheAbove || (!checkbox1 && !checkbox2) || (checkbox2 && !explanation?.trim()));
 
@@ -108,8 +122,8 @@ export default function BmiDetail() {
       assian_message: "",
     };
 
-    // Skip all logic if reorder is true
-    if (!reorder) {
+    // Skip all logic if isReturningPatient is true
+    if (!isReturningPatient) {
       consent.assian_message = shouldShowInfoMessage
         ? "As you have confirmed that you are from one of the following family backgrounds: South Asian, Chinese, Other Asian, Middle Eastern, Black African or African-Caribbean, your cardiometabolic risk occurs at a lower BMI. You are, therefore, able to proceed with a lower BMI."
         : "";
@@ -167,7 +181,7 @@ export default function BmiDetail() {
             </div>
           )}
 
-          {shouldShowInfoMessage && !reorder && (
+          {shouldShowInfoMessage && !isReturningPatient && (
             <div className="bg-[#FFF3CD] px-4 py-4 mt-6 mb-6 text-gray-700 rounded shadow-md">
               <p>
                 As you have confirmed that you are from one of the following family backgrounds: South Asian, Chinese, Other Asian, Middle Eastern,
@@ -177,8 +191,10 @@ export default function BmiDetail() {
             </div>
           )}
 
+          {bmiError && <div className="bg-red-100 text-red-700 p-4 rounded-md mb-4 border border-red-300">{bmiError}</div>}
+
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 relative">
-            {shouldShowCheckboxes && !reorder && (
+            {shouldShowCheckboxes && !isReturningPatient && (
               <>
                 {patientInfo?.ethnicity === "No" || patientInfo?.ethnicity === "Prefer not to say" ? (
                   <p className="text-gray-800 font-normal">Your BMI is between 27-29.9 which indicates you are overweight.</p>

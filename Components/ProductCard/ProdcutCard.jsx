@@ -19,6 +19,7 @@ import useReorder from "@/store/useReorderStore";
 import useLastBmi from "@/store/useLastBmiStore";
 import useCouponStore from "@/store/couponStore";
 import useSignupStore from "@/store/signupStore";
+import useReturning from "@/store/useReturningPatient";
 
 const ProductCard = ({ id, title, image, price, status, buttonText, lastOrderDate, reorder }) => {
   const router = useRouter();
@@ -38,6 +39,7 @@ const ProductCard = ({ id, title, image, price, status, buttonText, lastOrderDat
   const { billing, setBilling, shipping, setShipping, clearShipping, clearBilling } = useShippingOrBillingStore();
   const { setLastBmi } = useLastBmi();
   const { firstName, lastName, setFirstName, setLastName } = useSignupStore();
+  const { setIsReturningPatient } = useReturning();
 
   //Get Consultation Data
   const consultationMutation = useMutation(userConsultationApi, {
@@ -68,6 +70,7 @@ const ProductCard = ({ id, title, image, price, status, buttonText, lastOrderDat
         setLastBmi(data?.data?.data?.bmi);
         setFirstName(data?.data?.data?.patientInfo?.firstName);
         setLastName(data?.data?.data?.patientInfo?.lastName);
+        setIsReturningPatient(data?.data?.data?.isReturning);
       }
 
       if (reorder) {
