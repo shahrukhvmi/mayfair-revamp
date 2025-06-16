@@ -1,11 +1,10 @@
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 import useAuthStore from "@/store/authStore";
-import useImpersonate from "@/store/useImpersonateStore";
 
 export default function ProtectedPage({ children }) {
   const { token, hasHydrated, isImpersonationLogout, setIsImpersonationLogout } = useAuthStore();
-  
+
   const router = useRouter();
 
   console.log("token", token);

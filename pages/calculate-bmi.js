@@ -292,8 +292,8 @@ export default function CalculateBmi() {
                       { label: "ft/inch", value: "imperial" },
                     ]
                   : [
-                      { label: "kg", value: "kg" },
-                      { label: "st/lb", value: "stlb" },
+                      { label: "kg", value: "metrics" },
+                      { label: "st/lb", value: "imperial" },
                     ]
               }
               selectedTab={localStep === 1 ? heightUnit : weightUnit}
