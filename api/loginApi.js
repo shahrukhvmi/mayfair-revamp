@@ -4,4 +4,8 @@ export const Login = async (data) => {
   return Fetcher.post("auth/login", data);
 };
 
-export default { Login };
+export const impersonateLogin = async (data) => {
+  return Fetcher.post("impersonation", data);
+};
+
+export default { Login, impersonateLogin };

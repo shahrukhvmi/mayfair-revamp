@@ -6,9 +6,12 @@ const useAuthStore = create(
     (set) => ({
       token: null,
       hasHydrated: false,
+      isImpersonationLogout: false,
+
       setToken: (token) => set({ token }),
       clearToken: () => set({ token: null }),
       setHasHydrated: () => set({ hasHydrated: true }),
+      setIsImpersonationLogout: (isImpersonationLogout) => set({ isImpersonationLogout }),
     }),
     {
       name: "auth-storage",

@@ -2,7 +2,7 @@ import useSignupStore from "@/store/signupStore";
 import TextField from "@/Components/TextField/TextField";
 import { useForm } from "react-hook-form";
 import NextButton from "@/Components/NextButton/NextButton";
-import { useRouter } from "next/navigation";
+import { useRouter } from "next/router";
 import PageLoader from "@/Components/PageLoader/PageLoader";
 import { useEffect, useState } from "react";
 import FormWrapper from "@/Components/FormWrapper/FormWrapper";
@@ -14,11 +14,12 @@ import toast from "react-hot-toast";
 import useUserDataStore from "@/store/userDataStore";
 import useAuthStore from "@/store/authStore";
 import Fetcher from "@/library/Fetcher";
-import { Login } from "@/api/loginApi";
+import { Login, impersonateLogin } from "@/api/loginApi";
 import usePasswordReset from "@/store/usePasswordReset";
 import LoginModal from "@/Components/LoginModal/LoginModal";
 import useLoginModalStore from "@/store/useLoginModalStore";
 import Link from "next/link";
+import useImpersonate from "@/store/useImpersonateStore";
 
 export default function LoginScreen() {
   const [showLoader, setShowLoader] = useState(false);
@@ -26,6 +27,7 @@ export default function LoginScreen() {
   const { setLastName, setFirstName, setEmail } = useSignupStore();
   const { token, setToken } = useAuthStore();
   const { setIsPasswordReset, setShowResetPassword } = usePasswordReset();
+  const { setImpersonate } = useImpersonate();
   const router = useRouter();
 
   const {
@@ -80,6 +82,44 @@ export default function LoginScreen() {
     },
   });
 
+  // Impersonation login mutation
+  const impersonateLoginMutation = useMutation(impersonateLogin, {
+    onSuccess: (data) => {
+      const user = data?.data?.data;
+      console.log(user, "user");
+      if (user) {
+        setUserData(user);
+        setToken(user?.token);
+        setFirstName(user?.fname);
+        setLastName(user?.lname);
+        setEmail(user?.email);
+        setImpersonate(true);
+        toast.success("Login Successfully");
+        Fetcher.axiosSetup.defaults.headers.common.Authorization = `Bearer ${user.token}`;
+        setShowLoader(false);
+        setIsPasswordReset(false);
+        setShowResetPassword(user?.show_password_reset);
+        router.push("/dashboard");
+      }
+    },
+    onError: (error) => {
+      console.log(error?.response?.data?.errors, "sdseds");
+
+      const errorObj = error?.response?.data?.errors;
+
+      if (errorObj && typeof errorObj === "object") {
+        const firstErrorKey = Object.keys(errorObj);
+        const firstErrorMessage = errorObj[firstErrorKey]; // Get first message of first key
+
+        toast.error(firstErrorMessage);
+      } else {
+        toast.error("Something went wrong.");
+      }
+
+      setShowLoader(false);
+    },
+  });
+
   useEffect(() => {
     const storedEmail = getValues("email");
     const storedPassword = getValues("password");
@@ -88,6 +128,21 @@ export default function LoginScreen() {
       trigger(["email", "password"]);
     }
   }, [getValues, trigger]);
+
+  useEffect(() => {
+    if (!router.isReady) return; // Wait for router to be ready
+    const impersonateEmail = router.query.impersonate_email;
+    if (impersonateEmail) {
+      setShowLoader(true);
+      impersonateLoginMutation.mutate(
+        { impersonate_email: impersonateEmail, company_id: 1 },
+        {
+          onSettled: () => setShowLoader(false),
+        }
+      );
+    }
+    // eslint-disable-next-line
+  }, [router.isReady]); // Run when router is ready
 
   const onSubmit = (data) => {
     setShowLoader(true);
