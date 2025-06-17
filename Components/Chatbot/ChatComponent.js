@@ -186,6 +186,24 @@ export default function ChatComponent() {
   const [divHeight, setDivHeight] = useState(0);
   const previousWidthRef = useRef(0);
 
+  useEffect(() => {
+    const style = document.createElement("style");
+    style.innerHTML = `     
+      div::-webkit-scrollbar, body::-webkit-scrollbar {
+        display: none; /* Hide scrollbars in Webkit browsers (Chrome, Safari, Edge) */
+      }
+      div {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+      }
+    `;
+    document.head.appendChild(style);
+
+    return () => {
+      document.head.removeChild(style); // Clean up when component unmounts
+    };
+  }, []);
+
   //   custom start
   useEffect(() => {
     const width = window.innerWidth;
@@ -281,7 +299,7 @@ export default function ChatComponent() {
           ? "w-screen"
           : divWidth <= cb.md
           ? "w-screen"
-          : "w-[99.7vw]"
+          : "w-screen"
       } h-screen rounded-none`;
     if (windowWidth <= 400) return `bottom-4 right-4 w-[94vw] h-[76vh]`;
     if (windowWidth <= 768) return `bottom-4 right-4 w-[90vw] h-[76vh]`;
@@ -483,6 +501,9 @@ export default function ChatComponent() {
 
   function handleFaqBtn(msg) {
     setInputMsg(msg);
+    if (divWidth <= cb.sm) {
+      setShowSidebar(false);
+    }
   }
 
   function handleWelcomeBtn(msg) {
@@ -632,11 +653,12 @@ export default function ChatComponent() {
           border: "1px solid #ccc",
           borderRadius: 12,
           background: "#f9f9ff",
-          minWidth: 250,
+          minWidth: 0,
           maxWidth: 350,
           margin: "10px 0px",
           textAlign: "center",
         }}
+        className="text-gray-700"
       >
         <h2 style={{ margin: 12, fontSize: 18, color: "#7f22fe" }}>
           {message || "To Check Your Order Details"}
@@ -711,7 +733,7 @@ export default function ChatComponent() {
       {!isOpen && (
         <button
           onClick={() => setIsOpen(true)}
-          className="fixed z-50 flex items-center justify-center text-white rounded-full shadow-lg bottom-4 right-4 w-14 h-14 bg-violet-600 hover:bg-violet-700"
+          className="fixed flex items-center justify-center text-white rounded-full shadow-lg z-9999 bottom-4 right-4 w-14 h-14 bg-violet-600 hover:bg-violet-700"
           aria-label="Open Chat"
         >
           <FiMessageCircle size={28} />
@@ -734,7 +756,7 @@ export default function ChatComponent() {
         //       : "bg-black"
         //   }
         <div
-          className={`fixed z-50 border border-gray-300 shadow-xl flex flex-col transition-all font-sans ease-in-out duration-300 overflow-hidden ${getResponsiveClass()}  ${
+          className={`fixed z-9999 border scrollbar-hide border-gray-300 shadow-xl flex flex-col transition-all font-sans ease-in-out duration-300 overflow-hidden ${getResponsiveClass()}  ${
             divWidth <= cb.sm
               ? "rounded-xl"
               : divWidth <= cb.md
@@ -749,7 +771,7 @@ export default function ChatComponent() {
           </p> */}
 
           {/* Chat Content */}
-          <div className="flex-1 w-full h-full">
+          <div className="flex-1 w-full h-full font-sans transition-all duration-300 ease-in-out">
             <div className="flex flex-col w-full h-screen overflow-y-hidden font-sans">
               {/* Header */}
               <header className="flex items-center justify-between w-full p-4 text-gray-600 bg-white border-b border-gray-200">
@@ -843,6 +865,18 @@ export default function ChatComponent() {
                       Welcome To Mayfair Assistant
                     </p>
                     <button
+                      onClick={() => setIsMaximized((prev) => !prev)}
+                      className="text-sm text-violet-600 hover:text-violet-900"
+                      aria-label={isMaximized ? "Minimize" : "Maximize"}
+                    >
+                      {/* {isMaximized ? "🗕" : "🗖"} */}
+                      {isMaximized ? (
+                        <FiMaximize2 size={18} />
+                      ) : (
+                        <FiMinimize2 size={18} />
+                      )}
+                    </button>
+                    <button
                       onClick={() => setIsOpen(false)}
                       className="text-sm text-red-500 hover:text-red-700"
                       aria-label="Close"
@@ -883,7 +917,7 @@ export default function ChatComponent() {
                       Edit Your Details
                     </h2>
                     <form
-                      className="space-y-4"
+                      className="space-y-4 text-gray-700"
                       onSubmit={handleUserSettingsSubmit}
                     >
                       <div>
@@ -983,155 +1017,173 @@ export default function ChatComponent() {
 
               <div className="flex flex-1">
                 {user && (
-                  <aside
-                    className={`${
-                      showSidebar ? "block" : "hidden"
-                    } bg-white max-w-100 p-4 border-r border-gray-200 overflow-y-auto
+                  <>
+                    <div
+                      className={`transition-all duration-400 ease-in-out bg-gray-100  max-w-100 ${
+                        showSidebar && divWidth >= cb.sm
+                          ? "min-w-100"
+                          : "min-w-0"
+                      }`}
+                    ></div>
+                    <aside
+                      style={{
+                        overflowY: "auto",
+                        scrollbarWidth: "none",
+                        msOverflowStyle: "none",
+                      }}
+                      className={`${
+                        showSidebar ? "left-0" : "left-[-100%]"
+                      } bg-white transition-all ease-in-out duration-300 absolute z-100 max-w-100 p-4 border-r border-gray-200 overflow-y-auto scrollbar-hide
                        ${
                          divWidth <= cb.sm
-                           ? "w-50"
+                           ? "w-80 h-screen"
                            : divWidth <= cb.md
-                           ? "w-80"
+                           ? "w-100"
                            : "w-100"
                        }`}
-                    id="faq-sidebar"
-                  >
-                    <div
-                      id="user-name"
-                      className={`flex items-center justify-between font-semibold text-violet-700 uppercase border-b border-gray-200 pb-4 ${
-                        userDetails ? "" : ""
-                      }`}
+                      id="faq-sidebar"
                     >
-                      <span className="flex items-center gap-2">
-                        {/* Show fname/lname from chat_user if available, else fallback */}
-                        {user?.fname && user?.lname
-                          ? `${user.fname} ${user.lname}`
-                          : userDetails?.user_data?.user_name || (
-                              <p className="text-gray-500">No user found.</p>
-                            )}
-                        {/* Gear/Settings Icon */}
-                      </span>
-                      <button
-                        className="ml-2 text-gray-400 hover:text-violet-700"
-                        aria-label="Edit Your Details"
-                        onClick={() => {
-                          setUserSettings({
-                            fname:
-                              user?.fname ||
-                              userDetails?.user_data?.fname ||
-                              "",
-                            lname:
-                              user?.lname ||
-                              userDetails?.user_data?.lname ||
-                              "",
-                            email: user?.email || "",
-                            orderId: orderId || "",
-                          });
-                          setShowUserSettings(true);
-                        }}
-                        type="button"
-                      >
-                        <svg
-                          className="w-5 h-5"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth={2}
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            d="M11.25 3.75a.75.75 0 011.5 0v1.09a7.501 7.501 0 013.36 1.39l.77-.77a.75.75 0 111.06 1.06l-.77.77a7.501 7.501 0 011.39 3.36h1.09a.75.75 0 010 1.5h-1.09a7.501 7.501 0 01-1.39 3.36l.77.77a.75.75 0 11-1.06 1.06l-.77-.77a7.501 7.501 0 01-3.36 1.39v1.09a.75.75 0 01-1.5 0v-1.09a7.501 7.501 0 01-3.36-1.39l-.77.77a.75.75 0 11-1.06-1.06l.77-.77a7.501 7.501 0 01-1.39-3.36H3.75a.75.75 0 010-1.5h1.09a7.501 7.501 0 011.39-3.36l-.77-.77a.75.75 0 111.06-1.06l.77.77a7.501 7.501 0 013.36-1.39V3.75z"
-                          ></path>
-                        </svg>
-                      </button>
-                    </div>
-                    <div
-                      className={`my-4 space-y-4 ${
-                        userDetails ? "" : "hidden"
-                      }`}
-                      id="user-details"
-                      style={{ display: "none" }}
-                    >
-                      <div className="grid grid-cols-2 gap-4 px-4">
-                        <div className="p-4 text-center bg-gray-100 shadow-sm rounded-xl">
-                          <p className="text-sm text-gray-600">Total Orders</p>
-                          <p className="text-xl font-bold text-gray-800">
-                            {userDetails?.orders_count?.total || 0}
-                          </p>
-                        </div>
-                        <div className="p-4 text-center bg-green-100 shadow-sm rounded-xl">
-                          <p className="text-sm text-green-700">Approved</p>
-                          <p className="text-xl font-bold text-green-800">
-                            {userDetails?.orders_count?.approved || 0}
-                          </p>
-                        </div>
-                        <div className="p-4 text-center bg-red-100 shadow-sm rounded-xl">
-                          <p className="text-sm text-red-700">Incomplete</p>
-                          <p className="text-xl font-bold text-red-800">
-                            {userDetails?.orders_count?.incomplete || 0}
-                          </p>
-                        </div>
-                        <div className="p-4 text-center shadow-sm bg-violet-100 rounded-xl">
-                          <p className="text-sm text-violet-700">Processing</p>
-                          <p className="text-xl font-bold text-violet-800">
-                            {userDetails?.orders_count?.processing || 0}
-                          </p>
-                        </div>
-                      </div>
-                      <div className="p-4 mx-4 bg-white border border-gray-200 shadow-sm rounded-xl">
-                        <p className="text-sm text-gray-600">Last Order</p>
-                        <p className="text-lg font-semibold text-gray-900">
-                          {userDetails?.last_tratment ?? "N/A"}
-                        </p>
-                        <p className="mt-2 text-sm text-gray-600">
-                          Last Consultation
-                        </p>
-                        <p className="font-medium text-blue-700 text-md">
-                          {userDetails?.last_order ?? "N/A"}
-                        </p>
-                      </div>
-                    </div>
-                    <div className="flex items-center justify-between py-4 font-semibold uppercase border-b border-gray-200 text-violet-700">
-                      FAQs
-                    </div>
-                    <div className="flex flex-col h-full py-4">
-                      <input
-                        type="text"
-                        id="faq-search"
-                        className="w-full px-4 py-2 mb-4 placeholder-gray-400 border border-gray-200 rounded-lg focus:outline-none focus:ring"
-                        placeholder="Search..."
-                        value={faqSearch}
-                        onChange={(e) => setFaqSearch(e.target.value)}
-                      />
                       <div
-                        id="faq-list"
-                        className="space-y-2 overflow-y-auto max-h-[calc(100vh-36%)]"
+                        id="user-name"
+                        className={`flex items-center justify-between font-semibold text-violet-700 uppercase border-b border-gray-200 pb-4 ${
+                          userDetails ? "" : ""
+                        }`}
                       >
-                        {filteredFaqs.length === 0 ? (
-                          <p className="px-4 py-2 text-sm text-gray-500">
-                            No FAQs found.
-                          </p>
-                        ) : (
-                          filteredFaqs.map((faq) => (
-                            <button
-                              key={faq.label}
-                              className={`w-full py-2 text-left text-violet-800 transition bg-violet-100 rounded-lg hover:bg-violet-200 ${
-                                divWidth <= cb.sm
-                                  ? "text-[10px] px-2"
-                                  : divWidth <= cb.md
-                                  ? "text-xs"
-                                  : "text-sm px-4"
-                              }`}
-                              onClick={() => handleFaqBtn(faq.message)}
-                            >
-                              {faq.label}
-                            </button>
-                          ))
-                        )}
+                        <span className="flex items-center gap-2">
+                          {/* Show fname/lname from chat_user if available, else fallback */}
+                          {user?.fname && user?.lname
+                            ? `${user.fname} ${user.lname}`
+                            : userDetails?.user_data?.user_name || (
+                                <p className="text-gray-500">No user found.</p>
+                              )}
+                          {/* Gear/Settings Icon */}
+                        </span>
+                        <button
+                          className="ml-2 text-gray-400 hover:text-violet-700"
+                          aria-label="Edit Your Details"
+                          onClick={() => {
+                            setUserSettings({
+                              fname:
+                                user?.fname ||
+                                userDetails?.user_data?.fname ||
+                                "",
+                              lname:
+                                user?.lname ||
+                                userDetails?.user_data?.lname ||
+                                "",
+                              email: user?.email || "",
+                              orderId: orderId || "",
+                            });
+                            setShowUserSettings(true);
+                          }}
+                          type="button"
+                        >
+                          <svg
+                            className="w-5 h-5"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth={2}
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              d="M11.25 3.75a.75.75 0 011.5 0v1.09a7.501 7.501 0 013.36 1.39l.77-.77a.75.75 0 111.06 1.06l-.77.77a7.501 7.501 0 011.39 3.36h1.09a.75.75 0 010 1.5h-1.09a7.501 7.501 0 01-1.39 3.36l.77.77a.75.75 0 11-1.06 1.06l-.77-.77a7.501 7.501 0 01-3.36 1.39v1.09a.75.75 0 01-1.5 0v-1.09a7.501 7.501 0 01-3.36-1.39l-.77.77a.75.75 0 11-1.06-1.06l.77-.77a7.501 7.501 0 01-1.39-3.36H3.75a.75.75 0 010-1.5h1.09a7.501 7.501 0 011.39-3.36l-.77-.77a.75.75 0 111.06-1.06l.77.77a7.501 7.501 0 013.36-1.39V3.75z"
+                            ></path>
+                          </svg>
+                        </button>
                       </div>
-                    </div>
-                  </aside>
+                      <div
+                        className={`my-4 space-y-4 ${
+                          userDetails ? "" : "hidden"
+                        }`}
+                        id="user-details"
+                        style={{ display: "none" }}
+                      >
+                        <div className="grid grid-cols-2 gap-4 px-4">
+                          <div className="p-4 text-center bg-gray-100 shadow-sm rounded-xl">
+                            <p className="text-sm text-gray-600">
+                              Total Orders
+                            </p>
+                            <p className="text-xl font-bold text-gray-800">
+                              {userDetails?.orders_count?.total || 0}
+                            </p>
+                          </div>
+                          <div className="p-4 text-center bg-green-100 shadow-sm rounded-xl">
+                            <p className="text-sm text-green-700">Approved</p>
+                            <p className="text-xl font-bold text-green-800">
+                              {userDetails?.orders_count?.approved || 0}
+                            </p>
+                          </div>
+                          <div className="p-4 text-center bg-red-100 shadow-sm rounded-xl">
+                            <p className="text-sm text-red-700">Incomplete</p>
+                            <p className="text-xl font-bold text-red-800">
+                              {userDetails?.orders_count?.incomplete || 0}
+                            </p>
+                          </div>
+                          <div className="p-4 text-center shadow-sm bg-violet-100 rounded-xl">
+                            <p className="text-sm text-violet-700">
+                              Processing
+                            </p>
+                            <p className="text-xl font-bold text-violet-800">
+                              {userDetails?.orders_count?.processing || 0}
+                            </p>
+                          </div>
+                        </div>
+                        <div className="p-4 mx-4 bg-white border border-gray-200 shadow-sm rounded-xl">
+                          <p className="text-sm text-gray-600">Last Order</p>
+                          <p className="text-lg font-semibold text-gray-900">
+                            {userDetails?.last_tratment ?? "N/A"}
+                          </p>
+                          <p className="mt-2 text-sm text-gray-600">
+                            Last Consultation
+                          </p>
+                          <p className="font-medium text-blue-700 text-md">
+                            {userDetails?.last_order ?? "N/A"}
+                          </p>
+                        </div>
+                      </div>
+                      <div className="flex items-center justify-between py-4 font-semibold uppercase border-b border-gray-200 text-violet-700">
+                        FAQs
+                      </div>
+                      <div className="flex flex-col h-full py-4">
+                        <input
+                          type="text"
+                          id="faq-search"
+                          className="w-full px-4 py-2 mb-4 placeholder-gray-400 border border-gray-200 rounded-lg focus:outline-none focus:ring"
+                          placeholder="Search..."
+                          value={faqSearch}
+                          onChange={(e) => setFaqSearch(e.target.value)}
+                        />
+                        <div
+                          id="faq-list"
+                          className="max-h-screen space-y-2 overflow-y-auto scrollbar-hide"
+                        >
+                          {filteredFaqs.length === 0 ? (
+                            <p className="px-4 py-2 text-sm text-gray-500">
+                              No FAQs found.
+                            </p>
+                          ) : (
+                            filteredFaqs.map((faq) => (
+                              <button
+                                key={faq.label}
+                                className={`w-full py-2 text-left text-violet-800 transition bg-violet-100 rounded-lg hover:bg-violet-200 ${
+                                  divWidth <= cb.sm
+                                    ? "text-sm px-2"
+                                    : divWidth <= cb.md
+                                    ? "text-sm"
+                                    : "text-md px-4"
+                                }`}
+                                onClick={() => handleFaqBtn(faq.message)}
+                              >
+                                {faq.label}
+                              </button>
+                            ))
+                          )}
+                        </div>
+                      </div>
+                    </aside>
+                  </>
                 )}
 
                 {/* Chat area */}
@@ -1140,7 +1192,7 @@ export default function ChatComponent() {
                   {!user && (
                     <form
                       id="email-prompt"
-                      className="flex flex-col items-center justify-center flex-1 p-4 space-y-2 bg-white h-150 sm:p-6 sm:space-y-3"
+                      className="flex flex-col items-center justify-center flex-1 p-4 space-y-2 text-gray-700 bg-white h-100 sm:p-6 sm:space-y-3"
                       onSubmit={(e) => {
                         e.preventDefault();
                         const fname = e.target.fname.value.trim();
@@ -1232,12 +1284,12 @@ export default function ChatComponent() {
                       <div
                         id="chat-box"
                         ref={chatBoxRef}
-                        className={`flex-1 relative h-screen px-3 py-2 space-y-3 overflow-auto text-sm bg-gray-100 sm:px-4 sm:text-base ${
+                        className={`flex-1 transition-all ease-in-out duration-400 relative h-screen px-3 py-2 space-y-3 overflow-auto scrollbar-hide text-sm bg-gray-100 sm:px-4 sm:text-base ${
                           isMaximized
                             ? // ? "pb-[calc(100vh-47%)]"
                               "pb-[240px]"
                             : `pb-[440px]`
-                        }`}
+                        } ${showSidebar && divWidth >= cb.sm ? "" : "left-0"}`}
                         style={{ minHeight: 0 }}
                       >
                         {/* Welcome Screen */}
@@ -1285,9 +1337,7 @@ export default function ChatComponent() {
                                 </h2>
                                 <p
                                   className={`text-gray-700 ${
-                                    divWidth <= cb.sm
-                                      ? "text-[10px]"
-                                      : "text-xs"
+                                    divWidth <= cb.sm ? "text-xs" : "text-sm"
                                   }`}
                                 >
                                   Learn how to interact with the assistant.
@@ -1311,9 +1361,7 @@ export default function ChatComponent() {
                                 </h2>
                                 <p
                                   className={`text-gray-700 ${
-                                    divWidth <= cb.sm
-                                      ? "text-[10px]"
-                                      : "text-xs"
+                                    divWidth <= cb.sm ? "text-xs" : "text-sm"
                                   }`}
                                 >
                                   Once-weekly weight loss injection.
@@ -1337,9 +1385,7 @@ export default function ChatComponent() {
                                 </h2>
                                 <p
                                   className={`text-gray-700 ${
-                                    divWidth <= cb.sm
-                                      ? "text-[10px]"
-                                      : "text-xs"
+                                    divWidth <= cb.sm ? "text-xs" : "text-sm"
                                   }`}
                                 >
                                   Weekly injection approved for weight loss.
@@ -1363,9 +1409,7 @@ export default function ChatComponent() {
                                 </h2>
                                 <p
                                   className={`text-gray-700 ${
-                                    divWidth <= cb.sm
-                                      ? "text-[10px]"
-                                      : "text-xs"
+                                    divWidth <= cb.sm ? "text-xs" : "text-sm"
                                   }`}
                                 >
                                   Reach out to our team for further help.
@@ -1389,9 +1433,7 @@ export default function ChatComponent() {
                                 </h2>
                                 <p
                                   className={`text-gray-700 ${
-                                    divWidth <= cb.sm
-                                      ? "text-[10px]"
-                                      : "text-xs"
+                                    divWidth <= cb.sm ? "text-xs" : "text-sm"
                                   }`}
                                 >
                                   Used for type-2 diabetes.
@@ -1415,9 +1457,7 @@ export default function ChatComponent() {
                                 </h2>
                                 <p
                                   className={`text-gray-700 ${
-                                    divWidth <= cb.sm
-                                      ? "text-[10px]"
-                                      : "text-xs"
+                                    divWidth <= cb.sm ? "text-xs" : "text-sm"
                                   }`}
                                 >
                                   Once-daily injection.
@@ -1494,7 +1534,11 @@ export default function ChatComponent() {
                         )}
                       </div>
                       <div
-                        className={`absolute bottom-0 left-0 right-0 z-10 bg-white`}
+                        className={`absolute bottom-0 right-0 z-10 bg-white transition-all ease-in-out duration-400 ${
+                          showSidebar && divWidth >= cb.sm
+                            ? "left-100"
+                            : "left-0"
+                        }`}
                       >
                         {/* Quick questions */}
                         {showQuick && (
@@ -1509,8 +1553,8 @@ export default function ChatComponent() {
                                 key={q.label}
                                 className={`py-1 mr-1 text-violet-800 bg-violet-200 rounded-full quick-btn hover:bg-violet-300 ${
                                   divWidth <= cb.sm
-                                    ? "text-[8px] px-1"
-                                    : "text-xs px-2"
+                                    ? "text-xs px-2"
+                                    : "text-md px-2"
                                 }`}
                                 onClick={() => handleQuickBtn(q.message)}
                               >
@@ -1523,7 +1567,7 @@ export default function ChatComponent() {
                         {/* Chat form */}
                         <form
                           id="chat-form"
-                          className="flex gap-2 p-3 bg-white border-t border-gray-200 sm:p-4"
+                          className="flex gap-2 p-3 text-gray-700 bg-white border-t border-gray-200 sm:p-4"
                           onSubmit={handleSendMessage}
                         >
                           <input
