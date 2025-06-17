@@ -1,5 +1,5 @@
 "use client";
-import { use, useEffect, useRef, useState } from "react";
+import { act, use, useEffect, useRef, useState } from "react";
 import { FaBars, FaTimes, FaSignOutAlt, FaTrash } from "react-icons/fa";
 import { FiMessageCircle, FiX, FiMaximize2, FiMinimize2 } from "react-icons/fi";
 import { app_url } from "@/config/constants";
@@ -165,6 +165,12 @@ export default function ChatComponent() {
   const [showWelcome, setShowWelcome] = useState(true);
   const [showQuick, setShowQuick] = useState(false);
   const [showUserSettings, setShowUserSettings] = useState(false);
+  const [prefill, setPrefill] = useState({
+    fname: "",
+    lname: "",
+    email: "",
+    orderId: "",
+  });
   const [userSettings, setUserSettings] = useState({
     fname: "",
     lname: "",
@@ -178,11 +184,16 @@ export default function ChatComponent() {
   const [windowWidth, setWindowWidth] = useState(0);
   const [divWindow, setDivWindow] = useState(1918);
   const [divHeight, setDivHeight] = useState(0);
+  const previousWidthRef = useRef(0);
 
   //   custom start
+  useEffect(() => {
+    const width = window.innerWidth;
+    previousWidthRef.current = width;
+  }, []);
+
   const divRef = useRef(null);
   const [divWidth, setDivWidth] = useState(0);
-  // Custom breakpoints (same as Tailwind defaults)
   const cb = {
     sm: 640,
     md: 768,
@@ -192,8 +203,11 @@ export default function ChatComponent() {
   };
 
   useEffect(() => {
-    const div = divRef.current;
+    const div = document.getElementById("div-window");
     if (!div) return;
+    console.warn("Div:", div);
+
+    setDivWidth(div.offsetWidth);
 
     const observer = new ResizeObserver((entries) => {
       for (let entry of entries) {
@@ -202,10 +216,46 @@ export default function ChatComponent() {
     });
 
     observer.observe(div);
-    return () => observer.disconnect();
+
+    const handleClick = () => {
+      const updatedDiv = document.getElementById("div-window");
+      if (updatedDiv) {
+        setDivWidth(updatedDiv.offsetWidth);
+      }
+    };
+
+    document.body.addEventListener("click", handleClick);
+
+    return () => {
+      observer.disconnect();
+      document.body.removeEventListener("click", handleClick);
+    };
   }, []);
 
-  //   custom end
+  useEffect(() => {
+    if (isOpen) {
+      const timeout = setTimeout(() => {
+        requestAnimationFrame(() => {
+          const div = document.getElementById("div-window");
+          if (div) {
+            const currentWidth = div.offsetWidth;
+
+            if (previousWidthRef.current !== null) {
+              setDivWidth(previousWidthRef.current);
+              console.warn("Set Previous Width:", previousWidthRef.current);
+            }
+
+            previousWidthRef.current = currentWidth;
+          } else {
+            console.warn("#div-window not found in DOM");
+          }
+        });
+      }, 0);
+
+      return () => clearTimeout(timeout);
+    }
+  }, [isMaximized]);
+  //   custom ends
 
   useEffect(() => {
     const divWindowwidth = document.getElementById("div-window");
@@ -215,7 +265,6 @@ export default function ChatComponent() {
     }
   }, [isMaximized, windowWidth]);
 
-  console.log(divHeight, "divHeight", divWindow, "divWindow");
   // Listen for screen resizing
   useEffect(() => {
     const updateWidth = () => setWindowWidth(window.innerWidth);
@@ -232,7 +281,7 @@ export default function ChatComponent() {
           ? "w-screen"
           : divWidth <= cb.md
           ? "w-screen"
-          : "w-[99.3vw]"
+          : "w-[99.7vw]"
       } h-screen rounded-none`;
     if (windowWidth <= 400) return `bottom-4 right-4 w-[94vw] h-[76vh]`;
     if (windowWidth <= 768) return `bottom-4 right-4 w-[90vw] h-[76vh]`;
@@ -322,6 +371,30 @@ export default function ChatComponent() {
       })
       .catch((err) => alert("Verification failed."));
   }
+
+  useEffect(() => {
+    const existChatUser = localStorage.getItem("chat_user");
+    const signupData = localStorage.getItem("signup-storage");
+
+    if (signupData) {
+      try {
+        const parsed = JSON.parse(signupData);
+        const state = parsed?.state || {};
+        const { firstName, lastName, email } = state;
+
+        if (firstName && lastName && email) {
+          setPrefill({
+            fname: firstName,
+            lname: lastName,
+            email,
+            orderId: localStorage.getItem("order_id") || "",
+          });
+        }
+      } catch (err) {
+        console.warn("Could not parse signup-storage:", err);
+      }
+    }
+  }, [isOpen]);
 
   async function handleSendMessage(e) {
     e.preventDefault();
@@ -765,9 +838,18 @@ export default function ChatComponent() {
                   </div>
                 </div>
                 {!user && (
-                  <p className="w-full text-base font-semibold text-left text-muted">
-                    Welcome To Mayfair Assistant
-                  </p>
+                  <>
+                    <p className="w-full text-base font-semibold text-left text-muted">
+                      Welcome To Mayfair Assistant
+                    </p>
+                    <button
+                      onClick={() => setIsOpen(false)}
+                      className="text-sm text-red-500 hover:text-red-700"
+                      aria-label="Close"
+                    >
+                      <FiX size={28} />
+                    </button>
+                  </>
                 )}
               </header>
 
@@ -1053,7 +1135,7 @@ export default function ChatComponent() {
                 )}
 
                 {/* Chat area */}
-                <main className="flex-1">
+                <main className="flex-1 bg-white">
                   {/* Email prompt */}
                   {!user && (
                     <form
@@ -1109,6 +1191,7 @@ export default function ChatComponent() {
                         name="fname"
                         required
                         placeholder="First Name"
+                        defaultValue={prefill.fname}
                         className="w-full max-w-md px-3 py-2 text-sm placeholder-gray-400 border border-gray-200 rounded-lg bg-gray-50 sm:px-4 focus:outline-none"
                       />
                       <input
@@ -1116,12 +1199,14 @@ export default function ChatComponent() {
                         name="lname"
                         required
                         placeholder="Last Name"
+                        defaultValue={prefill.lname}
                         className="w-full max-w-md px-3 py-2 text-sm placeholder-gray-400 border border-gray-200 rounded-lg bg-gray-50 sm:px-4 focus:outline-none"
                       />
                       <input
                         type="email"
                         name="email"
                         placeholder="you@example.com"
+                        defaultValue={prefill.email}
                         className="w-full max-w-md px-3 py-2 text-sm placeholder-gray-400 border border-gray-200 rounded-lg bg-gray-50 sm:px-4 focus:outline-none"
                         required
                       />
@@ -1129,6 +1214,7 @@ export default function ChatComponent() {
                         type="text"
                         name="orderId"
                         placeholder="Order ID (optional)"
+                        defaultValue={prefill.orderId}
                         className="w-full max-w-md px-3 py-2 text-sm placeholder-gray-400 border border-gray-200 rounded-lg bg-gray-50 sm:px-4 focus:outline-none"
                       />
                       <button
