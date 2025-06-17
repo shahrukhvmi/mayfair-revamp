@@ -41,37 +41,31 @@ const AddOn = ({ addon, onAdd, onIncrement, onDecrement, isSelected, quantity })
   // const isOutOfStock = addon?.stock?.status == 0;
   const isOutOfStock = stockStatus === 0 || addon?.stock?.quantity === 0;
 
-
   const handleDelete = () => {
     setShowModal(false);
     removeItemCompletely(addon?.id, "addon");
   };
-
 
   return (
     <>
       <div
         onClick={!isOutOfStock && !isSelected ? handleAdd : undefined}
         className={`flex flex-col sm:flex-row sm:items-center justify-between w-full p-4 border-2 mt-3 transition-all duration-300 ease-in-out relative rounded-lg border-primary
-    ${isOutOfStock
-            ? "opacity-50 cursor-not-allowed bg-white border-gray-400"
-            : isSelected
-              ? "border-primary bg-violet-100 cursor-pointer"
-              : "border-primary bg-white hover:bg-gray-50 cursor-pointer"
-          }`}
+    ${
+      isOutOfStock
+        ? "opacity-50 cursor-not-allowed bg-white border-gray-400"
+        : isSelected
+        ? "border-primary bg-violet-100 cursor-pointer"
+        : "border-primary bg-white hover:bg-gray-50 cursor-pointer"
+    }`}
       >
-
-
-
         {isOutOfStock && (
           <>
             {/* Overlay to disable interaction */}
             <div className="absolute inset-0 z-10 bg-white/10  cursor-not-allowed rounded-md"></div>
 
             {/* Out of stock badge */}
-            <div className="absolute left-[14px] top-[-10px] bg-primary text-white px-3 py-0.5 text-xs font-semibold rounded z-20">
-              Out of stock
-            </div>
+            <div className="absolute left-[14px] top-[-10px] bg-primary text-white px-3 py-0.5 text-xs font-semibold rounded z-20">Out of stock</div>
           </>
         )}
         {/* Check badge */}
@@ -83,16 +77,11 @@ const AddOn = ({ addon, onAdd, onIncrement, onDecrement, isSelected, quantity })
 
         {/* Left Content */}
         <div className="flex items-start sm:items-center gap-3 w-full sm:w-auto">
-          {isSelected ? (
-            <FaDotCircle className="text-primary w-4 h-4 mt-1" />
-          ) : (
-            <FaRegCircle className="text-gray-800 w-4 h-4 mt-1" />
-          )}
+          {isSelected ? <FaDotCircle className="text-primary w-4 h-4 mt-1" /> : <FaRegCircle className="text-gray-800 w-4 h-4 mt-1" />}
 
           <div className="text-sm sm:text-base text-gray-800">
             <div className="capitalize font-semibold text-md sm:text-lg text-black">{addon?.product_name}</div>
             <div className="text-sm text-gray-700">{addon.name}</div>
-
           </div>
         </div>
 
@@ -105,11 +94,7 @@ const AddOn = ({ addon, onAdd, onIncrement, onDecrement, isSelected, quantity })
           {isSelected && (
             <>
               <div className="flex items-center space-x-2 bg-white rounded-full px-2 py-1 shadow-md">
-                <button
-                  type="button"
-                  onClick={handleDecrement}
-                  className="bg-gray-100 hover:bg-gray-200 p-2 rounded-full"
-                >
+                <button type="button" onClick={handleDecrement} className="bg-gray-100 hover:bg-gray-200 p-2 rounded-full cursor-pointer">
                   <FaMinus size={10} className="text-black" />
                 </button>
 
@@ -118,10 +103,9 @@ const AddOn = ({ addon, onAdd, onIncrement, onDecrement, isSelected, quantity })
                 <button
                   type="button"
                   onClick={handleIncrement}
-                  className={`p-2 rounded-full ${quantity >= allowed
-                    ? "cursor-not-allowed bg-gray-100 opacity-50"
-                    : "bg-gray-100 hover:bg-gray-200"
-                    }`}
+                  className={`p-2 rounded-full ${
+                    quantity >= allowed ? "cursor-not-allowed bg-gray-100 opacity-50" : "bg-gray-100 hover:bg-gray-200 cursor-pointer"
+                  }`}
                 >
                   <FaPlus size={10} className="text-black" />
                 </button>
@@ -133,14 +117,13 @@ const AddOn = ({ addon, onAdd, onIncrement, onDecrement, isSelected, quantity })
                   e.stopPropagation();
                   setShowModal(true);
                 }}
-                className="bg-red-100 hover:bg-red-200 text-red-500 rounded-full p-2"
+                className="bg-red-100 hover:bg-red-200 text-red-500 rounded-full p-2 cursor-pointer"
               >
                 <MdDelete />
               </button>
             </>
           )}
         </div>
-
       </div>
 
       <ConfirmationModal showModal={showModal} onConfirm={handleDelete} onCancel={() => setShowModal(false)} />
