@@ -679,7 +679,7 @@ export default function ChatComponent() {
           <div className="flex-1 w-full h-full">
             <div className="flex flex-col w-full h-screen overflow-y-hidden font-sans">
               {/* Header */}
-              <header className="flex items-center justify-between w-full p-4 text-gray-600 bg-white border-b border-gray-100">
+              <header className="flex items-center justify-between w-full p-4 text-gray-600 bg-white border-b border-gray-200">
                 {user && (
                   <button
                     id="open-faq"
