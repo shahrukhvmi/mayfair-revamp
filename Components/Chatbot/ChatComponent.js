@@ -733,7 +733,7 @@ export default function ChatComponent() {
       {!isOpen && (
         <button
           onClick={() => setIsOpen(true)}
-          className="fixed flex items-center justify-center text-white rounded-full shadow-lg z-9999 bottom-4 right-4 w-14 h-14 bg-violet-600 hover:bg-violet-700"
+          className="fixed flex items-center justify-center text-white rounded-full shadow-lg z-999 bottom-4 right-4 w-14 h-14 bg-violet-600 hover:bg-violet-700"
           aria-label="Open Chat"
         >
           <FiMessageCircle size={28} />
@@ -756,7 +756,7 @@ export default function ChatComponent() {
         //       : "bg-black"
         //   }
         <div
-          className={`fixed z-9999 border scrollbar-hide border-gray-300 shadow-xl flex flex-col transition-all font-sans ease-in-out duration-300 overflow-hidden ${getResponsiveClass()}  ${
+          className={`fixed z-999 border scrollbar-hide border-gray-300 shadow-xl flex flex-col transition-all font-sans ease-in-out duration-300 overflow-hidden ${getResponsiveClass()}  ${
             divWidth <= cb.sm
               ? "rounded-xl"
               : divWidth <= cb.md
@@ -889,7 +889,7 @@ export default function ChatComponent() {
 
               {/* User Settings Modal */}
               {showUserSettings && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center bg-opacity-30 backdrop-blur-sm">
+                <div className="fixed inset-0 flex items-center justify-center px-4 z-99999 bg-opacity-30 backdrop-blur-sm">
                   <div className="relative w-full max-w-md p-6 bg-white rounded-lg shadow-lg">
                     <button
                       className="absolute text-gray-400 top-2 right-2 hover:text-gray-700"
@@ -1567,7 +1567,7 @@ export default function ChatComponent() {
                         {/* Chat form */}
                         <form
                           id="chat-form"
-                          className="flex gap-2 p-3 text-gray-700 bg-white border-t border-gray-200 sm:p-4"
+                          className="flex w-full gap-2 p-3 px-4 text-gray-700 bg-white border-t border-gray-200 sm:p-4"
                           onSubmit={handleSendMessage}
                         >
                           <input
