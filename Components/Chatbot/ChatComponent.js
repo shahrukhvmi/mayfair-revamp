@@ -151,7 +151,6 @@ function setLocal(key, value) {
 }
 
 export default function ChatComponent() {
-  // Add this state
   const [hasMounted, setHasMounted] = useState(false);
   const [user, setUser] = useState(null);
   const [orderId, setOrderId] = useState("");
@@ -165,6 +164,10 @@ export default function ChatComponent() {
   const [showWelcome, setShowWelcome] = useState(true);
   const [showQuick, setShowQuick] = useState(false);
   const [showUserSettings, setShowUserSettings] = useState(false);
+  const [browserInfo, setBrowserInfo] = useState({
+    browser: "Unknown",
+    version: "Unknown",
+  });
   const [prefill, setPrefill] = useState({
     fname: "",
     lname: "",
@@ -185,6 +188,89 @@ export default function ChatComponent() {
   const [divWindow, setDivWindow] = useState(1918);
   const [divHeight, setDivHeight] = useState(0);
   const previousWidthRef = useRef(0);
+  const [inputIsFocus, setInputIsFocus] = useState(false);
+
+  const enterFullScreen = () => {
+    const element = document.documentElement;
+
+    if (element.requestFullscreen) {
+      element.requestFullscreen();
+    } else if (element.mozRequestFullScreen) {
+      element.mozRequestFullScreen(); // Firefox
+    } else if (element.webkitRequestFullscreen) {
+      element.webkitRequestFullscreen(); // Safari and Chrome
+    } else if (element.msRequestFullscreen) {
+      element.msRequestFullscreen(); // IE/Edge
+    }
+  };
+
+  const exitFullScreen = () => {
+    if (!document.fullscreenElement) return;
+
+    if (document.exitFullscreen) {
+      document.exitFullscreen();
+    } else if (document.mozCancelFullScreen) {
+      document.mozCancelFullScreen(); // Firefox
+    } else if (document.webkitExitFullscreen) {
+      document.webkitExitFullscreen(); // Safari and Chrome
+    } else if (document.msExitFullscreen) {
+      document.msExitFullscreen(); // IE/Edge
+    }
+  };
+
+  const isFullScreen = () => {
+    return (
+      !!document.fullscreenElement ||
+      !!document.mozFullScreenElement ||
+      !!document.webkitFullscreenElement ||
+      !!document.msFullscreenElement
+    );
+  };
+
+  const toggleFullScreen = () => {
+    if (!isFullScreen()) {
+      // enterFullScreen();
+      console.log("enterFullScreen");
+    } else {
+      // exitFullScreen();
+      console.log("exitFullScreen");
+    }
+  };
+
+  const getBrowserAndVersion = () => {
+    const userAgent = navigator.userAgent;
+    let browser, version;
+
+    if (userAgent.includes("Chrome") && userAgent.includes("Safari")) {
+      browser = "Chrome";
+      version = userAgent.match(/Chrome\/(\d+\.\d+)/)?.[1];
+    } else if (userAgent.includes("Firefox")) {
+      browser = "Firefox";
+      version = userAgent.match(/Firefox\/(\d+\.\d+)/)?.[1];
+    } else if (userAgent.includes("Safari") && !userAgent.includes("Chrome")) {
+      browser = "Safari";
+      version = userAgent.match(/Version\/(\d+\.\d+)/)?.[1];
+    } else if (userAgent.includes("Edge")) {
+      browser = "Edge";
+      version = userAgent.match(/Edge\/(\d+\.\d+)/)?.[1];
+    } else if (userAgent.includes("MSIE") || userAgent.includes("Trident")) {
+      browser = "Internet Explorer";
+      version = userAgent.match(/(MSIE \d+\.\d+)/)?.[0];
+    } else if (userAgent.includes("OPR") || userAgent.includes("Opera")) {
+      browser = "Opera";
+      version = userAgent.match(/OPR\/(\d+\.\d+)/)?.[1];
+    } else {
+      browser = "Unknown";
+      version = "Unknown";
+    }
+
+    return { browser, version };
+  };
+  console.log(getBrowserAndVersion());
+  useEffect(() => {
+    const { browser, version } = getBrowserAndVersion();
+    setBrowserInfo({ browser, version });
+  }, []);
 
   useEffect(() => {
     const style = document.createElement("style");
@@ -196,11 +282,17 @@ export default function ChatComponent() {
         -ms-overflow-style: none;
         scrollbar-width: none;
       }
+      body {
+        height: 100%;
+      }
+      body {
+        height: calc(var(--vh, 1vh) * 100);
+      }
     `;
     document.head.appendChild(style);
 
     return () => {
-      document.head.removeChild(style); // Clean up when component unmounts
+      document.head.removeChild(style);
     };
   }, []);
 
@@ -223,7 +315,6 @@ export default function ChatComponent() {
   useEffect(() => {
     const div = document.getElementById("div-window");
     if (!div) return;
-    console.warn("Div:", div);
 
     setDivWidth(div.offsetWidth);
 
@@ -283,15 +374,13 @@ export default function ChatComponent() {
     }
   }, [isMaximized, windowWidth]);
 
-  // Listen for screen resizing
   useEffect(() => {
     const updateWidth = () => setWindowWidth(window.innerWidth);
-    updateWidth(); // Initial call
+    updateWidth();
     window.addEventListener("resize", updateWidth);
     return () => window.removeEventListener("resize", updateWidth);
   }, []);
 
-  // Determine responsive sizing class
   const getResponsiveClass = () => {
     if (isMaximized)
       return `top-0 right-0 ${
@@ -307,13 +396,11 @@ export default function ChatComponent() {
     return `bottom-4 right-4 w-[428px] h-[76vh]`;
   };
 
-  // On mount, sync state from localStorage
   useEffect(() => {
     const storedUser = getLocal("chat_user", null);
     setUser(storedUser);
     setOrderId(getLocal("order_data", { order_id: "" }).order_id || "");
     setChatHistory(getLocal("chat_history", []));
-    // Only allow sidebar open if user exists
     const sidebarOpen = getLocal("faqSidebarOpen", false);
     setShowSidebar(storedUser && sidebarOpen);
     // setShowWelcome(!storedUser);
@@ -321,7 +408,6 @@ export default function ChatComponent() {
     setHasMounted(true);
   }, []);
 
-  // Effects for localStorage sync
   useEffect(() => {
     setLocal("chat_user", user);
   }, [user]);
@@ -335,13 +421,11 @@ export default function ChatComponent() {
     setLocal("faqSidebarOpen", showSidebar);
   }, [showSidebar]);
 
-  // Scroll chat to bottom on new message
   useEffect(() => {
     if (chatBoxRef.current)
       chatBoxRef.current.scrollTop = chatBoxRef.current.scrollHeight;
   }, [chatHistory, loading]);
 
-  // Fetch user details after login
   useEffect(() => {
     if (user && user.email_exist) {
       fetch(app_url + "/chat-user-data", {
@@ -359,13 +443,11 @@ export default function ChatComponent() {
     }
   }, [user, orderId]);
 
-  // When user logs in/out, update sidebar state accordingly
   useEffect(() => {
     if (!user) setShowSidebar(false);
     else setShowSidebar(getLocal("faqSidebarOpen", false));
   }, [user]);
 
-  // Handlers
   function handleEmailSubmit(e) {
     e.preventDefault();
     const email = e.target.email.value.trim();
@@ -418,7 +500,6 @@ export default function ChatComponent() {
     e.preventDefault();
     if (!inputMsg.trim()) return;
 
-    // Add user message to chat
     const userMsg = { sender: "user", text: inputMsg.trim() };
     setChatHistory((prev) => [...prev, userMsg]);
     setInputMsg("");
@@ -451,7 +532,6 @@ export default function ChatComponent() {
         setOrderId("");
       }
 
-      // 1. If backend sends { message: "OrderIdFormBotMessage" }
       if (
         data.message &&
         typeof data.message === "string" &&
@@ -465,7 +545,6 @@ export default function ChatComponent() {
         return;
       }
 
-      // 2. If backend sends Laravel validation errors
       if (data.errors && data.errors.order_id) {
         const errorMsg = data.errors.order_id[0];
         setChatHistory((prev) => [...prev, { sender: "bot", text: errorMsg }]);
@@ -473,7 +552,6 @@ export default function ChatComponent() {
         return;
       }
 
-      // 3. Normal bot response
       const replyText = (
         data.response ||
         data.message ||
@@ -489,7 +567,7 @@ export default function ChatComponent() {
       const errorText = err.message || "Something went wrong.";
       const botMsg = { sender: "bot", text: `<strong>${errorText}</strong>` };
       setChatHistory((prev) => [...prev, botMsg]);
-      setOrderId(""); // Clear orderId on error
+      setOrderId("");
     } finally {
       setLoading(false);
     }
@@ -535,6 +613,14 @@ export default function ChatComponent() {
     alert("Your details updated successfully!");
   }
 
+  const handleFocus = () => {
+    setInputIsFocus(true);
+  };
+
+  const handleBlur = () => {
+    setInputIsFocus(false);
+  };
+
   function handleClearChat() {
     if (window.confirm("Are you sure you want to clear the chat?")) {
       setChatHistory([]);
@@ -556,12 +642,10 @@ export default function ChatComponent() {
     }
   }
 
-  // FAQ filter
   const filteredFaqs = finalFaqs.filter((f) =>
     f.label.toLowerCase().includes(faqSearch.toLowerCase())
   );
 
-  // Quick questions logic
   function getQuickBtns() {
     if (!user || !user.email_exist) return [];
     const lowerInput = (inputMsg || "").toLowerCase();
@@ -587,10 +671,7 @@ export default function ChatComponent() {
     return [...topRelevant, ...remaining];
   }
 
-  // Render nothing until mounted
   if (!hasMounted) return null;
-
-  // Add this inside your file, e.g. above your ChatbotPage component
 
   function OrderIdFormBotMessage({ message, onSuccess }) {
     const [orderId, setOrderId] = useState("");
@@ -678,7 +759,7 @@ export default function ChatComponent() {
           type="text"
           name="order_id"
           id="order_id_input"
-          className="placeholder-gray-400"
+          className="text-gray-700 placeholder-gray-400"
           placeholder="e.g. 123456"
           required
           value={orderId}
@@ -732,7 +813,12 @@ export default function ChatComponent() {
       {/* Floating Icon */}
       {!isOpen && (
         <button
-          onClick={() => setIsOpen(true)}
+          onClick={() => {
+            setIsOpen(true);
+            if (window.innerWidth <= cb.sm) {
+              setIsMaximized(true);
+            }
+          }}
           className="fixed flex items-center justify-center text-white rounded-full shadow-lg z-999 bottom-4 right-4 w-14 h-14 bg-violet-600 hover:bg-violet-700"
           aria-label="Open Chat"
         >
@@ -778,7 +864,6 @@ export default function ChatComponent() {
                 {user && (
                   <button
                     id="open-faq"
-                    // className="z-50 mr-4 md:hidden lg:hidden xl:hidden 2xl:hidden"
                     className="z-50"
                     onClick={() => setShowSidebar((s) => !s)}
                     aria-label={
@@ -836,18 +921,25 @@ export default function ChatComponent() {
                         </span>
                       </button>
                       <div className="flex items-center gap-2">
-                        <button
-                          onClick={() => setIsMaximized((prev) => !prev)}
-                          className="text-sm text-violet-600 hover:text-violet-900"
-                          aria-label={isMaximized ? "Minimize" : "Maximize"}
-                        >
-                          {/* {isMaximized ? "🗕" : "🗖"} */}
-                          {isMaximized ? (
-                            <FiMaximize2 size={18} />
-                          ) : (
-                            <FiMinimize2 size={18} />
-                          )}
-                        </button>
+                        {window.innerWidth >= cb.sm && (
+                          <button
+                            onClick={() => {
+                              setIsMaximized((prev) => !prev);
+                              if (window.innerWidth <= cb.sm) {
+                                toggleFullScreen();
+                              }
+                            }}
+                            className="text-sm text-violet-600 hover:text-violet-900"
+                            aria-label={isMaximized ? "Minimize" : "Maximize"}
+                          >
+                            {/* {isMaximized ? "🗕" : "🗖"} */}
+                            {isMaximized ? (
+                              <FiMaximize2 size={18} />
+                            ) : (
+                              <FiMinimize2 size={18} />
+                            )}
+                          </button>
+                        )}
                         <button
                           onClick={() => setIsOpen(false)}
                           className="text-sm text-red-500 hover:text-red-700"
@@ -864,18 +956,25 @@ export default function ChatComponent() {
                     <p className="w-full text-base font-semibold text-left text-muted">
                       Welcome To Mayfair Assistant
                     </p>
-                    <button
-                      onClick={() => setIsMaximized((prev) => !prev)}
-                      className="text-sm text-violet-600 hover:text-violet-900"
-                      aria-label={isMaximized ? "Minimize" : "Maximize"}
-                    >
-                      {/* {isMaximized ? "🗕" : "🗖"} */}
-                      {isMaximized ? (
-                        <FiMaximize2 size={18} />
-                      ) : (
-                        <FiMinimize2 size={18} />
-                      )}
-                    </button>
+                    {window.innerWidth >= cb.sm && (
+                      <button
+                        onClick={() => {
+                          setIsMaximized((prev) => !prev);
+                          if (window.innerWidth <= cb.sm) {
+                            toggleFullScreen();
+                          }
+                        }}
+                        className="text-sm text-violet-600 hover:text-violet-900"
+                        aria-label={isMaximized ? "Minimize" : "Maximize"}
+                      >
+                        {/* {isMaximized ? "🗕" : "🗖"} */}
+                        {isMaximized ? (
+                          <FiMaximize2 size={18} />
+                        ) : (
+                          <FiMinimize2 size={18} />
+                        )}
+                      </button>
+                    )}
                     <button
                       onClick={() => setIsOpen(false)}
                       className="text-sm text-red-500 hover:text-red-700"
@@ -928,7 +1027,7 @@ export default function ChatComponent() {
                           type="text"
                           name="fname"
                           placeholder="Enter your first name"
-                          className="w-full px-3 py-2 placeholder-gray-400 border border-gray-200 rounded-lg focus:outline-none"
+                          className="w-full px-3 py-2 text-gray-700 placeholder-gray-400 border border-gray-200 rounded-lg focus:outline-none"
                           value={userSettings.fname}
                           onChange={(e) =>
                             setUserSettings((s) => ({
@@ -947,7 +1046,7 @@ export default function ChatComponent() {
                           type="text"
                           name="lname"
                           placeholder="Enter your last name"
-                          className="w-full px-3 py-2 placeholder-gray-400 border border-gray-200 rounded-lg focus:outline-none"
+                          className="w-full px-3 py-2 text-gray-700 placeholder-gray-400 border border-gray-200 rounded-lg focus:outline-none"
                           value={userSettings.lname}
                           onChange={(e) =>
                             setUserSettings((s) => ({
@@ -966,7 +1065,7 @@ export default function ChatComponent() {
                           type="email"
                           name="email"
                           placeholder="Enter your email"
-                          className="w-full px-3 py-2 placeholder-gray-400 border border-gray-200 rounded-lg focus:outline-none"
+                          className="w-full px-3 py-2 text-gray-700 placeholder-gray-400 border border-gray-200 rounded-lg focus:outline-none"
                           value={userSettings.email}
                           onChange={(e) =>
                             setUserSettings((s) => ({
@@ -985,7 +1084,7 @@ export default function ChatComponent() {
                           type="text"
                           name="orderId"
                           placeholder="e.g. 123456"
-                          className="w-full px-3 py-2 placeholder-gray-400 border border-gray-200 rounded-lg focus:outline-none"
+                          className="w-full px-3 py-2 text-gray-700 placeholder-gray-400 border border-gray-200 rounded-lg focus:outline-none"
                           value={userSettings.orderId}
                           onChange={(e) =>
                             setUserSettings((s) => ({
@@ -1150,7 +1249,7 @@ export default function ChatComponent() {
                         <input
                           type="text"
                           id="faq-search"
-                          className="w-full px-4 py-2 mb-4 placeholder-gray-400 border border-gray-200 rounded-lg focus:outline-none focus:ring"
+                          className="w-full px-4 py-2 mb-4 text-gray-700 placeholder-gray-400 border border-gray-200 rounded-lg focus:outline-none focus:ring"
                           placeholder="Search..."
                           value={faqSearch}
                           onChange={(e) => setFaqSearch(e.target.value)}
@@ -1187,12 +1286,24 @@ export default function ChatComponent() {
                 )}
 
                 {/* Chat area */}
-                <main className="flex-1 bg-white">
+                <main
+                  className="flex-1 overflow-y-auto bg-white scrollbar-hide"
+                  style={{
+                    overflowY: "auto",
+                    scrollbarWidth: "none",
+                    msOverflowStyle: "none",
+                  }}
+                >
                   {/* Email prompt */}
                   {!user && (
                     <form
+                      style={{
+                        overflowY: "auto",
+                        scrollbarWidth: "none",
+                        msOverflowStyle: "none",
+                      }}
                       id="email-prompt"
-                      className="flex flex-col items-center justify-center flex-1 p-4 space-y-2 text-gray-700 bg-white h-100 sm:p-6 sm:space-y-3"
+                      className="flex flex-col items-center justify-center flex-1 p-4 space-y-2 overflow-y-auto text-gray-700 bg-white h-100 scrollbar-hide sm:p-6 sm:space-y-3"
                       onSubmit={(e) => {
                         e.preventDefault();
                         const fname = e.target.fname.value.trim();
@@ -1244,7 +1355,7 @@ export default function ChatComponent() {
                         required
                         placeholder="First Name"
                         defaultValue={prefill.fname}
-                        className="w-full max-w-md px-3 py-2 text-sm placeholder-gray-400 border border-gray-200 rounded-lg bg-gray-50 sm:px-4 focus:outline-none"
+                        className="w-full max-w-md px-3 py-2 text-sm text-gray-700 placeholder-gray-400 border border-gray-200 rounded-lg bg-gray-50 sm:px-4 focus:outline-none"
                       />
                       <input
                         type="text"
@@ -1252,14 +1363,14 @@ export default function ChatComponent() {
                         required
                         placeholder="Last Name"
                         defaultValue={prefill.lname}
-                        className="w-full max-w-md px-3 py-2 text-sm placeholder-gray-400 border border-gray-200 rounded-lg bg-gray-50 sm:px-4 focus:outline-none"
+                        className="w-full max-w-md px-3 py-2 text-sm text-gray-700 placeholder-gray-400 border border-gray-200 rounded-lg bg-gray-50 sm:px-4 focus:outline-none"
                       />
                       <input
                         type="email"
                         name="email"
                         placeholder="you@example.com"
                         defaultValue={prefill.email}
-                        className="w-full max-w-md px-3 py-2 text-sm placeholder-gray-400 border border-gray-200 rounded-lg bg-gray-50 sm:px-4 focus:outline-none"
+                        className="w-full max-w-md px-3 py-2 text-sm text-gray-700 placeholder-gray-400 border border-gray-200 rounded-lg bg-gray-50 sm:px-4 focus:outline-none"
                         required
                       />
                       <input
@@ -1267,7 +1378,7 @@ export default function ChatComponent() {
                         name="orderId"
                         placeholder="Order ID (optional)"
                         defaultValue={prefill.orderId}
-                        className="w-full max-w-md px-3 py-2 text-sm placeholder-gray-400 border border-gray-200 rounded-lg bg-gray-50 sm:px-4 focus:outline-none"
+                        className="w-full max-w-md px-3 py-2 text-sm text-gray-700 placeholder-gray-400 border border-gray-200 rounded-lg bg-gray-50 sm:px-4 focus:outline-none"
                       />
                       <button
                         type="submit"
@@ -1468,7 +1579,6 @@ export default function ChatComponent() {
                         )}
                         {/* Chat bubbles */}
                         {chatHistory.map((msg, i) => {
-                          // Check if the bot message is a component name
                           const BotComponent =
                             typeof msg.text === "string" &&
                             BotComponentMap[msg.text.trim()]
@@ -1490,7 +1600,6 @@ export default function ChatComponent() {
                               </div>
                             );
                           } else if (BotComponent) {
-                            // Render the component dynamically as a bot message
                             return (
                               <div
                                 key={i}
@@ -1508,7 +1617,6 @@ export default function ChatComponent() {
                               </div>
                             );
                           } else {
-                            // Default: render as HTML/text
                             return (
                               <div key={i} className="flex justify-start">
                                 <div
@@ -1534,10 +1642,16 @@ export default function ChatComponent() {
                         )}
                       </div>
                       <div
-                        className={`absolute bottom-0 right-0 z-10 bg-white transition-all ease-in-out duration-400 ${
+                        className={`absolute right-0 z-10 bg-white transition-all ease-in-out duration-400 ${
                           showSidebar && divWidth >= cb.sm
                             ? "left-100"
                             : "left-0"
+                        } ${
+                          browserInfo.browser == "Chrome" &&
+                          inputIsFocus &&
+                          window.innerWidth <= cb.sm
+                            ? "bottom-15"
+                            : "bottom-0"
                         }`}
                       >
                         {/* Quick questions */}
@@ -1567,13 +1681,20 @@ export default function ChatComponent() {
                         {/* Chat form */}
                         <form
                           id="chat-form"
+                          autocomplete="off"
                           className="flex w-full gap-2 p-3 px-4 text-gray-700 bg-white border-t border-gray-200 sm:p-4"
                           onSubmit={handleSendMessage}
                         >
                           <input
                             type="text"
                             name="message"
+                            autoComplete="off"
+                            autoCorrect="off"
+                            autoCapitalize="off"
+                            spellCheck="false"
                             id="message"
+                            onFocus={handleFocus}
+                            onBlur={handleBlur}
                             className="flex-1 px-3 py-2 text-sm text-gray-700 placeholder-gray-400 border border-gray-200 rounded-full sm:px-4 sm:text-base focus:outline-none focus:ring focus:border-gray-300"
                             placeholder="Type your message..."
                             value={inputMsg}
@@ -1582,7 +1703,7 @@ export default function ChatComponent() {
                           />
                           <button
                             type="submit"
-                            className="px-4 py-2 text-sm text-white transition rounded-full bg-violet-600 sm:text-base hover:bg-violet-700"
+                            className="px-4 py-2 text-sm text-center text-white transition rounded-full bg-violet-600 sm:text-base hover:bg-violet-700"
                             disabled={loading}
                           >
                             Send
