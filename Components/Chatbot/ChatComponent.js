@@ -1781,7 +1781,7 @@ export default function ChatComponent() {
                           browserInfo.browser == "Safari" &&
                           inputIsFocus &&
                           window.innerWidth <= cb.sm
-                            ? "pb-15"
+                            ? "pb-17"
                             : ""
                         }${
                           browserInfo.browser == "Chrome" &&
