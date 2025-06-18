@@ -294,9 +294,22 @@ export default function ChatComponent() {
         min-height: calc(1.5em * 2);
         max-height: calc(1.5em * 5);
         overflow-y: hidden;
+        cursor:text;
       }
       textarea::-webkit-resizer {
         display: none;
+      }
+      input{
+        cursor: text;
+      }
+      button{
+        cursor: pointer;
+      }
+      button[disabled] {
+        cursor: not-allowed;
+      }
+      a {
+        cursor: pointer;
       }
     `;
     document.head.appendChild(style);
