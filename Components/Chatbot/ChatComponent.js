@@ -189,6 +189,7 @@ export default function ChatComponent() {
   const [divHeight, setDivHeight] = useState(0);
   const previousWidthRef = useRef(0);
   const [inputIsFocus, setInputIsFocus] = useState(false);
+  const textareaRef = useRef(null);
 
   const enterFullScreen = () => {
     const element = document.documentElement;
@@ -287,6 +288,15 @@ export default function ChatComponent() {
       }
       body {
         height: calc(var(--vh, 1vh) * 100);
+      }
+      textarea {
+        resize: vertical; 
+        min-height: calc(1.5em * 2);
+        max-height: calc(1.5em * 5);
+        overflow-y: hidden;
+      }
+      textarea::-webkit-resizer {
+        display: none;
       }
     `;
     document.head.appendChild(style);
@@ -615,11 +625,59 @@ export default function ChatComponent() {
 
   const handleFocus = () => {
     setInputIsFocus(true);
+    adjustTextareaHeight();
   };
 
   const handleBlur = () => {
     setInputIsFocus(false);
+    if (inputMsg.trim() === "") {
+      resetTextareaHeight();
+    }
   };
+
+  const adjustTextareaHeight = () => {
+    const textarea = textareaRef.current;
+
+    if (!textarea) return;
+
+    const scrollHeight = textarea.scrollHeight;
+    const maxHeight = parseInt(window.getComputedStyle(textarea).maxHeight, 10);
+    if (inputMsg.trim() === "") {
+      textarea.style.height = "calc(1.5em * 1)";
+      textarea.style.overflowY = "hidden";
+    } else {
+      if (scrollHeight >= maxHeight) {
+        textarea.style.height = `${maxHeight}px`;
+        textarea.style.overflowY = "auto";
+      } else {
+        textarea.style.height = `${scrollHeight}px`;
+        textarea.style.overflowY = "hidden";
+      }
+    }
+  };
+
+  const resetTextareaHeight = () => {
+    const textarea = textareaRef.current;
+
+    if (textarea) {
+      textarea.style.height = "calc(1.5em * 1)";
+      textarea.style.overflowY = "hidden";
+    }
+  };
+
+  useEffect(() => {
+    const textarea = textareaRef.current;
+
+    if (textarea) {
+      textarea.addEventListener("input", adjustTextareaHeight);
+    }
+
+    return () => {
+      if (textarea) {
+        textarea.removeEventListener("input", adjustTextareaHeight);
+      }
+    };
+  }, [inputMsg]);
 
   function handleClearChat() {
     if (window.confirm("Are you sure you want to clear the chat?")) {
@@ -1642,7 +1700,7 @@ export default function ChatComponent() {
                         )}
                       </div>
                       <div
-                        className={`absolute right-0 z-10 bg-white transition-all ease-in-out duration-400 ${
+                        className={`absolute bottom-0 right-0 z-10 bg-white transition-all ease-in-out duration-400 ${
                           showSidebar && divWidth >= cb.sm
                             ? "left-100"
                             : "left-0"
@@ -1650,8 +1708,8 @@ export default function ChatComponent() {
                           browserInfo.browser == "Chrome" &&
                           inputIsFocus &&
                           window.innerWidth <= cb.sm
-                            ? "bottom-15"
-                            : "bottom-0"
+                            ? "pb-15"
+                            : ""
                         }`}
                       >
                         {/* Quick questions */}
@@ -1665,7 +1723,7 @@ export default function ChatComponent() {
                             {getQuickBtns().map((q) => (
                               <button
                                 key={q.label}
-                                className={`py-1 mr-1 text-violet-800 bg-violet-200 rounded-full quick-btn hover:bg-violet-300 ${
+                                className={`py-1 mr-1 text-violet-800 bg-violet-200 rounded-lg quick-btn hover:bg-violet-300 ${
                                   divWidth <= cb.sm
                                     ? "text-xs px-2"
                                     : "text-md px-2"
@@ -1681,33 +1739,39 @@ export default function ChatComponent() {
                         {/* Chat form */}
                         <form
                           id="chat-form"
-                          autocomplete="off"
-                          className="flex w-full gap-2 p-3 px-4 text-gray-700 bg-white border-t border-gray-200 sm:p-4"
+                          className="flex flex-col w-full gap-2 p-3 px-4 text-gray-700 bg-white border-t border-gray-200 sm:p-4"
                           onSubmit={handleSendMessage}
                         >
-                          <input
-                            type="text"
-                            name="message"
-                            autoComplete="off"
-                            autoCorrect="off"
-                            autoCapitalize="off"
-                            spellCheck="false"
-                            id="message"
-                            onFocus={handleFocus}
-                            onBlur={handleBlur}
-                            className="flex-1 px-3 py-2 text-sm text-gray-700 placeholder-gray-400 border border-gray-200 rounded-full sm:px-4 sm:text-base focus:outline-none focus:ring focus:border-gray-300"
-                            placeholder="Type your message..."
-                            value={inputMsg}
-                            onChange={(e) => setInputMsg(e.target.value)}
-                            required
-                          />
-                          <button
-                            type="submit"
-                            className="px-4 py-2 text-sm text-center text-white transition rounded-full bg-violet-600 sm:text-base hover:bg-violet-700"
-                            disabled={loading}
-                          >
-                            Send
-                          </button>
+                          <div className="flex items-end w-full gap-2">
+                            <textarea
+                              style={{
+                                overflowY: "auto",
+                                scrollbarWidth: "none",
+                                msOverflowStyle: "none",
+                              }}
+                              ref={textareaRef}
+                              name="message"
+                              autoCorrect="off"
+                              autoCapitalize="off"
+                              spellCheck="false"
+                              rows={1}
+                              id="message"
+                              onFocus={handleFocus}
+                              onBlur={handleBlur}
+                              className="flex-1 px-3 py-2 text-sm text-gray-700 placeholder-gray-400 border border-gray-200 rounded-xl sm:px-4 sm:text-base focus:outline-none focus:ring focus:border-gray-300"
+                              placeholder="Type your message..."
+                              value={inputMsg}
+                              onChange={(e) => setInputMsg(e.target.value)}
+                              required
+                            ></textarea>
+                            <button
+                              type="submit"
+                              className="h-12 px-4 py-2 text-sm text-center text-white transition rounded-xl bg-violet-600 sm:text-base hover:bg-violet-700"
+                              disabled={loading}
+                            >
+                              Send
+                            </button>
+                          </div>
                         </form>
                       </div>
                     </>
