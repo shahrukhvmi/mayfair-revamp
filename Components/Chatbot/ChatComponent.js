@@ -1,7 +1,12 @@
 "use client";
 import { act, use, useEffect, useRef, useState } from "react";
 import { FaBars, FaTimes, FaSignOutAlt, FaTrash } from "react-icons/fa";
-import { FiMessageCircle, FiX, FiMaximize2, FiMinimize2 } from "react-icons/fi";
+import {
+  FiMessageCircle,
+  FiXCircle,
+  FiMaximize2,
+  FiMinimize2,
+} from "react-icons/fi";
 import { app_url } from "@/config/constants";
 
 const quickQuestions = [
@@ -267,6 +272,7 @@ export default function ChatComponent() {
 
     return { browser, version };
   };
+
   console.log(getBrowserAndVersion());
   useEffect(() => {
     const { browser, version } = getBrowserAndVersion();
@@ -412,7 +418,7 @@ export default function ChatComponent() {
           : divWidth <= cb.md
           ? "w-screen"
           : "w-screen"
-      } h-screen rounded-none`;
+      } ${window.innerWidth <= cb.sm ? "h-[98vh]" : "h-[100vh]"} rounded-none`;
     if (windowWidth <= 400) return `bottom-4 right-4 w-[94vw] h-[76vh]`;
     if (windowWidth <= 768) return `bottom-4 right-4 w-[90vw] h-[76vh]`;
     if (windowWidth <= 1024) return `bottom-4 right-4 w-[60vw] h-[76vh]`;
@@ -913,13 +919,15 @@ export default function ChatComponent() {
         //       : "bg-black"
         //   }
         <div
-          className={`fixed z-999 border scrollbar-hide border-gray-300 shadow-xl flex flex-col transition-all font-sans ease-in-out duration-300 overflow-hidden ${getResponsiveClass()}  ${
-            divWidth <= cb.sm
+          className={`fixed z-999 border scrollbar-hide border-gray-300 shadow-xl flex flex-col transition-all font-sans ease-in-out duration-300 overflow-hidden ${getResponsiveClass()} ${
+            window.innerWidth <= cb.sm
+              ? ""
+              : divWidth <= cb.sm
               ? "rounded-xl"
               : divWidth <= cb.md
               ? "rounded-xl"
               : ""
-          }`}
+          } ${window.innerWidth <= cb.sm ? "h-[100vh]" : "100vh"} `}
           id="div-window"
           ref={divRef}
         >
@@ -929,13 +937,17 @@ export default function ChatComponent() {
 
           {/* Chat Content */}
           <div className="flex-1 w-full h-full font-sans transition-all duration-300 ease-in-out">
-            <div className="flex flex-col w-full h-screen overflow-y-hidden font-sans">
+            <div
+              className={`flex flex-col w-full ${
+                window.innerWidth <= cb.sm ? "h-[98vh]" : "h-screen"
+              } overflow-y-hidden font-sans`}
+            >
               {/* Header */}
               <header className="flex items-center justify-between w-full p-4 text-gray-600 bg-white border-b border-gray-200">
                 {user && (
                   <button
                     id="open-faq"
-                    className="z-50"
+                    className="z-50 px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm text-gray-400 border bg-gray-50 hover:border-gray-200 border-gray-50 rounded-lg flex items-center gap-1"
                     onClick={() => setShowSidebar((s) => !s)}
                     aria-label={
                       showSidebar ? "Close FAQ Sidebar" : "Open FAQ Sidebar"
@@ -1000,7 +1012,7 @@ export default function ChatComponent() {
                                 toggleFullScreen();
                               }
                             }}
-                            className="text-sm text-violet-600 hover:text-violet-900"
+                            className="px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm text-violet-500 border-violet-50 border bg-violet-50 hover:border-violet-200 rounded-lg flex items-center gap-1"
                             aria-label={isMaximized ? "Minimize" : "Maximize"}
                           >
                             {/* {isMaximized ? "🗕" : "🗖"} */}
@@ -1013,10 +1025,10 @@ export default function ChatComponent() {
                         )}
                         <button
                           onClick={() => setIsOpen(false)}
-                          className="text-sm text-red-500 hover:text-red-700"
+                          className="flex items-center gap-1 text-sm text-red-400 hover:text-red-500"
                           aria-label="Close"
                         >
-                          <FiX size={28} />
+                          <FiXCircle size={28} />
                         </button>
                       </div>
                     </div>
@@ -1027,32 +1039,34 @@ export default function ChatComponent() {
                     <p className="w-full text-base font-semibold text-left text-muted">
                       Welcome To Mayfair Assistant
                     </p>
-                    {window.innerWidth >= cb.sm && (
+                    <div className="flex gap-2">
+                      {window.innerWidth >= cb.sm && (
+                        <button
+                          onClick={() => {
+                            setIsMaximized((prev) => !prev);
+                            if (window.innerWidth <= cb.sm) {
+                              toggleFullScreen();
+                            }
+                          }}
+                          className="px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm text-violet-500 border-violet-50 border bg-violet-50 hover:border-violet-200 rounded-lg flex items-center gap-1"
+                          aria-label={isMaximized ? "Minimize" : "Maximize"}
+                        >
+                          {/* {isMaximized ? "🗕" : "🗖"} */}
+                          {isMaximized ? (
+                            <FiMaximize2 size={18} />
+                          ) : (
+                            <FiMinimize2 size={18} />
+                          )}
+                        </button>
+                      )}
                       <button
-                        onClick={() => {
-                          setIsMaximized((prev) => !prev);
-                          if (window.innerWidth <= cb.sm) {
-                            toggleFullScreen();
-                          }
-                        }}
-                        className="text-sm text-violet-600 hover:text-violet-900"
-                        aria-label={isMaximized ? "Minimize" : "Maximize"}
+                        onClick={() => setIsOpen(false)}
+                        className="text-sm text-red-500 hover:text-red-700"
+                        aria-label="Close"
                       >
-                        {/* {isMaximized ? "🗕" : "🗖"} */}
-                        {isMaximized ? (
-                          <FiMaximize2 size={18} />
-                        ) : (
-                          <FiMinimize2 size={18} />
-                        )}
+                        <FiXCircle size={28} />
                       </button>
-                    )}
-                    <button
-                      onClick={() => setIsOpen(false)}
-                      className="text-sm text-red-500 hover:text-red-700"
-                      aria-label="Close"
-                    >
-                      <FiX size={28} />
-                    </button>
+                    </div>
                   </>
                 )}
               </header>
@@ -1206,11 +1220,13 @@ export default function ChatComponent() {
                       } bg-white transition-all ease-in-out duration-300 absolute z-100 max-w-100 p-4 border-r border-gray-200 overflow-y-auto scrollbar-hide
                        ${
                          divWidth <= cb.sm
-                           ? "w-80 h-screen"
+                           ? "w-80"
                            : divWidth <= cb.md
                            ? "w-100"
                            : "w-100"
-                       }`}
+                       } ${
+                        window.innerWidth >= cb.sm ? "h-[98vh]" : "h-[100vh]"
+                      }`}
                       id="faq-sidebar"
                     >
                       <div
@@ -1327,7 +1343,11 @@ export default function ChatComponent() {
                         />
                         <div
                           id="faq-list"
-                          className="max-h-screen space-y-2 overflow-y-auto scrollbar-hide"
+                          className={`${
+                            window.innerWidth >= cb.sm
+                              ? "max-h-[98vh]"
+                              : "max-h-screen"
+                          } space-y-2 overflow-y-auto scrollbar-hide`}
                         >
                           {filteredFaqs.length === 0 ? (
                             <p className="px-4 py-2 text-sm text-gray-500">
@@ -1368,51 +1388,59 @@ export default function ChatComponent() {
                   {/* Email prompt */}
                   {!user && (
                     <form
-                      style={{
-                        overflowY: "auto",
-                        scrollbarWidth: "none",
-                        msOverflowStyle: "none",
-                      }}
                       id="email-prompt"
                       className="flex flex-col items-center justify-center flex-1 p-4 space-y-2 overflow-y-auto text-gray-700 bg-white h-100 scrollbar-hide sm:p-6 sm:space-y-3"
-                      onSubmit={(e) => {
+                      onSubmit={async (e) => {
                         e.preventDefault();
+                        setLoading(true);
                         const fname = e.target.fname.value.trim();
                         const lname = e.target.lname.value.trim();
                         const email = e.target.email.value.trim();
                         const order = e.target.orderId.value.trim();
-                        if (!fname || !lname)
-                          return alert(
-                            "Please provide your first and last name."
-                          );
-                        if (!email)
-                          return alert("Please provide an email to continue.");
+                        if (!fname || !lname) {
+                          alert("Please provide your first and last name.");
+                          setLoading(false);
+                          return;
+                        }
+                        if (!email) {
+                          alert("Please provide an email to continue.");
+                          setLoading(false);
+                          return;
+                        }
                         if (
                           !/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(
                             email
                           )
-                        )
-                          return alert("Please provide a valid email address.");
-                        fetch(app_url + "/consultant-chat-verify", {
-                          method: "POST",
-                          headers: { "Content-Type": "application/json" },
-                          body: JSON.stringify({ email, orderId: order }),
-                        })
-                          .then((res) => res.json())
-                          .then((res) => {
-                            setUser({
-                              email,
-                              email_exist: res.email_exist,
-                              fname,
-                              lname,
-                            });
-                            setChatHistory([]);
-                            setOrderId(order);
-                            setShowWelcome(true);
-                            setShowQuick(res.email_exist);
-                            setShowEmailExist(!res.email_exist);
-                          })
-                          .catch(() => alert("Verification failed."));
+                        ) {
+                          alert("Please provide a valid email address.");
+                          setLoading(false);
+                          return;
+                        }
+                        try {
+                          const res = await fetch(
+                            app_url + "/consultant-chat-verify",
+                            {
+                              method: "POST",
+                              headers: { "Content-Type": "application/json" },
+                              body: JSON.stringify({ email, orderId: order }),
+                            }
+                          );
+                          const data = await res.json();
+                          setUser({
+                            email,
+                            email_exist: data.email_exist,
+                            fname,
+                            lname,
+                          });
+                          setChatHistory([]);
+                          setOrderId(order);
+                          setShowWelcome(true);
+                          setShowQuick(data.email_exist);
+                          setShowEmailExist(!data.email_exist);
+                        } catch {
+                          alert("Verification failed.");
+                        }
+                        setLoading(false);
                       }}
                     >
                       <label className="flex items-center gap-2 text-xs text-gray-700 sm:text-sm">
@@ -1425,7 +1453,7 @@ export default function ChatComponent() {
                         name="fname"
                         required
                         placeholder="First Name"
-                        defaultValue={prefill.fname}
+                        defaultValue={prefill?.fname}
                         className="w-full max-w-md px-3 py-2 text-sm text-gray-700 placeholder-gray-400 border border-gray-200 rounded-lg bg-gray-50 sm:px-4 focus:outline-none"
                       />
                       <input
@@ -1433,14 +1461,14 @@ export default function ChatComponent() {
                         name="lname"
                         required
                         placeholder="Last Name"
-                        defaultValue={prefill.lname}
+                        defaultValue={prefill?.lname}
                         className="w-full max-w-md px-3 py-2 text-sm text-gray-700 placeholder-gray-400 border border-gray-200 rounded-lg bg-gray-50 sm:px-4 focus:outline-none"
                       />
                       <input
                         type="email"
                         name="email"
                         placeholder="you@example.com"
-                        defaultValue={prefill.email}
+                        defaultValue={prefill?.email}
                         className="w-full max-w-md px-3 py-2 text-sm text-gray-700 placeholder-gray-400 border border-gray-200 rounded-lg bg-gray-50 sm:px-4 focus:outline-none"
                         required
                       />
@@ -1448,15 +1476,28 @@ export default function ChatComponent() {
                         type="text"
                         name="orderId"
                         placeholder="Order ID (optional)"
-                        defaultValue={prefill.orderId}
+                        defaultValue={prefill?.orderId}
                         className="w-full max-w-md px-3 py-2 text-sm text-gray-700 placeholder-gray-400 border border-gray-200 rounded-lg bg-gray-50 sm:px-4 focus:outline-none"
                       />
+
                       <button
                         type="submit"
-                        className="flex items-center gap-2 px-4 py-2 mt-2 text-sm text-white transition rounded-lg bg-violet-600 sm:text-base hover:bg-violet-700"
+                        className={`flex items-center gap-2 px-4 py-2 mt-2 text-sm text-white transition rounded-lg ${
+                          loading
+                            ? "bg-gray-500"
+                            : "bg-violet-600 hover:bg-violet-700"
+                        } sm:text-base`}
+                        disabled={loading}
                       >
                         <FaSignOutAlt />
-                        Continue
+                        {loading ? (
+                          <span className="flex items-center justify-center w-full">
+                            Verifying...
+                            <span className="inline-block w-6 h-6 ml-3 border-4 border-white rounded-full border-t-transparent animate-spin"></span>
+                          </span>
+                        ) : (
+                          "Continue"
+                        )}
                       </button>
                     </form>
                   )}
@@ -1466,7 +1507,9 @@ export default function ChatComponent() {
                       <div
                         id="chat-box"
                         ref={chatBoxRef}
-                        className={`flex-1 transition-all ease-in-out duration-400 relative h-screen px-3 py-2 space-y-3 overflow-auto scrollbar-hide text-sm bg-gray-100 sm:px-4 sm:text-base ${
+                        className={`flex-1 transition-all ease-in-out duration-400 relative ${
+                          window.innerWidth <= cb.sm ? "h-[98vh]" : "h-[100vh]"
+                        } px-3 py-2 space-y-3 overflow-auto scrollbar-hide text-sm bg-gray-100 sm:px-4 sm:text-base ${
                           isMaximized
                             ? // ? "pb-[calc(100vh-47%)]"
                               "pb-[240px]"
@@ -1718,6 +1761,12 @@ export default function ChatComponent() {
                             ? "left-100"
                             : "left-0"
                         } ${
+                          browserInfo.browser == "Safari" &&
+                          inputIsFocus &&
+                          window.innerWidth <= cb.sm
+                            ? "pb-15"
+                            : ""
+                        }${
                           browserInfo.browser == "Chrome" &&
                           inputIsFocus &&
                           window.innerWidth <= cb.sm
