@@ -944,7 +944,11 @@ export default function ChatComponent() {
               : divWidth <= cb.md
               ? "rounded-xl"
               : ""
-          } ${window.innerWidth <= cb.sm ? "h-[100vh]" : "100vh"} `}
+          } ${
+            window.innerWidth <= cb.sm
+              ? "h-[100vh] top-1 rounded-xl scale-95"
+              : "100vh"
+          } `}
           id="div-window"
           ref={divRef}
         >
@@ -1538,7 +1542,7 @@ export default function ChatComponent() {
                         {showWelcome && (
                           <div
                             id="welcome-screen"
-                            className={`flex h-150 flex-col items-center justify-center px-4 text-center text-gray-700`}
+                            className={`flex h-130 flex-col items-center justify-center px-4 text-center text-gray-700`}
                           >
                             <h1
                               className={`mb-2 ${
