@@ -1742,7 +1742,7 @@ export default function ChatComponent() {
                           className="flex flex-col w-full gap-2 p-3 px-4 text-gray-700 bg-white border-t border-gray-200 sm:p-4"
                           onSubmit={handleSendMessage}
                         >
-                          <div className="flex items-end w-full gap-2">
+                          <div className="flex flex-1 w-full gap-2">
                             <textarea
                               style={{
                                 overflowY: "auto",
@@ -1766,7 +1766,7 @@ export default function ChatComponent() {
                             ></textarea>
                             <button
                               type="submit"
-                              className="h-12 px-4 py-2 text-sm text-center text-white transition rounded-xl bg-violet-600 sm:text-base hover:bg-violet-700"
+                              className="self-end h-auto px-4 py-3 text-sm text-center text-white transition max-h-12 rounded-xl bg-violet-600 sm:text-base hover:bg-violet-700"
                               disabled={loading}
                             >
                               Send
