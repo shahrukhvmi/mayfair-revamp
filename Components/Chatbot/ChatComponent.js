@@ -195,6 +195,7 @@ export default function ChatComponent() {
   const previousWidthRef = useRef(0);
   const [inputIsFocus, setInputIsFocus] = useState(false);
   const textareaRef = useRef(null);
+  const messageSubmitButtonRef = useRef(null);
 
   const enterFullScreen = () => {
     const element = document.documentElement;
@@ -604,10 +605,16 @@ export default function ChatComponent() {
 
   function handleQuickBtn(msg) {
     setInputMsg(msg);
+    if (messageSubmitButtonRef.current && !loading) {
+      messageSubmitButtonRef.current.click();
+    }
   }
 
   function handleFaqBtn(msg) {
     setInputMsg(msg);
+    if (messageSubmitButtonRef.current && !loading) {
+      messageSubmitButtonRef.current.click();
+    }
     if (divWidth <= cb.sm) {
       setShowSidebar(false);
     }
@@ -615,6 +622,9 @@ export default function ChatComponent() {
 
   function handleWelcomeBtn(msg) {
     setInputMsg(msg);
+    if (messageSubmitButtonRef.current && !loading) {
+      messageSubmitButtonRef.current.click();
+    }
   }
 
   function handleUserSettingsSubmit(e) {
@@ -1828,10 +1838,16 @@ export default function ChatComponent() {
                             ></textarea>
                             <button
                               type="submit"
-                              className="self-end h-auto px-4 py-3 text-sm text-center text-white transition max-h-12 rounded-xl bg-violet-600 sm:text-base hover:bg-violet-700"
+                              id="message-submit"
+                              ref={messageSubmitButtonRef}
+                              className={`self-end h-auto px-4 py-3 text-sm text-center text-white transition max-h-12 rounded-xl sm:text-base ${
+                                loading
+                                  ? "bg-gray-500"
+                                  : "bg-violet-600 hover:bg-violet-700"
+                              }`}
                               disabled={loading}
                             >
-                              Send
+                              {loading ? "Sending" : "Send"}
                             </button>
                           </div>
                         </form>
