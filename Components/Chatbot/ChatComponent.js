@@ -936,7 +936,7 @@ export default function ChatComponent() {
         //       : "bg-black"
         //   }
         <div
-          className={`fixed z-999 border scrollbar-hide border-gray-300 shadow-xl flex flex-col transition-all font-sans ease-in-out duration-300 overflow-hidden ${getResponsiveClass()} ${
+          className={`fixed z-999 border scrollbar-hide border-gray-300 shadow-lg shadow-gray-500 flex flex-col transition-all font-sans ease-in-out duration-300 overflow-hidden ${getResponsiveClass()} ${
             window.innerWidth <= cb.sm
               ? ""
               : divWidth <= cb.sm
@@ -1095,7 +1095,7 @@ export default function ChatComponent() {
               {/* User Settings Modal */}
               {showUserSettings && (
                 <div className="fixed inset-0 flex items-center justify-center px-4 z-99999 bg-opacity-30 backdrop-blur-sm">
-                  <div className="relative w-full max-w-md p-6 bg-white rounded-lg shadow-lg">
+                  <div className="relative w-full max-w-md p-6 bg-white border border-gray-300 rounded-lg shadow-lg shadow-gray-500">
                     <button
                       className="absolute text-gray-400 top-2 right-2 hover:text-gray-700"
                       onClick={() => setShowUserSettings(false)}
