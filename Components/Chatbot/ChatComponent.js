@@ -605,26 +605,33 @@ export default function ChatComponent() {
 
   function handleQuickBtn(msg) {
     setInputMsg(msg);
-    if (messageSubmitButtonRef.current && !loading) {
-      messageSubmitButtonRef.current.click();
-    }
+    setTimeout(() => {
+      if (messageSubmitButtonRef.current && !loading) {
+        messageSubmitButtonRef.current.click();
+      }
+    }, 100);
   }
 
   function handleFaqBtn(msg) {
     setInputMsg(msg);
-    if (messageSubmitButtonRef.current && !loading) {
-      messageSubmitButtonRef.current.click();
-    }
-    if (divWidth <= cb.sm) {
-      setShowSidebar(false);
-    }
+    setTimeout(() => {
+      if (messageSubmitButtonRef.current && !loading) {
+        messageSubmitButtonRef.current.click();
+      }
+
+      if (divWidth <= cb.sm) {
+        setShowSidebar(false);
+      }
+    }, 100);
   }
 
   function handleWelcomeBtn(msg) {
     setInputMsg(msg);
-    if (messageSubmitButtonRef.current && !loading) {
-      messageSubmitButtonRef.current.click();
-    }
+    setTimeout(() => {
+      if (messageSubmitButtonRef.current && !loading) {
+        messageSubmitButtonRef.current.click();
+      }
+    }, 100);
   }
 
   function handleUserSettingsSubmit(e) {
