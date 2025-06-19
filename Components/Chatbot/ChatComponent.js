@@ -315,6 +315,9 @@ export default function ChatComponent() {
       button[disabled] {
         cursor: not-allowed;
       }
+      div[disabled] {
+        cursor: not-allowed;
+      }
       a {
         cursor: pointer;
       }
@@ -974,7 +977,7 @@ export default function ChatComponent() {
                 {user && (
                   <button
                     id="open-faq"
-                    className="z-50 px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm text-gray-400 border bg-gray-50 hover:border-gray-200 border-gray-50 rounded-lg flex items-center gap-1"
+                    className="z-50 px-3 sm:px-4 py-1.5 sm:py-2 text-sm sm:text-sm text-gray-400 border bg-gray-50 hover:border-gray-200 border-gray-50 rounded-lg flex items-center gap-1"
                     onClick={() => setShowSidebar((s) => !s)}
                     aria-label={
                       showSidebar ? "Close FAQ Sidebar" : "Open FAQ Sidebar"
@@ -1007,8 +1010,9 @@ export default function ChatComponent() {
                       />
 
                       <button
+                        disabled={loading}
                         onClick={handleClearChat}
-                        className="px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm text-gray-400 border bg-gray-50 hover:border-gray-200 border-gray-50 rounded-lg flex items-center gap-1"
+                        className={`px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm text-gray-400 border bg-gray-50 hover:border-gray-200 border-gray-50 rounded-lg flex items-center gap-1`}
                         aria-label="Clear Chat"
                       >
                         <FaTrash />{" "}
@@ -1020,6 +1024,7 @@ export default function ChatComponent() {
                       </button>
                       <button
                         onClick={handleLogout}
+                        disabled={loading}
                         className="px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm text-red-500 border-red-50 border bg-red-50 hover:border-red-200 rounded-lg flex items-center gap-1"
                         aria-label="Exit"
                       >
@@ -1208,6 +1213,7 @@ export default function ChatComponent() {
                       </div>
                       <div className="flex justify-end gap-2">
                         <button
+                          disabled={loading}
                           type="button"
                           className="px-4 py-2 text-sm text-gray-600 bg-gray-100 rounded-lg"
                           onClick={() => setShowUserSettings(false)}
@@ -1215,6 +1221,7 @@ export default function ChatComponent() {
                           Cancel
                         </button>
                         <button
+                          disabled={loading}
                           type="submit"
                           className="px-4 py-2 text-sm text-white rounded-lg bg-violet-600 hover:bg-violet-700"
                         >
@@ -1383,8 +1390,13 @@ export default function ChatComponent() {
                           ) : (
                             filteredFaqs.map((faq) => (
                               <button
+                                disabled={loading}
                                 key={faq.label}
-                                className={`w-full py-2 text-left text-violet-800 transition bg-violet-100 rounded-lg hover:bg-violet-200 ${
+                                className={`w-full py-2 text-left transition rounded-lg ${
+                                  loading
+                                    ? "bg-violet-100 text-violet-800"
+                                    : "bg-violet-100 hover:bg-violet-200 text-violet-800"
+                                } ${
                                   divWidth <= cb.sm
                                     ? "text-sm px-2"
                                     : divWidth <= cb.md
@@ -1511,7 +1523,7 @@ export default function ChatComponent() {
                         type="submit"
                         className={`flex items-center gap-2 px-4 py-2 mt-2 text-sm text-white transition rounded-lg ${
                           loading
-                            ? "bg-gray-500"
+                            ? "bg-violet-600"
                             : "bg-violet-600 hover:bg-violet-700"
                         } sm:text-base`}
                         disabled={loading}
@@ -1573,7 +1585,10 @@ export default function ChatComponent() {
                             >
                               <div
                                 data-message="Can you provide the guide how to use chatbot"
-                                className="p-2 transition bg-white border border-gray-200 shadow-sm cursor-pointer md:p-4 lg:p-4 xl:p-4 2xl:p-4 rounded-xl hover:bg-violet-50"
+                                className={`p-2 transition bg-white border border-gray-200 shadow-sm cursor-pointer md:p-4 lg:p-4 xl:p-4 2xl:p-4 rounded-xl  ${
+                                  loading ? "" : "hover:bg-violet-50"
+                                }`}
+                                disabled={loading}
                                 onClick={() =>
                                   handleWelcomeBtn(
                                     "Can you provide the guide how to use chatbot"
@@ -1596,7 +1611,10 @@ export default function ChatComponent() {
                                 </p>
                               </div>
                               <div
-                                className="p-2 transition bg-white border border-gray-200 shadow-sm cursor-pointer md:p-4 lg:p-4 xl:p-4 2xl:p-4 rounded-xl hover:bg-violet-50"
+                                className={`p-2 transition bg-white border border-gray-200 shadow-sm cursor-pointer md:p-4 lg:p-4 xl:p-4 2xl:p-4 rounded-xl  ${
+                                  loading ? "" : "hover:bg-violet-50"
+                                }`}
+                                disabled={loading}
                                 data-message="Can you tell me about Wegovy treatment details"
                                 onClick={() =>
                                   handleWelcomeBtn(
@@ -1620,7 +1638,10 @@ export default function ChatComponent() {
                                 </p>
                               </div>
                               <div
-                                className="p-2 transition bg-white border border-gray-200 shadow-sm cursor-pointer md:p-4 lg:p-4 xl:p-4 2xl:p-4 rounded-xl hover:bg-violet-50"
+                                className={`p-2 transition bg-white border border-gray-200 shadow-sm cursor-pointer md:p-4 lg:p-4 xl:p-4 2xl:p-4 rounded-xl  ${
+                                  loading ? "" : "hover:bg-violet-50"
+                                }`}
+                                disabled={loading}
                                 data-message="What is Mounjaro and how does it work"
                                 onClick={() =>
                                   handleWelcomeBtn(
@@ -1644,7 +1665,10 @@ export default function ChatComponent() {
                                 </p>
                               </div>
                               <div
-                                className="p-2 transition bg-white border border-gray-200 shadow-sm cursor-pointer md:p-4 lg:p-4 xl:p-4 2xl:p-4 rounded-xl hover:bg-violet-50"
+                                className={`p-2 transition bg-white border border-gray-200 shadow-sm cursor-pointer md:p-4 lg:p-4 xl:p-4 2xl:p-4 rounded-xl  ${
+                                  loading ? "" : "hover:bg-violet-50"
+                                }`}
+                                disabled={loading}
                                 data-message="How can I contact the clinic for support"
                                 onClick={() =>
                                   handleWelcomeBtn(
@@ -1668,7 +1692,10 @@ export default function ChatComponent() {
                                 </p>
                               </div>
                               <div
-                                className="p-2 transition bg-white border border-gray-200 shadow-sm cursor-pointer md:p-4 lg:p-4 xl:p-4 2xl:p-4 rounded-xl hover:bg-violet-50"
+                                className={`p-2 transition bg-white border border-gray-200 shadow-sm cursor-pointer md:p-4 lg:p-4 xl:p-4 2xl:p-4 rounded-xl  ${
+                                  loading ? "" : "hover:bg-violet-50"
+                                }`}
+                                disabled={loading}
                                 data-message="I’d like to know more about Ozempic treatment"
                                 onClick={() =>
                                   handleWelcomeBtn(
@@ -1692,7 +1719,10 @@ export default function ChatComponent() {
                                 </p>
                               </div>
                               <div
-                                className="p-2 transition bg-white border border-gray-200 shadow-sm cursor-pointer md:p-4 lg:p-4 xl:p-4 2xl:p-4 rounded-xl hover:bg-violet-50"
+                                className={`p-2 transition bg-white border border-gray-200 shadow-sm cursor-pointer md:p-4 lg:p-4 xl:p-4 2xl:p-4 rounded-xl  ${
+                                  loading ? "" : "hover:bg-violet-50"
+                                }`}
+                                disabled={loading}
                                 data-message="Could you explain how Saxenda treatment works"
                                 onClick={() =>
                                   handleWelcomeBtn(
@@ -1811,8 +1841,13 @@ export default function ChatComponent() {
                           >
                             {getQuickBtns().map((q) => (
                               <button
+                                disabled={loading}
                                 key={q.label}
-                                className={`py-1 mr-1 text-violet-800 bg-violet-200 rounded-lg quick-btn hover:bg-violet-300 ${
+                                className={`py-1 mr-1 rounded-lg quick-btn  ${
+                                  loading
+                                    ? "bg-violet-100 text-violet-800"
+                                    : "bg-violet-100 hover:bg-violet-200 text-violet-800"
+                                } ${
                                   divWidth <= cb.sm
                                     ? "text-xs px-2"
                                     : "text-md px-2"
@@ -1859,12 +1894,12 @@ export default function ChatComponent() {
                               ref={messageSubmitButtonRef}
                               className={`self-end h-auto px-4 py-3 text-sm text-center text-white transition max-h-12 rounded-xl sm:text-base ${
                                 loading
-                                  ? "bg-gray-500"
+                                  ? "bg-violet-600"
                                   : "bg-violet-600 hover:bg-violet-700"
                               }`}
                               disabled={loading}
                             >
-                              {loading ? "Sending" : "Send"}
+                              {loading ? "Sent" : "Send"}
                             </button>
                           </div>
                         </form>
