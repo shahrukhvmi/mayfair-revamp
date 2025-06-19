@@ -419,7 +419,7 @@ export default function ChatComponent() {
           : divWidth <= cb.md
           ? "w-screen"
           : "w-screen"
-      } ${window.innerWidth <= cb.sm ? "h-[98vh]" : "h-[100vh]"} rounded-none`;
+      } ${window.innerWidth <= cb.sm ? "h-[98%]" : "h-[100%]"} rounded-none`;
     if (windowWidth <= 400) return `bottom-4 right-4 w-[94vw] h-[76vh]`;
     if (windowWidth <= 768) return `bottom-4 right-4 w-[90vw] h-[76vh]`;
     if (windowWidth <= 1024) return `bottom-4 right-4 w-[60vw] h-[76vh]`;
@@ -903,7 +903,15 @@ export default function ChatComponent() {
 
   // UI
   return (
-    <>
+    <div
+      className={`${
+        isOpen && isMaximized
+          ? "fixed inset-0 flex items-center justify-center bg-opacity-30 backdrop-blur-sm z-9999"
+          : isOpen
+          ? "fixed inset-0 flex items-center justify-center z-9999"
+          : ""
+      }`}
+    >
       {/* Floating Icon */}
       {!isOpen && (
         <button
@@ -946,8 +954,8 @@ export default function ChatComponent() {
               : ""
           } ${
             window.innerWidth <= cb.sm
-              ? "h-[100vh] top-1 rounded-xl scale-95"
-              : "100vh"
+              ? "h-[100%] top-1 rounded-xl scale-90"
+              : "h-[80%]"
           } `}
           id="div-window"
           ref={divRef}
@@ -960,7 +968,7 @@ export default function ChatComponent() {
           <div className="flex-1 w-full h-full font-sans transition-all duration-300 ease-in-out">
             <div
               className={`flex flex-col w-full ${
-                window.innerWidth <= cb.sm ? "h-[98vh]" : "h-screen"
+                window.innerWidth <= cb.sm ? "h-[98%]" : "h-[100%]"
               } overflow-y-hidden font-sans`}
             >
               {/* Header */}
@@ -1246,7 +1254,7 @@ export default function ChatComponent() {
                            ? "w-100"
                            : "w-100"
                        } ${
-                        window.innerWidth >= cb.sm ? "h-[98vh]" : "h-[100vh]"
+                        window.innerWidth >= cb.sm ? "h-[98%]" : "h-[100%]"
                       }`}
                       id="faq-sidebar"
                     >
@@ -1366,8 +1374,8 @@ export default function ChatComponent() {
                           id="faq-list"
                           className={`${
                             window.innerWidth >= cb.sm
-                              ? "max-h-[98vh]"
-                              : "max-h-screen"
+                              ? "max-h-[98%]"
+                              : "max-h-[100%]"
                           } space-y-2 overflow-y-auto scrollbar-hide`}
                         >
                           {filteredFaqs.length === 0 ? (
@@ -1528,8 +1536,8 @@ export default function ChatComponent() {
                       <div
                         id="chat-box"
                         ref={chatBoxRef}
-                        className={`flex-1 transition-all ease-in-out duration-400 relative ${
-                          window.innerWidth <= cb.sm ? "h-[98vh]" : "h-[100vh]"
+                        className={`flex-1 transition-all ease-in-out duration-400 relative pt-15 ${
+                          window.innerWidth <= cb.sm ? "h-[90vh]" : "h-[100vh]"
                         } px-3 py-2 space-y-3 overflow-auto scrollbar-hide text-sm bg-gray-100 sm:px-4 sm:text-base ${
                           isMaximized
                             ? // ? "pb-[calc(100vh-47%)]"
@@ -1880,7 +1888,7 @@ export default function ChatComponent() {
           <FiMessageCircle size={28} />
         </button>
       )}
-    </>
+    </div>
   );
   {
     !isOpen && (
