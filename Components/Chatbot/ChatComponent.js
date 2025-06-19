@@ -604,6 +604,8 @@ export default function ChatComponent() {
     } finally {
       setLoading(false);
     }
+    // adjustTextareaHeight();
+    // resetTextareaHeight();
   }
 
   function handleQuickBtn(msg) {
@@ -711,10 +713,19 @@ export default function ChatComponent() {
       textarea.addEventListener("input", adjustTextareaHeight);
     }
 
+    const handleClickOutside = (event) => {
+      if (textarea && !textarea.contains(event.target)) {
+        resetTextareaHeight();
+      }
+    };
+
+    document.addEventListener("click", handleClickOutside);
+
     return () => {
       if (textarea) {
         textarea.removeEventListener("input", adjustTextareaHeight);
       }
+      document.removeEventListener("click", handleClickOutside);
     };
   }, [inputMsg]);
 
@@ -839,7 +850,7 @@ export default function ChatComponent() {
         className="text-gray-700"
       >
         <h2 style={{ margin: 12, fontSize: 18, color: "#7f22fe" }}>
-          {message || "To Check Your Order Details"}
+          {message || "To Check Your Details"}
         </h2>
         <label
           htmlFor="order_id_input"
