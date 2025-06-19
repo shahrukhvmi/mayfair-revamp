@@ -953,9 +953,7 @@ export default function ChatComponent() {
               ? "rounded-xl"
               : ""
           } ${
-            window.innerWidth <= cb.sm
-              ? "h-[100%] top-1 rounded-xl scale-90"
-              : "h-[80%]"
+            window.innerWidth <= cb.sm ? "h-[100%] top-0 scale-100" : "h-[80%]"
           } `}
           id="div-window"
           ref={divRef}
@@ -1793,13 +1791,13 @@ export default function ChatComponent() {
                           browserInfo.browser == "Safari" &&
                           inputIsFocus &&
                           window.innerWidth <= cb.sm
-                            ? "pb-17"
+                            ? ""
                             : ""
                         }${
                           browserInfo.browser == "Chrome" &&
                           inputIsFocus &&
                           window.innerWidth <= cb.sm
-                            ? "pb-15"
+                            ? ""
                             : ""
                         }`}
                       >
