@@ -499,7 +499,8 @@ export default function ChatComponent() {
         .then((data) => setUserDetails(data))
         .catch(() => setUserDetails(null));
     }
-  }, [user, orderId]);
+  }, [user]);
+  //useEffect runs on orderId
 
   useEffect(() => {
     if (!user) setShowSidebar(false);
@@ -819,6 +820,7 @@ export default function ChatComponent() {
   if (!hasMounted) return null;
 
   function OrderIdFormBotMessage({ message, onSuccess }) {
+    const [localOrderId, setLocalOrderId] = useState(orderId || "");
     const [status, setStatus] = useState("");
     const [loading, setLoading] = useState(false);
 
@@ -841,9 +843,9 @@ export default function ChatComponent() {
             "X-Requested-With": "XMLHttpRequest",
           },
           body: JSON.stringify({
-            message: `please process my record data and return me when i ask, this is my order id ${orderId} and here is my complete record data based on that order id, please process it.`,
+            message: `please process my record data and return me when i ask, this is my order id ${localOrderId} and here is my complete record data based on that order id, please process it.`,
             email,
-            order_id: orderId,
+            order_id: localOrderId,
           }),
         });
         const data = await res.json();
@@ -853,6 +855,7 @@ export default function ChatComponent() {
           data.providedOrderId !== ""
         ) {
           setOrderId(data.providedOrderId);
+          setLocalOrderId(data.providedOrderId);
           if (orderIdInputRef.current) {
             orderIdInputRef.current.value = data.providedOrderId;
           }
@@ -880,6 +883,8 @@ export default function ChatComponent() {
       } catch {
         setStatus("❌ Unable to check order status. Please try again.");
       } finally {
+        setOrderId(localOrderId);
+        setLocalOrderId(localOrderId);
         setLoading(false);
       }
     };
@@ -920,8 +925,8 @@ export default function ChatComponent() {
           className="text-gray-700 placeholder-gray-400"
           placeholder="e.g. 123456"
           required
-          value={orderId}
-          onChange={(e) => setOrderId(e.target.value)}
+          value={localOrderId}
+          onChange={(e) => setLocalOrderId(e.target.value)}
           style={{
             width: "100%",
             padding: 10,
