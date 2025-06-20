@@ -1376,7 +1376,9 @@ export default function ChatComponent() {
                             window.innerWidth >= cb.sm
                               ? "max-h-[98%]"
                               : "max-h-[100%]"
-                          } space-y-2 overflow-y-auto rounded-lg scrollbar-hide h-[85%]`}
+                          } space-y-2 overflow-y-auto rounded-lg scrollbar-hide ${
+                            windowWidth <= cb.sm ? "pb-[16%]" : "pb-[11%]"
+                          }`}
                         >
                           {filteredFaqs.length === 0 ? (
                             <p className="px-4 py-2 text-sm text-gray-500">
