@@ -435,7 +435,23 @@ export default function ChatComponent() {
   useEffect(() => {
     const storedUser = getLocal("chat_user", null);
     setUser(storedUser);
-    setOrderId(getLocal("order_data", { order_id: "" }).order_id || "");
+    let orderId =
+      getLocal("order_data", { order_id: "" }).order_id ||
+      getLocal("cart-storage", { state: {} })?.state?.orderId ||
+      "";
+    const authUser = getLocal("auth-user-storage", { state: {} })?.state
+      ?.authUserDetail;
+    if (
+      authUser?.email &&
+      storedUser?.email &&
+      authUser.email === storedUser.email
+    ) {
+      setOrderId(orderId);
+    } else {
+      setOrderId(getLocal("order_data", { order_id: "" }).order_id || "");
+    }
+    // setOrderId(orderId);
+    // setOrderId(getLocal("order_data", { order_id: "" }).order_id || "");
     setChatHistory(getLocal("chat_history", []));
     const sidebarOpen = getLocal("faqSidebarOpen", false);
     setShowSidebar(storedUser && sidebarOpen);
@@ -925,7 +941,7 @@ export default function ChatComponent() {
     <div
       className={`${
         isOpen && isMaximized
-          ? "fixed inset-0 flex items-center justify-center bg-opacity-30 backdrop-blur-sm z-9999"
+          ? "fixed inset-0 flex items-center justify-center bg-opacity-30 bg-white backdrop-blur-sm z-9999"
           : isOpen
           ? "fixed inset-0 flex items-center justify-center z-9999"
           : ""
