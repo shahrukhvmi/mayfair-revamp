@@ -5,17 +5,10 @@ import {
   FaTimes,
   FaSignOutAlt,
   FaTrash,
-  FaGrinTears,
   FaSearch,
   FaCog,
-  FaCogs,
 } from "react-icons/fa";
-import {
-  FiMessageCircle,
-  FiXCircle,
-  FiMaximize2,
-  FiMinimize2,
-} from "react-icons/fi";
+import { FiMessageCircle, FiMaximize2, FiMinimize2 } from "react-icons/fi";
 import { app_url } from "@/config/constants";
 
 const quickQuestions = [
@@ -1000,7 +993,7 @@ export default function ChatComponent() {
                 {user && (
                   <button
                     id="open-faq"
-                    className={`z-50 px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm text-gray-400 border bg-gray-50 hover:border-gray-200 border-gray-50 rounded-lg flex items-center gap-1`}
+                    className={`px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm text-gray-400 border bg-gray-50 hover:border-gray-200 border-gray-50 rounded-lg flex items-center gap-1`}
                     onClick={() => setShowSidebar((s) => !s)}
                     aria-label={
                       showSidebar ? "Close FAQ Sidebar" : "Open FAQ Sidebar"
@@ -1093,7 +1086,7 @@ export default function ChatComponent() {
                 </div>
                 {!user && (
                   <>
-                    <p className="w-full text-base font-semibold text-left text-muted">
+                    <p className="w-full text-base font-semibold text-left text-gray-500">
                       Welcome To Mayfair Assistant
                     </p>
                     <div className="flex gap-1">
@@ -1383,7 +1376,7 @@ export default function ChatComponent() {
                             window.innerWidth >= cb.sm
                               ? "max-h-[98%]"
                               : "max-h-[100%]"
-                          } space-y-2 overflow-y-auto scrollbar-hide`}
+                          } space-y-2 overflow-y-auto rounded-lg scrollbar-hide h-[85%]`}
                         >
                           {filteredFaqs.length === 0 ? (
                             <p className="px-4 py-2 text-sm text-gray-500">
@@ -1430,7 +1423,7 @@ export default function ChatComponent() {
                   {!user && (
                     <form
                       id="email-prompt"
-                      className="flex flex-col items-center justify-center flex-1 p-4 space-y-2 overflow-y-auto text-gray-700 bg-white h-100 scrollbar-hide sm:p-6 sm:space-y-3"
+                      className="flex flex-col items-center justify-center flex-1 h-full p-4 space-y-2 overflow-y-auto text-gray-700 bg-white scrollbar-hide sm:p-6 sm:space-y-3"
                       onSubmit={async (e) => {
                         e.preventDefault();
                         setLoading(true);
