@@ -1,6 +1,15 @@
 "use client";
 import { act, use, useEffect, useRef, useState } from "react";
-import { FaBars, FaTimes, FaSignOutAlt, FaTrash } from "react-icons/fa";
+import {
+  FaBars,
+  FaTimes,
+  FaSignOutAlt,
+  FaTrash,
+  FaGrinTears,
+  FaSearch,
+  FaCog,
+  FaCogs,
+} from "react-icons/fa";
 import {
   FiMessageCircle,
   FiXCircle,
@@ -196,6 +205,7 @@ export default function ChatComponent() {
   const [inputIsFocus, setInputIsFocus] = useState(false);
   const textareaRef = useRef(null);
   const messageSubmitButtonRef = useRef(null);
+  const orderIdInputRef = useRef(null);
 
   const enterFullScreen = () => {
     const element = document.documentElement;
@@ -274,7 +284,7 @@ export default function ChatComponent() {
     return { browser, version };
   };
 
-  console.log(getBrowserAndVersion());
+  // console.log(getBrowserAndVersion());
   useEffect(() => {
     const { browser, version } = getBrowserAndVersion();
     setBrowserInfo({ browser, version });
@@ -384,7 +394,7 @@ export default function ChatComponent() {
 
             if (previousWidthRef.current !== null) {
               setDivWidth(previousWidthRef.current);
-              console.warn("Set Previous Width:", previousWidthRef.current);
+              // console.warn("Set Previous Width:", previousWidthRef.current);
             }
 
             previousWidthRef.current = currentWidth;
@@ -782,7 +792,6 @@ export default function ChatComponent() {
   if (!hasMounted) return null;
 
   function OrderIdFormBotMessage({ message, onSuccess }) {
-    const [orderId, setOrderId] = useState("");
     const [status, setStatus] = useState("");
     const [loading, setLoading] = useState(false);
 
@@ -817,6 +826,9 @@ export default function ChatComponent() {
           data.providedOrderId !== ""
         ) {
           setOrderId(data.providedOrderId);
+          if (orderIdInputRef.current) {
+            orderIdInputRef.current.value = data.providedOrderId;
+          }
         }
 
         setStatus(data.message ?? "✅ Verified! Now you can continue.");
@@ -988,18 +1000,18 @@ export default function ChatComponent() {
                 {user && (
                   <button
                     id="open-faq"
-                    className="z-50 px-3 sm:px-4 py-1.5 sm:py-2 text-sm sm:text-sm text-gray-400 border bg-gray-50 hover:border-gray-200 border-gray-50 rounded-lg flex items-center gap-1"
+                    className={`z-50 px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm text-gray-400 border bg-gray-50 hover:border-gray-200 border-gray-50 rounded-lg flex items-center gap-1`}
                     onClick={() => setShowSidebar((s) => !s)}
                     aria-label={
                       showSidebar ? "Close FAQ Sidebar" : "Open FAQ Sidebar"
                     }
                   >
-                    {showSidebar ? <FaTimes /> : <FaBars />}
+                    {showSidebar ? <FaTimes size={17} /> : <FaBars size={17} />}
                   </button>
                 )}
                 <div>
                   <div id="chat-controls" className={user ? "" : "hidden"}>
-                    <div className="flex gap-2">
+                    <div className="flex gap-1">
                       <p
                         id="email-exist"
                         className={`px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm text-red-500 ${
@@ -1010,6 +1022,7 @@ export default function ChatComponent() {
                       </p>
                       <input
                         id="order-id"
+                        ref={orderIdInputRef}
                         type="text"
                         placeholder="Order ID"
                         name="order_id"
@@ -1026,7 +1039,7 @@ export default function ChatComponent() {
                         className={`px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm text-gray-400 border bg-gray-50 hover:border-gray-200 border-gray-50 rounded-lg flex items-center gap-1`}
                         aria-label="Clear Chat"
                       >
-                        <FaTrash />{" "}
+                        <FaTrash size={16} />{" "}
                         <span
                           className={`${divWidth <= cb.sm ? "hidden" : ""}`}
                         >
@@ -1036,17 +1049,17 @@ export default function ChatComponent() {
                       <button
                         onClick={handleLogout}
                         disabled={loading}
-                        className="px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm text-red-500 border-red-50 border bg-red-50 hover:border-red-200 rounded-lg flex items-center gap-1"
+                        className={`px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm text-gray-400 border bg-gray-50 hover:border-gray-200 border-gray-50 rounded-lg flex items-center gap-1`}
                         aria-label="Exit"
                       >
-                        <FaSignOutAlt />{" "}
+                        <FaSignOutAlt size={18} />{" "}
                         <span
                           className={`${divWidth <= cb.sm ? "hidden" : ""}`}
                         >
                           Exit
                         </span>
                       </button>
-                      <div className="flex items-center gap-2">
+                      <div className="flex items-center gap-1">
                         {window.innerWidth >= cb.sm && (
                           <button
                             onClick={() => {
@@ -1055,23 +1068,24 @@ export default function ChatComponent() {
                                 toggleFullScreen();
                               }
                             }}
-                            className="px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm text-violet-500 border-violet-50 border bg-violet-50 hover:border-violet-200 rounded-lg flex items-center gap-1"
+                            className={`px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm text-gray-400 border bg-gray-50 hover:border-gray-200 border-gray-50 rounded-lg flex items-center gap-1`}
                             aria-label={isMaximized ? "Minimize" : "Maximize"}
                           >
                             {/* {isMaximized ? "🗕" : "🗖"} */}
                             {isMaximized ? (
-                              <FiMaximize2 size={18} />
+                              <FiMaximize2 size={20} />
                             ) : (
-                              <FiMinimize2 size={18} />
+                              <FiMinimize2 size={20} />
                             )}
                           </button>
                         )}
                         <button
                           onClick={() => setIsOpen(false)}
-                          className="flex items-center gap-1 text-sm text-red-400 hover:text-red-500"
+                          className={`px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm text-gray-400 border bg-gray-50 hover:border-gray-200 border-gray-50 rounded-lg flex items-center gap-1`}
                           aria-label="Close"
                         >
-                          <FiXCircle size={28} />
+                          <FaTimes size={17} />
+                          {/* <FiXCircle size={20} /> */}
                         </button>
                       </div>
                     </div>
@@ -1082,7 +1096,7 @@ export default function ChatComponent() {
                     <p className="w-full text-base font-semibold text-left text-muted">
                       Welcome To Mayfair Assistant
                     </p>
-                    <div className="flex gap-2">
+                    <div className="flex gap-1">
                       {window.innerWidth >= cb.sm && (
                         <button
                           onClick={() => {
@@ -1091,23 +1105,24 @@ export default function ChatComponent() {
                               toggleFullScreen();
                             }
                           }}
-                          className="px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm text-violet-500 border-violet-50 border bg-violet-50 hover:border-violet-200 rounded-lg flex items-center gap-1"
+                          className={`px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm text-gray-400 border bg-gray-50 hover:border-gray-200 border-gray-50 rounded-lg flex items-center gap-1`}
                           aria-label={isMaximized ? "Minimize" : "Maximize"}
                         >
                           {/* {isMaximized ? "🗕" : "🗖"} */}
                           {isMaximized ? (
-                            <FiMaximize2 size={18} />
+                            <FiMaximize2 size={20} />
                           ) : (
-                            <FiMinimize2 size={18} />
+                            <FiMinimize2 size={20} />
                           )}
                         </button>
                       )}
                       <button
                         onClick={() => setIsOpen(false)}
-                        className="text-sm text-red-500 hover:text-red-700"
+                        className={`px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm text-gray-400 border bg-gray-50 hover:border-gray-200 border-gray-50 rounded-lg flex items-center gap-1`}
                         aria-label="Close"
                       >
-                        <FiXCircle size={28} />
+                        {/* <FiXCircle size={20} /> */}
+                        <FaTimes size={17} />
                       </button>
                     </div>
                   </>
@@ -1119,27 +1134,15 @@ export default function ChatComponent() {
                 <div className="fixed inset-0 flex items-center justify-center px-4 z-99999 bg-opacity-30 backdrop-blur-sm">
                   <div className="relative w-full max-w-md p-6 bg-white border border-gray-300 rounded-lg shadow-lg shadow-gray-500">
                     <button
-                      className="absolute text-gray-400 top-2 right-2 hover:text-gray-700"
+                      className={`top-6 right-6 absolute px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm text-gray-400 border bg-gray-50 hover:border-gray-200 border-gray-50 rounded-lg flex items-center gap-1`}
                       onClick={() => setShowUserSettings(false)}
                       aria-label="Close"
                     >
-                      <FaTimes />
+                      <FaTimes size={18} />
                     </button>
                     <h2 className="flex items-center gap-2 mb-4 text-lg font-semibold text-violet-700">
                       <span>
-                        <svg
-                          className="inline w-5 h-5 text-violet-700"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth={2}
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            d="M11.25 3.75a.75.75 0 011.5 0v1.09a7.501 7.501 0 013.36 1.39l.77-.77a.75.75 0 111.06 1.06l-.77.77a7.501 7.501 0 011.39 3.36h1.09a.75.75 0 010 1.5h-1.09a7.501 7.501 0 01-1.39 3.36l.77.77a.75.75 0 11-1.06 1.06l-.77-.77a7.501 7.501 0 01-3.36 1.39v1.09a.75.75 0 01-1.5 0v-1.09a7.501 7.501 0 01-3.36-1.39l-.77.77a.75.75 0 11-1.06-1.06l.77-.77a7.501 7.501 0 01-1.39-3.36H3.75a.75.75 0 010-1.5h1.09a7.501 7.501 0 011.39-3.36l-.77-.77a.75.75 0 111.06-1.06l.77.77a7.501 7.501 0 013.36-1.39V3.75z"
-                          ></path>
-                        </svg>
+                        <FaCog />
                       </span>
                       Edit Your Details
                     </h2>
@@ -1148,7 +1151,7 @@ export default function ChatComponent() {
                       onSubmit={handleUserSettingsSubmit}
                     >
                       <div>
-                        <label className="block text-sm font-medium text-gray-700">
+                        <label className="block mb-1 text-sm text-gray-700 font-base">
                           First Name
                         </label>
                         <input
@@ -1167,7 +1170,7 @@ export default function ChatComponent() {
                         />
                       </div>
                       <div>
-                        <label className="block text-sm font-medium text-gray-700">
+                        <label className="block mb-1 text-sm text-gray-700 font-base">
                           Last Name
                         </label>
                         <input
@@ -1186,7 +1189,7 @@ export default function ChatComponent() {
                         />
                       </div>
                       <div>
-                        <label className="block text-sm font-medium text-gray-700">
+                        <label className="block mb-1 text-sm text-gray-700 font-base">
                           Email
                         </label>
                         <input
@@ -1205,7 +1208,7 @@ export default function ChatComponent() {
                         />
                       </div>
                       <div>
-                        <label className="block text-sm font-medium text-gray-700">
+                        <label className="block mb-1 text-sm text-gray-700 font-base">
                           Order ID
                         </label>
                         <input
@@ -1276,7 +1279,7 @@ export default function ChatComponent() {
                     >
                       <div
                         id="user-name"
-                        className={`flex items-center justify-between font-semibold text-violet-700 uppercase border-b border-gray-200 pb-4 ${
+                        className={`flex items-center justify-between font-semibold text-violet-700 uppercase border-b border-gray-200 pb-3 ${
                           userDetails ? "" : ""
                         }`}
                       >
@@ -1290,7 +1293,7 @@ export default function ChatComponent() {
                           {/* Gear/Settings Icon */}
                         </span>
                         <button
-                          className="ml-2 text-gray-400 hover:text-violet-700"
+                          className={`px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm text-gray-400 border bg-gray-50 hover:border-gray-200 border-gray-50 rounded-lg flex items-center gap-1`}
                           aria-label="Edit Your Details"
                           onClick={() => {
                             setUserSettings({
@@ -1309,19 +1312,7 @@ export default function ChatComponent() {
                           }}
                           type="button"
                         >
-                          <svg
-                            className="w-5 h-5"
-                            fill="none"
-                            stroke="currentColor"
-                            strokeWidth={2}
-                            viewBox="0 0 24 24"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              d="M11.25 3.75a.75.75 0 011.5 0v1.09a7.501 7.501 0 013.36 1.39l.77-.77a.75.75 0 111.06 1.06l-.77.77a7.501 7.501 0 011.39 3.36h1.09a.75.75 0 010 1.5h-1.09a7.501 7.501 0 01-1.39 3.36l.77.77a.75.75 0 11-1.06 1.06l-.77-.77a7.501 7.501 0 01-3.36 1.39v1.09a.75.75 0 01-1.5 0v-1.09a7.501 7.501 0 01-3.36-1.39l-.77.77a.75.75 0 11-1.06-1.06l.77-.77a7.501 7.501 0 01-1.39-3.36H3.75a.75.75 0 010-1.5h1.09a7.501 7.501 0 011.39-3.36l-.77-.77a.75.75 0 111.06-1.06l.77.77a7.501 7.501 0 013.36-1.39V3.75z"
-                            ></path>
-                          </svg>
+                          <FaCog />
                         </button>
                       </div>
                       <div
