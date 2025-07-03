@@ -1,9 +1,4 @@
 "use client";
-
-import NextButton from "@/Components/NextButton/NextButton";
-import StepsHeader from "@/layout/stepsHeader";
-import { motion } from "framer-motion";
-import Image from "next/image";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { Inter } from "next/font/google";
@@ -28,35 +23,55 @@ import useAuthStore from "@/store/authStore";
 import usePasswordReset from "@/store/usePasswordReset";
 import useUserDataStore from "@/store/userDataStore";
 import useSignupStore from "@/store/signupStore";
-
-const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
+import ProductSelection from "@/Components/ProductSelection/ProductSelection";
+import useReorderButtonStore from "@/store/useReorderButton";
+import StepsHeader from "@/layout/stepsHeader";
 
 export default function StepsInformation() {
   const [imageLoaded, setImageLoaded] = useState(false);
   const [showContent, setShowContent] = useState(false);
   const [showLoader, setShowLoader] = useState(false);
+  const [showProductModal, setShowProductModal] = useState(false);
 
   const router = useRouter();
 
   //calling from zustand Store
   const { setBmi, clearBmi } = useBmiStore();
+  const { isFromReorder } = useReorderButtonStore();
   const { setCheckout, clearCheckout } = useCheckoutStore();
-  const { setConfirmationInfo, clearConfirmationInfo } = useConfirmationInfoStore();
+  const { setConfirmationInfo, clearConfirmationInfo } =
+    useConfirmationInfoStore();
   const { setGpDetails, clearGpDetails } = useGpDetailsStore();
   const { setMedicalInfo, clearMedicalInfo } = useMedicalInfoStore();
   const { setPatientInfo, clearPatientInfo } = usePatientInfoStore();
-  const { setMedicalQuestions, clearMedicalQuestions } = useMedicalQuestionsStore();
-  const { setConfirmationQuestions, clearConfirmationQuestions } = useConfirmationQuestionsStore();
-  const { setAuthUserDetail, clearAuthUserDetail } = useAuthUserDetailStore();
-  const { billing, setBilling, shipping, setShipping, clearShipping, clearBilling } = useShippingOrBillingStore();
+  const { setMedicalQuestions, clearMedicalQuestions } =
+    useMedicalQuestionsStore();
+  const { setConfirmationQuestions, clearConfirmationQuestions } =
+    useConfirmationQuestionsStore();
+  const { setAuthUserDetail, clearAuthUserDetail, authUserDetail } =
+    useAuthUserDetailStore();
+  const {
+    billing,
+    setBilling,
+    shipping,
+    setShipping,
+    clearShipping,
+    clearBilling,
+  } = useShippingOrBillingStore();
   const { clearToken } = useAuthStore();
   const { setIsPasswordReset } = usePasswordReset();
   const { productId, clearProductId } = useProductId();
   const { setLastBmi, clearLastBmi } = useLastBmi();
   const { clearUserData } = useUserDataStore();
-  const { clearFirstName, clearLastName, clearEmail, clearConfirmationEmail } = useSignupStore();
+  const { clearFirstName, clearLastName, clearEmail, clearConfirmationEmail } =
+    useSignupStore();
+    
 
-  //Get Consultation Data
+  /* ───────────────  stores (init only what we SET/CLEAR) ────────────── */
+
+  const showProductSelection = isFromReorder || (!isFromReorder && !productId);
+
+  /* ───────────────  product id store ────────────── */
   const consultationMutation = useMutation(userConsultationApi, {
     onSuccess: (data) => {
       console.log(data, "Dataaaaaaaaaa");
@@ -83,7 +98,14 @@ export default function StepsInformation() {
         setBilling(data?.data?.data?.billing);
         setAuthUserDetail(data?.data?.data?.auth_user);
         setLastBmi(data?.data?.data?.bmi);
-        router.push("/personal-details");
+        if (productId && !showProductSelection) {
+          if(authUserDetail?.isReturning){
+
+          }
+          router.push("/personal-details");
+        } else {
+          return;
+        }
       }
 
       return;
@@ -118,7 +140,9 @@ export default function StepsInformation() {
     },
   });
 
-  //Get Mediacal Question Data
+  console.log(showProductSelection, "showProductSelection");
+
+  /* ───────────────  medical questions mutation ────────────── */
   const medicalQuestionsMutation = useMutation(getMedicalQuestions, {
     onSuccess: (data) => {
       console.log(data, "Medical Questions");
@@ -139,7 +163,7 @@ export default function StepsInformation() {
 
   useEffect(() => {
     const formData = {
-      clinic_id: 1,
+      clinic_id: 3,
       product_id: productId,
     };
     setShowLoader(true);
@@ -148,6 +172,8 @@ export default function StepsInformation() {
       medicalQuestionsMutation.mutate();
     }
   }, [productId]);
+
+  useEffect(() => {}, []);
 
   //   setTimeout(() => {
   //     router.push("/step1");
@@ -161,6 +187,12 @@ export default function StepsInformation() {
           <PageLoader />
         </div>
       )}
+
+      {showProductSelection && (
+        <ProductSelection showProductSelection={showProductSelection} />
+      )}
+
+      {/* )} */}
     </>
   );
 }

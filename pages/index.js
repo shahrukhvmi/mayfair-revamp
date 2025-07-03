@@ -9,11 +9,15 @@ import useProductId from "@/store/useProductIdStore";
 import { useSearchParams } from "next/navigation";
 import useReorder from "@/store/useReorderStore";
 import useAuthStore from "@/store/authStore";
+import useAuthUserDetailStore from "@/store/useAuthUserDetailStore";
+import useReorderButtonStore from "@/store/useReorderButton";
 
 export default function Index() {
   const router = useRouter();
   const [showLoader, setShowLoader] = useState(false);
+  const { authUserDetail } = useAuthUserDetailStore();
 
+  const { setIsFromReorder } = useReorderButtonStore();
   //Search Param to get product ID
   const searchParams = useSearchParams();
 
@@ -45,13 +49,15 @@ export default function Index() {
     const action = e.nativeEvent.submitter.value;
 
     if (action === "Accept and re-order") {
-      if (token) {
-        router.push("/dashboard");
+      if (token && authUserDetail?.isReturning) {
+        router.push("/steps-information");
+        setIsFromReorder(true);
       } else {
-        router.push("/login");
+        router.push("/dashboard");
       }
     } else {
       setReorder(false);
+      setIsFromReorder(false);
       router.push("/acknowledgment");
     }
 
