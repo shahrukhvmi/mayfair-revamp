@@ -9,11 +9,13 @@ import StepsHeader from "@/layout/stepsHeader";
 import PageAnimationWrapper from "@/Components/PageAnimationWrapper/PageAnimationWrapper";
 import PageLoader from "@/Components/PageLoader/PageLoader";
 import useReorder from "@/store/useReorderStore";
+import useReorderButtonStore from "@/store/useReorderButton";
 
 export default function Acknowledgment() {
   const router = useRouter();
   const { setReorderStatus } = useReorder();
   const [showLoader, setShowLoader] = useState(false);
+  const { setIsFromReorder } = useReorderButtonStore();
 
   const {
     register,
@@ -30,6 +32,7 @@ export default function Acknowledgment() {
   const personalUse = watch("personalUse");
 
   const onSubmit = async (data) => {
+    setIsFromReorder(false);
     setShowLoader(true);
     await new Promise((resolve) => setTimeout(resolve, 500));
 
@@ -58,7 +61,12 @@ export default function Acknowledgment() {
                                 : "bg-white border-gray-300 hover:border-gray-400 text-gray-800"
                             }`}
           >
-            <input type="radio" value={option} {...register(fieldName, { required: true })} className="hidden" />
+            <input
+              type="radio"
+              value={option}
+              {...register(fieldName, { required: true })}
+              className="hidden"
+            />
             <div
               className={`w-5 h-5 mr-2 rounded-md border flex items-center justify-center
                                 ${
@@ -71,7 +79,9 @@ export default function Acknowledgment() {
             >
               {isSelected && <FiCheck className="text-md" />}
             </div>
-            <span className="text-md bold-font paragraph capitalize">{option}</span>
+            <span className="text-md bold-font paragraph capitalize">
+              {option}
+            </span>
           </label>
         );
       })}
@@ -87,7 +97,9 @@ export default function Acknowledgment() {
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
               <div className="space-y-6">
                 <div className="space-y-2">
-                  <p className="text-sm reg-font paragraph">Has anything changed since your last order?</p>
+                  <p className="text-sm reg-font paragraph">
+                    Has anything changed since your last order?
+                  </p>
                   {renderYesNo("personalUse", personalUse)}
                 </div>
               </div>

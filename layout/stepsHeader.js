@@ -33,7 +33,8 @@ import useImpersonate from "@/store/useImpersonateStore";
 
 const StepsHeader = ({ isOpen, toggleSidebar }) => {
   const [anchorEl, setAnchorEl] = useState(null);
-  const { showLoginModal, closeLoginModal, openLoginModal } = useLoginModalStore();
+  const { showLoginModal, closeLoginModal, openLoginModal } =
+    useLoginModalStore();
 
   const [showLoader, setShowLoader] = useState(false);
 
@@ -45,14 +46,26 @@ const StepsHeader = ({ isOpen, toggleSidebar }) => {
   const { clearPatientInfo } = usePatientInfoStore();
   const { clearMedicalQuestions } = useMedicalQuestionsStore();
   const { clearConfirmationQuestions } = useConfirmationQuestionsStore();
-  const { authUserDetail, clearAuthUserDetail } = useAuthUserDetailStore();
-  const { token, clearToken, setToken, setIsImpersonationLogout } = useAuthStore();
-  const { clearShipping, clearBilling, setBillingSameAsShipping } = useShippingOrBillingStore();
+  const { authUserDetail, clearAuthUserDetail, setAuthUserDetail } =
+    useAuthUserDetailStore();
+  const { token, clearToken, setToken, setIsImpersonationLogout } =
+    useAuthStore();
+  const { clearShipping, clearBilling, setBillingSameAsShipping } =
+    useShippingOrBillingStore();
   const { clearProductId } = useProductId();
   const { clearLastBmi } = useLastBmi();
   const { clearUserData } = useUserDataStore();
   const { impersonate, setImpersonate } = useImpersonate();
-  const { firstName, setFirstName, setLastName, setEmail, clearFirstName, clearLastName, clearEmail, clearConfirmationEmail } = useSignupStore();
+  const {
+    firstName,
+    setFirstName,
+    setLastName,
+    setEmail,
+    clearFirstName,
+    clearLastName,
+    clearEmail,
+    clearConfirmationEmail,
+  } = useSignupStore();
   const pathname = usePathname();
 
   const router = useRouter();
@@ -87,11 +100,16 @@ const StepsHeader = ({ isOpen, toggleSidebar }) => {
   };
 
   const validPathDashboard =
-    pathname === "/dashboard/" || pathname === "/profile/" || pathname === "/orders/" || pathname === "/address/" || pathname === "/change-password/";
+    pathname === "/dashboard/" ||
+    pathname === "/profile/" ||
+    pathname === "/orders/" ||
+    pathname === "/address/" ||
+    pathname === "/change-password/";
 
   const loginMutation = useMutation(Login, {
     onSuccess: (data) => {
       const user = data?.data?.data;
+      setAuthUserDetail(user);
       console.log(data?.data?.data, "data?.data?.data");
       setToken(user.token);
       toast.success("Login Successfully");
@@ -146,7 +164,8 @@ const StepsHeader = ({ isOpen, toggleSidebar }) => {
     setIsImpersonationLogout(true);
     setImpersonate(false);
     setBillingSameAsShipping(false);
-    window.location.href = "https://staging.mayfairweightlossclinic.co.uk/dashboard";
+    window.location.href =
+      "https://staging.mayfairweightlossclinic.co.uk/dashboard";
   };
 
   return (
@@ -196,7 +215,10 @@ const StepsHeader = ({ isOpen, toggleSidebar }) => {
         <div className="sm:px-6 lg:px-6 flex items-center justify-between py-2">
           {/* Hamburger (Mobile) */}
           {validPathDashboard && (
-            <button onClick={toggleSidebar} className="text-2xl text-violet-700 sm:hidden">
+            <button
+              onClick={toggleSidebar}
+              className="text-2xl text-violet-700 sm:hidden"
+            >
               {isOpen ? <FiX /> : <FiMenu />}
             </button>
           )}
@@ -212,11 +234,20 @@ const StepsHeader = ({ isOpen, toggleSidebar }) => {
           <div className="relative">
             {token && (
               <>
-                <div className="flex items-center space-x-2 cursor-pointer" onClick={(e) => setAnchorEl(e.currentTarget)}>
+                <div
+                  className="flex items-center space-x-2 cursor-pointer"
+                  onClick={(e) => setAnchorEl(e.currentTarget)}
+                >
                   <ApplicationUser className="w-10 h-10 rounded-full" />
-                  <span className="reg-font text-[#1C1C29] truncate">{authUserDetail?.fname?.trim() ? authUserDetail.fname : firstName}</span>
+                  <span className="reg-font text-[#1C1C29] truncate">
+                    {authUserDetail?.fname?.trim()
+                      ? authUserDetail.fname
+                      : firstName}
+                  </span>
                   <IoIosArrowDown
-                    className={`text-gray-700 transform transition-transform duration-200 ${Boolean(anchorEl) ? "rotate-180" : ""}`}
+                    className={`text-gray-700 transform transition-transform duration-200 ${
+                      Boolean(anchorEl) ? "rotate-180" : ""
+                    }`}
                     size={20}
                   />
                 </div>
@@ -256,7 +287,9 @@ const StepsHeader = ({ isOpen, toggleSidebar }) => {
 
             {!pathname?.startsWith("/login") && !token && (
               <div className="w-1/2 items-center justify-end lg:w-[100%] sm:flex">
-                <p className="md:block text-black reg-font lg:w-[100%] sm:flex hidden">Already have an account?</p>
+                <p className="md:block text-black reg-font lg:w-[100%] sm:flex hidden">
+                  Already have an account?
+                </p>
                 <span
                   className="cursor-pointer inline-flex items-center px-6 py-2 bg-primary border border-transparent rounded-full font-semibold text-xs text-white uppercase tracking-widest hover:bg-violet-700 focus:bg-bg-violet-700 active:bg-primary focus:outline-none focus:ring-2 focus:ring-violet-500 focus:ring-offset-2 transition ease-in-out duration-150 ml-4"
                   onClick={openLoginModal}

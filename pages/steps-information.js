@@ -65,7 +65,6 @@ export default function StepsInformation() {
   const { clearUserData } = useUserDataStore();
   const { clearFirstName, clearLastName, clearEmail, clearConfirmationEmail } =
     useSignupStore();
-    
 
   /* ───────────────  stores (init only what we SET/CLEAR) ────────────── */
 
@@ -99,8 +98,7 @@ export default function StepsInformation() {
         setAuthUserDetail(data?.data?.data?.auth_user);
         setLastBmi(data?.data?.data?.bmi);
         if (productId && !showProductSelection) {
-          if(authUserDetail?.isReturning){
-
+          if (authUserDetail?.isReturning) {
           }
           router.push("/personal-details");
         } else {
@@ -163,7 +161,7 @@ export default function StepsInformation() {
 
   useEffect(() => {
     const formData = {
-      clinic_id: 3,
+      clinic_id: 1,
       product_id: productId,
     };
     setShowLoader(true);

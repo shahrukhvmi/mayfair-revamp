@@ -20,6 +20,7 @@ import LoginModal from "@/Components/LoginModal/LoginModal";
 import useLoginModalStore from "@/store/useLoginModalStore";
 import Link from "next/link";
 import useImpersonate from "@/store/useImpersonateStore";
+import useAuthUserDetailStore from "@/store/useAuthUserDetailStore";
 
 export default function LoginScreen() {
   const [showLoader, setShowLoader] = useState(false);
@@ -28,6 +29,7 @@ export default function LoginScreen() {
   const { token, setToken } = useAuthStore();
   const { setIsPasswordReset, setShowResetPassword } = usePasswordReset();
   const { setImpersonate } = useImpersonate();
+  const { setAuthUserDetail } = useAuthUserDetailStore();
   const router = useRouter();
 
   const {
@@ -44,7 +46,8 @@ export default function LoginScreen() {
       password: "",
     },
   });
-  const { showLoginModal, closeLoginModal, openLoginModal } = useLoginModalStore();
+  const { showLoginModal, closeLoginModal, openLoginModal } =
+    useLoginModalStore();
 
   const loginMutation = useMutation(Login, {
     onSuccess: (data) => {
@@ -53,6 +56,7 @@ export default function LoginScreen() {
       if (user) {
         setUserData(user);
         setToken(user?.token);
+        setAuthUserDetail(user);
         setFirstName(user?.fname);
         setLastName(user?.lname);
         setEmail(user?.email);
@@ -169,18 +173,48 @@ export default function LoginScreen() {
           <h1 className="niba-reg-font heading mb-2">Login</h1>
 
           {/* Description */}
-          <p className="mb-6 reg-font paragraph">Returning patient? Login now to re-order your treatment.</p>
+          <p className="mb-6 reg-font paragraph">
+            Returning patient? Login now to re-order your treatment.
+          </p>
 
           <PageAnimationWrapper>
-            <div className={`relative ${showLoader ? "pointer-events-none cursor-not-allowed" : ""}`}>
+            <div
+              className={`relative ${
+                showLoader ? "pointer-events-none cursor-not-allowed" : ""
+              }`}
+            >
               <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-                <TextField label="Email Address" name="email" placeholder="Email Address" type="email" register={register} required errors={errors} />
+                <TextField
+                  label="Email Address"
+                  name="email"
+                  placeholder="Email Address"
+                  type="email"
+                  register={register}
+                  required
+                  errors={errors}
+                />
 
-                <TextField label="Password" name="password" placeholder="Password" type="password" register={register} required errors={errors} />
-                <NextButton label="Login" disabled={!isValid} type="submit" className="mb-5" />
+                <TextField
+                  label="Password"
+                  name="password"
+                  placeholder="Password"
+                  type="password"
+                  register={register}
+                  required
+                  errors={errors}
+                />
+                <NextButton
+                  label="Login"
+                  disabled={!isValid}
+                  type="submit"
+                  className="mb-5"
+                />
                 <p className="reg-font text-black text-sm text-center">
                   Are you a new patient?{" "}
-                  <Link href={"/acknowledgment"} className="text-primary underline">
+                  <Link
+                    href={"/acknowledgment"}
+                    className="text-primary underline"
+                  >
                     Get started with the consultation
                   </Link>
                 </p>
@@ -207,7 +241,10 @@ export default function LoginScreen() {
         onLogin={async (data) => {
           setShowLoader(true);
           try {
-            const response = await loginMutation.mutateAsync({ ...data, company_id: 1 });
+            const response = await loginMutation.mutateAsync({
+              ...data,
+              company_id: 1,
+            });
             const user = response?.data?.data;
             setIsPasswordReset(false);
             setUserData(user);
@@ -224,7 +261,10 @@ export default function LoginScreen() {
             router.push("/dashboard");
           } catch (error) {
             const errorMsg = error?.response?.data?.errors;
-            const firstMsg = errorMsg && typeof errorMsg === "object" ? Object.values(errorMsg)[0] : "Something went wrong.";
+            const firstMsg =
+              errorMsg && typeof errorMsg === "object"
+                ? Object.values(errorMsg)[0]
+                : "Something went wrong.";
             toast.error(firstMsg);
             setShowLoader(false);
           }

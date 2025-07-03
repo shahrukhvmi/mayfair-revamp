@@ -21,17 +21,30 @@ import TextField from "@/Components/TextField/TextField";
 import PageLoader from "@/Components/PageLoader/PageLoader";
 import useLoginModalStore from "@/store/useLoginModalStore";
 import usePasswordReset from "@/store/usePasswordReset";
+import useAuthUserDetailStore from "@/store/useAuthUserDetailStore";
 
 export default function EmailConfirmation() {
   const [showLoader, setShowLoader] = useState(false);
   const [already, setAlready] = useState(false);
   // const [showLoginModal, setShowLoginModal] = useState(false);
   const router = useRouter();
-  const { firstName, lastName, setLastName, setFirstName, email, confirmationEmail, setEmail, setConfirmationEmail } = useSignupStore();
+  const {
+    firstName,
+    lastName,
+    setLastName,
+    setFirstName,
+    email,
+    confirmationEmail,
+    setEmail,
+    setConfirmationEmail,
+  } = useSignupStore();
   const { setUserData } = useUserDataStore();
   const { token, setToken } = useAuthStore();
-  const { setIsPasswordReset, isPasswordReset, setShowResetPassword } = usePasswordReset();
-  const { showLoginModal, closeLoginModal, openLoginModal } = useLoginModalStore();
+  const { setIsPasswordReset, isPasswordReset, setShowResetPassword } =
+    usePasswordReset();
+  const { showLoginModal, closeLoginModal, openLoginModal } =
+    useLoginModalStore();
+  const { setAuthUserDetail } = useAuthUserDetailStore();
 
   const {
     register,
@@ -53,6 +66,7 @@ export default function EmailConfirmation() {
   const registerMutation = useMutation(registerUser, {
     onSuccess: (data) => {
       const user = data?.data?.data;
+      setAuthUserDetail(user);
       setUserData(user);
       setToken(user?.token);
       setIsPasswordReset(true);
@@ -93,10 +107,14 @@ export default function EmailConfirmation() {
           console.log(data, "dfkjdskjjkffskj");
           setShowLoader(true);
           try {
-            const response = await loginMutation.mutateAsync({ ...data, company_id: 1 });
+            const response = await loginMutation.mutateAsync({
+              ...data,
+              company_id: 1,
+            });
             const user = response?.data?.data;
             setIsPasswordReset(false);
             setUserData(user);
+            setAuthUserDetail(user);
             setToken(user?.token);
             setFirstName(user?.fname);
             setLastName(user?.lname);
@@ -112,7 +130,10 @@ export default function EmailConfirmation() {
             router.push("/dashboard");
           } catch (error) {
             const errorMsg = error?.response?.data?.errors;
-            const firstMsg = errorMsg && typeof errorMsg === "object" ? Object.values(errorMsg)[0] : "Something went wrong.";
+            const firstMsg =
+              errorMsg && typeof errorMsg === "object"
+                ? Object.values(errorMsg)[0]
+                : "Something went wrong.";
             toast.error(firstMsg);
             setShowLoader(false);
           }
@@ -122,10 +143,21 @@ export default function EmailConfirmation() {
       {/*  */}
 
       <StepsHeader />
-      <FormWrapper heading="Enter your email address" description="This is where we will send information about your order." percentage="20">
+      <FormWrapper
+        heading="Enter your email address"
+        description="This is where we will send information about your order."
+        percentage="20"
+      >
         <PageAnimationWrapper>
-          <div className={`relative ${showLoader ? "pointer-events-none cursor-not-allowed" : ""}`}>
-            <form onSubmit={handleSubmit(handleSignupSubmit)} className="space-y-4">
+          <div
+            className={`relative ${
+              showLoader ? "pointer-events-none cursor-not-allowed" : ""
+            }`}
+          >
+            <form
+              onSubmit={handleSubmit(handleSignupSubmit)}
+              className="space-y-4"
+            >
               <TextField
                 label="Email Address"
                 name="email"
@@ -145,7 +177,9 @@ export default function EmailConfirmation() {
                 register={register}
                 required
                 validation={{
-                  validate: (value) => value === getValues("email") || "Email addresses must match.",
+                  validate: (value) =>
+                    value === getValues("email") ||
+                    "Email addresses must match.",
                 }}
                 errors={errors}
                 disablePaste
@@ -154,14 +188,21 @@ export default function EmailConfirmation() {
               {already && (
                 <div className="text-sm text-red-600 bg-red-50 border border-red-200 p-3 rounded-md">
                   This email address is already taken.{" "}
-                  <span onClick={openLoginModal} className="text-blue-600 underline cursor-pointer font-medium hover:text-blue-800">
+                  <span
+                    onClick={openLoginModal}
+                    className="text-blue-600 underline cursor-pointer font-medium hover:text-blue-800"
+                  >
                     Please click here to login.
                   </span>
                 </div>
               )}
 
               <NextButton label="Next" type="submit" disabled={!isValid} />
-              <BackButton label="Back" className="mt-2" onClick={() => router.push("/signup")} />
+              <BackButton
+                label="Back"
+                className="mt-2"
+                onClick={() => router.push("/signup")}
+              />
             </form>
 
             {showLoader && (

@@ -4,6 +4,7 @@ import { Skeleton } from "@mui/material";
 import GetProductsApi from "@/api/getProducts";
 import { useMutation } from "@tanstack/react-query";
 import toast from "react-hot-toast";
+import useAuthUserDetailStore from "@/store/useAuthUserDetailStore";
 
 const SkeletonCard = () => (
   <div className="p-4 my-3 bg-white rounded-lg shadow-md">
@@ -17,6 +18,7 @@ const SkeletonCard = () => (
 const MyAccount = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [productData, setProductData] = useState(null);
+  const { setIsReturning } = useAuthUserDetailStore();
 
   // Dummy function; replace with your real implementation
   const clearCart = () => {
@@ -40,6 +42,10 @@ const MyAccount = () => {
     getProducts.mutate({ data: {} });
   }, []);
 
+  useEffect(() => {
+    setIsReturning(productData?.reorder != null);
+  }, [productData?.reorder, setIsReturning]);
+
   const renderSkeletons = () => (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
       {Array.from({ length: 3 }).map((_, i) => (
@@ -55,7 +61,9 @@ const MyAccount = () => {
         renderSkeletons()
       ) : productData?.reorder ? (
         <div className="mb-8">
-         <h1 className="text-left headingDashBoard bold-font mb-4">Reorder Treatment</h1>
+          <h1 className="text-left headingDashBoard bold-font mb-4">
+            Reorder Treatment
+          </h1>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {Array.isArray(productData.reorder) ? (
               productData.reorder.map((item, index) => (
@@ -93,9 +101,12 @@ const MyAccount = () => {
       ) : productData?.products?.length > 0 ? (
         <>
           <header className="pb-9 mt-10">
-            <h1 className="text-left headingDashBoard bold-font ">Available Treatments</h1>
+            <h1 className="text-left headingDashBoard bold-font ">
+              Available Treatments
+            </h1>
             <p className="paragraph thin-font text-left  mt-2">
-              We offer the following weight loss injections treatment options to help you in your weight loss journey...
+              We offer the following weight loss injections treatment options to
+              help you in your weight loss journey...
             </p>
           </header>
 
@@ -117,7 +128,9 @@ const MyAccount = () => {
           </div>
         </>
       ) : (
-        <p className="text-start reg-font text-sm text-gray-600">No available treatments at the moment.</p>
+        <p className="text-start reg-font text-sm text-gray-600">
+          No available treatments at the moment.
+        </p>
       )}
     </div>
   );
