@@ -210,5 +210,4 @@ const ProductSelection = ({ showProductSelection }) => {
         </FullScreenModal>
     );
 };
-
 export default ProductSelection;
