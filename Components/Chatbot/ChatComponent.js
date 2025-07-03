@@ -862,7 +862,9 @@ export default function ChatComponent() {
     if (!inputMsg.trim()) return;
 
     const userMsg = { sender: "user", text: inputMsg.trim() };
-    setChatHistory((prev) => [...prev, userMsg]);
+    if (!isHumanTalk && !msgToBoth) {
+      setChatHistory((prev) => [...prev, userMsg]);
+    }
     setInputMsg("");
     setLoading(true);
 
@@ -934,7 +936,13 @@ export default function ChatComponent() {
         .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
 
       const botMsg = { sender: "bot", text: replyText };
-      setChatHistory((prev) => [...prev, botMsg]);
+      if (isHumanTalk && msgToBoth) {
+        setTimeout(() => {
+          setChatHistory((prev) => [...prev, botMsg]);
+        }, 2000);
+      } else {
+        setChatHistory((prev) => [...prev, botMsg]);
+      }
       setShowQuick(!!(user && user.email_exist));
     } catch (err) {
       const errorText = err.message || "Something went wrong.";
