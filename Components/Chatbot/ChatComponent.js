@@ -7,9 +7,12 @@ import {
   FaTrash,
   FaSearch,
   FaCog,
+  FaUser,
 } from "react-icons/fa";
 import { FiMessageCircle, FiMaximize2, FiMinimize2 } from "react-icons/fi";
 import { app_url } from "@/config/constants";
+import toast, { Toaster } from "react-hot-toast";
+import Pusher from "pusher-js";
 
 const quickQuestions = [
   {
@@ -167,14 +170,324 @@ export default function ChatComponent() {
   const [userDetails, setUserDetails] = useState(null);
   const [showEmailExist, setShowEmailExist] = useState(false);
   const [inputMsg, setInputMsg] = useState("");
+  const [isHumanTalk, setIsHumanTalk] = useState(false);
+  const [conversationId, setConversationId] = useState(null);
   const [loading, setLoading] = useState(false);
   const [showWelcome, setShowWelcome] = useState(true);
   const [showQuick, setShowQuick] = useState(false);
   const [showUserSettings, setShowUserSettings] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
+  const [msgToBoth, setMsgToBoth] = useState(false);
+  const divRef = useRef(null);
+  const [divWidth, setDivWidth] = useState(0);
+  const cb = {
+    sm: 640,
+    md: 768,
+    lg: 1024,
+    xl: 1280,
+    "2xl": 1536,
+  };
+
+  const [messages, setMessages] = useState([]);
+  const [lastMessageTime, setLastMessageTime] = useState("");
+
   const [browserInfo, setBrowserInfo] = useState({
     browser: "Unknown",
     version: "Unknown",
   });
+
+  console.log("next user", user);
+  //pusher
+  const handleRequestHuman = async () => {
+    setLoading(true);
+    try {
+      const response = await fetch(app_url + "/new-conversation", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          status: "waiting",
+          email: user?.email || "",
+          fname: user?.fname || "",
+          lname: user?.lname || "",
+          user_id: userDetails?.user_data?.user_id ?? null,
+        }),
+      });
+
+      if (!response.ok) throw new Error("Failed to create conversation");
+
+      const botMsgHumanTalk = {
+        sender: "bot",
+        text: `Your request were sent to the agent, it may take a minute`,
+      };
+      setChatHistory((prev) => [...prev, botMsgHumanTalk]);
+      const data = await response.json();
+      console.log("New Conversation Created:", data);
+      setConversationId(data?.id);
+      console.log("conversationId", conversationId);
+
+      let chatUser = getLocal("chat_user", {});
+      chatUser.isHumanTalk = true;
+      chatUser.conversationId = data?.id;
+      setLocal("chat_user", chatUser);
+      setIsHumanTalk(true);
+      setLoading(false);
+    } catch (error) {
+      console.error("Error creating conversation:", error);
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    let chatUser = getLocal("chat_user", {});
+    if (typeof chatUser !== "object" || chatUser === null) {
+      chatUser = {};
+    }
+
+    if (typeof chatUser.isHumanTalk === "undefined") {
+      chatUser.isHumanTalk = false;
+      setLocal("chat_user", chatUser);
+    }
+
+    if (typeof chatUser.conversationId === "undefined") {
+      chatUser.conversationId = null;
+      setLocal("chat_user", chatUser);
+    }
+
+    setIsHumanTalk(!!chatUser.isHumanTalk);
+    setConversationId(chatUser.conversationId);
+  }, []);
+
+  // useEffect(() => {
+  //   const pusher = new Pusher("your-key", {
+  //     cluster: "your-cluster",
+  //   });
+
+  //   const channel = pusher.subscribe(`chat.${conversationId}`);
+  //   channel.bind("NewMessage", (data) => {
+  //     setMessages((prev) => [...prev, data]);
+  //   });
+
+  //   return () => {
+  //     channel.unbind_all();
+  //     channel.unsubscribe();
+  //   };
+  // }, []);
+
+  const sendMessage = async () => {
+    await fetch(app_url + "/send-message", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        chat_conversation_id: conversationId,
+        sender_type: "user",
+        content: inputMsg,
+      }),
+    });
+    setInputMsg("");
+  };
+
+  console.log("Human talk", isHumanTalk);
+
+  if (isHumanTalk) {
+    console.log("function: sendMessage");
+  } else {
+    console.log("function: sendBot");
+  }
+
+  console.log("conversationId", conversationId);
+
+  function fetchAndSetMessages(
+    conversationId,
+    lastMessageTime,
+    messages,
+    setMessages,
+    setLastMessageTime
+  ) {
+    if (loading) return;
+    setLoading(true);
+    try {
+      fetch(
+        `${app_url}/messages?chat_conversation_id=${conversationId}&after=${lastMessageTime}`
+      )
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.length) {
+            if (messages.length !== messages.length + data.length) {
+              setMessages([]);
+              setMessages((prev) => [...prev, ...data]);
+              setLastMessageTime(data[data.length - 1].created_at);
+            }
+          }
+        });
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+    console.log("messages", messages);
+  }
+
+  function useSmartPolling({
+    interval = 3000,
+    loading = false,
+    onPoll = () => {},
+    deps = [],
+  }) {
+    const cancelledRef = useRef(false);
+    const timeoutIdRef = useRef(null);
+    const idleCallbackIdRef = useRef(null);
+
+    useEffect(() => {
+      const requestIdle =
+        typeof window !== "undefined"
+          ? window.requestIdleCallback || ((cb) => setTimeout(cb, 1))
+          : (cb) => setTimeout(cb, 1);
+
+      const cancelIdle =
+        typeof window !== "undefined"
+          ? window.cancelIdleCallback || ((id) => clearTimeout(id))
+          : (id) => clearTimeout(id);
+
+      cancelledRef.current = false;
+
+      const poll = () => {
+        if (
+          cancelledRef.current ||
+          loading ||
+          (typeof document !== "undefined" && document.hidden)
+        ) {
+          timeoutIdRef.current = setTimeout(poll, interval);
+          return;
+        }
+        idleCallbackIdRef.current = requestIdle(() => {
+          if (cancelledRef.current) return;
+          onPoll();
+        });
+        timeoutIdRef.current = setTimeout(poll, interval);
+      };
+      poll(); // 🏁 Start polling
+
+      return () => {
+        cancelledRef.current = true;
+        clearTimeout(timeoutIdRef.current);
+        cancelIdle(idleCallbackIdRef.current);
+      };
+    }, deps); // 👈 Use deps to restart polling if needed
+  }
+  console.log("divWidth", divWidth);
+
+  useSmartPolling({
+    interval: 3000,
+    loading, // this should come from your local state
+    deps: [conversationId, lastMessageTime, isHumanTalk, isOpen], // changes trigger restart
+    onPoll: () => {
+      if (isHumanTalk && isOpen) {
+        console.log("polling");
+        fetchAndSetMessages(
+          conversationId,
+          lastMessageTime,
+          messages,
+          setMessages,
+          setLastMessageTime
+        );
+      }
+    },
+  });
+
+  console.log("isOpen", isOpen);
+
+  // function syncMessagesToChatHistory(messages) {
+  //   if (!Array.isArray(messages)) return;
+  //   const mapped = messages
+  //     .map((msg) => {
+  //       if (msg.sender_type === "agent") {
+  //         return {
+  //           sender: "agent",
+  //           text: (msg?.agent?.fname + ": " + msg.content || "").trim(),
+  //         };
+  //       }
+  //       if (msg.sender_type === "user") {
+  //         return { sender: "user", text: (msg.content || "").trim() };
+  //       }
+  //       // Optionally handle other sender types
+  //       return null;
+  //     })
+  //     .filter(Boolean); // Remove any nulls
+  //   setChatHistory(mapped);
+  // }
+  // function syncMessagesToChatHistory(messages) {
+  //   if (!Array.isArray(messages)) return;
+  //   const mapped = messages
+  //     .map((msg) => {
+  //       if (msg.sender_type === "agent") {
+  //         return {
+  //           sender: "agent",
+  //           name: msg?.agent?.fname || "Agent",
+  //           text: (msg.content || "").trim(),
+  //           time: msg.created_at,
+  //         };
+  //       }
+  //       if (msg.sender_type === "user") {
+  //         return {
+  //           sender: "user",
+  //           name: "You",
+  //           text: (msg.content || "").trim(),
+  //           time: msg.created_at,
+  //         };
+  //       }
+  //       return null;
+  //     })
+  //     .filter(Boolean);
+  //   setChatHistory(mapped);
+  //   // setChatHistory((prev) => [...prev, mapped]);
+  // }
+  function syncMessagesToChatHistory(messages) {
+    if (!Array.isArray(messages)) return;
+
+    // Map new messages to chat history format
+    const mapped = messages
+      .map((msg) => {
+        if (msg.sender_type === "agent") {
+          return {
+            sender: "agent",
+            name: msg?.agent?.fname || "Agent",
+            text: (msg.content || "").trim(),
+            time: msg.created_at,
+          };
+        }
+        if (msg.sender_type === "user") {
+          return {
+            sender: "user",
+            name: "You",
+            text: (msg.content || "").trim(),
+            time: msg.created_at,
+          };
+        }
+        return null;
+      })
+      .filter(Boolean);
+
+    // Merge with previous chat history, avoiding duplicates by unique time+text+sender
+    setChatHistory((prev) => {
+      // Create a Set of unique keys for existing messages
+      const existingKeys = new Set(
+        prev.map((msg) => `${msg.sender}|${msg.time}|${msg.text}`)
+      );
+      // Filter out mapped messages that already exist
+      const newMessages = mapped.filter(
+        (msg) => !existingKeys.has(`${msg.sender}|${msg.time}|${msg.text}`)
+      );
+      return [...prev, ...newMessages];
+    });
+  }
+  useEffect(() => {
+    syncMessagesToChatHistory(messages);
+    console.log("chat history", chatHistory);
+  }, [messages]);
+  //pusher end
+
   const [prefill, setPrefill] = useState({
     fname: "",
     lname: "",
@@ -189,7 +502,6 @@ export default function ChatComponent() {
   });
   const chatBoxRef = useRef();
 
-  const [isOpen, setIsOpen] = useState(false);
   const [isMaximized, setIsMaximized] = useState(false);
   const [windowWidth, setWindowWidth] = useState(0);
   const [divWindow, setDivWindow] = useState(1918);
@@ -337,16 +649,6 @@ export default function ChatComponent() {
     const width = window.innerWidth;
     previousWidthRef.current = width;
   }, []);
-
-  const divRef = useRef(null);
-  const [divWidth, setDivWidth] = useState(0);
-  const cb = {
-    sm: 640,
-    md: 768,
-    lg: 1024,
-    xl: 1280,
-    "2xl": 1536,
-  };
 
   useEffect(() => {
     const div = document.getElementById("div-window");
@@ -503,7 +805,7 @@ export default function ChatComponent() {
   //useEffect runs on orderId
 
   useEffect(() => {
-    if (!user) setShowSidebar(false);
+    if (!user || !user.email) setShowSidebar(false);
     else setShowSidebar(getLocal("faqSidebarOpen", false));
   }, [user]);
 
@@ -646,7 +948,23 @@ export default function ChatComponent() {
     // resetTextareaHeight();
   }
 
+  const handleTextareaKeyDown = (e) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      // Submit form programmatically
+      if (isHumanTalk) {
+        sendMessage();
+      } else {
+        handleSendMessage(e);
+      }
+    }
+    // Shift+Enter will insert a new line by default (no need to handle)
+  };
+
   function handleQuickBtn(msg) {
+    if (isHumanTalk) {
+      setMsgToBoth(true);
+    }
     setInputMsg(msg);
     setTimeout(() => {
       if (messageSubmitButtonRef.current && !loading) {
@@ -656,6 +974,9 @@ export default function ChatComponent() {
   }
 
   function handleFaqBtn(msg) {
+    if (isHumanTalk) {
+      setMsgToBoth(true);
+    }
     setInputMsg(msg);
     setTimeout(() => {
       if (messageSubmitButtonRef.current && !loading) {
@@ -669,6 +990,9 @@ export default function ChatComponent() {
   }
 
   function handleWelcomeBtn(msg) {
+    if (isHumanTalk) {
+      setMsgToBoth(true);
+    }
     setInputMsg(msg);
     setTimeout(() => {
       if (messageSubmitButtonRef.current && !loading) {
@@ -767,19 +1091,82 @@ export default function ChatComponent() {
     };
   }, [inputMsg]);
 
+  const handleEndChat = async (id) => {
+    setLoading(true);
+    try {
+      const response = await fetch(app_url + "/end-chat", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          chat_conversation_id: id,
+        }),
+      });
+      if (!response.ok) throw new Error("Network response was not ok");
+      // Optionally parse response: const data = await response.json();
+      let chatUser = getLocal("chat_user", {});
+      chatUser.isHumanTalk = false;
+      chatUser.conversationId = null;
+      setLocal("chat_user", chatUser);
+      toast.success("Chat has been ended.");
+      console.log("chat ended");
+    } catch (errors) {
+      toast.error("Failed to end chat.");
+      console.error("Failed to accept chat", errors);
+      setLoading(false);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  function onClickEandleEndChat() {
+    if (
+      window.confirm(
+        "Are you sure you want to end your session with the agent."
+      )
+    ) {
+      handleEndChat(conversationId);
+      setConversationId(null);
+      setIsHumanTalk(false);
+    }
+  }
+
   function handleClearChat() {
-    if (window.confirm("Are you sure you want to clear the chat?")) {
-      setChatHistory([]);
-      setShowWelcome(true);
+    if (isHumanTalk) {
+      if (
+        window.confirm(
+          "Are you sure you want to clear the chat? This will also end your session with the agent."
+        )
+      ) {
+        handleEndChat(conversationId);
+        setConversationId(null);
+        setIsHumanTalk(false);
+        setChatHistory([]);
+        setShowWelcome(true);
+      }
+    } else {
+      if (window.confirm("Are you sure you want to clear the chat?")) {
+        setChatHistory([]);
+        setShowWelcome(true);
+      }
     }
   }
 
   function handleLogout() {
-    if (window.confirm("Are you sure you want to logout?")) {
-      setUser(null);
+    if (window.confirm("Are you sure you want to logout and exit?")) {
+      if (isHumanTalk) {
+        handleEndChat(conversationId);
+      }
+      setConversationId(null);
+      setIsHumanTalk(false);
+      setUser({ isHumanTalk: false, conversationId: null });
+      // setIsOpen(false);
       setChatHistory([]);
       setOrderId("");
       setUserDetails(null);
+      setConversationId(null);
+      setIsHumanTalk(false);
       setShowSidebar(false);
       setShowWelcome(false);
       setShowQuick(false);
@@ -793,7 +1180,7 @@ export default function ChatComponent() {
   );
 
   function getQuickBtns() {
-    if (!user || !user.email_exist) return [];
+    if (!user || !user.email || !user.email_exist) return [];
     const lowerInput = (inputMsg || "").toLowerCase();
     const scored = quickQuestions.map((q) => ({
       ...q,
@@ -965,10 +1352,82 @@ export default function ChatComponent() {
     );
   }
 
+  function talkToHumanButtonResponse() {
+    if (isHumanTalk) return null;
+    return (
+      <button
+        disabled={(loading, isHumanTalk)}
+        onClick={handleRequestHuman}
+        className="px-3 sm:px-4 py-1.5 mt-2 sm:py-2 text-xs sm:text-sm text-gray-500 border bg-gray-50 hover:border-gray-400 border-gray-300 shadow-sm rounded-lg flex items-center gap-1"
+        aria-label="Talk To Human"
+      >
+        <FaUser size={16} />
+        <span className={`${divWidth <= cb.sm ? "" : ""}`}>
+          {isHumanTalk ? "Talk To Human (Requested)" : "Talk To Human"}
+        </span>
+      </button>
+    );
+  }
+
   const BotComponentMap = {
     OrderIdFormBotMessage: OrderIdFormBotMessage,
+    talkToHumanButtonResponse: talkToHumanButtonResponse,
     // Add more components here as needed
   };
+
+  function renderBotStringWithComponent(text) {
+    const keyword = "talkToHumanButtonResponse";
+    if (typeof text !== "string" || !text.includes(keyword)) {
+      // Fallback: just render as plain HTML
+      return (
+        <div
+          className="whitespace-pre-line"
+          dangerouslySetInnerHTML={{ __html: text }}
+        />
+      );
+    }
+
+    // Split at keyword; handle multiple occurrences if needed
+    const parts = text.split(keyword);
+    const TalkToHumanButtonResponse = talkToHumanButtonResponse;
+    // Only support first occurrence for now (easy to extend if you want)
+    return (
+      <>
+        {parts[0] && (
+          <div
+            className="whitespace-pre-line"
+            dangerouslySetInnerHTML={{ __html: parts[0].trim() }}
+          />
+        )}
+        <TalkToHumanButtonResponse />
+        {parts[1] && parts[1].trim() && (
+          <div
+            className="mt-2 whitespace-pre-line"
+            dangerouslySetInnerHTML={{ __html: parts[1].trim() }}
+          />
+        )}
+      </>
+    );
+  }
+
+  function handleChatSubmit(e) {
+    e.preventDefault();
+
+    // Your flag to decide if message goes to both
+    if (isHumanTalk && msgToBoth) {
+      // For both human and bot
+      sendMessage();
+      handleSendMessage(e);
+      setMsgToBoth(false);
+      return;
+    }
+
+    if (isHumanTalk) {
+      sendMessage();
+    } else {
+      handleSendMessage(e);
+    }
+  }
 
   // UI
   return (
@@ -981,6 +1440,7 @@ export default function ChatComponent() {
           : ""
       }`}
     >
+      <Toaster position="bottom-center" />
       {/* Floating Icon */}
       {!isOpen && (
         <button
@@ -1040,7 +1500,7 @@ export default function ChatComponent() {
             >
               {/* Header */}
               <header className="flex items-center justify-between w-full p-4 text-gray-600 bg-white border-b border-gray-200">
-                {user && (
+                {user && user.email && (
                   <button
                     id="open-faq"
                     className={`px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm text-gray-400 border bg-gray-50 hover:border-gray-200 border-gray-50 rounded-lg flex items-center gap-1`}
@@ -1053,7 +1513,10 @@ export default function ChatComponent() {
                   </button>
                 )}
                 <div>
-                  <div id="chat-controls" className={user ? "" : "hidden"}>
+                  <div
+                    id="chat-controls"
+                    className={user && user.email ? "" : "hidden"}
+                  >
                     <div className="flex gap-1">
                       <p
                         id="email-exist"
@@ -1075,7 +1538,36 @@ export default function ChatComponent() {
                         value={orderId}
                         onChange={(e) => setOrderId(e.target.value)}
                       />
-
+                      {/* {!isHumanTalk && (
+                        <button
+                          disabled={loading}
+                          onClick={handleRequestHuman}
+                          className={`px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm text-gray-400 border bg-gray-50 hover:border-gray-200 border-gray-50 rounded-lg flex items-center gap-1`}
+                          aria-label="Talk To Human"
+                        >
+                          <FaUser size={16} />{" "}
+                          <span
+                            className={`${divWidth <= cb.sm ? "hidden" : ""}`}
+                          >
+                            Talk To Human
+                          </span>
+                        </button>
+                      )} */}
+                      {isHumanTalk && (
+                        <button
+                          disabled={loading}
+                          onClick={onClickEandleEndChat}
+                          className={`px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm text-gray-400 border bg-gray-50 hover:border-gray-200 border-gray-50 rounded-lg flex items-center gap-1`}
+                          aria-label="End Chat"
+                        >
+                          <FaSignOutAlt size={18} />{" "}
+                          <span
+                            className={`${divWidth <= cb.sm ? "hidden" : ""}`}
+                          >
+                            End Chat
+                          </span>
+                        </button>
+                      )}
                       <button
                         disabled={loading}
                         onClick={handleClearChat}
@@ -1134,42 +1626,43 @@ export default function ChatComponent() {
                     </div>
                   </div>
                 </div>
-                {!user && (
-                  <>
-                    <p className="w-full text-base font-semibold text-left text-gray-500">
-                      Welcome To Mayfair Assistant
-                    </p>
-                    <div className="flex gap-1">
-                      {window.innerWidth >= cb.sm && (
+                {!user ||
+                  (!user.email && (
+                    <>
+                      <p className="w-full text-base font-semibold text-left text-gray-500">
+                        Welcome To Mayfair Assistant
+                      </p>
+                      <div className="flex gap-1">
+                        {window.innerWidth >= cb.sm && (
+                          <button
+                            onClick={() => {
+                              setIsMaximized((prev) => !prev);
+                              if (window.innerWidth <= cb.sm) {
+                                toggleFullScreen();
+                              }
+                            }}
+                            className={`px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm text-gray-400 border bg-gray-50 hover:border-gray-200 border-gray-50 rounded-lg flex items-center gap-1`}
+                            aria-label={isMaximized ? "Minimize" : "Maximize"}
+                          >
+                            {/* {isMaximized ? "🗕" : "🗖"} */}
+                            {isMaximized ? (
+                              <FiMaximize2 size={20} />
+                            ) : (
+                              <FiMinimize2 size={20} />
+                            )}
+                          </button>
+                        )}
                         <button
-                          onClick={() => {
-                            setIsMaximized((prev) => !prev);
-                            if (window.innerWidth <= cb.sm) {
-                              toggleFullScreen();
-                            }
-                          }}
+                          onClick={() => setIsOpen(false)}
                           className={`px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm text-gray-400 border bg-gray-50 hover:border-gray-200 border-gray-50 rounded-lg flex items-center gap-1`}
-                          aria-label={isMaximized ? "Minimize" : "Maximize"}
+                          aria-label="Close"
                         >
-                          {/* {isMaximized ? "🗕" : "🗖"} */}
-                          {isMaximized ? (
-                            <FiMaximize2 size={20} />
-                          ) : (
-                            <FiMinimize2 size={20} />
-                          )}
+                          {/* <FiXCircle size={20} /> */}
+                          <FaTimes size={17} />
                         </button>
-                      )}
-                      <button
-                        onClick={() => setIsOpen(false)}
-                        className={`px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm text-gray-400 border bg-gray-50 hover:border-gray-200 border-gray-50 rounded-lg flex items-center gap-1`}
-                        aria-label="Close"
-                      >
-                        {/* <FiXCircle size={20} /> */}
-                        <FaTimes size={17} />
-                      </button>
-                    </div>
-                  </>
-                )}
+                      </div>
+                    </>
+                  ))}
               </header>
 
               {/* User Settings Modal */}
@@ -1250,7 +1743,7 @@ export default function ChatComponent() {
                           required
                         />
                       </div>
-                      <div>
+                      <div className="hidden">
                         <label className="block mb-1 text-sm text-gray-700 font-base">
                           Order ID
                         </label>
@@ -1291,7 +1784,7 @@ export default function ChatComponent() {
               )}
 
               <div className="flex flex-1">
-                {user && (
+                {user && user.email && (
                   <>
                     <div
                       className={`transition-all duration-400 ease-in-out bg-gray-100  max-w-100 ${
@@ -1472,123 +1965,124 @@ export default function ChatComponent() {
                   }}
                 >
                   {/* Email prompt */}
-                  {!user && (
-                    <form
-                      id="email-prompt"
-                      className="flex flex-col items-center justify-center flex-1 h-full p-4 space-y-2 overflow-y-auto text-gray-700 bg-white scrollbar-hide sm:p-6 sm:space-y-3"
-                      onSubmit={async (e) => {
-                        e.preventDefault();
-                        setLoading(true);
-                        const fname = e.target.fname.value.trim();
-                        const lname = e.target.lname.value.trim();
-                        const email = e.target.email.value.trim();
-                        const order = e.target.orderId.value.trim();
-                        if (!fname || !lname) {
-                          alert("Please provide your first and last name.");
+                  {!user ||
+                    (!user.email && (
+                      <form
+                        id="email-prompt"
+                        className="flex flex-col items-center justify-center flex-1 h-full p-4 space-y-2 overflow-y-auto text-gray-700 bg-white scrollbar-hide sm:p-6 sm:space-y-3"
+                        onSubmit={async (e) => {
+                          e.preventDefault();
+                          setLoading(true);
+                          const fname = e.target.fname.value.trim();
+                          const lname = e.target.lname.value.trim();
+                          const email = e.target.email.value.trim();
+                          const order = e.target.orderId.value.trim();
+                          if (!fname || !lname) {
+                            alert("Please provide your first and last name.");
+                            setLoading(false);
+                            return;
+                          }
+                          if (!email) {
+                            alert("Please provide an email to continue.");
+                            setLoading(false);
+                            return;
+                          }
+                          if (
+                            !/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(
+                              email
+                            )
+                          ) {
+                            alert("Please provide a valid email address.");
+                            setLoading(false);
+                            return;
+                          }
+                          try {
+                            const res = await fetch(
+                              app_url + "/consultant-chat-verify",
+                              {
+                                method: "POST",
+                                headers: { "Content-Type": "application/json" },
+                                body: JSON.stringify({ email, orderId: order }),
+                              }
+                            );
+                            const data = await res.json();
+                            setUser({
+                              email,
+                              email_exist: data.email_exist,
+                              fname,
+                              lname,
+                            });
+                            setChatHistory([]);
+                            setOrderId(order);
+                            setShowWelcome(true);
+                            setShowQuick(data.email_exist);
+                            setShowEmailExist(!data.email_exist);
+                          } catch {
+                            alert("Verification failed.");
+                          }
                           setLoading(false);
-                          return;
-                        }
-                        if (!email) {
-                          alert("Please provide an email to continue.");
-                          setLoading(false);
-                          return;
-                        }
-                        if (
-                          !/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(
-                            email
-                          )
-                        ) {
-                          alert("Please provide a valid email address.");
-                          setLoading(false);
-                          return;
-                        }
-                        try {
-                          const res = await fetch(
-                            app_url + "/consultant-chat-verify",
-                            {
-                              method: "POST",
-                              headers: { "Content-Type": "application/json" },
-                              body: JSON.stringify({ email, orderId: order }),
-                            }
-                          );
-                          const data = await res.json();
-                          setUser({
-                            email,
-                            email_exist: data.email_exist,
-                            fname,
-                            lname,
-                          });
-                          setChatHistory([]);
-                          setOrderId(order);
-                          setShowWelcome(true);
-                          setShowQuick(data.email_exist);
-                          setShowEmailExist(!data.email_exist);
-                        } catch {
-                          alert("Verification failed.");
-                        }
-                        setLoading(false);
-                      }}
-                    >
-                      <label className="flex items-center gap-2 text-xs text-gray-700 sm:text-sm">
-                        <FaSignOutAlt className="text-violet-600" />
-                        Please provide your details to continue:
-                      </label>
-
-                      <input
-                        type="text"
-                        name="fname"
-                        required
-                        placeholder="First Name"
-                        defaultValue={prefill?.fname}
-                        className="w-full max-w-md px-3 py-2 text-sm text-gray-700 placeholder-gray-400 border border-gray-200 rounded-lg bg-gray-50 sm:px-4 focus:outline-none"
-                      />
-                      <input
-                        type="text"
-                        name="lname"
-                        required
-                        placeholder="Last Name"
-                        defaultValue={prefill?.lname}
-                        className="w-full max-w-md px-3 py-2 text-sm text-gray-700 placeholder-gray-400 border border-gray-200 rounded-lg bg-gray-50 sm:px-4 focus:outline-none"
-                      />
-                      <input
-                        type="email"
-                        name="email"
-                        placeholder="you@example.com"
-                        defaultValue={prefill?.email}
-                        className="w-full max-w-md px-3 py-2 text-sm text-gray-700 placeholder-gray-400 border border-gray-200 rounded-lg bg-gray-50 sm:px-4 focus:outline-none"
-                        required
-                      />
-                      <input
-                        type="text"
-                        name="orderId"
-                        placeholder="Order ID (optional)"
-                        defaultValue={prefill?.orderId}
-                        className="w-full max-w-md px-3 py-2 text-sm text-gray-700 placeholder-gray-400 border border-gray-200 rounded-lg bg-gray-50 sm:px-4 focus:outline-none"
-                      />
-
-                      <button
-                        type="submit"
-                        className={`flex items-center gap-2 px-4 py-2 mt-2 text-sm text-white transition rounded-lg ${
-                          loading
-                            ? "bg-violet-600"
-                            : "bg-violet-600 hover:bg-violet-700"
-                        } sm:text-base`}
-                        disabled={loading}
+                        }}
                       >
-                        <FaSignOutAlt />
-                        {loading ? (
-                          <span className="flex items-center justify-center w-full">
-                            Verifying...
-                            <span className="inline-block w-6 h-6 ml-3 border-4 border-white rounded-full border-t-transparent animate-spin"></span>
-                          </span>
-                        ) : (
-                          "Continue"
-                        )}
-                      </button>
-                    </form>
-                  )}
+                        <label className="flex items-center gap-2 text-xs text-gray-700 sm:text-sm">
+                          <FaSignOutAlt className="text-violet-600" />
+                          Please provide your details to continue:
+                        </label>
+
+                        <input
+                          type="text"
+                          name="fname"
+                          required
+                          placeholder="First Name"
+                          defaultValue={prefill?.fname}
+                          className="w-full max-w-md px-3 py-2 text-sm text-gray-700 placeholder-gray-400 border border-gray-200 rounded-lg bg-gray-50 sm:px-4 focus:outline-none"
+                        />
+                        <input
+                          type="text"
+                          name="lname"
+                          required
+                          placeholder="Last Name"
+                          defaultValue={prefill?.lname}
+                          className="w-full max-w-md px-3 py-2 text-sm text-gray-700 placeholder-gray-400 border border-gray-200 rounded-lg bg-gray-50 sm:px-4 focus:outline-none"
+                        />
+                        <input
+                          type="email"
+                          name="email"
+                          placeholder="you@example.com"
+                          defaultValue={prefill?.email}
+                          className="w-full max-w-md px-3 py-2 text-sm text-gray-700 placeholder-gray-400 border border-gray-200 rounded-lg bg-gray-50 sm:px-4 focus:outline-none"
+                          required
+                        />
+                        <input
+                          type="text"
+                          name="orderId"
+                          placeholder="Order ID (optional)"
+                          defaultValue={prefill?.orderId}
+                          className="hidden w-full max-w-md px-3 py-2 text-sm text-gray-700 placeholder-gray-400 border border-gray-200 rounded-lg bg-gray-50 sm:px-4 focus:outline-none"
+                        />
+
+                        <button
+                          type="submit"
+                          className={`flex items-center gap-2 px-4 py-2 mt-2 text-sm text-white transition rounded-lg ${
+                            loading
+                              ? "bg-violet-600"
+                              : "bg-violet-600 hover:bg-violet-700"
+                          } sm:text-base`}
+                          disabled={loading}
+                        >
+                          <FaSignOutAlt />
+                          {loading ? (
+                            <span className="flex items-center justify-center w-full">
+                              Verifying...
+                              <span className="inline-block w-6 h-6 ml-3 border-4 border-white rounded-full border-t-transparent animate-spin"></span>
+                            </span>
+                          ) : (
+                            "Continue"
+                          )}
+                        </button>
+                      </form>
+                    ))}
                   {/* Chat box */}
-                  {user && (
+                  {user && user.email && (
                     <>
                       <div
                         id="chat-box"
@@ -1796,25 +2290,49 @@ export default function ChatComponent() {
                           </div>
                         )}
                         {/* Chat bubbles */}
+
                         {chatHistory.map((msg, i) => {
                           const BotComponent =
                             typeof msg.text === "string" &&
                             BotComponentMap[msg.text.trim()]
                               ? BotComponentMap[msg.text.trim()]
                               : null;
+                          const isAgent = msg.sender === "agent";
+                          const isUser = msg.sender === "user";
+                          // Format time (e.g., "10:45 AM")
+                          const formattedTime = msg.time
+                            ? new Date(msg.time).toLocaleTimeString([], {
+                                hour: "2-digit",
+                                minute: "2-digit",
+                              })
+                            : "";
 
                           if (msg.sender === "user") {
                             return (
                               <div key={i} className="flex justify-end">
+                                {/* Sender name for agent */}
+                                {isAgent && (
+                                  <div className="mb-1 text-sm font-semibold text-violet-700">
+                                    {msg.name}
+                                  </div>
+                                )}
                                 <div
-                                  className={`bg-violet-500 text-white px-4 py-2 rounded-xl text-sm ${
+                                  className={`bg-violet-100 text-gray-700 shadow-sm px-4 py-2 mt-1 rounded-xl ${
                                     divWidth <= cb.sm
                                       ? "max-w-[95%]"
                                       : "max-w-[80%]"
                                   }`}
                                 >
                                   {msg.text}
+                                  <div
+                                    className={`text-[10px] mt-1 text-right ${
+                                      isUser ? "text-gray-500" : "text-gray-500"
+                                    }`}
+                                  >
+                                    {formattedTime}
+                                  </div>
                                 </div>
+                                {/* Time */}
                               </div>
                             );
                           } else if (BotComponent) {
@@ -1824,7 +2342,7 @@ export default function ChatComponent() {
                                 className="flex justify-start w-full"
                               >
                                 <div
-                                  className={`bg-gray-200 text-gray-800 px-4 py-2 rounded-xl text-sm ${
+                                  className={`bg-gray-200 text-gray-800 px-4 py-2 rounded-xl ${
                                     divWidth <= cb.sm
                                       ? "max-w-[95%]"
                                       : "max-w-[80%]"
@@ -1834,23 +2352,86 @@ export default function ChatComponent() {
                                 </div>
                               </div>
                             );
-                          } else {
+                          }
+                          // else {
+                          //   return (
+                          //     <div
+                          //       key={i}
+                          //       className={`flex ${
+                          //         isUser ? "justify-end" : "justify-start"
+                          //       } w-full mb-2`}
+                          //     >
+                          //       <div
+                          //         className={`rounded-xl px-4 py-2 max-w-[80%] min-w-[5%] shadow-sm ${
+                          //           isUser
+                          //             ? "bg-violet-100 text-gray-700"
+                          //             : "bg-gray-200 text-gray-900 border border-gray-200"
+                          //         }`}
+                          //         style={{ position: "relative" }}
+                          //       >
+                          //         {/* Sender name for agent */}
+                          //         {isAgent && (
+                          //           <div className="mb-1 text-sm font-semibold text-violet-700">
+                          //             {msg.name}
+                          //           </div>
+                          //         )}
+                          //         {/* Message text */}
+                          //         <div
+                          //           className="whitespace-pre-line"
+                          //           dangerouslySetInnerHTML={{
+                          //             __html: msg.text,
+                          //           }}
+                          //         ></div>
+                          //         {/* Time */}
+                          //         <div
+                          //           className={`text-[10px] mt-1 text-right ${
+                          //             isUser ? "text-gray-500" : "text-gray-500"
+                          //           }`}
+                          //         >
+                          //           {formattedTime}
+                          //         </div>
+                          //       </div>
+                          //     </div>
+                          //   );
+                          // }
+                          else {
                             return (
-                              <div key={i} className="flex justify-start">
+                              <div
+                                key={i}
+                                className={`flex ${
+                                  isUser ? "justify-end" : "justify-start"
+                                } w-full mb-2`}
+                              >
                                 <div
-                                  className={`bg-gray-200 text-gray-800 px-4 py-2 rounded-xl text-sm ${
-                                    divWidth <= cb.sm
-                                      ? "max-w-[95%]"
-                                      : "max-w-[80%]"
+                                  className={`rounded-xl px-4 py-2 max-w-[80%] min-w-[5%] shadow-sm ${
+                                    isUser
+                                      ? "bg-violet-100 text-gray-700"
+                                      : "bg-gray-200 text-gray-900 border border-gray-200"
                                   }`}
-                                  dangerouslySetInnerHTML={{
-                                    __html: msg.text,
-                                  }}
-                                />
+                                  style={{ position: "relative" }}
+                                >
+                                  {/* Sender name for agent */}
+                                  {isAgent && (
+                                    <div className="mb-1 text-sm font-semibold text-violet-700">
+                                      {msg.name}
+                                    </div>
+                                  )}
+                                  {/* Message text with component replacement */}
+                                  {renderBotStringWithComponent(msg.text)}
+                                  {/* Time */}
+                                  <div
+                                    className={`text-[10px] mt-1 text-right ${
+                                      isUser ? "text-gray-500" : "text-gray-500"
+                                    }`}
+                                  >
+                                    {formattedTime}
+                                  </div>
+                                </div>
                               </div>
                             );
                           }
                         })}
+
                         {loading && (
                           <div className="flex justify-start">
                             <div className="max-w-xs px-4 py-2 text-sm italic text-gray-600 bg-gray-300 rounded-xl animate-pulse">
@@ -1911,7 +2492,7 @@ export default function ChatComponent() {
                         <form
                           id="chat-form"
                           className="flex flex-col w-full gap-2 p-3 px-4 text-gray-700 bg-white border-t border-gray-200 sm:p-4"
-                          onSubmit={handleSendMessage}
+                          onSubmit={handleChatSubmit}
                         >
                           <div className="flex flex-1 w-full gap-2">
                             <textarea
@@ -1927,6 +2508,7 @@ export default function ChatComponent() {
                               spellCheck="false"
                               rows={1}
                               id="message"
+                              onKeyDown={handleTextareaKeyDown}
                               onFocus={handleFocus}
                               onBlur={handleBlur}
                               className="flex-1 px-3 py-2 text-sm text-gray-700 placeholder-gray-400 border border-gray-200 rounded-xl sm:px-4 sm:text-base focus:outline-none focus:ring focus:border-gray-300"
