@@ -26,6 +26,8 @@ import useLastBmi from "@/store/useLastBmiStore";
 import useSignupStore from "@/store/signupStore";
 import useBmiStore from "@/store/bmiStore";
 import useUserDataStore from "@/store/userDataStore";
+import MetaLayout from "@/Meta/MetaLayout";
+import { meta_url } from "@/config/constants";
 
 export default function GatherData() {
   const router = useRouter();
@@ -54,8 +56,8 @@ export default function GatherData() {
   const { clearLastBmi } = useLastBmi();
   const { clearUserData } = useUserDataStore();
 
-  const { clearFirstName, clearLastName, clearEmail, clearConfirmationEmail } = useSignupStore();
-
+  const { clearFirstName, clearLastName, clearEmail, clearConfirmationEmail } =
+    useSignupStore();
 
   // Variations fetch mutation
   const variationMutation = useMutation(getVariationsApi, {
@@ -100,8 +102,6 @@ export default function GatherData() {
         } else {
           setShowLoader(false);
           toast.error(error?.response?.data?.errors?.Product);
-
-
         }
       }
     },
@@ -118,10 +118,10 @@ export default function GatherData() {
 
   return (
     <>
+      <MetaLayout canonical={`${meta_url}`} />
       <StepsHeader />
       {showLoader && (
         <div className="absolute inset-0 z-20 flex justify-center items-center bg-white/60 rounded-lg cursor-not-allowed">
-
           <PageLoader />
         </div>
       )}

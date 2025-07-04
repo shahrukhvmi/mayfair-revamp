@@ -5,7 +5,7 @@ export default function FullScreenModal({ isOpen, onClose, children }) {
     <AnimatePresence>
       {isOpen && (
         <motion.div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm"
+          className="fixed inset-0 z-50 flex items-center justify-center"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
@@ -18,7 +18,7 @@ export default function FullScreenModal({ isOpen, onClose, children }) {
             transition={{ type: "spring", stiffness: 80 }}
             style={{
               borderRadius: 0, // No rounded corners
-              scrollbarGutter: 'stable',
+              scrollbarGutter: "stable",
             }}
           >
             {/* Optional Close Button */}

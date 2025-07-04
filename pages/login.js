@@ -21,6 +21,8 @@ import useLoginModalStore from "@/store/useLoginModalStore";
 import Link from "next/link";
 import useImpersonate from "@/store/useImpersonateStore";
 import useAuthUserDetailStore from "@/store/useAuthUserDetailStore";
+import MetaLayout from "@/Meta/MetaLayout";
+import { meta_url } from "@/config/constants";
 
 export default function LoginScreen() {
   const [showLoader, setShowLoader] = useState(false);
@@ -161,6 +163,7 @@ export default function LoginScreen() {
 
   return (
     <>
+      <MetaLayout canonical={`${meta_url}`} />
       <StepsHeader />
       {/* <FormWrapper
         heading="Login"

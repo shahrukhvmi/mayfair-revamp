@@ -10,6 +10,8 @@ import { useRouter } from "next/navigation";
 import { FaRegCircle, FaDotCircle } from "react-icons/fa";
 import useConfirmationQuestionsStore from "@/store/confirmationQuestionStore";
 import useConfirmationInfoStore from "@/store/confirmationInfoStore";
+import MetaLayout from "@/Meta/MetaLayout";
+import { meta_url } from "@/config/constants";
 
 export default function PatientConsent() {
   const router = useRouter();
@@ -58,13 +60,19 @@ export default function PatientConsent() {
   }, [questions]);
 
   const handleCheckboxChange = (id, value) => {
-    const updated = questions.map((q) => (q.id === id ? { ...q, answer: value, has_check_list: true, has_checklist: true } : q));
+    const updated = questions.map((q) =>
+      q.id === id
+        ? { ...q, answer: value, has_check_list: true, has_checklist: true }
+        : q
+    );
 
     setQuestions(updated);
     setValue(`responses[${id}].answer`, value);
   };
 
-  const isNextEnabled = questions.every((q) => watch(`responses[${q.id}].answer`) === true);
+  const isNextEnabled = questions.every(
+    (q) => watch(`responses[${q.id}].answer`) === true
+  );
 
   console.log(questions, "questions");
 
@@ -78,20 +86,30 @@ export default function PatientConsent() {
 
   return (
     <>
+      <MetaLayout canonical={`${meta_url}`} />
       <StepsHeader />
 
       <FormWrapper heading={"Patient Consent"} percentage={"85"}>
         <PageAnimationWrapper>
           <div className="pt-2 pb-6">
-            <div className={`relative ${showLoader ? "pointer-events-none cursor-not-allowed" : ""}`}>
+            <div
+              className={`relative ${
+                showLoader ? "pointer-events-none cursor-not-allowed" : ""
+              }`}
+            >
               <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
                 {questions.map((q) => {
                   const selectedAnswer = watch(`responses[${q.id}].answer`);
 
                   return (
-                    <div key={q.id} className="space-y-4 border rounded-md border-gray-700 p-5">
+                    <div
+                      key={q.id}
+                      className="space-y-4 border rounded-md border-gray-700 p-5"
+                    >
                       {/* Question and Checkbox */}
-                      <span className="bold-font text-gray-700 sm:text-lg text-sm">I confirm and understand that:</span>
+                      <span className="bold-font text-gray-700 sm:text-lg text-sm">
+                        I confirm and understand that:
+                      </span>
                       {/* Checklist (if exists) */}
                       {q.checklist && (
                         <div
@@ -105,17 +123,25 @@ export default function PatientConsent() {
                           type="checkbox"
                           id={`question-${q.id}`}
                           checked={selectedAnswer}
-                          onChange={(e) => handleCheckboxChange(q.id, e.target.checked)}
+                          onChange={(e) =>
+                            handleCheckboxChange(q.id, e.target.checked)
+                          }
                           className="hidden"
                         />
-                        <label htmlFor={`question-${q.id}`} className="flex items-start gap-2 cursor-pointer">
+                        <label
+                          htmlFor={`question-${q.id}`}
+                          className="flex items-start gap-2 cursor-pointer"
+                        >
                           {selectedAnswer ? (
                             <FaDotCircle className="text-primary sm:w-9 w-18 h-18 sm:h-9 mt-1" />
                           ) : (
                             <FaRegCircle className="text-violet-700 sm:w-9 sm:h-9 w-18 h-18 mt-1" />
                           )}
                           <span className="bold-font text-gray-700 sm:text-lg text-sm">
-                            {q.question.replace("I confirm and understand that:", "").replace("below", "above").trim()}
+                            {q.question
+                              .replace("I confirm and understand that:", "")
+                              .replace("below", "above")
+                              .trim()}
                           </span>
                         </label>
                       </div>
@@ -124,10 +150,18 @@ export default function PatientConsent() {
                 })}
 
                 {/* Show error if not accepted */}
-                {!isNextEnabled && <p className="text-sm text-red-500 mt-2">You must confirm before proceeding.</p>}
+                {!isNextEnabled && (
+                  <p className="text-sm text-red-500 mt-2">
+                    You must confirm before proceeding.
+                  </p>
+                )}
 
                 <NextButton label="Next" disabled={!isNextEnabled} />
-                <BackButton label="Back" className="mt-2" onClick={() => router.push("/medical-questions")} />
+                <BackButton
+                  label="Back"
+                  className="mt-2"
+                  onClick={() => router.push("/medical-questions")}
+                />
               </form>
 
               {showLoader && (

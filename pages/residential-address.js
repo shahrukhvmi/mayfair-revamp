@@ -12,10 +12,18 @@ import PageLoader from "@/Components/PageLoader/PageLoader";
 import BackButton from "@/Components/BackButton/BackButton";
 import usePatientInfoStore from "@/store/patientInfoStore";
 import { Client } from "getaddress-api";
-import { FormControl, InputLabel, Select, MenuItem, FormHelperText } from "@mui/material";
+import {
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  FormHelperText,
+} from "@mui/material";
 import MUISelectField from "@/Components/SelectField/SelectField";
 import { motion } from "framer-motion";
 import toast from "react-hot-toast";
+import MetaLayout from "@/Meta/MetaLayout";
+import { meta_url } from "@/config/constants";
 
 const api = new Client("_UFb05P76EyMidU1VHIQ_A42976");
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
@@ -53,7 +61,8 @@ export default function ResidentialAddress() {
   const country = watch("country");
 
   // 👇 Enable Next only when required fields are filled
-  const isNextEnabled = !!address1?.trim() && !!city?.trim() && !!country?.trim();
+  const isNextEnabled =
+    !!address1?.trim() && !!city?.trim() && !!country?.trim();
 
   const handleSearch = async () => {
     setAddressSearchLoading(true);
@@ -90,7 +99,12 @@ export default function ResidentialAddress() {
       setValue("city", patientInfo.address.city || "");
       setValue("country", patientInfo.address.country || "");
 
-      if (patientInfo.address.addressone || patientInfo.address.addresstwo || patientInfo.address.city || patientInfo.address.country) {
+      if (
+        patientInfo.address.addressone ||
+        patientInfo.address.addresstwo ||
+        patientInfo.address.city ||
+        patientInfo.address.country
+      ) {
         setManual(true);
       }
     }
@@ -114,15 +128,31 @@ export default function ResidentialAddress() {
 
   return (
     <>
+      <MetaLayout canonical={`${meta_url}`} />
       <StepsHeader />
-      <FormWrapper heading="Mention Your Residential Address" description="Required for age verification purpose" percentage="40">
+      <FormWrapper
+        heading="Mention Your Residential Address"
+        description="Required for age verification purpose"
+        percentage="40"
+      >
         <PageAnimationWrapper>
           <div>
-            <div className={`relative ${showLoader ? "pointer-events-none cursor-not-allowed" : ""}`}>
+            <div
+              className={`relative ${
+                showLoader ? "pointer-events-none cursor-not-allowed" : ""
+              }`}
+            >
               <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
                 <div className="space-y-6">
                   <div className="relative">
-                    <TextField label="Post code" name="postalCode" placeholder="W1A 1AA" register={register} required errors={errors} />
+                    <TextField
+                      label="Post code"
+                      name="postalCode"
+                      placeholder="W1A 1AA"
+                      register={register}
+                      required
+                      errors={errors}
+                    />
                     <button
                       type="button"
                       onClick={handleSearch}
@@ -162,10 +192,18 @@ export default function ResidentialAddress() {
                         setSelectedIndex(idx);
 
                         // ✅ Set values and revalidate to clear any existing errors
-                        setValue("address1", selected.line_1 || "", { shouldValidate: true });
-                        setValue("address2", selected.line_2 || "", { shouldValidate: true }); // optional but still validate
-                        setValue("city", selected.town_or_city || "", { shouldValidate: true });
-                        setValue("country", selected.country || "", { shouldValidate: true });
+                        setValue("address1", selected.line_1 || "", {
+                          shouldValidate: true,
+                        });
+                        setValue("address2", selected.line_2 || "", {
+                          shouldValidate: true,
+                        }); // optional but still validate
+                        setValue("city", selected.town_or_city || "", {
+                          shouldValidate: true,
+                        });
+                        setValue("country", selected.country || "", {
+                          shouldValidate: true,
+                        });
                       }}
                       options={addressOptions.map((addr, idx) => ({
                         value: idx,
@@ -176,23 +214,60 @@ export default function ResidentialAddress() {
                   )}
 
                   <div className="text-sm sm:text-right text-center">
-                    <button type="button" onClick={() => setManual(!manual)} className="bold-font paragraph underline transition cursor-pointer">
-                      {manual ? "Hide manual address entry" : "Enter your address manually"}
+                    <button
+                      type="button"
+                      onClick={() => setManual(!manual)}
+                      className="bold-font paragraph underline transition cursor-pointer"
+                    >
+                      {manual
+                        ? "Hide manual address entry"
+                        : "Enter your address manually"}
                     </button>
                   </div>
 
                   {manual && (
                     <div className="space-y-4">
-                      <TextField label="Address" name="address1" placeholder="123 Main Street" register={register} required errors={errors} />
-                      <TextField label="Address 2" name="address2" placeholder="Flat 14" register={register} errors={errors} />
-                      <TextField label="Town / City" name="city" placeholder="e.g., London" register={register} required errors={errors} />
-                      <TextField label="Country" name="country" placeholder="England" register={register} required errors={errors} />
+                      <TextField
+                        label="Address"
+                        name="address1"
+                        placeholder="123 Main Street"
+                        register={register}
+                        required
+                        errors={errors}
+                      />
+                      <TextField
+                        label="Address 2"
+                        name="address2"
+                        placeholder="Flat 14"
+                        register={register}
+                        errors={errors}
+                      />
+                      <TextField
+                        label="Town / City"
+                        name="city"
+                        placeholder="e.g., London"
+                        register={register}
+                        required
+                        errors={errors}
+                      />
+                      <TextField
+                        label="Country"
+                        name="country"
+                        placeholder="England"
+                        register={register}
+                        required
+                        errors={errors}
+                      />
                     </div>
                   )}
                 </div>
 
                 <NextButton label="Next" disabled={!isNextEnabled} />
-                <BackButton label="Back" className="mt-2" onClick={() => router.push("/personal-details")} />
+                <BackButton
+                  label="Back"
+                  className="mt-2"
+                  onClick={() => router.push("/personal-details")}
+                />
               </form>
 
               {showLoader && (

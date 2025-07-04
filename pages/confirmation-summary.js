@@ -25,17 +25,23 @@ import useAuthStore from "@/store/authStore";
 import usePasswordReset from "@/store/usePasswordReset";
 import useUserDataStore from "@/store/userDataStore";
 import useCheckoutStore from "@/store/checkoutStore";
+import MetaLayout from "@/Meta/MetaLayout";
+import { meta_url } from "@/config/constants";
 
 const ConfirmationSummary = () => {
   const router = useRouter();
   const [showLoader, setShowLoader] = useState(false);
 
   // Zustand States
-  const { patientInfo, setPatientInfo, clearPatientInfo } = usePatientInfoStore();
-  const { authUserDetail, setAuthUserDetail, clearAuthUserDetail } = useAuthUserDetailStore();
+  const { patientInfo, setPatientInfo, clearPatientInfo } =
+    usePatientInfoStore();
+  const { authUserDetail, setAuthUserDetail, clearAuthUserDetail } =
+    useAuthUserDetailStore();
   const { bmi, setBmi, clearBmi } = useBmiStore();
-  const { medicalInfo, setMedicalInfo, clearMedicalInfo } = useMedicalInfoStore();
-  const { confirmationInfo, setConfirmationInfo, clearConfirmationInfo } = useConfirmationInfoStore();
+  const { medicalInfo, setMedicalInfo, clearMedicalInfo } =
+    useMedicalInfoStore();
+  const { confirmationInfo, setConfirmationInfo, clearConfirmationInfo } =
+    useConfirmationInfoStore();
   const { gpdetails, setGpDetails, clearGpDetails } = useGpDetailsStore();
 
   const { clearCheckout } = useCheckoutStore();
@@ -49,7 +55,14 @@ const ConfirmationSummary = () => {
   const { clearUserData } = useUserDataStore();
 
   //To get firstname and lastName from signup store
-  const { clearFirstName, clearLastName, clearEmail, clearConfirmationEmail, firstName, lastName } = useSignupStore();
+  const {
+    clearFirstName,
+    clearLastName,
+    clearEmail,
+    clearConfirmationEmail,
+    firstName,
+    lastName,
+  } = useSignupStore();
 
   console.log(bmi);
 
@@ -60,7 +73,9 @@ const ConfirmationSummary = () => {
       if (data?.data?.lastConsultation) {
         console.log(data?.data?.lastConsultation?.fields, "data?.data?.data");
         setBmi(data?.data?.lastConsultation?.fields?.bmi);
-        setConfirmationInfo(data?.data?.lastConsultation?.fields?.confirmationInfo);
+        setConfirmationInfo(
+          data?.data?.lastConsultation?.fields?.confirmationInfo
+        );
         setGpDetails(data?.data?.lastConsultation?.fields?.gpdetails);
         setMedicalInfo(data?.data?.lastConsultation?.fields?.medicalInfo);
         setPatientInfo(data?.data?.lastConsultation?.fields?.patientInfo);
@@ -105,13 +120,17 @@ const ConfirmationSummary = () => {
           const errorMessages = error?.response?.data?.original?.errors;
           Object.keys(errorMessages).forEach((key) => {
             const errorMessage = errorMessages[key];
-            Array.isArray(errorMessage) ? errorMessage.forEach((msg) => toast.error(msg)) : toast.error(errorMessage);
+            Array.isArray(errorMessage)
+              ? errorMessage.forEach((msg) => toast.error(msg))
+              : toast.error(errorMessage);
           });
         } else if (error?.response?.data?.errors) {
           const errorMessages = error?.response?.data?.original?.errors;
           Object.keys(errorMessages).forEach((key) => {
             const errorMessage = errorMessages[key];
-            Array.isArray(errorMessage) ? errorMessage.forEach((msg) => toast.error(msg)) : toast.error(errorMessage);
+            Array.isArray(errorMessage)
+              ? errorMessage.forEach((msg) => toast.error(msg))
+              : toast.error(errorMessage);
           });
         }
       }
@@ -165,6 +184,7 @@ const ConfirmationSummary = () => {
   };
   return (
     <>
+      <MetaLayout canonical={`${meta_url}`} />
       <StepsHeader />
       <FormWrapper
         heading="Confirm your answers"
@@ -196,7 +216,8 @@ const ConfirmationSummary = () => {
                   {patientInfo?.address?.postalcode}
                 </p>
                 <p className="bold-font text-black">
-                  <span className="bold-font paragraph">Date of Birth:</span> {patientInfo?.dob}
+                  <span className="bold-font paragraph">Date of Birth:</span>{" "}
+                  {patientInfo?.dob}
                 </p>
                 <p className="bold-font text-black">
                   <span className="bold-font paragraph">Height:</span>{" "}
@@ -209,7 +230,8 @@ const ConfirmationSummary = () => {
                   )}
                 </p>
                 <p className="bold-font text-black">
-                  <span className="bold-font paragraph">Gender:</span> <span className="capitalize">{patientInfo?.gender}</span>
+                  <span className="bold-font paragraph">Gender:</span>{" "}
+                  <span className="capitalize">{patientInfo?.gender}</span>
                 </p>
                 <p className="bold-font text-black">
                   <span className="bold-font paragraph">Weight:</span>{" "}
@@ -222,7 +244,8 @@ const ConfirmationSummary = () => {
                   )}
                 </p>
                 <p className="bold-font text-black">
-                  <span className="text-sm text-gray-700 mt-1">BMI: </span> {bmi?.bmi?.toFixed(1)}
+                  <span className="text-sm text-gray-700 mt-1">BMI: </span>{" "}
+                  {bmi?.bmi?.toFixed(1)}
                 </p>
               </div>
             </div>
@@ -230,7 +253,11 @@ const ConfirmationSummary = () => {
             {/* Confirm & Review Buttons */}
             <div className="space-y-3">
               <NextButton label="Confirm and proceed" onClick={hanldeConfirm} />
-              <BackButton label="Review all answers" className="mt-2" onClick={reviewAll} />
+              <BackButton
+                label="Review all answers"
+                className="mt-2"
+                onClick={reviewAll}
+              />
               <BackButton label="Back" onClick={back} />
             </div>
             {showLoader && (

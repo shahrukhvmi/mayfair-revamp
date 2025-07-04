@@ -1,14 +1,15 @@
-import PaymentFailed from '@/Components/PaymentFailed/PaymentFailed';
-import React from 'react'
+import PaymentFailed from "@/Components/PaymentFailed/PaymentFailed";
+import { meta_url } from "@/config/constants";
+import MetaLayout from "@/Meta/MetaLayout";
+import React from "react";
 
 const thankYou = () => {
-    return (
-        <>
-            <PaymentFailed />
-
-
-        </>
-    )
-}
+  return (
+    <>
+      <MetaLayout canonical={`${meta_url}`} />
+      <PaymentFailed />
+    </>
+  );
+};
 
 export default thankYou;

@@ -16,6 +16,8 @@ import useReorder from "@/store/useReorderStore";
 import { abandonCart } from "@/api/abandonCartApi";
 import { useMutation } from "@tanstack/react-query";
 import useProductId from "@/store/useProductIdStore";
+import MetaLayout from "@/Meta/MetaLayout";
+import { meta_url } from "@/config/constants";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 
@@ -25,7 +27,8 @@ export default function DosageSelection() {
   const [abandonData, setAbandonData] = useState([]);
   const router = useRouter();
   // const {  } = useCartStore();
-  const { addToCart, increaseQuantity, decreaseQuantity, items, totalAmount } = useCartStore();
+  const { addToCart, increaseQuantity, decreaseQuantity, items, totalAmount } =
+    useCartStore();
   const { productId } = useProductId();
 
   const { reorder } = useReorder();
@@ -68,7 +71,8 @@ export default function DosageSelection() {
   };
 
   //Allowed checking here 🔥
-  const totalSelectedQty = () => items?.doses.reduce((total, v) => total + v.qty, 0);
+  const totalSelectedQty = () =>
+    items?.doses.reduce((total, v) => total + v.qty, 0);
 
   // ✅ Put here → outside your component or at the top inside your component file
   const generateProductConcent = (variations, selectedDoseName) => {
@@ -80,8 +84,11 @@ export default function DosageSelection() {
     });
 
     const lowestDose = sortedVariations[0]?.name;
-    const selectedIndex = sortedVariations.findIndex((v) => v.name === selectedDoseName);
-    const previousDose = selectedIndex > 0 ? sortedVariations[selectedIndex - 1]?.name : null;
+    const selectedIndex = sortedVariations.findIndex(
+      (v) => v.name === selectedDoseName
+    );
+    const previousDose =
+      selectedIndex > 0 ? sortedVariations[selectedIndex - 1]?.name : null;
 
     return `If you are taking for the first time, you will need to start the treatment on the ${lowestDose} dose. If you start on the higher doses, the risk of side effects (e.g., nausea) will be very high. Please confirm that you are currently taking either the ${previousDose} or ${selectedDoseName} dose from a different provider.`;
   };
@@ -129,7 +136,10 @@ export default function DosageSelection() {
         },
       ]);
     } else {
-      const productConcent = generateProductConcent(variation?.variations, dose?.name);
+      const productConcent = generateProductConcent(
+        variation?.variations,
+        dose?.name
+      );
 
       addToCart({
         id: dose.id,
@@ -188,9 +198,14 @@ export default function DosageSelection() {
   };
   return (
     <>
+      <MetaLayout canonical={`${meta_url}`} />
       <div className="bottom-[100px] fixed left-10 cursor-pointer py-2 rounded-full border-2 border-violet-700 sm:block hidden">
         {/* <BackButton label="Back" onClick={back} className="mt-2 sm:block hidden " /> */}
-        <button label="Back" onClick={back} className="text-violet-700 reg-font px-6 cursor-pointer">
+        <button
+          label="Back"
+          onClick={back}
+          className="text-violet-700 reg-font px-6 cursor-pointer"
+        >
           <span>Back</span>
         </button>
       </div>
@@ -209,8 +224,14 @@ export default function DosageSelection() {
               transition={{ type: "spring", stiffness: 300, damping: 25 }}
               className="bg-white rounded-lg shadow-xl p-6 max-w-md w-full"
             >
-              <h2 className="text-xl bold-font mb-4 text-gray-800 text-center">Dosage Confirmation</h2>
-              {selectedDose?.productConcent && <p className="text-md paragraph rounded-md p-3 reg-font mb-4">{selectedDose?.productConcent}</p>}
+              <h2 className="text-xl bold-font mb-4 text-gray-800 text-center">
+                Dosage Confirmation
+              </h2>
+              {selectedDose?.productConcent && (
+                <p className="text-md paragraph rounded-md p-3 reg-font mb-4">
+                  {selectedDose?.productConcent}
+                </p>
+              )}
               <NextButton
                 label=" I Confirm"
                 onClick={() => {
@@ -231,21 +252,31 @@ export default function DosageSelection() {
 
       <StepsHeader />
 
-      <div className={`${inter.className} flex items-center justify-center bg-[#F2EEFF] px-4 sm:px-6 lg:px-8 mb-40 sm:mb-0`}>
+      <div
+        className={`${inter.className} flex items-center justify-center bg-[#F2EEFF] px-4 sm:px-6 lg:px-8 mb-40 sm:mb-0`}
+      >
         <div className="rounded-xl w-full max-w-2xl sm:my-10">
           <div className="w-full mx-auto sm:px-8 my-6 rounded-md">
             <div className="flex justify-center">
-              <h1 className="niba-reg-font heading text-center my-3">You’re ready to start your personal weight loss journey</h1>
+              <h1 className="niba-reg-font heading text-center my-3">
+                You’re ready to start your personal weight loss journey
+              </h1>
             </div>
             <form onSubmit={handleSubmit(onSubmit)}>
               <div className="grid gap-4 px-4">
                 <div className="col-span-12 sm:col-span-6 md:px-4 py-10">
                   <div className="bg-white rounded-lg shadow-lg overflow-hidden mb-6">
                     <div className="bg-primary p-6">
-                      <img src={variation?.img} alt={variation?.name} className="w-full h-40 object-contain" />
+                      <img
+                        src={variation?.img}
+                        alt={variation?.name}
+                        className="w-full h-40 object-contain"
+                      />
                     </div>
                     <div className="sm:p-6 p-3">
-                      <h2 className="text-2xl mb-2 bold-font text-gray-800">{variation?.name}</h2>
+                      <h2 className="text-2xl mb-2 bold-font text-gray-800">
+                        {variation?.name}
+                      </h2>
                       {variation?.name === "Mounjaro (Tirzepatide)" && (
                         <p className="inline-block px-3 py-1 text-xs font-semibold text-white bg-violet-500 rounded-full mb-2">
                           Pack of 5 Needles is included with every dose
@@ -254,7 +285,9 @@ export default function DosageSelection() {
 
                       <br />
 
-                      <span className="bold-font text-black">From £{variation?.price}</span>
+                      <span className="bold-font text-black">
+                        From £{variation?.price}
+                      </span>
                       {/* <div
                         className="reg-font text-gray-600 bg-red-50  p-3 rounded-md text-sm"
                         dangerouslySetInnerHTML={{ __html: variation?.description }}
@@ -282,7 +315,9 @@ export default function DosageSelection() {
                         return 0;
                       })
                       .map((dose, index) => {
-                        const cartDose = items.doses.find((item) => item.id === dose.id);
+                        const cartDose = items.doses.find(
+                          (item) => item.id === dose.id
+                        );
                         const cartQty = cartDose?.qty || 0;
 
                         return (
@@ -294,46 +329,66 @@ export default function DosageSelection() {
                             totalSelectedQty={totalSelectedQty}
                             isSelected={cartQty > 0}
                             onAdd={() => handleAddDose(dose)}
-                            onIncrement={() => increaseQuantity(dose.id, "dose")}
-                            onDecrement={() => decreaseQuantity(dose.id, "dose")}
+                            onIncrement={() =>
+                              increaseQuantity(dose.id, "dose")
+                            }
+                            onDecrement={() =>
+                              decreaseQuantity(dose.id, "dose")
+                            }
                           />
                         );
                       })}
                   </div>
 
                   <div className="bg-white rounded-lg shadow-lg  px-4 py-6 my-4">
-                    {Array.isArray(variation?.addons) && variation?.addons.length > 0 && (
-                      <>
-                        <h1 className="my-4 niba-reg-font text-2xl text-gray-800">
-                          Select <span className="font-bold text-2xl">Add-ons</span>
-                        </h1>
+                    {Array.isArray(variation?.addons) &&
+                      variation?.addons.length > 0 && (
+                        <>
+                          <h1 className="my-4 niba-reg-font text-2xl text-gray-800">
+                            Select{" "}
+                            <span className="font-bold text-2xl">Add-ons</span>
+                          </h1>
 
-                        {variation?.addons
-                          .slice()
-                          .sort((a, b) => {
-                            const aOutOfStock = a?.stock?.status === 0 || a?.stock?.quantity === 0 ? 1 : 0;
-                            const bOutOfStock = b?.stock?.status === 0 || b?.stock?.quantity === 0 ? 1 : 0;
+                          {variation?.addons
+                            .slice()
+                            .sort((a, b) => {
+                              const aOutOfStock =
+                                a?.stock?.status === 0 ||
+                                a?.stock?.quantity === 0
+                                  ? 1
+                                  : 0;
+                              const bOutOfStock =
+                                b?.stock?.status === 0 ||
+                                b?.stock?.quantity === 0
+                                  ? 1
+                                  : 0;
 
-                            return aOutOfStock - bOutOfStock;
-                          })
-                          .map((addon) => {
-                            const cartAddon = items.addons.find((item) => item.id === addon.id);
-                            const cartQty = cartAddon?.qty || 0;
+                              return aOutOfStock - bOutOfStock;
+                            })
+                            .map((addon) => {
+                              const cartAddon = items.addons.find(
+                                (item) => item.id === addon.id
+                              );
+                              const cartQty = cartAddon?.qty || 0;
 
-                            return (
-                              <AddOn
-                                key={addon.id}
-                                addon={addon}
-                                quantity={cartQty}
-                                isSelected={cartQty > 0}
-                                onAdd={() => handleAddAddon(addon)}
-                                onIncrement={() => increaseQuantity(addon.id, "addon")}
-                                onDecrement={() => decreaseQuantity(addon.id, "addon")}
-                              />
-                            );
-                          })}
-                      </>
-                    )}
+                              return (
+                                <AddOn
+                                  key={addon.id}
+                                  addon={addon}
+                                  quantity={cartQty}
+                                  isSelected={cartQty > 0}
+                                  onAdd={() => handleAddAddon(addon)}
+                                  onIncrement={() =>
+                                    increaseQuantity(addon.id, "addon")
+                                  }
+                                  onDecrement={() =>
+                                    decreaseQuantity(addon.id, "addon")
+                                  }
+                                />
+                              );
+                            })}
+                        </>
+                      )}
                   </div>
                 </div>
               </div>
@@ -346,11 +401,18 @@ export default function DosageSelection() {
         <div className="max-w-xl mx-auto flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           {/* Product Info */}
           <div className="flex items-start sm:items-center space-x-3 me-5">
-            <img src={variation?.img} alt={variation?.name} className="w-10 h-10 rounded-md object-contain" />
+            <img
+              src={variation?.img}
+              alt={variation?.name}
+              className="w-10 h-10 rounded-md object-contain"
+            />
             <div className="text-black leading-tight">
               <div className="text-lg bold-font">{variation?.name}</div>
               <div className="text-lg bold-font">
-                <span className="me-2 sm:text-lg text-md reg-font paragraph">Order total</span>£{parseFloat(totalAmount)?.toFixed(2)}
+                <span className="me-2 sm:text-lg text-md reg-font paragraph">
+                  Order total
+                </span>
+                £{parseFloat(totalAmount)?.toFixed(2)}
               </div>
             </div>
           </div>
@@ -378,7 +440,11 @@ export default function DosageSelection() {
               />
             )}
 
-            <BackButton label="Back" className="mt-2 sm:hidden block" onClick={back} />
+            <BackButton
+              label="Back"
+              className="mt-2 sm:hidden block"
+              onClick={back}
+            />
           </div>
         </div>
       </div>

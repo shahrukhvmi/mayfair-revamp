@@ -11,7 +11,11 @@ export default function App({ Component, pageProps }) {
       <Component {...pageProps} />
 
       {/* ✅ Toaster yehin lagana hai taake saari app me kaam kare */}
-      <Toaster position="bottom-center" reverseOrder={false} containerClassName="reg-font" />
+      <Toaster
+        position="top-center"
+        reverseOrder={false}
+        containerClassName="reg-font"
+      />
     </QueryClientProvider>
   );
 }

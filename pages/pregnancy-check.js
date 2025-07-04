@@ -14,6 +14,8 @@ import PageAnimationWrapper from "@/Components/PageAnimationWrapper/PageAnimatio
 import PageLoader from "@/Components/PageLoader/PageLoader";
 import usePatientInfoStore from "@/store/patientInfoStore";
 import BackButton from "@/Components/BackButton/BackButton";
+import MetaLayout from "@/Meta/MetaLayout";
+import { meta_url } from "@/config/constants";
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 
 export default function PregnancyCheck() {
@@ -75,7 +77,12 @@ export default function PregnancyCheck() {
                     : "bg-white border-gray-300 hover:border-gray-400 text-gray-800"
                 }`}
             >
-              <input type="radio" value={option} {...register(fieldName, { required: true })} className="hidden" />
+              <input
+                type="radio"
+                value={option}
+                {...register(fieldName, { required: true })}
+                className="hidden"
+              />
               <div
                 className={`w-5 h-5 mr-2 rounded-md border flex items-center justify-start
                   ${
@@ -88,7 +95,9 @@ export default function PregnancyCheck() {
               >
                 {isSelected && <FiCheck className="text-md" />}
               </div>
-              <span className="text-black bold-font paragraph capitalize">{option}</span>
+              <span className="text-black bold-font paragraph capitalize">
+                {option}
+              </span>
             </label>
           );
         })}
@@ -98,6 +107,7 @@ export default function PregnancyCheck() {
 
   return (
     <>
+      <MetaLayout canonical={`${meta_url}`} />
       <StepsHeader />
       <FormWrapper
         heading={"Are you pregnant, breastfeeding, or trying to conceive?"}
@@ -116,16 +126,24 @@ export default function PregnancyCheck() {
                   {renderYesNo("pregnancy", pregnancy)}
                   {pregnancy === "yes" && (
                     <p className="text-red-600 text-sm mt-2">
-                      This treatment is not suitable if you are pregnant, trying to get pregnant or breastfeeding. We recommend you speak to your GP
-                      in person.
+                      This treatment is not suitable if you are pregnant, trying
+                      to get pregnant or breastfeeding. We recommend you speak
+                      to your GP in person.
                     </p>
                   )}
                 </div>
               </div>
 
               <div className="my-5">
-                <NextButton disabled={!isValid || pregnancy === "yes"} label="Next" />
-                <BackButton label="Back" className="mt-3" onClick={() => router.back()} />
+                <NextButton
+                  disabled={!isValid || pregnancy === "yes"}
+                  label="Next"
+                />
+                <BackButton
+                  label="Back"
+                  className="mt-3"
+                  onClick={() => router.back()}
+                />
               </div>
             </form>
 

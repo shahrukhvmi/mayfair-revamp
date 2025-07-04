@@ -10,6 +10,8 @@ import PageAnimationWrapper from "@/Components/PageAnimationWrapper/PageAnimatio
 import StepsHeader from "@/layout/stepsHeader";
 import BackButton from "@/Components/BackButton/BackButton";
 import useAuthStore from "@/store/authStore";
+import MetaLayout from "@/Meta/MetaLayout";
+import { meta_url } from "@/config/constants";
 
 export default function SignUp() {
   const [showLoader, setShowLoader] = useState(false);
@@ -66,18 +68,39 @@ export default function SignUp() {
 
   return (
     <>
+      <MetaLayout canonical={`${meta_url}`} />
       <StepsHeader />
       <FormWrapper
         heading={"Enter your full legal name"}
-        description={"We require this to generate your prescription if you qualify for the treatment."}
+        description={
+          "We require this to generate your prescription if you qualify for the treatment."
+        }
         percentage={"10"}
       >
         <PageAnimationWrapper>
           <div className="">
-            <div className={`relative ${showLoader ? "pointer-events-none cursor-not-allowed" : ""}`}>
+            <div
+              className={`relative ${
+                showLoader ? "pointer-events-none cursor-not-allowed" : ""
+              }`}
+            >
               <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-                <TextField label="First Name" name="firstName" placeholder="First Name" register={register} required errors={errors} />
-                <TextField label="Last Name" name="lastName" placeholder="Last Name" register={register} required errors={errors} />
+                <TextField
+                  label="First Name"
+                  name="firstName"
+                  placeholder="First Name"
+                  register={register}
+                  required
+                  errors={errors}
+                />
+                <TextField
+                  label="Last Name"
+                  name="lastName"
+                  placeholder="Last Name"
+                  register={register}
+                  required
+                  errors={errors}
+                />
 
                 <NextButton
                   label="Next"
@@ -85,7 +108,11 @@ export default function SignUp() {
                   type="submit"
                 />
               </form>
-              <BackButton label="Back" className="mt-3" onClick={() => router.push("/acknowledgment")} />
+              <BackButton
+                label="Back"
+                className="mt-3"
+                onClick={() => router.push("/acknowledgment")}
+              />
 
               {showLoader && (
                 <div className="absolute inset-0 z-20 flex justify-center items-center bg-white/60 rounded-lg cursor-not-allowed">

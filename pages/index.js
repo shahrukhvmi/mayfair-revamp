@@ -11,6 +11,8 @@ import useReorder from "@/store/useReorderStore";
 import useAuthStore from "@/store/authStore";
 import useAuthUserDetailStore from "@/store/useAuthUserDetailStore";
 import useReorderButtonStore from "@/store/useReorderButton";
+import MetaLayout from "@/Meta/MetaLayout";
+import { meta_url } from "@/config/constants";
 
 export default function Index() {
   const router = useRouter();
@@ -25,6 +27,10 @@ export default function Index() {
   const { productId, setProductId } = useProductId();
   const { reorder, setReorder } = useReorder();
   const { token } = useAuthStore();
+
+  useEffect(() => {
+    setIsFromReorder(false);
+  }, []);
 
   useEffect(() => {
     const param = searchParams.get("product_id");
@@ -67,6 +73,7 @@ export default function Index() {
 
   return (
     <>
+      <MetaLayout canonical={`${meta_url}`} />
       <StepsHeader />
 
       <section className="my-16 mx-6 sm:mx-0">
@@ -83,22 +90,35 @@ export default function Index() {
           </div>
 
           {/* Heading */}
-          <h2 className=" bold-font paragraph text-xl text-start mb-3 p-0">Let's get you started on your weight loss journey.</h2>
+          <h2 className=" bold-font paragraph text-xl text-start mb-3 p-0">
+            Let's get you started on your weight loss journey.
+          </h2>
 
-          <p className="reg-font text-start text-sm paragraph mb-8">We’ll now ask a few questions about you and your health.</p>
+          <p className="reg-font text-start text-sm paragraph mb-8">
+            We’ll now ask a few questions about you and your health.
+          </p>
 
           {/* Good to know */}
           <div className="mb-10">
             <p className="bold-font paragraph mb-4">Good to know:</p>
             <ul className="reg-font list-disc list-inside space-y-3 paragraph text-[15px] leading-relaxed">
-              <li>Your consultation will take about five minutes to complete.</li>
+              <li>
+                Your consultation will take about five minutes to complete.
+              </li>
               <li>All your responses are confidential and securely stored.</li>
-              <li>We’ll show suitable treatment options based on the information you provide.</li>
+              <li>
+                We’ll show suitable treatment options based on the information
+                you provide.
+              </li>
             </ul>
           </div>
 
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-            <NextButton type="submit" label="Accept and continue" disabled={!isValid} />
+            <NextButton
+              type="submit"
+              label="Accept and continue"
+              disabled={!isValid}
+            />
 
             <button
               type="submit"

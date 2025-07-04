@@ -14,6 +14,8 @@ import MuiDatePickerField from "@/Components/DatePicker/DatePicker";
 import { differenceInYears, format, parse } from "date-fns";
 import usePatientInfoStore from "@/store/patientInfoStore";
 import useProductId from "@/store/useProductIdStore";
+import MetaLayout from "@/Meta/MetaLayout";
+import { meta_url } from "@/config/constants";
 
 export default function PersonalDetails() {
   const [showLoader, setShowLoader] = useState(false);
@@ -69,7 +71,10 @@ export default function PersonalDetails() {
   useEffect(() => {
     if (patientInfo?.dob) {
       const parsedDate = parse(patientInfo.dob, "dd-MM-yyyy", new Date());
-      const fixedGender = patientInfo?.gender ? patientInfo.gender.charAt(0).toUpperCase() + patientInfo.gender.slice(1).toLowerCase() : "";
+      const fixedGender = patientInfo?.gender
+        ? patientInfo.gender.charAt(0).toUpperCase() +
+          patientInfo.gender.slice(1).toLowerCase()
+        : "";
 
       setValue("dob", parsedDate);
       setValue("gender", fixedGender);
@@ -107,6 +112,7 @@ export default function PersonalDetails() {
 
   return (
     <>
+      <MetaLayout canonical={`${meta_url}`} />
       <StepsHeader />
 
       <FormWrapper
@@ -118,7 +124,11 @@ export default function PersonalDetails() {
       >
         <PageAnimationWrapper>
           <div>
-            <div className={`relative ${showLoader ? "pointer-events-none cursor-not-allowed" : ""}`}>
+            <div
+              className={`relative ${
+                showLoader ? "pointer-events-none cursor-not-allowed" : ""
+              }`}
+            >
               <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
                 <div className="space-y-4">
                   {/* <h1 className="text-lg font-semibold text-center mb-2 text-black">What is your gender</h1> */}
@@ -134,16 +144,27 @@ export default function PersonalDetails() {
                           key={option}
                           className={`flex items-center gap-3 px-4 py-3 border rounded-lg transition-all cursor-pointer text-sm
                             ${
-                              selected ? "bg-[#F2EEFF] border-black text-black bold-font paragraph" : "border-gray-300 text-gray-900 hover:bg-gray-50"
+                              selected
+                                ? "bg-[#F2EEFF] border-black text-black bold-font paragraph"
+                                : "border-gray-300 text-gray-900 hover:bg-gray-50"
                             } bold-font paragraph`}
                         >
                           <div
                             className={`w-5 h-5 rounded-sm flex items-center justify-center border transition
-                            ${selected ? "bg-primary border-violet-800 text-white" : "border-gray-400 bg-white"}`}
+                            ${
+                              selected
+                                ? "bg-primary border-violet-800 text-white"
+                                : "border-gray-400 bg-white"
+                            }`}
                           >
                             {selected && <FiCheck className="w-4 h-4" />}
                           </div>
-                          <input type="radio" value={option} {...register("gender", { required: true })} className="hidden" />
+                          <input
+                            type="radio"
+                            value={option}
+                            {...register("gender", { required: true })}
+                            className="hidden"
+                          />
 
                           {option}
                         </label>
@@ -152,9 +173,13 @@ export default function PersonalDetails() {
 
                     {gender === "Female" && (
                       <div className="space-y-4 mt-6">
-                        <p className="mb-3 reg-font paragraph !text-black !text-lg">Are you pregnant, breastfeeding, or trying to conceive?</p>
+                        <p className="mb-3 reg-font paragraph !text-black !text-lg">
+                          Are you pregnant, breastfeeding, or trying to
+                          conceive?
+                        </p>
                         <p className="mb-6 reg-font paragraph">
-                          Our treatment programme is not suitable while breastfeeding, pregnant, or trying to conceive.
+                          Our treatment programme is not suitable while
+                          breastfeeding, pregnant, or trying to conceive.
                         </p>
 
                         <div className="flex gap-4 mt-2 w-full">
@@ -164,16 +189,33 @@ export default function PersonalDetails() {
                               <label
                                 key={option}
                                 className={`reg-font flex items-center px-4 py-4 rounded-md border justify-start cursor-pointer transition-all duration-200 flex-1
-              ${isSelected ? "bg-violet-100 border-primary text-violet-700" : "bg-white border-gray-300 hover:border-gray-400 text-gray-800"}`}
+              ${
+                isSelected
+                  ? "bg-violet-100 border-primary text-violet-700"
+                  : "bg-white border-gray-300 hover:border-gray-400 text-gray-800"
+              }`}
                               >
-                                <input type="radio" value={option} {...register("pregnancy", { required: true })} className="hidden" />
+                                <input
+                                  type="radio"
+                                  value={option}
+                                  {...register("pregnancy", { required: true })}
+                                  className="hidden"
+                                />
                                 <div
                                   className={`w-5 h-5 mr-2 rounded-md border flex items-center justify-center
-                ${isSelected ? "bg-primary border-[#47317c] text-white" : "border-gray-400 bg-white"}`}
+                ${
+                  isSelected
+                    ? "bg-primary border-[#47317c] text-white"
+                    : "border-gray-400 bg-white"
+                }`}
                                 >
-                                  {isSelected && <FiCheck className="text-md" />}
+                                  {isSelected && (
+                                    <FiCheck className="text-md" />
+                                  )}
                                 </div>
-                                <span className="text-black bold-font paragraph capitalize">{option}</span>
+                                <span className="text-black bold-font paragraph capitalize">
+                                  {option}
+                                </span>
                               </label>
                             );
                           })}
@@ -181,25 +223,41 @@ export default function PersonalDetails() {
 
                         {pregnancy === "yes" && (
                           <p className="text-red-600 text-sm mt-2">
-                            This treatment is not suitable if you are pregnant, trying to get pregnant or breastfeeding. We recommend you speak to
-                            your GP in person.
+                            This treatment is not suitable if you are pregnant,
+                            trying to get pregnant or breastfeeding. We
+                            recommend you speak to your GP in person.
                           </p>
                         )}
                       </div>
                     )}
                   </div>
 
-                  {errors.gender && <p className="text-red-500 text-sm mt-1 text-center">Please select your gender</p>}
+                  {errors.gender && (
+                    <p className="text-red-500 text-sm mt-1 text-center">
+                      Please select your gender
+                    </p>
+                  )}
                 </div>
                 <div>
-                  <MuiDatePickerField name="dob" label="Date of Birth" control={control} errors={errors} rules={{ validate: validateAge }} />
+                  <MuiDatePickerField
+                    name="dob"
+                    label="Date of Birth"
+                    control={control}
+                    errors={errors}
+                    rules={{ validate: validateAge }}
+                  />
 
                   {/* {errors.dob && <p className="text-red-500 text-sm mt-1 text-center">{errors.dob.message}</p>} */}
 
                   {/* {errors.dob && <p className="text-red-500 text-sm mt-1">Date of birth is required</p>} */}
                 </div>
 
-                <NextButton label="Next" disabled={!isValid || (gender === "Female" && pregnancy === "yes")} />
+                <NextButton
+                  label="Next"
+                  disabled={
+                    !isValid || (gender === "Female" && pregnancy === "yes")
+                  }
+                />
               </form>
               {showLoader && (
                 <div className="absolute inset-0 z-20 flex justify-center items-center bg-white/60 rounded-lg cursor-not-allowed">

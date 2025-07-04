@@ -14,6 +14,8 @@ import BackButton from "@/Components/BackButton/BackButton";
 import useGpDetailsStore from "@/store/gpDetailStore";
 import MUISelectField from "@/Components/SelectField/SelectField";
 import { motion } from "framer-motion";
+import MetaLayout from "@/Meta/MetaLayout";
+import { meta_url } from "@/config/constants";
 
 export default function GpDetail() {
   const [showLoader, setShowLoader] = useState(false);
@@ -53,7 +55,8 @@ export default function GpDetail() {
   const addressLine1 = watch("addressLine1");
   const city = watch("city");
 
-  const isManualAddressRequired = gpDetails === "yes" && gepTreatMent === "yes" && manual;
+  const isManualAddressRequired =
+    gpDetails === "yes" && gepTreatMent === "yes" && manual;
   const isNextEnabled = (() => {
     if (gpDetails === "no") return true; // ✅ Allow next if GP not registered
     if (gpDetails === "yes" && gepTreatMent === "no") return true; // ✅ Allow next if patient will inform GP
@@ -76,7 +79,13 @@ export default function GpDetail() {
       setValue("city", gpdetails.city || "");
       setValue("gpName", gpdetails.gpName || "");
 
-      if (gpdetails.zipcode || gpdetails.addressLine1 || gpdetails.addressLine2 || gpdetails.city || gpdetails.gpName) {
+      if (
+        gpdetails.zipcode ||
+        gpdetails.addressLine1 ||
+        gpdetails.addressLine2 ||
+        gpdetails.city ||
+        gpdetails.gpName
+      ) {
         setManual(true);
       }
     }
@@ -123,7 +132,8 @@ export default function GpDetail() {
       const response = await axios.post(
         apiUrl,
         {
-          filter: "(OrganisationTypeID eq 'GPB') or (OrganisationTypeID eq 'GPP')",
+          filter:
+            "(OrganisationTypeID eq 'GPB') or (OrganisationTypeID eq 'GPP')",
           top: 25,
           skip: 0,
           count: true,
@@ -178,24 +188,40 @@ export default function GpDetail() {
 
   return (
     <>
+      <MetaLayout canonical={`${meta_url}`} />
       <StepsHeader />
       <FormWrapper heading={"GP Details"} description="" percentage={"90"}>
         <PageAnimationWrapper>
-          <div className={`relative ${showLoader ? "pointer-events-none cursor-not-allowed" : ""}`}>
+          <div
+            className={`relative ${
+              showLoader ? "pointer-events-none cursor-not-allowed" : ""
+            }`}
+          >
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-              <h1 className="text-gray-500 reg-font">Are you registered with a GP in the UK?</h1>
+              <h1 className="text-gray-500 reg-font">
+                Are you registered with a GP in the UK?
+              </h1>
               <div className="flex mt-4 gap-2">
                 {["yes", "no"].map((option) => (
                   <label
                     key={option}
                     className={`cursor-pointer w-1/2 flex items-center gap-3 px-4 py-3 border rounded-lg text-black ${
-                      gpDetails === option ? "bg-[#F2EEFF] border-primary" : "border-gray-300 hover:bg-gray-50"
+                      gpDetails === option
+                        ? "bg-[#F2EEFF] border-primary"
+                        : "border-gray-300 hover:bg-gray-50"
                     }`}
                   >
-                    <input type="radio" value={option} {...register("gpDetails", { required: true })} className="hidden" />
+                    <input
+                      type="radio"
+                      value={option}
+                      {...register("gpDetails", { required: true })}
+                      className="hidden"
+                    />
                     <div
                       className={`w-5 h-5 rounded-sm flex items-center justify-center border ${
-                        gpDetails === option ? "bg-primary border-[#47317c] text-white" : "border-gray-400"
+                        gpDetails === option
+                          ? "bg-primary border-[#47317c] text-white"
+                          : "border-gray-400"
                       }`}
                     >
                       {gpDetails === option && <FiCheck />}
@@ -208,32 +234,55 @@ export default function GpDetail() {
               {/* This was missing (✅ FIXED now) */}
               {gpDetails === "no" && (
                 <div className="bg-[#FFF3CD] px-4 py-4 mt-6 text-gray-700 rounded shadow-md">
-                  <p>You should inform your doctor of any medication you take. Contact us if you want us to email a letter for your doctor.</p>
+                  <p>
+                    You should inform your doctor of any medication you take.
+                    Contact us if you want us to email a letter for your doctor.
+                  </p>
                 </div>
               )}
 
               {gpDetails === "yes" && (
                 <>
-                  <p className="text-gray-500 mt-6 mb-3">If you are registered with a GP in the UK then we can inform them on your behalf.</p>
-                  <p className="text-gray-500 mt-0">Do you consent for us to inform your GP about the treatment?</p>
+                  <p className="text-gray-500 mt-6 mb-3">
+                    If you are registered with a GP in the UK then we can inform
+                    them on your behalf.
+                  </p>
+                  <p className="text-gray-500 mt-0">
+                    Do you consent for us to inform your GP about the treatment?
+                  </p>
                   <div className="mt-4 flex flex-col sm:flex-row sm:gap-4">
                     {[
                       { value: "yes", label: "Yes – Please inform my GP" },
-                      { value: "no", label: "No – I will inform my GP prior to starting treatment" },
+                      {
+                        value: "no",
+                        label:
+                          "No – I will inform my GP prior to starting treatment",
+                      },
                     ].map((option) => (
                       <label
                         key={option.value}
                         className={`cursor-pointer flex-1 flex items-center gap-3 px-4 sm:my-0 my-2 py-3 border rounded-lg text-black ${
-                          gepTreatMent === option.value ? "bg-[#F2EEFF] border-[#47317c]" : "border-gray-300 hover:bg-gray-50"
+                          gepTreatMent === option.value
+                            ? "bg-[#F2EEFF] border-[#47317c]"
+                            : "border-gray-300 hover:bg-gray-50"
                         }`}
                       >
-                        <input type="radio" value={option.value} {...register("gepTreatMent", { required: true })} className="hidden" />
+                        <input
+                          type="radio"
+                          value={option.value}
+                          {...register("gepTreatMent", { required: true })}
+                          className="hidden"
+                        />
                         <div
                           className={`min-w-5 h-5 rounded-sm flex items-center justify-center border ${
-                            gepTreatMent === option.value ? "bg-primary border-[#47317c] text-white" : "border-gray-400"
+                            gepTreatMent === option.value
+                              ? "bg-primary border-[#47317c] text-white"
+                              : "border-gray-400"
                           }`}
                         >
-                          {gepTreatMent === option.value && <FiCheck size={16} />}
+                          {gepTreatMent === option.value && (
+                            <FiCheck size={16} />
+                          )}
                         </div>
 
                         <span className="text-sm">{option.label}</span>
@@ -245,10 +294,24 @@ export default function GpDetail() {
 
               {gpDetails === "yes" && gepTreatMent === "yes" && (
                 <>
-                  <TextField label="Email" name="email" type="email" placeholder="Email" register={register} errors={errors} />
+                  <TextField
+                    label="Email"
+                    name="email"
+                    type="email"
+                    placeholder="Email"
+                    register={register}
+                    errors={errors}
+                  />
 
                   <div className="relative">
-                    <TextField label="Post code" name="postalCode" placeholder="W1A 1AA" register={register} required errors={errors} />
+                    <TextField
+                      label="Post code"
+                      name="postalCode"
+                      placeholder="W1A 1AA"
+                      register={register}
+                      required
+                      errors={errors}
+                    />
                     <button
                       type="button"
                       onClick={handleAddressFetch}
@@ -286,10 +349,18 @@ export default function GpDetail() {
                           setSelectedIndex(idx);
 
                           // Fill form with selected address
-                          setValue("gpName", selected.OrganisationName || "", { shouldValidate: true });
-                          setValue("addressLine1", selected.Address1 || "", { shouldValidate: true });
-                          setValue("addressLine2", selected.Address2 || "", { shouldValidate: true });
-                          setValue("city", selected.City || "", { shouldValidate: true });
+                          setValue("gpName", selected.OrganisationName || "", {
+                            shouldValidate: true,
+                          });
+                          setValue("addressLine1", selected.Address1 || "", {
+                            shouldValidate: true,
+                          });
+                          setValue("addressLine2", selected.Address2 || "", {
+                            shouldValidate: true,
+                          });
+                          setValue("city", selected.City || "", {
+                            shouldValidate: true,
+                          });
 
                           setManual(true); // force manual section open so user sees populated fields
                         }}
@@ -302,24 +373,65 @@ export default function GpDetail() {
                   )}
 
                   <div className="text-sm  text-center sm:text-right mt-4">
-                    <button type="button" onClick={() => setManual(!manual)} className="text-black font-bold underline cursor-pointer">
-                      {manual ? "Hide manual address entry" : "Enter your address manually"}
+                    <button
+                      type="button"
+                      onClick={() => setManual(!manual)}
+                      className="text-black font-bold underline cursor-pointer"
+                    >
+                      {manual
+                        ? "Hide manual address entry"
+                        : "Enter your address manually"}
                     </button>
                   </div>
 
                   {manual && (
                     <div className="space-y-4 mt-4">
-                      <TextField label="GP Name" name="gpName" placeholder="The Elmhurst..." register={register} required errors={errors} />
-                      <TextField label="Address" name="addressLine1" placeholder="123 Main Street" register={register} required errors={errors} />
-                      <TextField label="Address 2" name="addressLine2" placeholder="Flat 14" register={register} errors={errors} />
-                      <TextField label="Town / City" name="city" placeholder="London" register={register} required errors={errors} />
+                      <TextField
+                        label="GP Name"
+                        name="gpName"
+                        placeholder="The Elmhurst..."
+                        register={register}
+                        required
+                        errors={errors}
+                      />
+                      <TextField
+                        label="Address"
+                        name="addressLine1"
+                        placeholder="123 Main Street"
+                        register={register}
+                        required
+                        errors={errors}
+                      />
+                      <TextField
+                        label="Address 2"
+                        name="addressLine2"
+                        placeholder="Flat 14"
+                        register={register}
+                        errors={errors}
+                      />
+                      <TextField
+                        label="Town / City"
+                        name="city"
+                        placeholder="London"
+                        register={register}
+                        required
+                        errors={errors}
+                      />
                     </div>
                   )}
                 </>
               )}
 
-              <NextButton label="Next" disabled={!isNextEnabled} className="mt-5" />
-              <BackButton label="Back" className="mt-2" onClick={() => router.push("/patient-consent")} />
+              <NextButton
+                label="Next"
+                disabled={!isNextEnabled}
+                className="mt-5"
+              />
+              <BackButton
+                label="Back"
+                className="mt-2"
+                onClick={() => router.push("/patient-consent")}
+              />
             </form>
 
             {showLoader && (

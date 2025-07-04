@@ -22,6 +22,8 @@ import PageLoader from "@/Components/PageLoader/PageLoader";
 import useLoginModalStore from "@/store/useLoginModalStore";
 import usePasswordReset from "@/store/usePasswordReset";
 import useAuthUserDetailStore from "@/store/useAuthUserDetailStore";
+import MetaLayout from "@/Meta/MetaLayout";
+import { meta_url } from "@/config/constants";
 
 export default function EmailConfirmation() {
   const [showLoader, setShowLoader] = useState(false);
@@ -141,7 +143,7 @@ export default function EmailConfirmation() {
       />
 
       {/*  */}
-
+      <MetaLayout canonical={`${meta_url}`} />
       <StepsHeader />
       <FormWrapper
         heading="Enter your email address"
@@ -187,7 +189,7 @@ export default function EmailConfirmation() {
 
               {already && (
                 <div className="text-sm text-red-600 bg-red-50 border border-red-200 p-3 rounded-md">
-                  This email address is already taken.{" "}
+                  This email is already registered{" "}
                   <span
                     onClick={openLoginModal}
                     className="text-blue-600 underline cursor-pointer font-medium hover:text-blue-800"

@@ -12,6 +12,8 @@ import StepsHeader from "@/layout/stepsHeader";
 import { Inter } from "next/font/google";
 import PageAnimationWrapper from "@/Components/PageAnimationWrapper/PageAnimationWrapper";
 import PageLoader from "@/Components/PageLoader/PageLoader";
+import MetaLayout from "@/Meta/MetaLayout";
+import { meta_url } from "@/config/constants";
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 
 const Step6 = () => {
@@ -63,7 +65,12 @@ const Step6 = () => {
                     : "bg-white border-gray-300 hover:border-gray-400 text-gray-800"
                 }`}
             >
-              <input type="radio" value={option} {...register(fieldName, { required: true })} className="hidden" />
+              <input
+                type="radio"
+                value={option}
+                {...register(fieldName, { required: true })}
+                className="hidden"
+              />
               <div
                 className={`w-5 h-5 mr-2 rounded-md border flex items-center justify-center
                   ${
@@ -86,8 +93,13 @@ const Step6 = () => {
 
   return (
     <>
+      <MetaLayout canonical={`${meta_url}`} />
       <StepsHeader />
-      <FormWrapper heading={"Patient Acknowledgment"} description={""} percentage={"60"}>
+      <FormWrapper
+        heading={"Patient Acknowledgment"}
+        description={""}
+        percentage={"60"}
+      >
         <PageAnimationWrapper>
           <div className="bg-white px-6 sm:p-7 mt-6">
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
@@ -95,23 +107,35 @@ const Step6 = () => {
               <div className="space-y-6 max-h-[400px] overflow-auto">
                 <div className="space-y-2">
                   <p className="text-sm font-medium text-gray-800">
-                    Are you purchasing this medication for yourself, of your own free will and the medicine is for your personal use only?
+                    Are you purchasing this medication for yourself, of your own
+                    free will and the medicine is for your personal use only?
                   </p>
                   {renderYesNo("personalUse", personalUse)}
                 </div>
 
                 <div className="space-y-2">
-                  <p className="text-sm font-medium text-gray-800">Do you believe you have the ability to make healthcare decisions for yourself?</p>
+                  <p className="text-sm font-medium text-gray-800">
+                    Do you believe you have the ability to make healthcare
+                    decisions for yourself?
+                  </p>
                   {renderYesNo("decisionCapacity", decisionCapacity)}
                 </div>
 
                 {showConsentBox && (
                   <div className="bg-white space-y-4 py-4">
                     <label className="flex items-center gap-3 text-sm font-semibold text-gray-800 cursor-pointer">
-                      <input type="checkbox" {...register("confirmConsent", { required: true })} className="hidden" />
+                      <input
+                        type="checkbox"
+                        {...register("confirmConsent", { required: true })}
+                        className="hidden"
+                      />
                       <div
                         className={`w-5 h-5 rounded-full flex items-center justify-center border transition-all duration-200
-                          ${confirmConsent ? "bg-violet-600 border-violet-600 text-white" : "bg-white border-gray-400"}`}
+                          ${
+                            confirmConsent
+                              ? "bg-violet-600 border-violet-600 text-white"
+                              : "bg-white border-gray-400"
+                          }`}
                       >
                         {confirmConsent && <FiCheck className="w-3 h-3" />}
                       </div>
@@ -120,25 +144,39 @@ const Step6 = () => {
 
                     <ul className="list-disc list-inside text-sm text-gray-700 space-y-2">
                       <li>
-                        You consent for your medical information to be assessed by the clinical team at Mayfair Weight Loss Clinic and its pharmacy
-                        and to be prescribed medication.
-                      </li>
-                      <li>You consent to an age and ID check when placing your first order.</li>
-                      <li>
-                        You will answer all questions honestly and accurately, and understand that it is an offence to provide false information.
+                        You consent for your medical information to be assessed
+                        by the clinical team at Mayfair Weight Loss Clinic and
+                        its pharmacy and to be prescribed medication.
                       </li>
                       <li>
-                        You have capacity to understand all about the condition and medication information we have provided and that you give fully
-                        informed consent to the treatment option provided.
+                        You consent to an age and ID check when placing your
+                        first order.
                       </li>
-                      <li>You understand that the treatment or medical advice provided is based on the information you have provided.</li>
+                      <li>
+                        You will answer all questions honestly and accurately,
+                        and understand that it is an offence to provide false
+                        information.
+                      </li>
+                      <li>
+                        You have capacity to understand all about the condition
+                        and medication information we have provided and that you
+                        give fully informed consent to the treatment option
+                        provided.
+                      </li>
+                      <li>
+                        You understand that the treatment or medical advice
+                        provided is based on the information you have provided.
+                      </li>
                     </ul>
                   </div>
                 )}
               </div>
 
               <div className="my-5">
-                <NextButton disabled={!isValid || isNoSelected} label="I Confirm" />
+                <NextButton
+                  disabled={!isValid || isNoSelected}
+                  label="I Confirm"
+                />
               </div>
             </form>
 

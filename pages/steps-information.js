@@ -26,6 +26,8 @@ import useSignupStore from "@/store/signupStore";
 import ProductSelection from "@/Components/ProductSelection/ProductSelection";
 import useReorderButtonStore from "@/store/useReorderButton";
 import StepsHeader from "@/layout/stepsHeader";
+import MetaLayout from "@/Meta/MetaLayout";
+import { meta_url } from "@/config/constants";
 
 export default function StepsInformation() {
   const [imageLoaded, setImageLoaded] = useState(false);
@@ -179,9 +181,10 @@ export default function StepsInformation() {
 
   return (
     <>
+      <MetaLayout canonical={`${meta_url}`} />
       <StepsHeader />
       {showLoader && (
-        <div className="absolute inset-0 z-20 flex justify-center items-center bg-white/60 rounded-lg cursor-not-allowed">
+        <div className="absolute inset-0 z-20 flex justify-center items-center bg-black/30 rounded-lg cursor-not-allowed">
           <PageLoader />
         </div>
       )}

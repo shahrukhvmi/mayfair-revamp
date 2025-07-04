@@ -12,6 +12,8 @@ import { Inter } from "next/font/google";
 import PageAnimationWrapper from "@/Components/PageAnimationWrapper/PageAnimationWrapper";
 import PageLoader from "@/Components/PageLoader/PageLoader";
 import FormWrapper from "@/Components/FormWrapper/FormWrapper";
+import MetaLayout from "@/Meta/MetaLayout";
+import { meta_url } from "@/config/constants";
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 
 export default function Acknowledgment() {
@@ -55,26 +57,35 @@ export default function Acknowledgment() {
             <label
               key={option}
               className={`reg-font flex items-center px-4 py-4 rounded-md border justify-start cursor-pointer transition-all duration-200 flex-1
-                ${isSelected
-                  ? option === "yes"
-                    ? "bg-violet-100 border-primary text-primary"
-                    : "bg-red-100 border-red-600 text-red-700"
-                  : "bg-white border-gray-300 hover:border-gray-400 text-gray-800"
+                ${
+                  isSelected
+                    ? option === "yes"
+                      ? "bg-violet-100 border-primary text-primary"
+                      : "bg-red-100 border-red-600 text-red-700"
+                    : "bg-white border-gray-300 hover:border-gray-400 text-gray-800"
                 }`}
             >
-              <input type="radio" value={option} {...register(fieldName, { required: true })} className="hidden" />
+              <input
+                type="radio"
+                value={option}
+                {...register(fieldName, { required: true })}
+                className="hidden"
+              />
               <div
                 className={`w-5 h-5 mr-2 rounded-md border flex items-center justify-start
-                  ${isSelected
-                    ? option === "yes"
-                      ? "bg-primary border-violet-600 text-white"
-                      : "bg-red-600 border-red-600 text-white"
-                    : "border-gray-400 bg-white"
+                  ${
+                    isSelected
+                      ? option === "yes"
+                        ? "bg-primary border-violet-600 text-white"
+                        : "bg-red-600 border-red-600 text-white"
+                      : "border-gray-400 bg-white"
                   }`}
               >
-                {isSelected && <FiCheck className="text-md"  />}
+                {isSelected && <FiCheck className="text-md" />}
               </div>
-              <span className="text-md bold-font paragraph capitalize">{option}</span>
+              <span className="text-md bold-font paragraph capitalize">
+                {option}
+              </span>
             </label>
           );
         })}
@@ -82,9 +93,9 @@ export default function Acknowledgment() {
     );
   };
 
-
   return (
     <>
+      <MetaLayout canonical={`${meta_url}`} />
       <StepsHeader />
       <FormWrapper heading={"Acknowledgment"} description={""} percentage={"0"}>
         <PageAnimationWrapper>
@@ -94,25 +105,36 @@ export default function Acknowledgment() {
               <div className="space-y-6">
                 <div className="space-y-2">
                   {/* className="block text-sm font-medium text-black mb-1" */}
-                  <p className="text-sm reg-font  paragraph" >
-                    Are you purchasing this medication for yourself, of your own free will and the medicine is for your personal use only?
+                  <p className="text-sm reg-font  paragraph">
+                    Are you purchasing this medication for yourself, of your own
+                    free will and the medicine is for your personal use only?
                   </p>
                   {renderYesNo("personalUse", personalUse)}
                 </div>
 
                 <div className="space-y-2">
                   <p className="text-sm reg-font paragraph">
-                    Do you believe you have the ability to make healthcare decisions for yourself?</p>
+                    Do you believe you have the ability to make healthcare
+                    decisions for yourself?
+                  </p>
                   {renderYesNo("decisionCapacity", decisionCapacity)}
                 </div>
 
                 {showConsentBox && (
                   <div className="bg-white space-y-4 py-4 max-h-[200px] overflow-auto">
                     <label className="flex items-center gap-3 text-sm bold-font text-gray-800 cursor-pointer paragraph">
-                      <input type="checkbox" {...register("confirmConsent", { required: true })} className="hidden" />
+                      <input
+                        type="checkbox"
+                        {...register("confirmConsent", { required: true })}
+                        className="hidden"
+                      />
                       <div
-                        className={`w-5 h-5 rounded-full flex items-center justify-center border transition-all duration-200
-                          ${confirmConsent ? "bg-primary border-violet-600 text-white" : "bg-white border-gray-400"}`}
+                        className={`w-5 h-5 rounded-sm flex items-center justify-center border transition-all duration-200
+                          ${
+                            confirmConsent
+                              ? "bg-primary border-violet-600 text-white"
+                              : "bg-white border-gray-400"
+                          }`}
                       >
                         {confirmConsent && <FiCheck className="w-3 h-3" />}
                       </div>
@@ -121,24 +143,39 @@ export default function Acknowledgment() {
 
                     <ul className="list-disc list-outside pl-5 text-sm text-gray-700 space-y-2 reg-font paragraph">
                       <li>
-                        You consent for your medical information to be assessed by the clinical team at Mayfair Weight Loss Clinic and its pharmacy and to be prescribed medication.
-                      </li>
-                      <li>You consent to an age and ID check when placing your first order.</li>
-                      <li>
-                        You will answer all questions honestly and accurately, and understand that it is an offence to provide false information.
+                        You consent for your medical information to be assessed
+                        by the clinical team at Mayfair Weight Loss Clinic and
+                        its pharmacy and to be prescribed medication.
                       </li>
                       <li>
-                        You have capacity to understand all about the condition and medication information we have provided and that you give fully informed consent to the treatment option provided.
+                        You consent to an age and ID check when placing your
+                        first order.
                       </li>
-                      <li>You understand that the treatment or medical advice provided is based on the information you have provided.</li>
+                      <li>
+                        You will answer all questions honestly and accurately,
+                        and understand that it is an offence to provide false
+                        information.
+                      </li>
+                      <li>
+                        You have capacity to understand all about the condition
+                        and medication information we have provided and that you
+                        give fully informed consent to the treatment option
+                        provided.
+                      </li>
+                      <li>
+                        You understand that the treatment or medical advice
+                        provided is based on the information you have provided.
+                      </li>
                     </ul>
-
                   </div>
                 )}
               </div>
 
               <div className="my-5">
-                <NextButton disabled={!isValid || isNoSelected} label="I Confirm" />
+                <NextButton
+                  disabled={!isValid || isNoSelected}
+                  label="I Confirm"
+                />
               </div>
             </form>
 

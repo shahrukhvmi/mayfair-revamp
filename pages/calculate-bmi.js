@@ -14,6 +14,8 @@ import BmiTextField from "@/Components/BmiTextField/BmiTextField";
 import useReorder from "@/store/useReorderStore";
 import useLastBmi from "@/store/useLastBmiStore";
 import { BsInfoCircle } from "react-icons/bs";
+import MetaLayout from "@/Meta/MetaLayout";
+import { meta_url } from "@/config/constants";
 
 const validateRange = (value, min, max, wholeOnly, message) => {
   const num = Number(value);
@@ -90,8 +92,22 @@ export default function CalculateBmi() {
       setWeightUnitKey("imperial");
     }
 
-    if (bmi?.ft || bmi?.inch || bmi?.cm || bmi?.stones || bmi?.pound || bmi?.kg) {
-      trigger(["heightFt", "heightIn", "heightCm", "weightSt", "weightLbs", "weightKg"]);
+    if (
+      bmi?.ft ||
+      bmi?.inch ||
+      bmi?.cm ||
+      bmi?.stones ||
+      bmi?.pound ||
+      bmi?.kg
+    ) {
+      trigger([
+        "heightFt",
+        "heightIn",
+        "heightCm",
+        "weightSt",
+        "weightLbs",
+        "weightKg",
+      ]);
     }
   }, [bmi, setValue, trigger]);
 
@@ -274,9 +290,14 @@ export default function CalculateBmi() {
 
   return (
     <>
+      <MetaLayout canonical={`${meta_url}`} />
       <StepsHeader />
       <FormWrapper
-        heading={localStep === 1 ? "What is your height?" : "What is your current weight?"}
+        heading={
+          localStep === 1
+            ? "What is your height?"
+            : "What is your current weight?"
+        }
         description={`Your Body Mass Index (BMI) is an important factor in assessing your eligibility for treatment. Please enter your ${
           localStep === 1 ? "height" : "weight"
         } below to allow us to calculate your BMI.`}
@@ -303,7 +324,10 @@ export default function CalculateBmi() {
                     const ft = parseFloat(watch("heightFt")) || 0;
                     const inch = parseFloat(watch("heightIn")) || 0;
                     const cm = ft * 30.48 + inch * 2.54;
-                    console.log(cm, "cm value in tabs saving in hidden before round If metric");
+                    console.log(
+                      cm,
+                      "cm value in tabs saving in hidden before round If metric"
+                    );
                     setValue("hiddenCm", cm);
                     setValue("heightCm", cm ? Math.round(cm) : "");
                   } else {
@@ -311,7 +335,10 @@ export default function CalculateBmi() {
                     const totalInches = cm / 2.54;
                     const ft = Math.floor(totalInches / 12);
                     const inch = totalInches % 12;
-                    console.log(cm, "cm value in tabs saving in hidden before round If imperial");
+                    console.log(
+                      cm,
+                      "cm value in tabs saving in hidden before round If imperial"
+                    );
                     setValue("hiddenCm", cm);
                     setValue("heightFt", ft ? Math.round(ft) : "");
                     setValue("heightIn", inch ? Math.round(inch) : "");
@@ -340,7 +367,11 @@ export default function CalculateBmi() {
               }}
             />
 
-            <div className={`relative ${showLoader ? "pointer-events-none cursor-not-allowed" : ""}`}>
+            <div
+              className={`relative ${
+                showLoader ? "pointer-events-none cursor-not-allowed" : ""
+              }`}
+            >
               <form onSubmit={(e) => e.preventDefault()} className="space-y-6">
                 {localStep === 1 &&
                   (heightUnit === "imperial" ? (
@@ -351,9 +382,17 @@ export default function CalculateBmi() {
                         name="heightFt"
                         fieldProps={register("heightFt", {
                           required: "This field is required",
-                          validate: (value) => validateRange(value, 1, 10, true, "Only numbers from 1 to 10 are allowed"),
+                          validate: (value) =>
+                            validateRange(
+                              value,
+                              1,
+                              10,
+                              true,
+                              "Only numbers from 1 to 10 are allowed"
+                            ),
                           onChange: (e) => {
-                            if (e.target.value !== "") setHeightUnitKey("imperial");
+                            if (e.target.value !== "")
+                              setHeightUnitKey("imperial");
                           },
                         })}
                         errors={errors}
@@ -365,9 +404,17 @@ export default function CalculateBmi() {
                         name="heightIn"
                         fieldProps={register("heightIn", {
                           required: "This field is required",
-                          validate: (value) => validateRange(value, 0, 11, true, "Only valid numbers (0–11) are allowed"),
+                          validate: (value) =>
+                            validateRange(
+                              value,
+                              0,
+                              11,
+                              true,
+                              "Only valid numbers (0–11) are allowed"
+                            ),
                           onChange: (e) => {
-                            if (e.target.value !== "") setHeightUnitKey("imperial");
+                            if (e.target.value !== "")
+                              setHeightUnitKey("imperial");
                           },
                         })}
                         errors={errors}
@@ -383,12 +430,15 @@ export default function CalculateBmi() {
                         required: "This field is required",
                         validate: (value) => {
                           const num = Number(value);
-                          if (!Number.isInteger(num)) return "Only whole numbers from 1 to 300 are allowed";
-                          if (num < 1 || num > 300) return "Only whole numbers from 1 to 300 are allowed";
+                          if (!Number.isInteger(num))
+                            return "Only whole numbers from 1 to 300 are allowed";
+                          if (num < 1 || num > 300)
+                            return "Only whole numbers from 1 to 300 are allowed";
                           return true;
                         },
                         onChange: (e) => {
-                          if (e.target.value !== "") setHeightUnitKey("metrics");
+                          if (e.target.value !== "")
+                            setHeightUnitKey("metrics");
                         },
                       })}
                       errors={errors}
@@ -406,9 +456,17 @@ export default function CalculateBmi() {
                           name="weightSt"
                           fieldProps={register("weightSt", {
                             required: "This field is required",
-                            validate: (value) => validateRange(value, 4, 80, false, "Only valid numbers (4–80) are allowed"),
+                            validate: (value) =>
+                              validateRange(
+                                value,
+                                4,
+                                80,
+                                false,
+                                "Only valid numbers (4–80) are allowed"
+                              ),
                             onChange: (e) => {
-                              if (e.target.value !== "") setWeightUnitKey("imperial");
+                              if (e.target.value !== "")
+                                setWeightUnitKey("imperial");
                             },
                           })}
                           errors={errors}
@@ -420,9 +478,17 @@ export default function CalculateBmi() {
                           name="weightLbs"
                           fieldProps={register("weightLbs", {
                             required: "This field is required",
-                            validate: (value) => validateRange(value, 0, 20, false, "Only valid numbers (0–20) are allowed"),
+                            validate: (value) =>
+                              validateRange(
+                                value,
+                                0,
+                                20,
+                                false,
+                                "Only valid numbers (0–20) are allowed"
+                              ),
                             onChange: (e) => {
-                              if (e.target.value !== "") setWeightUnitKey("imperial");
+                              if (e.target.value !== "")
+                                setWeightUnitKey("imperial");
                             },
                           })}
                           errors={errors}
@@ -436,9 +502,17 @@ export default function CalculateBmi() {
                         name="weightKg"
                         fieldProps={register("weightKg", {
                           required: "This field is required",
-                          validate: (value) => validateRange(value, 40, 500, true, "Only whole numbers from 40 to 500 are allowed"),
+                          validate: (value) =>
+                            validateRange(
+                              value,
+                              40,
+                              500,
+                              true,
+                              "Only whole numbers from 40 to 500 are allowed"
+                            ),
                           onChange: (e) => {
-                            if (e.target.value !== "") setWeightUnitKey("metrics");
+                            if (e.target.value !== "")
+                              setWeightUnitKey("metrics");
                           },
                         })}
                         errors={errors}
@@ -447,17 +521,22 @@ export default function CalculateBmi() {
                     )}
 
                     {lastBmi ? (
-                      lastBmi?.weight_unit == "metrics" || lastBmi?.weight_unit == "metric" ? (
+                      lastBmi?.weight_unit == "metrics" ||
+                      lastBmi?.weight_unit == "metric" ? (
                         <div className="bg-[#FFF3CD] px-4 py-4 mt-6 mb-6 text-gray-700 rounded shadow-md">
                           <p className="flex items-center">
-                            <BsInfoCircle className="me-2" /> Your previous recorded weight was{" "}
-                            <span className="font-bold ms-1">{lastBmi?.kg} kg</span>
+                            <BsInfoCircle className="me-2" /> Your previous
+                            recorded weight was{" "}
+                            <span className="font-bold ms-1">
+                              {lastBmi?.kg} kg
+                            </span>
                           </p>
                         </div>
                       ) : (
                         <div className="bg-[#FFF3CD] px-4 py-4 mt-6 mb-6 text-gray-700 rounded shadow-md">
                           <p className="flex items-center">
-                            <BsInfoCircle className="me-2" /> Your previous recorded weight was{" "}
+                            <BsInfoCircle className="me-2" /> Your previous
+                            recorded weight was{" "}
                             <span className="font-bold ms-1">
                               {lastBmi?.stones} st & {lastBmi?.pound} lbs
                             </span>
@@ -470,12 +549,26 @@ export default function CalculateBmi() {
                   </>
                 )}
 
-                <NextButton label="Next" onClick={handleNext} type="button" disabled={!isStepValid()} />
+                <NextButton
+                  label="Next"
+                  onClick={handleNext}
+                  type="button"
+                  disabled={!isStepValid()}
+                />
 
                 {localStep === 2 ? (
-                  <BackButton type="button" label="Back" className="mt-3" onClick={() => setLocalStep(1)} />
+                  <BackButton
+                    type="button"
+                    label="Back"
+                    className="mt-3"
+                    onClick={() => setLocalStep(1)}
+                  />
                 ) : (
-                  <BackButton label="Back" className="mt-2" onClick={() => router.back()} />
+                  <BackButton
+                    label="Back"
+                    className="mt-2"
+                    onClick={() => router.back()}
+                  />
                 )}
               </form>
 

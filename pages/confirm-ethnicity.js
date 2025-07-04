@@ -10,6 +10,8 @@ import StepsHeader from "@/layout/stepsHeader";
 import { GoDotFill } from "react-icons/go";
 import BackButton from "@/Components/BackButton/BackButton";
 import usePatientInfoStore from "@/store/patientInfoStore";
+import MetaLayout from "@/Meta/MetaLayout";
+import { meta_url } from "@/config/constants";
 
 const options = ["Yes", "No", "Prefer not to say"];
 
@@ -37,7 +39,8 @@ export default function ConfirmEthnicity() {
 
   useEffect(() => {
     const fixedEthnicity = patientInfo?.ethnicity
-      ? patientInfo?.ethnicity.charAt(0).toUpperCase() + patientInfo?.ethnicity.slice(1).toLowerCase()
+      ? patientInfo?.ethnicity.charAt(0).toUpperCase() +
+        patientInfo?.ethnicity.slice(1).toLowerCase()
       : "";
 
     setValue("ethnicity", fixedEthnicity);
@@ -65,17 +68,30 @@ export default function ConfirmEthnicity() {
 
   return (
     <>
+      <MetaLayout canonical={`${meta_url}`} />
       <StepsHeader />
       <FormWrapper
         heading={"Confirm Ethnicity"}
-        description={"People of certain ethnicities may be suitable for treatment at a lower BMI than others, if appropriate."}
+        description={
+          "People of certain ethnicities may be suitable for treatment at a lower BMI than others, if appropriate."
+        }
         percentage={"60"}
       >
         <PageAnimationWrapper>
-          <p className="bold-font paragraph my-3">Does one of the following options describe your ethnic group or background?</p>
+          <p className="bold-font paragraph my-3">
+            Does one of the following options describe your ethnic group or
+            background?
+          </p>
           <div className="">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
-              {["South Asian", "Chinese", "Other Asian", "Middle Eastern", "Black African", "African-Caribbean"].map((ethnicity, index) => (
+              {[
+                "South Asian",
+                "Chinese",
+                "Other Asian",
+                "Middle Eastern",
+                "Black African",
+                "African-Caribbean",
+              ].map((ethnicity, index) => (
                 <div key={index} className="flex items-start gap-3">
                   {/* w-2.5 h-2.5 */}
                   <div className=" mt-2 bg-primary rounded-full"></div>
@@ -86,7 +102,11 @@ export default function ConfirmEthnicity() {
                 </div>
               ))}
             </div>
-            <div className={`relative ${showLoader ? "pointer-events-none cursor-not-allowed" : ""}`}>
+            <div
+              className={`relative ${
+                showLoader ? "pointer-events-none cursor-not-allowed" : ""
+              }`}
+            >
               <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
                 <div className="space-y-4">
                   {options.map((option) => {
@@ -95,15 +115,28 @@ export default function ConfirmEthnicity() {
                       <label
                         key={option}
                         className={`flex items-center gap-3 px-4 py-3 border rounded-lg transition-all cursor-pointer text-sm
-                      ${isSelected ? "bg-[#F2EEFF] border-black bold-font paragraph" : "border-gray-300 bold-font paragraph hover:bg-gray-50"}`}
+                      ${
+                        isSelected
+                          ? "bg-[#F2EEFF] border-black bold-font paragraph"
+                          : "border-gray-300 bold-font paragraph hover:bg-gray-50"
+                      }`}
                       >
                         <div
                           className={`w-5 h-5 rounded-sm flex items-center justify-center border transition
-                        ${isSelected ? "bg-primary border-violet-800 text-white" : "border-gray-400 bg-white"}`}
+                        ${
+                          isSelected
+                            ? "bg-primary border-violet-800 text-white"
+                            : "border-gray-400 bg-white"
+                        }`}
                         >
                           {isSelected && <FiCheck className="w-4 h-4" />}
                         </div>
-                        <input type="radio" value={option} {...register("ethnicity", { required: true })} className="hidden" />
+                        <input
+                          type="radio"
+                          value={option}
+                          {...register("ethnicity", { required: true })}
+                          className="hidden"
+                        />
                         {option}
                       </label>
                     );
@@ -111,7 +144,11 @@ export default function ConfirmEthnicity() {
                 </div>
 
                 <NextButton disabled={!isValid} label="Next" />
-                <BackButton label="Back" className="mt-2" onClick={() => router.push("/preferred-phone-number")} />
+                <BackButton
+                  label="Back"
+                  className="mt-2"
+                  onClick={() => router.push("/preferred-phone-number")}
+                />
               </form>
               {showLoader && (
                 <div className="absolute inset-0 z-20 flex justify-center items-center bg-white/60 rounded-lg cursor-not-allowed">

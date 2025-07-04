@@ -12,6 +12,8 @@ import useShippingOrBillingStore from "@/store/shipingOrbilling";
 import useCartStore from "@/store/useCartStore";
 import { Inter } from "next/font/google";
 import useReorder from "@/store/useReorderStore";
+import MetaLayout from "@/Meta/MetaLayout";
+import { meta_url } from "@/config/constants";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -47,7 +49,13 @@ const Checkout = () => {
   };
 
   const getStepRefs = () => {
-    return [isPasswordReset && personalRef, addressRef, !billingSameAsShipping && billingRef, paymentRef, summaryRef].filter(Boolean);
+    return [
+      isPasswordReset && personalRef,
+      addressRef,
+      !billingSameAsShipping && billingRef,
+      paymentRef,
+      summaryRef,
+    ].filter(Boolean);
   };
 
   const stepRefs = getStepRefs();
@@ -70,10 +78,15 @@ const Checkout = () => {
 
   return (
     <>
+      <MetaLayout canonical={`${meta_url}`} />
       <StepsHeader />
       <div className="bottom-[30px] fixed left-10 cursor-pointer py-2 rounded-full border-2 border-violet-700 sm:block hidden">
         {/* <BackButton label="Back" onClick={back} className="mt-2 sm:block hidden " /> */}
-        <button label="Back" onClick={back} className="text-violet-700 reg-font px-6 cursor-pointer">
+        <button
+          label="Back"
+          onClick={back}
+          className="text-violet-700 reg-font px-6 cursor-pointer"
+        >
           <span>Back</span>
         </button>
       </div>
@@ -97,7 +110,9 @@ const Checkout = () => {
               onClick={(e) => e.stopPropagation()}
             >
               <h2 className="text-2xl font-bold text-green-600">Thank You!</h2>
-              <p className="text-gray-600 text-sm">Your order has been successfully processed.</p>
+              <p className="text-gray-600 text-sm">
+                Your order has been successfully processed.
+              </p>
               <button
                 type="button"
                 onClick={() => setShowThankYouModal(false)}
@@ -131,8 +146,15 @@ const Checkout = () => {
         </div>
 
         {showResetPassword && (
-          <div ref={personalRef} className={`${!isPasswordReset ? "cursor-not-allowed" : ""}`}>
-            <div className={`${!isPasswordReset ? "opacity-50 pointer-events-none" : ""}`}>
+          <div
+            ref={personalRef}
+            className={`${!isPasswordReset ? "cursor-not-allowed" : ""}`}
+          >
+            <div
+              className={`${
+                !isPasswordReset ? "opacity-50 pointer-events-none" : ""
+              }`}
+            >
               <SetAPassword onComplete={goToNextStep} />
             </div>
           </div>
@@ -148,16 +170,26 @@ const Checkout = () => {
 
         {!billingSameAsShipping && (
           <div ref={billingRef}>
-            <BillingAddress onComplete={goToNextStep} setIsBillingCheck={setIsBillingCheck} />
+            <BillingAddress
+              onComplete={goToNextStep}
+              setIsBillingCheck={setIsBillingCheck}
+            />
           </div>
         )}
 
         <div ref={paymentRef}>
-          <ProductConsent onComplete={goToNextStep} setIsConcentCheck={setIsConcentCheck} />
+          <ProductConsent
+            onComplete={goToNextStep}
+            setIsConcentCheck={setIsConcentCheck}
+          />
         </div>
 
         <div ref={summaryRef}>
-          <OrderSummary isConcentCheck={isConcentCheck} isShippingCheck={isShippingCheck} isBillingCheck={isBillingCheck} />
+          <OrderSummary
+            isConcentCheck={isConcentCheck}
+            isShippingCheck={isShippingCheck}
+            isBillingCheck={isBillingCheck}
+          />
         </div>
       </div>
     </>

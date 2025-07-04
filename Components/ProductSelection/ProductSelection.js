@@ -19,6 +19,7 @@ import useSignupStore from "@/store/signupStore";
 import useBmiStore from "@/store/bmiStore";
 import Router from "next/router";
 import NextButton from "../NextButton/NextButton";
+import useReorderButtonStore from "@/store/useReorderButton";
 
 const ProductSelection = ({ showProductSelection }) => {
   /* ───────────────  skeleton card ────────────── */
@@ -64,6 +65,7 @@ const ProductSelection = ({ showProductSelection }) => {
   const { setLastBmi } = useLastBmi();
   const { setIsReturningPatient } = useReturning();
   const { firstName, lastName, setFirstName, setLastName } = useSignupStore();
+  const { isFromReorder } = useReorderButtonStore();
 
   console.log(firstName, lastName, "product selection");
   /* ───────────────  products mutation ────────────── */
@@ -99,15 +101,17 @@ const ProductSelection = ({ showProductSelection }) => {
   /* ───────────────  product selection handler ────────────── */
   const handleProductSelect = (id, treatment) => {
     console.log(id, "id: check");
-
-    if (treatment == "reorder") {
-      setRedirection("/re-order");
+    if (isFromReorder) {
+      if (treatment == "reorder") {
+        setRedirection("/re-order");
+      } else {
+        setRedirection("/acknowledgment");
+      }
     } else {
-      setRedirection("/acknowledgment");
+      setRedirection("/personal-details");
     }
-
     console.log(treatment, "treatment-name");
-    setSelectedProductId(id);
+    setSelectedProductId((prev) => (prev === id ? null : id));
   };
 
   //   useEffect(() => {

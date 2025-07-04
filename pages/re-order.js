@@ -10,6 +10,8 @@ import PageAnimationWrapper from "@/Components/PageAnimationWrapper/PageAnimatio
 import PageLoader from "@/Components/PageLoader/PageLoader";
 import useReorder from "@/store/useReorderStore";
 import useReorderButtonStore from "@/store/useReorderButton";
+import MetaLayout from "@/Meta/MetaLayout";
+import { meta_url } from "@/config/constants";
 
 export default function Acknowledgment() {
   const router = useRouter();
@@ -90,6 +92,7 @@ export default function Acknowledgment() {
 
   return (
     <>
+      <MetaLayout canonical={`${meta_url}`} />
       <StepsHeader />
       <FormWrapper heading="Reorder Confirmation" description="" percentage="0">
         <PageAnimationWrapper>

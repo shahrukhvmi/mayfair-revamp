@@ -11,6 +11,8 @@ import BackButton from "@/Components/BackButton/BackButton";
 import usePatientInfoStore from "@/store/patientInfoStore";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
+import MetaLayout from "@/Meta/MetaLayout";
+import { meta_url } from "@/config/constants";
 
 export default function SignUp() {
   const [showLoader, setShowLoader] = useState(false);
@@ -51,15 +53,22 @@ export default function SignUp() {
 
   return (
     <>
+      <MetaLayout canonical={`${meta_url}`} />
       <StepsHeader />
       <FormWrapper
         heading={"Enter your phone number"}
-        description={"Please provide an active phone number to ensure smooth delivery of your order."}
+        description={
+          "Please provide an active phone number to ensure smooth delivery of your order."
+        }
         percentage={"50"}
       >
         <PageAnimationWrapper>
           <div>
-            <div className={`relative ${showLoader ? "pointer-events-none cursor-not-allowed" : ""}`}>
+            <div
+              className={`relative ${
+                showLoader ? "pointer-events-none cursor-not-allowed" : ""
+              }`}
+            >
               <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
                 {/* Phone Number */}
 
@@ -70,14 +79,22 @@ export default function SignUp() {
                     required: "Phone number is required",
                     validate: (value) => {
                       const onlyDigits = value?.replace(/\D/g, "");
-                      if (!onlyDigits || onlyDigits.length <= 5) return "Enter a valid phone number";
+                      if (!onlyDigits || onlyDigits.length <= 5)
+                        return "Enter a valid phone number";
                       return true;
                     },
                   }}
                   render={({ field }) => (
                     <div className="mb-4">
-                      <label htmlFor="phoneNo" className="bold-font paragraph mb-2 relative">
-                        Phone Number <span className="text-red-500 absolute  m-1 niba-semibold-font"> *</span>
+                      <label
+                        htmlFor="phoneNo"
+                        className="bold-font paragraph mb-2 relative"
+                      >
+                        Phone Number{" "}
+                        <span className="text-red-500 absolute  m-1 niba-semibold-font">
+                          {" "}
+                          *
+                        </span>
                       </label>
 
                       <div
@@ -86,10 +103,19 @@ export default function SignUp() {
           ${errors.phoneNo ? "border-red-500" : "border-black"}
         `}
                       >
-                        <PhoneInput {...field} country="gb" placeholder="Enter your number" inputStyle={{ border: "none", width: "100%" }} />
+                        <PhoneInput
+                          {...field}
+                          country="gb"
+                          placeholder="Enter your number"
+                          inputStyle={{ border: "none", width: "100%" }}
+                        />
                       </div>
 
-                      {errors.phoneNo && <p className="text-red-500 text-sm mt-1">{errors.phoneNo.message}</p>}
+                      {errors.phoneNo && (
+                        <p className="text-red-500 text-sm mt-1">
+                          {errors.phoneNo.message}
+                        </p>
+                      )}
                     </div>
                   )}
                 />
@@ -99,7 +125,11 @@ export default function SignUp() {
                   disabled={!isValid} // ✅ disables until valid
                   type="submit"
                 />
-                <BackButton label="Back" className="mt-2" onClick={() => router.push("/residential-address")} />
+                <BackButton
+                  label="Back"
+                  className="mt-2"
+                  onClick={() => router.push("/residential-address")}
+                />
               </form>
 
               {showLoader && (
