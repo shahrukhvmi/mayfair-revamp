@@ -21,193 +21,199 @@ import Router from "next/router";
 import NextButton from "../NextButton/NextButton";
 
 const ProductSelection = ({ showProductSelection }) => {
-    /* ───────────────  skeleton card ────────────── */
-    const SkeletonCard = () => (
-        <div className="p-4 my-3 bg-white rounded-lg shadow-md">
-            <Skeleton
-                variant="rectangular"
-                height={208}
-                className="mb-4 rounded-lg"
-            />
-            <Skeleton variant="text" sx={{ fontSize: "1rem" }} width="80%" />
-            <Skeleton variant="text" sx={{ fontSize: "0.875rem" }} width="60%" />
-            <Skeleton variant="rectangular" height={40} className="mt-4 rounded-md" />
-        </div>
-    );
-    /* ───────────────  local state ────────────── */
-    const [isLoading, setIsLoading] = useState(true);
-    const [productData, setProductData] = useState(null);
-    const [showModal, setShowModal] = useState(showProductSelection);
-    const [selectedProductId, setSelectedProductId] = useState(null); // NEW
-    const [isButtonLoading, setIsButtonLoading] = useState(false);
+  /* ───────────────  skeleton card ────────────── */
+  const SkeletonCard = () => (
+    <div className="p-4 my-3 bg-white rounded-lg shadow-md">
+      <Skeleton
+        variant="rectangular"
+        height={208}
+        className="mb-4 rounded-lg"
+      />
+      <Skeleton variant="text" sx={{ fontSize: "1rem" }} width="80%" />
+      <Skeleton variant="text" sx={{ fontSize: "0.875rem" }} width="60%" />
+      <Skeleton variant="rectangular" height={40} className="mt-4 rounded-md" />
+    </div>
+  );
+  /* ───────────────  local state ────────────── */
+  const [isLoading, setIsLoading] = useState(true);
+  const [productData, setProductData] = useState(null);
+  const [showModal, setShowModal] = useState(showProductSelection);
+  const [selectedProductId, setSelectedProductId] = useState(null); // NEW
+  const [isButtonLoading, setIsButtonLoading] = useState(false);
+  const [redirection, setRedirection] = useState("");
 
-    /* ───────────────  stores (init only what we SET/CLEAR) ────────────── */
+  /* ───────────────  stores (init only what we SET/CLEAR) ────────────── */
 
-    const { setProductId, productId } = useProductId();
-    const { setBmi, clearBmi } = useBmiStore();
-    const { setCheckout, clearCheckout } = useCheckoutStore();
-    const { setConfirmationInfo, clearConfirmationInfo } =
-        useConfirmationInfoStore();
-    const { setGpDetails, clearGpDetails } = useGpDetailsStore();
-    const { setMedicalInfo, clearMedicalInfo } = useMedicalInfoStore();
-    const { setPatientInfo, clearPatientInfo } = usePatientInfoStore();
-    const { authUserDetail } = useAuthUserDetailStore();
-    const {
-        billing,
-        setBilling,
-        shipping,
-        setShipping,
-        clearShipping,
-        clearBilling,
-    } = useShippingOrBillingStore();
-    const { setLastBmi } = useLastBmi();
-    const { setIsReturningPatient } = useReturning();
-    const { firstName, lastName, setFirstName, setLastName } = useSignupStore();
+  const { setProductId, productId } = useProductId();
+  const { setBmi, clearBmi } = useBmiStore();
+  const { setCheckout, clearCheckout } = useCheckoutStore();
+  const { setConfirmationInfo, clearConfirmationInfo } =
+    useConfirmationInfoStore();
+  const { setGpDetails, clearGpDetails } = useGpDetailsStore();
+  const { setMedicalInfo, clearMedicalInfo } = useMedicalInfoStore();
+  const { setPatientInfo, clearPatientInfo } = usePatientInfoStore();
+  const { authUserDetail } = useAuthUserDetailStore();
+  const {
+    billing,
+    setBilling,
+    shipping,
+    setShipping,
+    clearShipping,
+    clearBilling,
+  } = useShippingOrBillingStore();
+  const { setLastBmi } = useLastBmi();
+  const { setIsReturningPatient } = useReturning();
+  const { firstName, lastName, setFirstName, setLastName } = useSignupStore();
 
-    console.log(firstName, lastName, "product selection");
-    /* ───────────────  products mutation ────────────── */
-    const getProducts = useMutation(GetProductsApi, {
-        onSuccess: (res) => {
-            const resData = res?.data?.data || {};
-            setProductData(resData);
-            setIsLoading(false);
-        },
-        onError: (err) => {
-            toast.error(err?.response?.data?.errors || "Something went wrong");
-            setIsLoading(false);
-        },
-    });
+  console.log(firstName, lastName, "product selection");
+  /* ───────────────  products mutation ────────────── */
+  const getProducts = useMutation(GetProductsApi, {
+    onSuccess: (res) => {
+      const resData = res?.data?.data || {};
+      setProductData(resData);
+      setIsLoading(false);
+    },
+    onError: (err) => {
+      toast.error(err?.response?.data?.errors || "Something went wrong");
+      setIsLoading(false);
+    },
+  });
 
-    /* ───────────────  initial effects ────────────── */
-    useEffect(() => {
-        // fetch product list once
-        getProducts.mutate({});
-    }, []);
+  /* ───────────────  initial effects ────────────── */
+  useEffect(() => {
+    // fetch product list once
+    getProducts.mutate({});
+  }, []);
 
-    /* ───────────────  helper ────────────── */
-    const renderSkeletons = () => (
-        <div className="grid grid-cols-2 gap-6">
-            {Array.from({ length: 2 }).map((_, i) => (
-                <SkeletonCard key={i} />
-            ))}
-        </div>
-    );
+  /* ───────────────  helper ────────────── */
+  const renderSkeletons = () => (
+    <div className="grid grid-cols-2 gap-6">
+      {Array.from({ length: 2 }).map((_, i) => (
+        <SkeletonCard key={i} />
+      ))}
+    </div>
+  );
 
-    /* ───────────────  mutation for consultation ────────────── */
+  /* ───────────────  mutation for consultation ────────────── */
 
-    /* ───────────────  product selection handler ────────────── */
-    const handleProductSelect = (id) => {
-        console.log(id, "id: check");
-        setSelectedProductId(id);
-    };
+  /* ───────────────  product selection handler ────────────── */
+  const handleProductSelect = (id, treatment) => {
+    console.log(id, "id: check");
 
-    //   useEffect(() => {
-    //     if (!productId) {
-    //       setShowModal(true);
-    //     }
-    //   }, [productId]);
+    if (treatment == "reorder") {
+      setRedirection("/re-order");
+    } else {
+      setRedirection("/acknowledgment");
+    }
 
-    /* ───────────────  continue handler ────────────── */
-    const hanlePrevData = () => {
-        // setShowModal(false);
-        setIsButtonLoading(true);
-        setProductId(selectedProductId);
+    console.log(treatment, "treatment-name");
+    setSelectedProductId(id);
+  };
 
+  //   useEffect(() => {
+  //     if (!productId) {
+  //       setShowModal(true);
+  //     }
+  //   }, [productId]);
 
-        if (authUserDetail?.isReturning) {
-            Router.push("/re-order");
+  /* ───────────────  continue handler ────────────── */
+  const hanlePrevData = () => {
+    // setShowModal(false);
+    setIsButtonLoading(true);
+    setProductId(selectedProductId);
 
-        } else {
-            Router.push("/personal-details");
-        }
-    };
-    return (
-        <FullScreenModal isOpen={showModal} onClose={() => setShowModal(false)}>
-            {isLoading ? (
-                renderSkeletons()
-            ) : (
-                <div className="w-full flex flex-col items-center justify-center px-4 py-2">
-                    <div className="w-full flex flex-col items-center justify-center gap-8">
-                        {/* ───── Reorder Treatments ───── */}
+    Router.push(redirection);
+  };
+  return (
+    <FullScreenModal isOpen={showModal} onClose={() => setShowModal(false)}>
+      {isLoading ? (
+        renderSkeletons()
+      ) : (
+        <div className="w-full flex flex-col items-center justify-center px-4 py-2">
+          <div className="w-full flex flex-col items-center justify-center gap-8">
+            {/* ───── Reorder Treatments ───── */}
 
-                        {/* ───── Available Treatments ───── */}
-                        {productData?.products?.length ? (
-                            <section className="w-full flex flex-col items-center gap-6">
-                                <div className="text-center">
-                                    <h2 className="text-2xl font-bold text-gray-800">
-                                        Select Treatment
-                                    </h2>
-                                    <p className="text-sm text-gray-500 mt-1 max-w-md mx-auto">
-                                        We offer the following weight-loss injection treatments to
-                                        help you in your weight-loss journey…
-                                    </p>
-                                </div>
-
-                                <div
-                                    className={`flex flex-wrap gap-6 w-full ${productData.products.filter(
-                                        (p) => p?.inventories?.[0]?.status === 1
-                                    ).length === 1
-                                        ? "justify-start"
-                                        : "justify-center"
-                                        }`}
-                                >
-                                    {(Array.isArray(productData.reorder)
-                                        ? productData.reorder
-                                        : [productData.reorder]
-                                    )
-                                        .filter((item) => item?.inventories?.[0]?.status === 1)
-                                        .map((item) => (
-                                            <Product
-                                                key={item?.id}
-                                                id={item?.id}
-                                                title={item?.name}
-                                                image={item?.img}
-                                                price={item?.price || "N/A"}
-                                                status={item?.inventories?.[0]?.status}
-                                                lastOrderDate={item?.lastOrderDate}
-                                                buttonText="Reorder Treatment"
-                                                reorder
-                                                isSelected={selectedProductId === item?.id}
-                                                onSelect={() => handleProductSelect(item?.id)}
-                                            />
-                                        ))}
-                                    {productData.products
-                                        .filter((p) => p?.inventories?.[0]?.status === 1)
-                                        .sort((a, b) => (a.sequence || 0) - (b.sequence || 0))
-                                        .map((p) => (
-                                            <Product
-                                                key={p?.id}
-                                                id={p?.id}
-                                                title={p?.name}
-                                                image={p?.img}
-                                                price={p?.price || "N/A"}
-                                                status={p?.inventories?.[0]?.status}
-                                                buttonText="Start Consultation"
-                                                isSelected={selectedProductId === p?.id}
-                                                onSelect={() => handleProductSelect(p?.id)}
-                                            />
-                                        ))}
-                                </div>
-                            </section>
-                        ) : (
-                            <p className="text-sm text-gray-500 text-center">
-                                No available treatments at the moment.
-                            </p>
-                        )}
-
-                        {/* ───── Continue Button ───── */}
-                        <div className="pt-6">
-                            <NextButton
-                                disabled={!selectedProductId}
-                                onClick={hanlePrevData}
-                                label="Continue"
-                                loading={isButtonLoading}
-                            />
-                        </div>
-                    </div>
+            {/* ───── Available Treatments ───── */}
+            {productData?.products?.length ? (
+              <section className="w-full flex flex-col items-center gap-6">
+                <div className="text-center">
+                  <h2 className="text-2xl font-bold text-gray-800">
+                    Select Treatment
+                  </h2>
+                  <p className="text-sm text-gray-500 mt-1 max-w-md mx-auto">
+                    We offer the following weight-loss injection treatments to
+                    help you in your weight-loss journey…
+                  </p>
                 </div>
+
+                <div
+                  className={`flex flex-wrap gap-6 w-full ${
+                    productData.products.filter(
+                      (p) => p?.inventories?.[0]?.status === 1
+                    ).length === 1
+                      ? "justify-start"
+                      : "justify-center"
+                  }`}
+                >
+                  {(Array.isArray(productData.reorder)
+                    ? productData.reorder
+                    : [productData.reorder]
+                  )
+                    .filter((item) => item?.inventories?.[0]?.status === 1)
+                    .map((item) => (
+                      <Product
+                        key={item?.id}
+                        id={item?.id}
+                        title={item?.name}
+                        image={item?.img}
+                        price={item?.price || "N/A"}
+                        status={item?.inventories?.[0]?.status}
+                        lastOrderDate={item?.lastOrderDate}
+                        buttonText="Reorder Treatment"
+                        reorder
+                        isSelected={selectedProductId === item?.id}
+                        onSelect={() =>
+                          handleProductSelect(item?.id, "reorder")
+                        }
+                      />
+                    ))}
+                  {productData.products
+                    .filter((p) => p?.inventories?.[0]?.status === 1)
+                    .sort((a, b) => (a.sequence || 0) - (b.sequence || 0))
+                    .map((p) => (
+                      <Product
+                        key={p?.id}
+                        id={p?.id}
+                        title={p?.name}
+                        image={p?.img}
+                        price={p?.price || "N/A"}
+                        status={p?.inventories?.[0]?.status}
+                        buttonText="Start Consultation"
+                        isSelected={selectedProductId === p?.id}
+                        onSelect={() => handleProductSelect(p?.id, "new")}
+                      />
+                    ))}
+                </div>
+              </section>
+            ) : (
+              <p className="text-sm text-gray-500 text-center">
+                No available treatments at the moment.
+              </p>
             )}
-        </FullScreenModal>
-    );
+
+            {/* ───── Continue Button ───── */}
+            <div className="pt-6">
+              <NextButton
+                disabled={!selectedProductId}
+                onClick={hanlePrevData}
+                label="Continue"
+                loading={isButtonLoading}
+              />
+            </div>
+          </div>
+        </div>
+      )}
+    </FullScreenModal>
+  );
 };
 export default ProductSelection;
