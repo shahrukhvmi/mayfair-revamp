@@ -196,7 +196,7 @@ export default function ChatComponent() {
     version: "Unknown",
   });
 
-  console.log("next user", user);
+  // console.log("next user", user);
   //pusher
   const handleRequestHuman = async () => {
     setLoading(true);
@@ -223,9 +223,9 @@ export default function ChatComponent() {
       };
       setChatHistory((prev) => [...prev, botMsgHumanTalk]);
       const data = await response.json();
-      console.log("New Conversation Created:", data);
+      // console.log("New Conversation Created:", data);
       setConversationId(data?.id);
-      console.log("conversationId", conversationId);
+      // console.log("conversationId", conversationId);
 
       let chatUser = getLocal("chat_user", {});
       chatUser.isHumanTalk = true;
@@ -234,7 +234,7 @@ export default function ChatComponent() {
       setIsHumanTalk(true);
       setLoading(false);
     } catch (error) {
-      console.error("Error creating conversation:", error);
+      // console.error("Error creating conversation:", error);
       setLoading(false);
     }
   };
@@ -288,15 +288,15 @@ export default function ChatComponent() {
     setInputMsg("");
   };
 
-  console.log("Human talk", isHumanTalk);
+  // console.log("Human talk", isHumanTalk);
 
   if (isHumanTalk) {
-    console.log("function: sendMessage");
+    // console.log("function: sendMessage");
   } else {
-    console.log("function: sendBot");
+    // console.log("function: sendBot");
   }
 
-  console.log("conversationId", conversationId);
+  // console.log("conversationId", conversationId);
 
   function fetchAndSetMessages(
     conversationId,
@@ -322,11 +322,11 @@ export default function ChatComponent() {
           }
         });
     } catch (err) {
-      console.error(err);
+      // console.error(err);
     } finally {
       setLoading(false);
     }
-    console.log("messages", messages);
+    // console.log("messages", messages);
   }
 
   function useSmartPolling({
@@ -376,7 +376,7 @@ export default function ChatComponent() {
       };
     }, deps); // 👈 Use deps to restart polling if needed
   }
-  console.log("divWidth", divWidth);
+  // console.log("divWidth", divWidth);
 
   useSmartPolling({
     interval: 3000,
@@ -384,7 +384,7 @@ export default function ChatComponent() {
     deps: [conversationId, lastMessageTime, isHumanTalk, isOpen], // changes trigger restart
     onPoll: () => {
       if (isHumanTalk && isOpen) {
-        console.log("polling");
+        // console.log("polling");
         fetchAndSetMessages(
           conversationId,
           lastMessageTime,
@@ -396,7 +396,7 @@ export default function ChatComponent() {
     },
   });
 
-  console.log("isOpen", isOpen);
+  // console.log("isOpen", isOpen);
 
   // function syncMessagesToChatHistory(messages) {
   //   if (!Array.isArray(messages)) return;
@@ -484,7 +484,7 @@ export default function ChatComponent() {
   }
   useEffect(() => {
     syncMessagesToChatHistory(messages);
-    console.log("chat history", chatHistory);
+    // console.log("chat history", chatHistory);
   }, [messages]);
   //pusher end
 
@@ -552,10 +552,10 @@ export default function ChatComponent() {
   const toggleFullScreen = () => {
     if (!isFullScreen()) {
       // enterFullScreen();
-      console.log("enterFullScreen");
+      // console.log("enterFullScreen");
     } else {
       // exitFullScreen();
-      console.log("exitFullScreen");
+      // console.log("exitFullScreen");
     }
   };
 
@@ -694,7 +694,7 @@ export default function ChatComponent() {
 
             previousWidthRef.current = currentWidth;
           } else {
-            console.warn("#div-window not found in DOM");
+            // console.warn("#div-window not found in DOM");
           }
         });
       }, 0);
@@ -852,7 +852,7 @@ export default function ChatComponent() {
           });
         }
       } catch (err) {
-        console.warn("Could not parse signup-storage:", err);
+        // console.warn("Could not parse signup-storage:", err);
       }
     }
   }, [isOpen]);
@@ -1118,10 +1118,10 @@ export default function ChatComponent() {
       chatUser.conversationId = null;
       setLocal("chat_user", chatUser);
       toast.success("Chat has been ended.");
-      console.log("chat ended");
+      // console.log("chat ended");
     } catch (errors) {
       toast.error("Failed to end chat.");
-      console.error("Failed to accept chat", errors);
+      // console.error("Failed to accept chat", errors);
       setLoading(false);
     } finally {
       setLoading(false);
