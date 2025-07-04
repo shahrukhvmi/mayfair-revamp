@@ -14,11 +14,13 @@ import PageLoader from "@/Components/PageLoader/PageLoader";
 import FormWrapper from "@/Components/FormWrapper/FormWrapper";
 import MetaLayout from "@/Meta/MetaLayout";
 import { meta_url } from "@/config/constants";
+import useReorderButtonStore from "@/store/useReorderButton";
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 
 export default function Acknowledgment() {
   const router = useRouter();
   const [showLoader, setShowLoader] = useState(false);
+  const { setIsFromReorder } = useReorderButtonStore();
 
   const {
     register,
@@ -44,6 +46,7 @@ export default function Acknowledgment() {
   const onSubmit = async (data) => {
     console.log("Form Data:", data);
     setShowLoader(true);
+    setIsFromReorder(false);
     await new Promise((resolve) => setTimeout(resolve, 500)); // Wait 2s
     router.push("/signup");
   };
