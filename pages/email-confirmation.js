@@ -77,7 +77,7 @@ export default function EmailConfirmation() {
     },
     onError: (error) => {
       const emailError = error?.response?.data?.errors?.email;
-      if (emailError === "The email has already been taken.") setAlready(true);
+      if (emailError === "This email is already registered.") setAlready(true);
       if (emailError) toast.error(emailError);
       setShowLoader(false);
     },
@@ -189,12 +189,13 @@ export default function EmailConfirmation() {
 
               {already && (
                 <div className="text-sm text-red-600 bg-red-50 border border-red-200 p-3 rounded-md">
-                  This email is already registered{" "}
+                  The email address you have entered is already associated with
+                  an existing account{" "}
                   <span
                     onClick={openLoginModal}
                     className="text-blue-600 underline cursor-pointer font-medium hover:text-blue-800"
                   >
-                    Please click here to login.
+                    Click here to login.
                   </span>
                 </div>
               )}

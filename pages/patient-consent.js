@@ -12,6 +12,7 @@ import useConfirmationQuestionsStore from "@/store/confirmationQuestionStore";
 import useConfirmationInfoStore from "@/store/confirmationInfoStore";
 import MetaLayout from "@/Meta/MetaLayout";
 import { meta_url } from "@/config/constants";
+import { MdCheckBox, MdCheckBoxOutlineBlank } from "react-icons/md";
 
 export default function PatientConsent() {
   const router = useRouter();
@@ -133,9 +134,9 @@ export default function PatientConsent() {
                           className="flex items-start gap-2 cursor-pointer"
                         >
                           {selectedAnswer ? (
-                            <FaDotCircle className="text-primary sm:w-9 w-18 h-18 sm:h-9 mt-1" />
+                            <MdCheckBox className="text-primary sm:w-9 w-18 h-18 sm:h-9 mt-1" />
                           ) : (
-                            <FaRegCircle className="text-violet-700 sm:w-9 sm:h-9 w-18 h-18 mt-1" />
+                            <MdCheckBoxOutlineBlank className="text-violet-700 sm:w-9 sm:h-9 w-18 h-18 mt-1" />
                           )}
                           <span className="bold-font text-gray-700 sm:text-lg text-sm">
                             {q.question

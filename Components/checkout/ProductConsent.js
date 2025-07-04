@@ -5,7 +5,12 @@ import SectionWrapper from "./SectionWrapper";
 import SectionHeader from "./SectionHeader";
 import useVariationStore from "@/store/useVariationStore";
 
-const ProductConsent = ({ isCompleted, onComplete, onConsentChange, setIsConcentCheck }) => {
+const ProductConsent = ({
+  isCompleted,
+  onComplete,
+  onConsentChange,
+  setIsConcentCheck,
+}) => {
   const [isValid, setIsValid] = useState();
   const [isChecked, setIsChecked] = useState(false);
 
@@ -58,7 +63,7 @@ const ProductConsent = ({ isCompleted, onComplete, onConsentChange, setIsConcent
                   // ✅ Notify parent
                   onConsentChange?.(checked);
                 }}
-                className="peer w-6 h-6 cursor-pointer appearance-none rounded-full border-2 border-gray-300 bg-white 
+                className="peer w-6 h-6 cursor-pointer appearance-none rounded-sm border-2 border-gray-300 bg-white 
   checked:bg-[#47317c] checked:border-[#47317c] focus:outline-none transition-all duration-300
   checked:shadow-md checked:shadow-violet-300 bold-font paragraph"
               />
@@ -68,12 +73,17 @@ const ProductConsent = ({ isCompleted, onComplete, onConsentChange, setIsConcent
 
             {/* Checkbox Label */}
             <span className="leading-snug bold-font paragraph">
-              I confirm that I have read, understood and accepted all of the above information.
+              I confirm that I have read, understood and accepted all of the
+              above information.
             </span>
           </label>
 
           {/* Error Message */}
-          {!isChecked && <p className="text-xs text-red-600 mt-2">You must accept the terms to continue.</p>}
+          {!isChecked && (
+            <p className="text-xs text-red-600 mt-2">
+              You must accept the terms to continue.
+            </p>
+          )}
         </div>
         {/* <NextButton label="Continue" onClick={handleSubmit} disabled={!isValid} /> */}
       </div>
