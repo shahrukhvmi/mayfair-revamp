@@ -47,7 +47,7 @@ const StepsHeader = ({ isOpen, toggleSidebar }) => {
   const { clearConfirmationQuestions } = useConfirmationQuestionsStore();
   const { authUserDetail, clearAuthUserDetail } = useAuthUserDetailStore();
   const { token, clearToken, setToken, setIsImpersonationLogout } = useAuthStore();
-  const { clearShipping, clearBilling } = useShippingOrBillingStore();
+  const { clearShipping, clearBilling, setBillingSameAsShipping } = useShippingOrBillingStore();
   const { clearProductId } = useProductId();
   const { clearLastBmi } = useLastBmi();
   const { clearUserData } = useUserDataStore();
@@ -82,6 +82,7 @@ const StepsHeader = ({ isOpen, toggleSidebar }) => {
     clearConfirmationEmail();
     setShowResetPassword(true);
     setImpersonate(false);
+    setBillingSameAsShipping(false);
     router.push("/login");
   };
 
@@ -144,6 +145,7 @@ const StepsHeader = ({ isOpen, toggleSidebar }) => {
     clearToken();
     setIsImpersonationLogout(true);
     setImpersonate(false);
+    setBillingSameAsShipping(false);
     window.location.href = "https://staging.mayfairweightlossclinic.co.uk/dashboard";
   };
 

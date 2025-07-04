@@ -91,8 +91,8 @@ const Dose = ({ doseData, onAdd, onIncrement, onDecrement, isSelected, qty, allo
   return (
     <>
       <div className="relative">
-        {/* {doseStatus === 0 && (
-          <div className="absolute group inline-block z-50  right-[-6px] bottom-[-7px]">
+        {doseStatus === 0 && (
+          <div className="absolute group inline-block z-50  right-[0px] top-[-26px]">
             <button
               type="button"
               onClick={(e) => {
@@ -101,19 +101,19 @@ const Dose = ({ doseData, onAdd, onIncrement, onDecrement, isSelected, qty, allo
               }}
               className="mt-2 px-2 py-2"
             >
-              <span className="inline-flex items-center justify-center px-2 py-0.5 ms-2 text-md text-green-600 cursor-pointer shadow-sm bg-green-100 hover:bg-green-200 rounded">
+              <span className="inline-flex items-center justify-center px-3 py-0.5 text-xs text-green-600 cursor-pointer shadow-sm bg-green-200 hover:bg-green-200 rounded">
                 {isLoading ? (
                   <>
                     <svg className="animate-spin h-4 w-4 text-green-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                       <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                       <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
                     </svg>
-                    <span className="font-semibold text-sm px-2">Loading...</span>
+                    <span className="font-semibold px-2">Loading...</span>
                   </>
                 ) : (
                   <>
                     <FaInfoCircle />
-                    <span className="font-semibold text-sm px-1">Get Notified</span>
+                    <span className="font-semibold px-1">Get Notified</span>
                   </>
                 )}
               </span>
@@ -123,7 +123,7 @@ const Dose = ({ doseData, onAdd, onIncrement, onDecrement, isSelected, qty, allo
               You'll be notified when this item is back in stock.
             </div>
           </div>
-        )} */}
+        )}
         <div
           onClick={isOutOfStock || isAllowExceeded ? undefined : handleAdd}
           className={`flex flex-col sm:flex-row items-start sm:items-center justify-between w-full p-4 border-2 mt-3 transition-all duration-300 ease-in-out relative rounded-md border-primary gap-4 sm:gap-0
