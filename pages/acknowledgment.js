@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import { FiCheck } from "react-icons/fi";
@@ -15,12 +15,14 @@ import FormWrapper from "@/Components/FormWrapper/FormWrapper";
 import MetaLayout from "@/Meta/MetaLayout";
 import { meta_url } from "@/config/constants";
 import useReorderButtonStore from "@/store/useReorderButton";
+import useReorderBackProcessStore from "@/store/useReorderBackProcess";
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 
 export default function Acknowledgment() {
   const router = useRouter();
   const [showLoader, setShowLoader] = useState(false);
   const { setIsFromReorder } = useReorderButtonStore();
+  const { setReorderBackProcess } = useReorderBackProcessStore();
 
   const {
     register,
@@ -35,6 +37,10 @@ export default function Acknowledgment() {
       confirmConsent: false,
     },
   });
+
+  useEffect(() => {
+    setReorderBackProcess(false);
+  }, []);
 
   const personalUse = watch("personalUse");
   const decisionCapacity = watch("decisionCapacity");

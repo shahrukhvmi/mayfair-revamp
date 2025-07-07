@@ -5,6 +5,7 @@ import GetProductsApi from "@/api/getProducts";
 import { useMutation } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import useAuthUserDetailStore from "@/store/useAuthUserDetailStore";
+import useReorderBackProcessStore from "@/store/useReorderBackProcess";
 
 const SkeletonCard = () => (
   <div className="p-4 my-3 bg-white rounded-lg shadow-md">
@@ -19,11 +20,16 @@ const MyAccount = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [productData, setProductData] = useState(null);
   const { setIsReturning } = useAuthUserDetailStore();
+  const { setReorderBackProcess } = useReorderBackProcessStore();
 
   // Dummy function; replace with your real implementation
   const clearCart = () => {
     console.log("Cart cleared");
   };
+
+  useEffect(() => {
+    setReorderBackProcess(false);
+  }, []);
 
   const getProducts = useMutation(GetProductsApi, {
     onSuccess: (res) => {

@@ -16,6 +16,7 @@ import useLastBmi from "@/store/useLastBmiStore";
 import { BsInfoCircle } from "react-icons/bs";
 import MetaLayout from "@/Meta/MetaLayout";
 import { meta_url } from "@/config/constants";
+import useReorderBackProcessStore from "@/store/useReorderBackProcess";
 
 const validateRange = (value, min, max, wholeOnly, message) => {
   const num = Number(value);
@@ -34,6 +35,7 @@ export default function CalculateBmi() {
   const [weightUnitKey, setWeightUnitKey] = useState("");
   const { reorder, reorderStatus } = useReorder();
   const { lastBmi } = useLastBmi();
+  const { reorderBackProcess } = useReorderBackProcessStore();
 
   const { bmi, setBmi } = useBmiStore();
   const router = useRouter();
@@ -286,6 +288,14 @@ export default function CalculateBmi() {
     setValue("hiddenKg", kg);
     setValue("weightSt", st ? Math.round(st) : "");
     setValue("weightLbs", lbs ? Math.round(lbs) : "");
+  };
+
+  const back = () => {
+    if (reorderBackProcess == true) {
+      router.push("/re-order");
+    } else {
+      router.push("/confirm-ethnicity");
+    }
   };
 
   return (
@@ -564,11 +574,7 @@ export default function CalculateBmi() {
                     onClick={() => setLocalStep(1)}
                   />
                 ) : (
-                  <BackButton
-                    label="Back"
-                    className="mt-2"
-                    onClick={() => router.back()}
-                  />
+                  <BackButton label="Back" className="mt-2" onClick={back} />
                 )}
               </form>
 

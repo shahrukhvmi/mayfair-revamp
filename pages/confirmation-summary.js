@@ -27,6 +27,7 @@ import useUserDataStore from "@/store/userDataStore";
 import useCheckoutStore from "@/store/checkoutStore";
 import MetaLayout from "@/Meta/MetaLayout";
 import { meta_url } from "@/config/constants";
+import useReorderBackProcessStore from "@/store/useReorderBackProcess";
 
 const ConfirmationSummary = () => {
   const router = useRouter();
@@ -43,6 +44,8 @@ const ConfirmationSummary = () => {
   const { confirmationInfo, setConfirmationInfo, clearConfirmationInfo } =
     useConfirmationInfoStore();
   const { gpdetails, setGpDetails, clearGpDetails } = useGpDetailsStore();
+
+  const { reorderBackProcess } = useReorderBackProcessStore();
 
   const { clearCheckout } = useCheckoutStore();
   const { clearMedicalQuestions } = useMedicalQuestionsStore();
@@ -81,7 +84,6 @@ const ConfirmationSummary = () => {
         setPatientInfo(data?.data?.lastConsultation?.fields?.patientInfo);
         setLastBmi(data?.data?.lastConsultation?.fields?.bmi);
       }
-
       router.push("/gathering-data");
       return;
     },
@@ -180,7 +182,11 @@ const ConfirmationSummary = () => {
   };
 
   const back = () => {
-    router.push("/gp-detail");
+    if (reorderBackProcess == true) {
+      router.push("/bmi-detail");
+    } else {
+      router.push("/gp-detail");
+    }
   };
   return (
     <>
