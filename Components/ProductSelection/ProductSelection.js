@@ -20,6 +20,7 @@ import useBmiStore from "@/store/bmiStore";
 import Router from "next/router";
 import NextButton from "../NextButton/NextButton";
 import useReorderButtonStore from "@/store/useReorderButton";
+import useReorder from "@/store/useReorderStore";
 
 const ProductSelection = ({ showProductSelection }) => {
   /* ───────────────  skeleton card ────────────── */
@@ -66,6 +67,7 @@ const ProductSelection = ({ showProductSelection }) => {
   const { setIsReturningPatient } = useReturning();
   const { firstName, lastName, setFirstName, setLastName } = useSignupStore();
   const { isFromReorder } = useReorderButtonStore();
+  const { setReorder } = useReorder();
 
   console.log(firstName, lastName, "product selection");
   /* ───────────────  products mutation ────────────── */
@@ -104,8 +106,10 @@ const ProductSelection = ({ showProductSelection }) => {
     if (isFromReorder) {
       if (treatment == "reorder") {
         setRedirection("/re-order");
+        setReorder(true);
       } else {
         setRedirection("/acknowledgment");
+        setReorder(false);
       }
     } else {
       setRedirection("/personal-details");
