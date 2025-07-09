@@ -395,10 +395,10 @@ export default function CalculateBmi() {
                           validate: (value) =>
                             validateRange(
                               value,
-                              1,
+                              4,
                               10,
                               true,
-                              "Only numbers from 1 to 10 are allowed"
+                              "Only numbers from 4 to 10 are allowed"
                             ),
                           onChange: (e) => {
                             if (e.target.value !== "")
@@ -441,9 +441,9 @@ export default function CalculateBmi() {
                         validate: (value) => {
                           const num = Number(value);
                           if (!Number.isInteger(num))
-                            return "Only whole numbers from 1 to 300 are allowed";
-                          if (num < 1 || num > 300)
-                            return "Only whole numbers from 1 to 300 are allowed";
+                            return "Only whole numbers from 122 to 300 are allowed";
+                          if (num < 122 || num > 300)
+                            return "Only whole numbers from 122 to 300 are allowed";
                           return true;
                         },
                         onChange: (e) => {
