@@ -8,11 +8,15 @@ import {
   FaSearch,
   FaCog,
   FaUser,
+  FaMinus,
+  FaSlash,
+  FaCommentSlash,
 } from "react-icons/fa";
 import { FiMessageCircle, FiMaximize2, FiMinimize2 } from "react-icons/fi";
 import { app_url } from "@/config/constants";
 import toast, { Toaster } from "react-hot-toast";
 import Pusher from "pusher-js";
+import Echo from "laravel-echo";
 
 const quickQuestions = [
   {
@@ -175,11 +179,14 @@ export default function ChatComponent() {
   const [loading, setLoading] = useState(false);
   const [showWelcome, setShowWelcome] = useState(true);
   const [showQuick, setShowQuick] = useState(false);
+  const [otherTyping, setOtherTyping] = useState(false);
   const [showUserSettings, setShowUserSettings] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [msgToBoth, setMsgToBoth] = useState(false);
+  const [isTabActive, setIsTabActive] = useState(true);
   const divRef = useRef(null);
   const [divWidth, setDivWidth] = useState(0);
+  const bottomRef = useRef(null);
   const cb = {
     sm: 640,
     md: 768,
@@ -238,6 +245,21 @@ export default function ChatComponent() {
       setLoading(false);
     }
   };
+
+  // window.Pusher = Pusher;
+
+  // const echo = new Echo({
+  //   broadcaster: "pusher",
+  //   key: "a801fe71eb894de6fe58",
+  //   cluster: "ap1",
+  //   wsHost: window.location.hostname,
+  //   wsPort: 6001,
+  //   forceTLS: false,
+  //   disableStats: true,
+  //   // If using local websockets:
+  //   // encrypted: false,
+  //   // enabledTransports: ['ws', 'wss'],
+  // });
 
   useEffect(() => {
     let chatUser = getLocal("chat_user", {});
@@ -378,23 +400,281 @@ export default function ChatComponent() {
   }
   // console.log("divWidth", divWidth);
 
-  useSmartPolling({
-    interval: 3000,
-    loading, // this should come from your local state
-    deps: [conversationId, lastMessageTime, isHumanTalk, isOpen], // changes trigger restart
-    onPoll: () => {
-      if (isHumanTalk && isOpen) {
-        // console.log("polling");
-        fetchAndSetMessages(
-          conversationId,
-          lastMessageTime,
-          messages,
-          setMessages,
-          setLastMessageTime
+  // useSmartPolling({
+  //   interval: 3000,
+  //   loading, // this should come from your local state
+  //   deps: [conversationId, lastMessageTime, isHumanTalk, isOpen], // changes trigger restart
+  //   onPoll: () => {
+  //     if (isHumanTalk && isOpen) {
+  //       // console.log("polling");
+  //       fetchAndSetMessages(
+  //         conversationId,
+  //         lastMessageTime,
+  //         messages,
+  //         setMessages,
+  //         setLastMessageTime
+  //       );
+  //     }
+  //   },
+  // });
+
+  useEffect(() => {
+    if (!conversationId) return;
+    fetch(app_url + `/messages?chat_conversation_id=${conversationId}`)
+      .then((res) => res.json())
+      .then((data) => {
+        setMessages((prev) => [...prev, ...data]);
+        setLastMessageTime(
+          data.length ? data[data.length - 1].created_at : null
         );
+      });
+  }, [conversationId]);
+
+  useEffect(() => {
+    if (bottomRef.current) {
+      bottomRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [messages]);
+
+  useEffect(() => {
+    if (chatBoxRef.current) {
+      chatBoxRef.current.scrollTo({
+        top: chatBoxRef.current.scrollHeight,
+        behavior: "smooth",
+      });
+    }
+  }, [otherTyping]);
+  // useEffect(() => {
+  //   if (!conversationId) return;
+
+  //   // Only run this on the client
+  //   if (typeof window === "undefined") return;
+
+  //   window.Pusher = Pusher;
+
+  //   const echo = new Echo({
+  //     broadcaster: "pusher",
+  //     key: "a801fe71eb894de6fe58",
+  //     cluster: "ap1",
+  //     wsHost: window.location.hostname,
+  //     wsPort: 6001,
+  //     forceTLS: false,
+  //     disableStats: true,
+  //   });
+
+  //   // Listen on the correct channel
+  //   const channel = echo.channel(`chat.${conversationId}`);
+  //   const handler = (e) => {
+  //     // setMessages((prev) => [...prev, e.message]);
+  //     console.log("Message received", e.message);
+  //   };
+  //   channel.listen("Message", handler);
+
+  //   // Clean up on unmount or when conversationId changes
+  //   return () => {
+  //     // channel.stopListening("Message", handler);
+  //     // echo.leaveChannel(`chat.${conversationId}`);
+  //     // echo.disconnect();
+  //   };
+  // }, [conversationId, setMessages]);
+
+  useEffect(() => {
+    window.Pusher = Pusher;
+
+    const echo = new Echo({
+      broadcaster: "pusher",
+      key: "a801fe71eb894de6fe58",
+      cluster: "ap1",
+      wsHost: window.location.hostname,
+      wsPort: 6001,
+      forceTLS: false,
+      disableStats: true,
+      // If using local websockets:
+      // encrypted: false,
+      // enabledTransports: ['ws', 'wss'],
+    });
+
+    const channel = echo.channel(`chat.${conversationId}`);
+    // const channel = echoRef.current.channel(`chat.${conversationId}`);
+    const handler = (e) => {
+      setMessages((prev) => [...prev, e.message]);
+      if (
+        e.message.sender_type == "agent" &&
+        e.message.content == "The chat has been ended"
+      ) {
+        let chatUser = getLocal("chat_user", {});
+        chatUser.isHumanTalk = false;
+        chatUser.conversationId = null;
+        setLocal("chat_user", chatUser);
+        setConversationId("");
+        setIsHumanTalk(false);
+        console.log("The chat has been ended", conversationId, isHumanTalk);
       }
-    },
-  });
+      // console.log("e.message", e.message);
+      if (bottomRef.current) {
+        bottomRef.current.scrollIntoView({ behavior: "smooth" });
+      }
+    };
+    channel.listen("Message", handler);
+    // Cleanup on unmount: Unbind the event listener
+    return () => {
+      channel.stopListening("Message", handler);
+      // Optional: echo.leave(`chat.${conversationId}`);
+      // echoRef.current.leaveChannel(`chat.${conversationId}`);
+    };
+  }, [conversationId, setMessages]);
+
+  useEffect(() => {
+    window.Pusher = Pusher;
+
+    const echo = new Echo({
+      broadcaster: "pusher",
+      key: "a801fe71eb894de6fe58",
+      cluster: "ap1",
+      wsHost: window.location.hostname,
+      wsPort: 6001,
+      forceTLS: false,
+      disableStats: true,
+      // If using local websockets:
+      // encrypted: false,
+      // enabledTransports: ['ws', 'wss'],
+    });
+
+    const channel = echo.channel(`chat.${conversationId}`);
+
+    channel.listen(".TypingStatusChanged", (e) => {
+      if (e.senderType !== "user") {
+        setOtherTyping(e.isTyping);
+      }
+    });
+
+    return () => {
+      echo.leave(`chat.${conversationId}`);
+    };
+  }, [conversationId]);
+
+  //online status
+  useEffect(() => {
+    if (isHumanTalk) {
+      const handleVisibilityChange = () => {
+        setIsTabActive(!document.hidden);
+      };
+      document.addEventListener("visibilitychange", handleVisibilityChange);
+      return () =>
+        document.removeEventListener(
+          "visibilitychange",
+          handleVisibilityChange
+        );
+    }
+  }, []);
+
+  useEffect(() => {
+    if (isHumanTalk) {
+      const updateStatus = async () => {
+        try {
+          const res = await fetch(app_url + `/user-status`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Accept: "application/json",
+              // If you're using Sanctum or need credentials:
+              // "X-CSRF-TOKEN": document.head.querySelector('meta[name="csrf-token"]').content,
+            },
+            body: JSON.stringify({
+              is_online: isTabActive,
+              chat_conversation_id: conversationId,
+              sender_type: "user",
+            }),
+          });
+
+          if (!res.ok) {
+            throw new Error(`Server error: ${res.status}`);
+          }
+
+          const data = await res.json();
+          // console.log("✅ Online status updated:", data);
+        } catch (err) {
+          // console.error("🔴 Failed to update online status: ", err);
+        }
+      };
+
+      updateStatus();
+    }
+  }, [isTabActive]);
+
+  useEffect(() => {
+    if (isHumanTalk) {
+      window.Pusher = Pusher;
+
+      const echo = new Echo({
+        broadcaster: "pusher",
+        key: "a801fe71eb894de6fe58",
+        cluster: "ap1",
+        wsHost: window.location.hostname,
+        wsPort: 6001,
+        forceTLS: false,
+        disableStats: true,
+        // If using local websockets:
+        // encrypted: false,
+        // enabledTransports: ['ws', 'wss'],
+      });
+
+      echo.private("user-status").listen("UserOnlineStatusUpdated", (data) => {
+        // console.log("🟢 Status changed:", data);
+      });
+
+      return () => echo.leave("user-status");
+    }
+  }, []);
+
+  //end online status
+  //chat history
+  useEffect(() => {
+    window.Pusher = Pusher;
+
+    const echo = new Echo({
+      broadcaster: "pusher",
+      key: "a801fe71eb894de6fe58",
+      cluster: "ap1",
+      wsHost: window.location.hostname,
+      wsPort: 6001,
+      forceTLS: false,
+      disableStats: true,
+    });
+
+    const userId = conversationId;
+    const channel = echo.channel(`user-panel.${userId}`);
+
+    channel.listen(".RequestChatHistory", (e) => {
+      console.log("📦 History requested:", e);
+
+      console.log("messages", messages);
+      // read chat history from localStorage
+      const chatHistory = JSON.parse(
+        localStorage.getItem("chat_history") || "[]"
+      );
+
+      // send history to server
+      fetch(app_url + "/send-history", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify({
+          user_id: conversationId,
+          agent_id: 2,
+          history: chatHistory,
+        }),
+      });
+    });
+
+    return () => {
+      echo.leave(`user-panel.${userId}`);
+    };
+  }, [inputMsg]);
+
+  //end chat history
 
   // console.log("isOpen", isOpen);
 
@@ -453,6 +733,7 @@ export default function ChatComponent() {
           return {
             sender: "agent",
             name: msg?.agent?.fname || "Agent",
+            // name: "Agent",
             text: (msg.content || "").trim(),
             time: msg.created_at,
           };
@@ -939,7 +1220,7 @@ export default function ChatComponent() {
       if (isHumanTalk && msgToBoth) {
         setTimeout(() => {
           setChatHistory((prev) => [...prev, botMsg]);
-        }, 2000);
+        }, 20);
       } else {
         setChatHistory((prev) => [...prev, botMsg]);
       }
@@ -1037,6 +1318,15 @@ export default function ChatComponent() {
   const handleFocus = () => {
     setInputIsFocus(true);
     adjustTextareaHeight();
+    fetch(`${app_url}/typing`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        chat_conversation_id: conversationId,
+        sender_type: "user",
+        is_typing: true,
+      }),
+    });
   };
 
   const handleBlur = () => {
@@ -1044,6 +1334,15 @@ export default function ChatComponent() {
     if (inputMsg.trim() === "") {
       resetTextareaHeight();
     }
+    fetch(`${app_url}/typing`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        chat_conversation_id: conversationId,
+        sender_type: "user",
+        is_typing: false,
+      }),
+    });
   };
 
   const adjustTextareaHeight = () => {
@@ -1118,6 +1417,11 @@ export default function ChatComponent() {
       chatUser.conversationId = null;
       setLocal("chat_user", chatUser);
       toast.success("Chat has been ended.");
+      const botMsgChatEnd = {
+        sender: "bot",
+        text: `The chat has been ended`,
+      };
+      setChatHistory((prev) => [...prev, botMsgChatEnd]);
       // console.log("chat ended");
     } catch (errors) {
       toast.error("Failed to end chat.");
@@ -1511,13 +1815,23 @@ export default function ChatComponent() {
                 {user && user.email && (
                   <button
                     id="open-faq"
-                    className={`px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm text-gray-400 border bg-gray-50 hover:border-gray-200 border-gray-50 rounded-lg flex items-center gap-1`}
+                    className={`px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm text-gray-400 border bg-gray-50 hover:border-gray-200  rounded-lg flex items-center gap-1 ${
+                      showSidebar ? "border-gray-200" : "border-gray-50"
+                    }`}
                     onClick={() => setShowSidebar((s) => !s)}
                     aria-label={
                       showSidebar ? "Close FAQ Sidebar" : "Open FAQ Sidebar"
                     }
                   >
-                    {showSidebar ? <FaTimes size={17} /> : <FaBars size={17} />}
+                    <FaBars
+                      size={17}
+                      style={{
+                        transform: showSidebar
+                          ? "rotate(90deg)"
+                          : "rotate(0deg)",
+                        transition: "transform 0.3s ease",
+                      }}
+                    />
                   </button>
                 )}
                 <div>
@@ -1568,7 +1882,7 @@ export default function ChatComponent() {
                           className={`px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm text-gray-400 border bg-gray-50 hover:border-gray-200 border-gray-50 rounded-lg flex items-center gap-1`}
                           aria-label="End Chat"
                         >
-                          <FaSignOutAlt size={18} />{" "}
+                          <FaCommentSlash size={20} />{" "}
                           <span
                             className={`${divWidth <= cb.sm ? "hidden" : ""}`}
                           >
@@ -1599,7 +1913,7 @@ export default function ChatComponent() {
                         <span
                           className={`${divWidth <= cb.sm ? "hidden" : ""}`}
                         >
-                          Exit
+                          Exit Chat
                         </span>
                       </button>
                       <div className="flex items-center gap-1">
@@ -1627,7 +1941,7 @@ export default function ChatComponent() {
                           className={`px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm text-gray-400 border bg-gray-50 hover:border-gray-200 border-gray-50 rounded-lg flex items-center gap-1`}
                           aria-label="Close"
                         >
-                          <FaTimes size={17} />
+                          <FaMinus size={20} />
                           {/* <FiXCircle size={20} /> */}
                         </button>
                       </div>
@@ -1666,7 +1980,7 @@ export default function ChatComponent() {
                           aria-label="Close"
                         >
                           {/* <FiXCircle size={20} /> */}
-                          <FaTimes size={17} />
+                          <FaMinus size={20} />
                         </button>
                       </div>
                     </>
@@ -1682,7 +1996,7 @@ export default function ChatComponent() {
                       onClick={() => setShowUserSettings(false)}
                       aria-label="Close"
                     >
-                      <FaTimes size={18} />
+                      <FaMinus size={18} />
                     </button>
                     <h2 className="flex items-center gap-2 mb-4 text-lg font-semibold text-violet-700">
                       <span>
@@ -1823,7 +2137,7 @@ export default function ChatComponent() {
                     >
                       <div
                         id="user-name"
-                        className={`flex items-center justify-between font-semibold text-violet-700 uppercase border-b border-gray-200 pb-3 ${
+                        className={`flex items-center justify-between font-semibold text-gray-600 uppercase border-b border-gray-200 pb-3 ${
                           userDetails ? "" : ""
                         }`}
                       >
@@ -2090,6 +2404,7 @@ export default function ChatComponent() {
                       </form>
                     ))}
                   {/* Chat box */}
+
                   {user && user.email && (
                     <>
                       <div
@@ -2331,7 +2646,12 @@ export default function ChatComponent() {
                                       : "max-w-[80%]"
                                   }`}
                                 >
-                                  {msg.text}
+                                  <div
+                                    dangerouslySetInnerHTML={{
+                                      __html: msg.text,
+                                    }}
+                                  />
+                                  {/* {msg.text} */}
                                   <div
                                     className={`text-[10px] mt-1 text-right ${
                                       isUser ? "text-gray-500" : "text-gray-500"
@@ -2434,12 +2754,23 @@ export default function ChatComponent() {
                                   >
                                     {formattedTime}
                                   </div>
+                                  {/* <div
+                                    className="max-h-[0%] h-[0%]"
+                                    ref={bottomRef}
+                                  /> */}
                                 </div>
                               </div>
                             );
                           }
                         })}
 
+                        {otherTyping && (
+                          <div className="flex justify-start w-full mb-2">
+                            <div className="max-w-xs px-4 py-2 text-sm italic text-gray-600 bg-gray-300 rounded-xl animate-pulse">
+                              <span className="">Agent is typing...</span>
+                            </div>
+                          </div>
+                        )}
                         {loading && (
                           <div className="flex justify-start">
                             <div className="max-w-xs px-4 py-2 text-sm italic text-gray-600 bg-gray-300 rounded-xl animate-pulse">
@@ -2529,12 +2860,12 @@ export default function ChatComponent() {
                               type="submit"
                               id="message-submit"
                               ref={messageSubmitButtonRef}
-                              className={`self-end h-auto px-4 py-3 text-sm text-center text-white transition max-h-12 rounded-xl sm:text-base ${
+                              className={`self-end h-auto px-4 py-3 text-sm text-center text-white transition max-h-12 rounded-xl sm:text-base disabled:bg-gray-300 ${
                                 loading
                                   ? "bg-violet-600"
                                   : "bg-violet-600 hover:bg-violet-700"
                               }`}
-                              disabled={loading}
+                              disabled={loading || !inputMsg}
                             >
                               {loading ? "Sent" : "Send"}
                             </button>
