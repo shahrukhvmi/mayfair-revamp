@@ -592,7 +592,7 @@ export default function ChatComponent() {
           }
 
           const data = await res.json();
-          // console.log("✅ Online status updated:", data);
+          console.log("✅ Online status updated:", data);
         } catch (err) {
           // console.error("🔴 Failed to update online status: ", err);
         }
@@ -620,7 +620,7 @@ export default function ChatComponent() {
       });
 
       echo.private("user-status").listen("UserOnlineStatusUpdated", (data) => {
-        // console.log("🟢 Status changed:", data);
+        console.log("🟢 Status changed:", data);
       });
 
       return () => echo.leave("user-status");
