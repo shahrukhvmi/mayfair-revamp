@@ -2,14 +2,11 @@
 import { act, use, useEffect, useRef, useState } from "react";
 import {
   FaBars,
-  FaTimes,
   FaSignOutAlt,
   FaTrash,
-  FaSearch,
   FaCog,
   FaUser,
   FaMinus,
-  FaSlash,
   FaCommentSlash,
 } from "react-icons/fa";
 import { FiMessageCircle, FiMaximize2, FiMinimize2 } from "react-icons/fi";
@@ -17,6 +14,8 @@ import { app_url } from "@/config/constants";
 import toast, { Toaster } from "react-hot-toast";
 import Pusher from "pusher-js";
 import Echo from "laravel-echo";
+import { BsChatDots, BsChatDotsFill } from "react-icons/bs";
+import { IoChatbubbles, IoChatbubblesOutline } from "react-icons/io5";
 
 const quickQuestions = [
   {
@@ -67,6 +66,12 @@ const finalFaqs = [
   {
     label: "Chatbot Guide - How to use?",
     message: "can you provide the guide how to use chatbot",
+  },
+  {
+    label:
+      "Can you provide a letter or prescription that I can show at the airport when travelling?",
+    message:
+      "Can you provide a letter or prescription that I can show at the airport when travelling?",
   },
   {
     label: "What weight loss programs do you offer?",
@@ -1765,7 +1770,9 @@ export default function ChatComponent() {
           className="fixed flex items-center justify-center text-white rounded-full shadow-lg z-999 bottom-4 right-4 w-14 h-14 bg-violet-600 hover:bg-violet-700"
           aria-label="Open Chat"
         >
-          <FiMessageCircle size={28} />
+          {/* <FiMessageCircle size={28} /> */}
+          {/* <BsChatDots size={28} /> */}
+          <IoChatbubbles size={28} />
         </button>
       )}
 
