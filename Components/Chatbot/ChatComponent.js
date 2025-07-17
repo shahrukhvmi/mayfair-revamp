@@ -74,6 +74,10 @@ const finalFaqs = [
       "Can you provide a letter or prescription that I can show at the airport when travelling?",
   },
   {
+    label: "Can I order a 15mg pen and use it to take 5mg doses?",
+    message: "Can I order a 15mg pen and use it to take 5mg doses?",
+  },
+  {
     label: "What weight loss programs do you offer?",
     message: "What weight loss programs do you offer",
   },
@@ -181,6 +185,7 @@ export default function ChatComponent() {
   const [inputMsg, setInputMsg] = useState("");
   const [isHumanTalk, setIsHumanTalk] = useState(false);
   const [conversationId, setConversationId] = useState(null);
+  const [agentId, setAgentId] = useState(null);
   const [loading, setLoading] = useState(false);
   const [showWelcome, setShowWelcome] = useState(true);
   const [showQuick, setShowQuick] = useState(false);
@@ -235,9 +240,9 @@ export default function ChatComponent() {
       };
       setChatHistory((prev) => [...prev, botMsgHumanTalk]);
       const data = await response.json();
-      // console.log("New Conversation Created:", data);
+      console.log("New Conversation Created:", data);
       setConversationId(data?.id);
-      // console.log("conversationId", conversationId);
+      console.log("conversationId", conversationId);
 
       let chatUser = getLocal("chat_user", {});
       chatUser.isHumanTalk = true;
@@ -353,7 +358,7 @@ export default function ChatComponent() {
     } finally {
       setLoading(false);
     }
-    // console.log("messages", messages);
+    console.log("messages", messages);
   }
 
   function useSmartPolling({
@@ -669,6 +674,7 @@ export default function ChatComponent() {
         body: JSON.stringify({
           user_id: conversationId,
           agent_id: 2,
+          // agent_id: agentId,
           history: chatHistory,
         }),
       });
@@ -677,7 +683,7 @@ export default function ChatComponent() {
     return () => {
       echo.leave(`user-panel.${userId}`);
     };
-  }, [inputMsg]);
+  }, []);
 
   //end chat history
 
