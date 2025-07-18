@@ -194,6 +194,7 @@ export default function ChatComponent() {
   const [isOpen, setIsOpen] = useState(false);
   const [msgToBoth, setMsgToBoth] = useState(false);
   const [isTabActive, setIsTabActive] = useState(true);
+  const [orderIdStatus, setOrderIdStatus] = useState("");
   const divRef = useRef(null);
   const [divWidth, setDivWidth] = useState(0);
   const bottomRef = useRef(null);
@@ -256,21 +257,6 @@ export default function ChatComponent() {
     }
   };
 
-  // window.Pusher = Pusher;
-
-  // const echo = new Echo({
-  //   broadcaster: "pusher",
-  //   key: "a801fe71eb894de6fe58",
-  //   cluster: "ap1",
-  //   wsHost: window.location.hostname,
-  //   wsPort: 6001,
-  //   forceTLS: false,
-  //   disableStats: true,
-  //   // If using local websockets:
-  //   // encrypted: false,
-  //   // enabledTransports: ['ws', 'wss'],
-  // });
-
   useEffect(() => {
     let chatUser = getLocal("chat_user", {});
     if (typeof chatUser !== "object" || chatUser === null) {
@@ -291,22 +277,6 @@ export default function ChatComponent() {
     setConversationId(chatUser.conversationId);
   }, []);
 
-  // useEffect(() => {
-  //   const pusher = new Pusher("your-key", {
-  //     cluster: "your-cluster",
-  //   });
-
-  //   const channel = pusher.subscribe(`chat.${conversationId}`);
-  //   channel.bind("NewMessage", (data) => {
-  //     setMessages((prev) => [...prev, data]);
-  //   });
-
-  //   return () => {
-  //     channel.unbind_all();
-  //     channel.unsubscribe();
-  //   };
-  // }, []);
-
   const sendMessage = async () => {
     await fetch(app_url + "/send-message", {
       method: "POST",
@@ -319,6 +289,51 @@ export default function ChatComponent() {
     });
     setInputMsg("");
   };
+
+  const fetchAgentId = async () => {
+    try {
+      const res = await fetch(`${app_url}/get-agent-id/${conversationId}`);
+      const data = await res.json();
+
+      console.log("Agent ID fetched:", data.agent_id);
+      if (
+        data.agent_id !== null &&
+        data.agent_id !== "" &&
+        data.agent_id !== undefined
+      ) {
+        setAgentId(data.agent_id);
+      }
+      console.log("Agent ID set:", agentId);
+
+      if (data.agent_id) {
+        const existingUser = JSON.parse(
+          localStorage.getItem("chat_user") || "{}"
+        );
+        if (existingUser.agent_id) {
+          setAgentId(existingUser.agent_id);
+        } else if (
+          data.agent_id !== null &&
+          data.agent_id !== "" &&
+          data.agent_id !== undefined
+        ) {
+          const updatedUser = {
+            ...existingUser,
+            agent_id: data.agent_id,
+          };
+          localStorage.setItem("chat_user", JSON.stringify(updatedUser));
+          setAgentId(data.agent_id);
+        }
+      }
+    } catch (error) {
+      console.error("Error fetching agent ID:", error);
+    }
+  };
+
+  useEffect(() => {
+    if (conversationId && !agentId) {
+      fetchAgentId();
+    }
+  }, [conversationId, agentId, isOpen, isHumanTalk]);
 
   // console.log("Human talk", isHumanTalk);
 
@@ -409,24 +424,6 @@ export default function ChatComponent() {
     }, deps); // 👈 Use deps to restart polling if needed
   }
   // console.log("divWidth", divWidth);
-
-  // useSmartPolling({
-  //   interval: 3000,
-  //   loading, // this should come from your local state
-  //   deps: [conversationId, lastMessageTime, isHumanTalk, isOpen], // changes trigger restart
-  //   onPoll: () => {
-  //     if (isHumanTalk && isOpen) {
-  //       // console.log("polling");
-  //       fetchAndSetMessages(
-  //         conversationId,
-  //         lastMessageTime,
-  //         messages,
-  //         setMessages,
-  //         setLastMessageTime
-  //       );
-  //     }
-  //   },
-  // });
 
   useEffect(() => {
     if (!conversationId) return;
@@ -653,17 +650,23 @@ export default function ChatComponent() {
     });
 
     const userId = conversationId;
+
     const channel = echo.channel(`user-panel.${userId}`);
 
     channel.listen(".RequestChatHistory", (e) => {
       console.log("📦 History requested:", e);
-
       console.log("messages", messages);
       // read chat history from localStorage
+
       const chatHistory = JSON.parse(
         localStorage.getItem("chat_history") || "[]"
       );
 
+      const chatUser = JSON.parse(localStorage.getItem("chat_user") || "{}");
+      const chatAgentId = chatUser.agent_id || agentId;
+      console.log("chatAgentId", chatAgentId);
+
+      fetchAgentId();
       // send history to server
       fetch(app_url + "/send-history", {
         method: "POST",
@@ -673,8 +676,8 @@ export default function ChatComponent() {
         },
         body: JSON.stringify({
           user_id: conversationId,
-          agent_id: 2,
-          // agent_id: agentId,
+          // agent_id: 2,
+          agent_id: chatAgentId,
           history: chatHistory,
         }),
       });
@@ -683,57 +686,12 @@ export default function ChatComponent() {
     return () => {
       echo.leave(`user-panel.${userId}`);
     };
-  }, []);
+  }, [isOpen, conversationId, agentId, isHumanTalk]);
 
   //end chat history
 
   // console.log("isOpen", isOpen);
 
-  // function syncMessagesToChatHistory(messages) {
-  //   if (!Array.isArray(messages)) return;
-  //   const mapped = messages
-  //     .map((msg) => {
-  //       if (msg.sender_type === "agent") {
-  //         return {
-  //           sender: "agent",
-  //           text: (msg?.agent?.fname + ": " + msg.content || "").trim(),
-  //         };
-  //       }
-  //       if (msg.sender_type === "user") {
-  //         return { sender: "user", text: (msg.content || "").trim() };
-  //       }
-  //       // Optionally handle other sender types
-  //       return null;
-  //     })
-  //     .filter(Boolean); // Remove any nulls
-  //   setChatHistory(mapped);
-  // }
-  // function syncMessagesToChatHistory(messages) {
-  //   if (!Array.isArray(messages)) return;
-  //   const mapped = messages
-  //     .map((msg) => {
-  //       if (msg.sender_type === "agent") {
-  //         return {
-  //           sender: "agent",
-  //           name: msg?.agent?.fname || "Agent",
-  //           text: (msg.content || "").trim(),
-  //           time: msg.created_at,
-  //         };
-  //       }
-  //       if (msg.sender_type === "user") {
-  //         return {
-  //           sender: "user",
-  //           name: "You",
-  //           text: (msg.content || "").trim(),
-  //           time: msg.created_at,
-  //         };
-  //       }
-  //       return null;
-  //     })
-  //     .filter(Boolean);
-  //   setChatHistory(mapped);
-  //   // setChatHistory((prev) => [...prev, mapped]);
-  // }
   function syncMessagesToChatHistory(messages) {
     if (!Array.isArray(messages)) return;
 
@@ -1536,6 +1494,7 @@ export default function ChatComponent() {
 
     const handleSubmit = async (e) => {
       e.preventDefault();
+      setOrderIdStatus("⏳ Checking order status...");
       setStatus("⏳ Checking order status...");
       setLoading(true);
 
@@ -1582,6 +1541,7 @@ export default function ChatComponent() {
           botMessage =
             errorMessages[Math.floor(Math.random() * errorMessages.length)];
         }
+        setOrderIdStatus(botMessage ?? "✅ Verified! Now you can continue.");
         setStatus(botMessage ?? "✅ Verified! Now you can continue.");
         if (orderId) {
           localStorage.setItem(
@@ -1591,6 +1551,7 @@ export default function ChatComponent() {
           if (onSuccess) onSuccess(orderId, data);
         }
       } catch {
+        setOrderIdStatus("❌ Unable to check order status. Please try again.");
         setStatus("❌ Unable to check order status. Please try again.");
       } finally {
         setOrderId(localOrderId);
@@ -1660,7 +1621,7 @@ export default function ChatComponent() {
           }}
           disabled={loading}
         >
-          Continue
+          {loading ? "Continue" : "Continue"}
         </button>
         <p
           style={{
@@ -1669,7 +1630,7 @@ export default function ChatComponent() {
             // color: "red",
           }}
         >
-          {status}
+          {status || orderIdStatus}
         </p>
       </form>
     );
@@ -2693,49 +2654,7 @@ export default function ChatComponent() {
                                 </div>
                               </div>
                             );
-                          }
-                          // else {
-                          //   return (
-                          //     <div
-                          //       key={i}
-                          //       className={`flex ${
-                          //         isUser ? "justify-end" : "justify-start"
-                          //       } w-full mb-2`}
-                          //     >
-                          //       <div
-                          //         className={`rounded-xl px-4 py-2 max-w-[80%] min-w-[5%] shadow-sm ${
-                          //           isUser
-                          //             ? "bg-violet-100 text-gray-700"
-                          //             : "bg-gray-200 text-gray-900 border border-gray-200"
-                          //         }`}
-                          //         style={{ position: "relative" }}
-                          //       >
-                          //         {/* Sender name for agent */}
-                          //         {isAgent && (
-                          //           <div className="mb-1 text-sm font-semibold text-violet-700">
-                          //             {msg.name}
-                          //           </div>
-                          //         )}
-                          //         {/* Message text */}
-                          //         <div
-                          //           className="whitespace-pre-line"
-                          //           dangerouslySetInnerHTML={{
-                          //             __html: msg.text,
-                          //           }}
-                          //         ></div>
-                          //         {/* Time */}
-                          //         <div
-                          //           className={`text-[10px] mt-1 text-right ${
-                          //             isUser ? "text-gray-500" : "text-gray-500"
-                          //           }`}
-                          //         >
-                          //           {formattedTime}
-                          //         </div>
-                          //       </div>
-                          //     </div>
-                          //   );
-                          // }
-                          else {
+                          } else {
                             return (
                               <div
                                 key={i}
@@ -2904,15 +2823,4 @@ export default function ChatComponent() {
       )}
     </div>
   );
-  {
-    !isOpen && (
-      <button
-        className="fixed z-50 flex items-center justify-center text-white rounded-full shadow-lg bottom-4 right-4 w-14 h-14 bg-violet-600 hover:bg-violet-700"
-        onClick={() => setIsOpen(true)}
-        aria-label="Open Chat"
-      >
-        <FiMessageCircle size={28} />
-      </button>
-    );
-  }
 }
