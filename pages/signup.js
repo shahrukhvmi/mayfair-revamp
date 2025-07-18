@@ -68,7 +68,7 @@ export default function SignUp() {
 
   return (
     <>
-      <MetaLayout canonical={`${meta_url}`} />
+      <MetaLayout canonical={`${meta_url}signup/`} />
       <StepsHeader />
       <FormWrapper
         heading={"Enter your full legal name"}

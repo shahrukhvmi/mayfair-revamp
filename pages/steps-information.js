@@ -28,6 +28,7 @@ import useReorderButtonStore from "@/store/useReorderButton";
 import StepsHeader from "@/layout/stepsHeader";
 import MetaLayout from "@/Meta/MetaLayout";
 import { meta_url } from "@/config/constants";
+import useReturning from "@/store/useReturningPatient";
 
 export default function StepsInformation() {
   const [imageLoaded, setImageLoaded] = useState(false);
@@ -67,6 +68,7 @@ export default function StepsInformation() {
   const { clearUserData } = useUserDataStore();
   const { clearFirstName, clearLastName, clearEmail, clearConfirmationEmail } =
     useSignupStore();
+  const { setIsReturningPatient } = useReturning();
 
   /* ───────────────  stores (init only what we SET/CLEAR) ────────────── */
 
@@ -99,6 +101,7 @@ export default function StepsInformation() {
         setBilling(data?.data?.data?.billing);
         setAuthUserDetail(data?.data?.data?.auth_user);
         setLastBmi(data?.data?.data?.bmi);
+        setIsReturningPatient(data?.data?.data?.isReturning);
         if (productId && !showProductSelection) {
           if (authUserDetail?.isReturning) {
           }
@@ -181,7 +184,7 @@ export default function StepsInformation() {
 
   return (
     <>
-      <MetaLayout canonical={`${meta_url}`} />
+      <MetaLayout canonical={`${meta_url}steps-information/`} />
       <StepsHeader />
       {showLoader && (
         <div className="absolute inset-0 z-20 flex justify-center items-center bg-black/30 rounded-lg cursor-not-allowed">

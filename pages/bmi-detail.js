@@ -53,11 +53,12 @@ export default function BmiDetail() {
 
   const bmiValue = parseFloat(Number(bmi?.bmi).toFixed(1));
   const shouldShowCheckboxes =
-    patientInfo?.ethnicity === "Yes"
+    patientInfo?.ethnicity == "Yes"
       ? bmiValue >= 25.5 && bmiValue <= 27.4
       : bmiValue >= 27.5 && bmiValue <= 29.9;
+
   const shouldShowInfoMessage =
-    patientInfo?.ethnicity === "Yes" && bmiValue >= 27.5 && bmiValue <= 29.9;
+    patientInfo?.ethnicity == "Yes" && bmiValue >= 27.5 && bmiValue <= 29.9;
 
   // Check For reorder and low BMI
   const isReorderAndBmiLow = isReturningPatient && bmiValue < 20;
@@ -185,7 +186,7 @@ export default function BmiDetail() {
 
   return (
     <>
-      <MetaLayout canonical={`${meta_url}`} />
+      <MetaLayout canonical={`${meta_url}bmi-detail/`} />
       <StepsHeader />
       <FormWrapper heading={"Your BMI:"} percentage={"70"}>
         <PageAnimationWrapper>

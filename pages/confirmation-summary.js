@@ -190,7 +190,7 @@ const ConfirmationSummary = () => {
   };
   return (
     <>
-      <MetaLayout canonical={`${meta_url}`} />
+      <MetaLayout canonical={`${meta_url}confirmation-summary/`} />
       <StepsHeader />
       <FormWrapper
         heading="Confirm your answers"

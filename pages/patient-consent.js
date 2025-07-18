@@ -87,7 +87,7 @@ export default function PatientConsent() {
 
   return (
     <>
-      <MetaLayout canonical={`${meta_url}`} />
+      <MetaLayout canonical={`${meta_url}patient-consent/`} />
       <StepsHeader />
 
       <FormWrapper heading={"Patient Consent"} percentage={"85"}>

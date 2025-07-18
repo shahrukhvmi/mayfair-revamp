@@ -128,7 +128,7 @@ export default function ResidentialAddress() {
 
   return (
     <>
-      <MetaLayout canonical={`${meta_url}`} />
+      <MetaLayout canonical={`${meta_url}residential-address/`} />
       <StepsHeader />
       <FormWrapper
         heading="Mention Your Residential Address"

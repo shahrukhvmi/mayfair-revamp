@@ -188,7 +188,7 @@ export default function GpDetail() {
 
   return (
     <>
-      <MetaLayout canonical={`${meta_url}`} />
+      <MetaLayout canonical={`${meta_url}gp-details/`} />
       <StepsHeader />
       <FormWrapper heading={"GP Details"} description="" percentage={"90"}>
         <PageAnimationWrapper>

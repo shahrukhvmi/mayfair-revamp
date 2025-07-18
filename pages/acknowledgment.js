@@ -104,7 +104,7 @@ export default function Acknowledgment() {
 
   return (
     <>
-      <MetaLayout canonical={`${meta_url}`} />
+      <MetaLayout canonical={`${meta_url}acknowledgment/`} />
       <StepsHeader />
       <FormWrapper heading={"Acknowledgment"} description={""} percentage={"0"}>
         <PageAnimationWrapper>

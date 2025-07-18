@@ -30,6 +30,7 @@ import { IoIosArrowDown } from "react-icons/io";
 import useLastBmi from "@/store/useLastBmiStore";
 import useUserDataStore from "@/store/userDataStore";
 import useImpersonate from "@/store/useImpersonateStore";
+import useReturning from "@/store/useReturningPatient";
 
 const StepsHeader = ({ isOpen, toggleSidebar }) => {
   const [anchorEl, setAnchorEl] = useState(null);
@@ -55,6 +56,7 @@ const StepsHeader = ({ isOpen, toggleSidebar }) => {
   const { clearProductId } = useProductId();
   const { clearLastBmi } = useLastBmi();
   const { clearUserData } = useUserDataStore();
+  const { setIsReturningPatient } = useReturning();
   const { impersonate, setImpersonate } = useImpersonate();
   const {
     firstName,
@@ -96,6 +98,7 @@ const StepsHeader = ({ isOpen, toggleSidebar }) => {
     setShowResetPassword(true);
     setImpersonate(false);
     setBillingSameAsShipping(false);
+    setIsReturningPatient(false);
     router.push("/login");
   };
 
@@ -164,9 +167,21 @@ const StepsHeader = ({ isOpen, toggleSidebar }) => {
     setIsImpersonationLogout(true);
     setImpersonate(false);
     setBillingSameAsShipping(false);
+    setIsReturningPatient(false);
     window.location.href =
       "https://staging.mayfairweightlossclinic.co.uk/dashboard";
   };
+
+  const specialRoutes = [
+    "/dashboard/",
+    "/orders/",
+    "/address/",
+    "/change-password/",
+    "/order-detail/",
+    "/profile/",
+  ];
+
+  const redirectTo = specialRoutes.includes(pathname) ? "/dashboard" : "/";
 
   return (
     <>
@@ -225,7 +240,7 @@ const StepsHeader = ({ isOpen, toggleSidebar }) => {
 
           {/* Logo */}
           <div className="w-32 sm:w-40">
-            <Link href="/">
+            <Link href={redirectTo}>
               <ApplicationLogo width={140} height={80} />
             </Link>
           </div>

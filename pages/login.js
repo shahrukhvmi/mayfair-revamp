@@ -163,7 +163,7 @@ export default function LoginScreen() {
 
   return (
     <>
-      <MetaLayout canonical={`${meta_url}`} />
+      <MetaLayout canonical={`${meta_url}login/`} />
       <StepsHeader />
       {/* <FormWrapper
         heading="Login"

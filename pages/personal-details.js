@@ -112,7 +112,7 @@ export default function PersonalDetails() {
 
   return (
     <>
-      <MetaLayout canonical={`${meta_url}`} />
+      <MetaLayout canonical={`${meta_url}personal-details/`} />
       <StepsHeader />
 
       <FormWrapper

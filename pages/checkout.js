@@ -78,7 +78,7 @@ const Checkout = () => {
 
   return (
     <>
-      <MetaLayout canonical={`${meta_url}`} />
+      <MetaLayout canonical={`${meta_url}checkout/`} />
       <StepsHeader />
       <div className="bottom-[30px] fixed left-10 cursor-pointer py-2 rounded-full border-2 border-violet-700 sm:block hidden">
         {/* <BackButton label="Back" onClick={back} className="mt-2 sm:block hidden " /> */}

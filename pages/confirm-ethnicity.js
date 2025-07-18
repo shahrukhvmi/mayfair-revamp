@@ -68,7 +68,7 @@ export default function ConfirmEthnicity() {
 
   return (
     <>
-      <MetaLayout canonical={`${meta_url}`} />
+      <MetaLayout canonical={`${meta_url}confirm-ethnicity/`} />
       <StepsHeader />
       <FormWrapper
         heading={"Confirm Ethnicity"}

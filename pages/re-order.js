@@ -99,7 +99,7 @@ export default function Acknowledgment() {
 
   return (
     <>
-      <MetaLayout canonical={`${meta_url}`} />
+      <MetaLayout canonical={`${meta_url}re-order/`} />
       <StepsHeader />
       <FormWrapper heading="Reorder Confirmation" description="" percentage="0">
         <PageAnimationWrapper>

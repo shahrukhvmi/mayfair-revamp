@@ -109,7 +109,7 @@ const MedicalQuestions = () => {
 
   return (
     <>
-      <MetaLayout canonical={`${meta_url}`} />
+      <MetaLayout canonical={`${meta_url}medical-questions/`} />
       <StepsHeader />
       <FormWrapper heading={"Medical Questions"} percentage={"80"}>
         <PageAnimationWrapper>

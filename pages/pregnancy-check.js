@@ -107,7 +107,7 @@ export default function PregnancyCheck() {
 
   return (
     <>
-      <MetaLayout canonical={`${meta_url}`} />
+      <MetaLayout canonical={`${meta_url}pregnancy-check/`} />
       <StepsHeader />
       <FormWrapper
         heading={"Are you pregnant, breastfeeding, or trying to conceive?"}

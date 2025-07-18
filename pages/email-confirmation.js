@@ -101,6 +101,8 @@ export default function EmailConfirmation() {
 
   return (
     <>
+      <MetaLayout canonical={`${meta_url}email-confirmation/`} />
+
       <LoginModal
         show={showLoginModal}
         onClose={closeLoginModal}
@@ -143,7 +145,6 @@ export default function EmailConfirmation() {
       />
 
       {/*  */}
-      <MetaLayout canonical={`${meta_url}`} />
       <StepsHeader />
       <FormWrapper
         heading="Enter your email address"

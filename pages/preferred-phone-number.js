@@ -53,7 +53,7 @@ export default function SignUp() {
 
   return (
     <>
-      <MetaLayout canonical={`${meta_url}`} />
+      <MetaLayout canonical={`${meta_url}preferred-phone-number/`} />
       <StepsHeader />
       <FormWrapper
         heading={"Enter your phone number"}

@@ -300,7 +300,7 @@ export default function CalculateBmi() {
 
   return (
     <>
-      <MetaLayout canonical={`${meta_url}`} />
+      <MetaLayout canonical={`${meta_url}calculate-bmi/`} />
       <StepsHeader />
       <FormWrapper
         heading={

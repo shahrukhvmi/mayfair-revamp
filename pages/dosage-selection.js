@@ -198,7 +198,7 @@ export default function DosageSelection() {
   };
   return (
     <>
-      <MetaLayout canonical={`${meta_url}`} />
+      <MetaLayout canonical={`${meta_url}dosage-selection/`} />
       <div className="bottom-[100px] fixed left-10 cursor-pointer py-2 rounded-full border-2 border-violet-700 sm:block hidden">
         {/* <BackButton label="Back" onClick={back} className="mt-2 sm:block hidden " /> */}
         <button

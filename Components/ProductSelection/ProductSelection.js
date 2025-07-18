@@ -64,7 +64,6 @@ const ProductSelection = ({ showProductSelection }) => {
     clearBilling,
   } = useShippingOrBillingStore();
   const { setLastBmi } = useLastBmi();
-  const { setIsReturningPatient } = useReturning();
   const { firstName, lastName, setFirstName, setLastName } = useSignupStore();
   const { isFromReorder } = useReorderButtonStore();
   const { setReorder } = useReorder();

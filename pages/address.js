@@ -8,7 +8,7 @@ import React from "react";
 const Address = () => {
   return (
     <>
-      <MetaLayout canonical={`${meta_url}`} />
+      <MetaLayout canonical={`${meta_url}address/`} />
       <ProtectedPage>
         <DashBoardLayout>
           <MyAddress />

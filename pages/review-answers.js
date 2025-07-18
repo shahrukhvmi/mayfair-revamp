@@ -177,7 +177,7 @@ const ReviewAnswers = () => {
 
   return (
     <>
-      <MetaLayout canonical={`${meta_url}`} />
+      <MetaLayout canonical={`${meta_url}review-answers/`} />
       <StepsHeader />
       <FormWrapper percentage={"95"} heading="Review Your Answers">
         <PageAnimationWrapper>

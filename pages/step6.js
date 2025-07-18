@@ -12,8 +12,8 @@ import StepsHeader from "@/layout/stepsHeader";
 import { Inter } from "next/font/google";
 import PageAnimationWrapper from "@/Components/PageAnimationWrapper/PageAnimationWrapper";
 import PageLoader from "@/Components/PageLoader/PageLoader";
-import MetaLayout from "@/Meta/MetaLayout";
-import { meta_url } from "@/config/constants";
+// import MetaLayout from "@/Meta/MetaLayout";
+// import { meta_url } from "@/config/constants";
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 
 const Step6 = () => {
@@ -93,7 +93,7 @@ const Step6 = () => {
 
   return (
     <>
-      <MetaLayout canonical={`${meta_url}`} />
+      {/* <MetaLayout canonical={`${meta_url}`} /> */}
       <StepsHeader />
       <FormWrapper
         heading={"Patient Acknowledgment"}

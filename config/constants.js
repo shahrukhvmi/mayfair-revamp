@@ -5,6 +5,6 @@ export const app_url = " https://staging.mayfairweightlossclinic.co.uk/api";
 // export const passwordlink = "http://localhost:3000/email-confirmation"
 export const passwordlink =
   "https://mayfair-revamp.netlify.app/email-confirmation";
-export const meta_url = "https://mayfair-revamp.netlify.app";
+export const meta_url = "https://mayfair-revamp.netlify.app/";
 
 export default { app_url };
