@@ -195,7 +195,9 @@ export default function ChatComponent() {
   const [isOpen, setIsOpen] = useState(false);
   const [msgToBoth, setMsgToBoth] = useState(false);
   // const [isTabActive, setIsTabActive] = useState(true);
-  const [isTabActive, setIsTabActive] = useState(!document.hidden);
+  const [isTabActive, setIsTabActive] = useState(
+    typeof window !== "undefined" ? !document.hidden : true
+  );
   const [orderIdStatus, setOrderIdStatus] = useState("");
   const divRef = useRef(null);
   const [divWidth, setDivWidth] = useState(0);
@@ -567,10 +569,15 @@ export default function ChatComponent() {
   //online status
   useEffect(() => {
     if (isHumanTalk) {
+      if (typeof document === "undefined") return;
+
       const handleVisibilityChange = () => {
         setIsTabActive(!document.hidden);
       };
       document.addEventListener("visibilitychange", handleVisibilityChange);
+
+      setIsTabActive(!document.hidden);
+
       return () =>
         document.removeEventListener(
           "visibilitychange",
