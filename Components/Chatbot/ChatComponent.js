@@ -174,6 +174,7 @@ function setLocal(key, value) {
 }
 
 export default function ChatComponent() {
+  const IS_LIVE = true;
   const [hasMounted, setHasMounted] = useState(false);
   const [user, setUser] = useState(null);
   const [orderId, setOrderId] = useState("");
@@ -492,10 +493,11 @@ export default function ChatComponent() {
       broadcaster: "pusher",
       key: "a801fe71eb894de6fe58",
       cluster: "ap1",
-      wsHost: window.location.hostname,
-      wsPort: 6001,
-      forceTLS: false,
-      disableStats: true,
+      // wsHost: window.location.hostname,
+      // wsPort: 6001,
+      forceTLS: IS_LIVE ? true : false,
+      encrypted: IS_LIVE,
+      // disableStats: true,
       // If using local websockets:
       // encrypted: false,
       // enabledTransports: ['ws', 'wss'],
@@ -538,10 +540,11 @@ export default function ChatComponent() {
       broadcaster: "pusher",
       key: "a801fe71eb894de6fe58",
       cluster: "ap1",
-      wsHost: window.location.hostname,
-      wsPort: 6001,
-      forceTLS: false,
-      disableStats: true,
+      // wsHost: window.location.hostname,
+      // wsPort: 6001,
+      forceTLS: IS_LIVE ? true : false,
+      encrypted: IS_LIVE,
+      // disableStats: true,
       // If using local websockets:
       // encrypted: false,
       // enabledTransports: ['ws', 'wss'],
@@ -574,6 +577,8 @@ export default function ChatComponent() {
         );
     }
   }, []);
+
+  console.log("isTabActive", isTabActive);
 
   useEffect(() => {
     if (isHumanTalk) {
@@ -617,10 +622,11 @@ export default function ChatComponent() {
         broadcaster: "pusher",
         key: "a801fe71eb894de6fe58",
         cluster: "ap1",
-        wsHost: window.location.hostname,
-        wsPort: 6001,
-        forceTLS: false,
-        disableStats: true,
+        // wsHost: window.location.hostname,
+        // wsPort: 6001,
+        forceTLS: IS_LIVE ? true : false,
+        encrypted: IS_LIVE,
+        // disableStats: true,
         // If using local websockets:
         // encrypted: false,
         // enabledTransports: ['ws', 'wss'],
@@ -643,10 +649,11 @@ export default function ChatComponent() {
       broadcaster: "pusher",
       key: "a801fe71eb894de6fe58",
       cluster: "ap1",
-      wsHost: window.location.hostname,
-      wsPort: 6001,
-      forceTLS: false,
-      disableStats: true,
+      // wsHost: window.location.hostname,
+      // wsPort: 6001,
+      forceTLS: IS_LIVE ? true : false,
+      encrypted: IS_LIVE,
+      // disableStats: true,
     });
 
     const userId = conversationId;
@@ -1610,9 +1617,10 @@ export default function ChatComponent() {
         />
         <button
           type="submit"
+          className="bg-violet-600 hover:bg-violet-700"
           style={{
             width: "100%",
-            backgroundColor: "#7f22fe",
+            // backgroundColor: "#7f22fe",
             color: "white",
             padding: "10px 16px",
             border: "none",
