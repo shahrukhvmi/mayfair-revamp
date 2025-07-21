@@ -194,7 +194,8 @@ export default function ChatComponent() {
   const [showUserSettings, setShowUserSettings] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [msgToBoth, setMsgToBoth] = useState(false);
-  const [isTabActive, setIsTabActive] = useState(true);
+  // const [isTabActive, setIsTabActive] = useState(true);
+  const [isTabActive, setIsTabActive] = useState(!document.hidden);
   const [orderIdStatus, setOrderIdStatus] = useState("");
   const divRef = useRef(null);
   const [divWidth, setDivWidth] = useState(0);
@@ -576,9 +577,7 @@ export default function ChatComponent() {
           handleVisibilityChange
         );
     }
-  }, []);
-
-  console.log("isTabActive", isTabActive);
+  }, [isHumanTalk]);
 
   useEffect(() => {
     if (isHumanTalk) {
@@ -612,6 +611,7 @@ export default function ChatComponent() {
 
       updateStatus();
     }
+    console.log("isTabActive", isTabActive);
   }, [isTabActive]);
 
   useEffect(() => {
@@ -638,7 +638,7 @@ export default function ChatComponent() {
 
       return () => echo.leave("user-status");
     }
-  }, []);
+  }, [isHumanTalk]);
 
   //end online status
   //chat history
