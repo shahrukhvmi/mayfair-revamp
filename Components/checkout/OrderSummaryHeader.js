@@ -1,7 +1,12 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { FiCheck } from "react-icons/fi";
 
-const OrderSummaryHeader = ({ stepNumber, title, description, isCompleted }) => {
+const OrderSummaryHeader = ({
+  stepNumber,
+  title,
+  description,
+  isCompleted,
+}) => {
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -11,8 +16,13 @@ const OrderSummaryHeader = ({ stepNumber, title, description, isCompleted }) => 
     >
       <div className="flex items-center space-x-4">
         {/* Step Circle or Check */}
-        <div className={`flex items-center justify-center w-8 h-8 rounded-full font-bold text-sm transition-all duration-300 ${isCompleted ? "bg-primary text-white" : "border border-black text-black"
-          }`}>
+        <div
+          className={`flex items-center justify-center w-8 h-8 rounded-full font-bold text-sm transition-all duration-300 ${
+            isCompleted
+              ? "bg-primary text-white"
+              : "border border-black text-black"
+          }`}
+        >
           <AnimatePresence mode="wait" initial={false}>
             {isCompleted ? (
               <motion.div
@@ -39,13 +49,11 @@ const OrderSummaryHeader = ({ stepNumber, title, description, isCompleted }) => 
         </div>
 
         {/* Title */}
-        <h2 className="text-black bold-font text-base">
-          {title}
-        </h2>
+        <h2 className="text-black bold-font text-base">{title}</h2>
       </div>
 
       {/* Divider */}
-      <hr className="border-gray-200 my-2" />
+      <hr className="border-gray-200 my-4 relative top-1" />
 
       {/* Description */}
       {description && (
