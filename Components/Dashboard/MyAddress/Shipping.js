@@ -200,7 +200,7 @@ export default function Shipping({ shipmentCountries }) {
           />
 
           <div className="relative">
-            <TextField label="Post code" name="postalcode" placeholder="W1A 1AA" register={register} required errors={errors} />
+            <TextField label="Post code" name="postalcode"  register={register} required errors={errors} />
             <button
               type="button"
               onClick={handleSearch}
@@ -250,9 +250,9 @@ export default function Shipping({ shipmentCountries }) {
             />
           )}
 
-          <TextField label="Address" name="addressone" placeholder="123 Main Street" register={register} required errors={errors} />
-          <TextField label="Address 2" name="addresstwo" placeholder="Flat 14" register={register} errors={errors} />
-          <TextField label="Town / City" name="city" placeholder="e.g., London" register={register} required errors={errors} />
+          <TextField label="Address" name="addressone"  register={register} required errors={errors} />
+          <TextField label="Address 2" name="addresstwo"  register={register} errors={errors} />
+          <TextField label="Town / City" name="city"  register={register} required errors={errors} />
 
           <NextButton label="Continue" disabled={!isValid} />
         </form>

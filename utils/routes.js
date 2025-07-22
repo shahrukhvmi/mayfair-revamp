@@ -28,4 +28,4 @@ export const publicRoutes = [
    
 
   ];
-  
+  export const loginRoute = "/login";

@@ -17,6 +17,7 @@ import { BsInfoCircle } from "react-icons/bs";
 import MetaLayout from "@/Meta/MetaLayout";
 import { meta_url } from "@/config/constants";
 import useReorderBackProcessStore from "@/store/useReorderBackProcess";
+import useReturning from "@/store/useReturningPatient";
 
 const validateRange = (value, min, max, wholeOnly, message) => {
   const num = Number(value);
@@ -27,6 +28,7 @@ const validateRange = (value, min, max, wholeOnly, message) => {
 };
 
 export default function CalculateBmi() {
+  const { isReturningPatient } = useReturning();
   const [localStep, setLocalStep] = useState(1);
   const [heightUnit, setHeightUnit] = useState("metrics");
   const [weightUnit, setWeightUnit] = useState("metrics");
@@ -136,8 +138,8 @@ export default function CalculateBmi() {
           ? ["heightFt", "heightIn"]
           : ["heightCm"]
         : weightUnit === "imperial"
-        ? ["weightSt", "weightLbs"]
-        : ["weightKg"];
+          ? ["weightSt", "weightLbs"]
+          : ["weightKg"];
 
     // Validate
     const isValid = await trigger(fields);
@@ -293,6 +295,8 @@ export default function CalculateBmi() {
   const back = () => {
     if (reorderBackProcess == true) {
       router.push("/re-order");
+    } else if (isReturningPatient) {
+      router.push("/preferred-phone-number");
     } else {
       router.push("/confirm-ethnicity");
     }
@@ -308,9 +312,8 @@ export default function CalculateBmi() {
             ? "What is your height?"
             : "What is your current weight?"
         }
-        description={`Your Body Mass Index (BMI) is an important factor in assessing your eligibility for treatment. Please enter your ${
-          localStep === 1 ? "height" : "weight"
-        } below to allow us to calculate your BMI.`}
+        description={`Your Body Mass Index (BMI) is an important factor in assessing your eligibility for treatment. Please enter your ${localStep === 1 ? "height" : "weight"
+          } below to allow us to calculate your BMI.`}
         percentage="70"
       >
         <PageAnimationWrapper>
@@ -319,13 +322,13 @@ export default function CalculateBmi() {
               tabs={
                 localStep === 1
                   ? [
-                      { label: "cm", value: "metrics" },
-                      { label: "ft/inch", value: "imperial" },
-                    ]
+                    { label: "cm", value: "metrics" },
+                    { label: "ft/inch", value: "imperial" },
+                  ]
                   : [
-                      { label: "kg", value: "metrics" },
-                      { label: "st/lb", value: "imperial" },
-                    ]
+                    { label: "kg", value: "metrics" },
+                    { label: "st/lb", value: "imperial" },
+                  ]
               }
               selectedTab={localStep === 1 ? heightUnit : weightUnit}
               onTabChange={(value) => {
@@ -378,9 +381,8 @@ export default function CalculateBmi() {
             />
 
             <div
-              className={`relative ${
-                showLoader ? "pointer-events-none cursor-not-allowed" : ""
-              }`}
+              className={`relative ${showLoader ? "pointer-events-none cursor-not-allowed" : ""
+                }`}
             >
               <form onSubmit={(e) => e.preventDefault()} className="space-y-6">
                 {localStep === 1 &&
@@ -390,6 +392,8 @@ export default function CalculateBmi() {
                         required
                         label="Feet (ft)"
                         name="heightFt"
+                        disabled={isReturningPatient}
+                        readOnly={isReturningPatient}
                         fieldProps={register("heightFt", {
                           required: "This field is required",
                           validate: (value) =>
@@ -412,6 +416,8 @@ export default function CalculateBmi() {
                         required
                         label="Inches (in)"
                         name="heightIn"
+                        disabled={isReturningPatient}
+                        readOnly={isReturningPatient}
                         fieldProps={register("heightIn", {
                           required: "This field is required",
                           validate: (value) =>
@@ -436,6 +442,8 @@ export default function CalculateBmi() {
                       required
                       label="Centimetres (cm)"
                       name="heightCm"
+                      disabled={isReturningPatient}
+                      readOnly={isReturningPatient}
                       fieldProps={register("heightCm", {
                         required: "This field is required",
                         validate: (value) => {
@@ -532,7 +540,7 @@ export default function CalculateBmi() {
 
                     {lastBmi ? (
                       lastBmi?.weight_unit == "metrics" ||
-                      lastBmi?.weight_unit == "metric" ? (
+                        lastBmi?.weight_unit == "metric" ? (
                         <div className="bg-[#FFF3CD] px-4 py-4 mt-6 mb-6 text-gray-700 rounded shadow-md">
                           <p className="flex items-center">
                             <BsInfoCircle className="me-2" /> Your previous

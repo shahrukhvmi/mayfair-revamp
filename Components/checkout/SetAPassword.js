@@ -8,6 +8,7 @@ import { useMutation } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import { UpdatePassword } from "@/api/updatePassword";
 import usePasswordReset from "@/store/usePasswordReset";
+import { RiLockPasswordLine } from "react-icons/ri";
 import NextButton from "../NextButton/NextButton";
 
 const SetAPassword = ({ isCompleted, onComplete }) => {
@@ -44,6 +45,7 @@ const SetAPassword = ({ isCompleted, onComplete }) => {
       if (data?.status) {
         toast.success("Account created successfully!");
         if (onComplete) onComplete();
+        // if (isCompleted) isCompleted(); 
         setIsPasswordReset(false);
       }
     },
@@ -77,60 +79,63 @@ const SetAPassword = ({ isCompleted, onComplete }) => {
     });
   };
 
+
   return (
     <SectionWrapper>
-      <SectionHeader stepNumber={1} title="Set a Password" description="Please create a strong password for your account." completed={isCompleted} />
+      <SectionHeader stepNumber={<RiLockPasswordLine />} title="Set a Password" description="Please create a strong password for your account." isCompleted={isCompleted}
 
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <div className="relative mt-4">
-          <input
-            type={showPassword ? "text" : "password"}
-            placeholder="Password"
-            {...register("password", { required: true })}
-            className={`reg-font w-full text-black px-3 py-4 border rounded-sm placeholder-gray-400 focus:outline-none ${
-              password.length > 0 ? "border-violet-600" : "border-black"
-            }`}
-          />
-          <button
-            type="button"
-            onClick={() => setShowPassword(!showPassword)}
-            className="cursor-pointer absolute top-1/2 right-3 transform -translate-y-1/2 text-gray-600"
-          >
-            {showPassword ? <FiEye /> : <FiEyeOff />}
-          </button>
-        </div>
+        className={`relative ${!isPasswordReset ? "opacity-50 ursor-not-allowed pointer-events-none" : ""}`}>
 
-        <div className="relative mt-4">
-          <input
-            type={showConfirmPassword ? "text" : "password"}
-            placeholder="Confirm Password"
-            {...register("confirmPassword", { required: true })}
-            onPaste={(e) => e.preventDefault()}
-            className={`reg-font w-full text-black px-3 py-4 border rounded-sm placeholder-gray-400 focus:outline-none ${
-              confirmPassword.length > 0 ? "border-violet-600" : "border-black"
-            }`}
-          />
-          <button
-            type="button"
-            onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-            className="cursor-pointer absolute top-1/2 right-3 transform -translate-y-1/2 text-gray-600"
-          >
-            {showConfirmPassword ? <FiEye /> : <FiEyeOff />}
-          </button>
-        </div>
 
-        <div className="bg-gray-50 text-black thin-font border border-gray-200 rounded-lg p-4 mt-6 space-y-2">
-          <PasswordCheck valid={validations.length} label="At least 8 characters." />
-          <PasswordCheck valid={validations.case} label="Upper and lower case characters." />
-          <PasswordCheck valid={validations.special} label="At least 1 special character." />
-          <PasswordCheck valid={validations.number} label="At least 1 number." />
-          <PasswordCheck valid={validations.match} label="Passwords must match." />
-        </div>
+        <form onSubmit={handleSubmit(onSubmit)} className={`relative ${!isPasswordReset ? "opacity-50 cursor-not-allowed" : ""}`}>
+          <div className={`relative mt-4 ${!isPasswordReset ? "opacity-50 cursor-not-allowed pointer-events-none" : ""}`}>
+            <input
+              type={showPassword ? "text" : "password"}
+              placeholder="Password"
+              {...register("password", { required: true })}
+              className={`reg-font w-full text-black px-3 py-4 border-1 bg-white placeholder-gray-400 focus:outline-none ${password.length > 0 ? "border-[#47317c]" : "border-black"
+                }`}
+            />
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="cursor-pointer absolute top-1/2 right-3 transform -translate-y-1/2 text-gray-600"
+            >
+              {showPassword ? <FiEye /> : <FiEyeOff />}
+            </button>
+          </div>
 
-        <div className="mt-6">
-          <NextButton label="Continue" disabled={!isPasswordStrongAndMatch || isLoading || !isPasswordReset} type="submit" />
-        </div>
-      </form>
+          <div className={`relative mt-4 ${!isPasswordReset ? "opacity-50 cursor-not-allowed pointer-events-none" : ""}`}>
+            <input
+              type={showConfirmPassword ? "text" : "password"}
+              placeholder="Confirm Password"
+              {...register("confirmPassword", { required: true })}
+              onPaste={(e) => e.preventDefault()}
+              className={`reg-font bg-white w-full text-black px-3 py-4 border-1 placeholder-gray-400 focus:outline-none ${confirmPassword.length > 0 ? "border-[#47317c]" : "border-black"
+                }`}
+            />
+            <button
+              type="button"
+              onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+              className="cursor-pointer absolute top-1/2 right-3 transform -translate-y-1/2 text-gray-600"
+            >
+              {showConfirmPassword ? <FiEye /> : <FiEyeOff />}
+            </button>
+          </div>
+
+          <div className="bg-gray-50 text-black reg-font border border-gray-200 rounded-lg p-4 mt-6 space-y-2">
+            <PasswordCheck valid={validations.length} label="At least 8 characters." />
+            <PasswordCheck valid={validations.case} label="Upper and lower case characters." />
+            <PasswordCheck valid={validations.special} label="At least 1 special character." />
+            <PasswordCheck valid={validations.number} label="At least 1 number." />
+            <PasswordCheck valid={validations.match} label="Passwords must match." />
+          </div>
+
+          <div className="mt-6">
+            <NextButton label="Continue" disabled={!isPasswordStrongAndMatch || isLoading || !isPasswordReset} type="submit" />
+          </div>
+        </form>
+      </SectionHeader>
     </SectionWrapper>
   );
 };

@@ -71,7 +71,7 @@ const TextField = ({
               })
               : { value, onChange })}
             className={`reg-font w-full text-black px-3 py-4 border rounded-sm placeholder-gray-400 
-              focus:outline-none focus:ring-2 focus:ring-violet-300 focus:border-primary
+              focus:outline-none focus:ring-violet-300 focus:border-primary
               ${errors[name] ? "border-red-500" : "border-black"}
               ${isPassword ? "pr-12" : ""}
             `}
@@ -82,7 +82,7 @@ const TextField = ({
               onClick={() => setShowPassword((prev) => !prev)}
               className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 cursor-pointer"
             >
-              {showPassword ? <AiOutlineEyeInvisible size={20} /> : <AiOutlineEye size={20} />}
+              {showPassword ? <AiOutlineEye size={20} /> : <AiOutlineEyeInvisible size={20} />}
             </span>
           )}
         </div>

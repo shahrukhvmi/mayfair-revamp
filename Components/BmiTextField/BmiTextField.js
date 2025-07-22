@@ -1,4 +1,14 @@
-const BmiTextField = ({ required, label, name, type = "text", fieldProps = {}, errors = {}, onBlur }) => {
+const BmiTextField = ({
+  required,
+  label,
+  name,
+  type = "text",
+  fieldProps = {},
+  errors = {},
+  onBlur,
+  readOnly = false,
+  disabled = false,
+}) => {
   return (
     <div className="mb-4">
       {label && (
@@ -15,15 +25,21 @@ const BmiTextField = ({ required, label, name, type = "text", fieldProps = {}, e
         id={name}
         name={name}
         type={type}
+        readOnly={readOnly}
+        disabled={disabled}
         {...fieldProps}
         onBlur={onBlur}
-        className={`w-full text-black px-3 py-4 border rounded-sm placeholder-gray-400 
-            focus:outline-none focus:ring-2 focus:ring-violet-300 focus:border-violet-800
-            ${errors[name] ? "border-red-500" : "border-black"}
-          `}
+        className={`reg-font w-full text-black px-3 py-4 border bg-white placeholder:text-gray-400 
+          focus:outline-none focus:ring-1 focus:ring-[#47317c] focus:border-[#47317c] 
+          border-[#CBCBCB66] ${errors[name] ? "border-red-500" : ""} 
+          ${(readOnly || disabled) ? "opacity-50  cursor-not-allowed" : ""}
+        `}
       />
-
-      {errors[name] && <p className="text-red-500 text-sm mt-1">{errors[name]?.message || "This field is required"}</p>}
+      {errors[name] && (
+        <p className="text-red-500 text-sm mt-1">
+          {errors[name]?.message || "This field is required"}
+        </p>
+      )}
     </div>
   );
 };

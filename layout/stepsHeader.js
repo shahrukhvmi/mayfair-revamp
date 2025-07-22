@@ -125,6 +125,7 @@ const StepsHeader = ({ isOpen, toggleSidebar }) => {
       router.push("/dashboard");
       setIsPasswordReset(false);
       setShowResetPassword(data?.data?.data?.show_password_reset);
+      setIsReturningPatient(user?.isReturning);
     },
     onError: (error) => {
       const errors = error?.response?.data?.errors;
@@ -247,7 +248,7 @@ const StepsHeader = ({ isOpen, toggleSidebar }) => {
 
           {/* User Info or Login CTA */}
           <div className="relative">
-            {token && (
+            {!pathname?.startsWith("/login") && token && (
               <>
                 <div
                   className="flex items-center space-x-2 cursor-pointer"
@@ -260,9 +261,8 @@ const StepsHeader = ({ isOpen, toggleSidebar }) => {
                       : firstName}
                   </span>
                   <IoIosArrowDown
-                    className={`text-gray-700 transform transition-transform duration-200 ${
-                      Boolean(anchorEl) ? "rotate-180" : ""
-                    }`}
+                    className={`text-gray-700 transform transition-transform duration-200 ${Boolean(anchorEl) ? "rotate-180" : ""
+                      }`}
                     size={20}
                   />
                 </div>

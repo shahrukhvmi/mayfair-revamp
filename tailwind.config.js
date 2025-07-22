@@ -7,7 +7,7 @@ const config = {
           inter: ['var(--font-inter)', 'sans-serif'],
         },
         colors: {
-          primary: '#1F9E8C',
+          primary: '#47317c',
           secondary: '#F7931E',
         },
       },

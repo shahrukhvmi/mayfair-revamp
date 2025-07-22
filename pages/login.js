@@ -23,8 +23,11 @@ import useImpersonate from "@/store/useImpersonateStore";
 import useAuthUserDetailStore from "@/store/useAuthUserDetailStore";
 import MetaLayout from "@/Meta/MetaLayout";
 import { meta_url } from "@/config/constants";
+import useReturning from "@/store/useReturningPatient";
 
 export default function LoginScreen() {
+  const { setIsReturningPatient } = useReturning();
+
   const [showLoader, setShowLoader] = useState(false);
   const { userData, setUserData } = useUserDataStore();
   const { setLastName, setFirstName, setEmail } = useSignupStore();
@@ -62,11 +65,13 @@ export default function LoginScreen() {
         setFirstName(user?.fname);
         setLastName(user?.lname);
         setEmail(user?.email);
+        setIsReturningPatient(user?.isReturning)
         toast.success("Login Successfully");
         Fetcher.axiosSetup.defaults.headers.common.Authorization = `Bearer ${user.token}`;
         setShowLoader(false);
         setIsPasswordReset(false);
         setShowResetPassword(user?.show_password_reset);
+        
         router.push("/dashboard");
       }
     },
@@ -161,6 +166,12 @@ export default function LoginScreen() {
     loginMutation.mutate(formData);
   };
 
+  useEffect(() => {
+    if (token) {
+      router.push("/dashboard");
+    }
+  }, [token])
+
   return (
     <>
       <MetaLayout canonical={`${meta_url}login/`} />
@@ -170,72 +181,79 @@ export default function LoginScreen() {
         description="In order for our doctors to assess your suitability for treatment, you will be asked to complete a short medical questionnaire at the next step."
         percentage="0"
       > */}
-      <div className={`flex justify-center bg-[#F2EEFF] py-8 sm:py-16`}>
-        <div className={`bg-white rounded-xl shadow-md w-full max-w-lg p-8`}>
-          {/* Title */}
-          <h1 className="niba-reg-font heading mb-2">Login</h1>
-
-          {/* Description */}
-          <p className="mb-6 reg-font paragraph">
-            Returning patient? Login now to re-order your treatment.
-          </p>
-
-          <PageAnimationWrapper>
-            <div
-              className={`relative ${
-                showLoader ? "pointer-events-none cursor-not-allowed" : ""
-              }`}
-            >
-              <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-                <TextField
-                  label="Email Address"
-                  name="email"
-                  placeholder="Email Address"
-                  type="email"
-                  register={register}
-                  required
-                  errors={errors}
-                />
-
-                <TextField
-                  label="Password"
-                  name="password"
-                  placeholder="Password"
-                  type="password"
-                  register={register}
-                  required
-                  errors={errors}
-                />
-                <NextButton
-                  label="Login"
-                  disabled={!isValid}
-                  type="submit"
-                  className="mb-5"
-                />
-                <p className="reg-font text-black text-sm text-center">
-                  Are you a new patient?{" "}
-                  <Link
-                    href={"/acknowledgment"}
-                    className="text-primary underline"
-                  >
-                    Get started with the consultation
-                  </Link>
-                </p>
-                {/* <BackButton onClick={startConsultation} label="Are you a new patient? Get started with the consultation." /> */}
-                <BackButton onClick={openLoginModal} label="Forgot password" />
-                {/* <BackButton label="Back" className="mt-2" onClick={() => router.back()} /> */}
-              </form>
-
-              {showLoader && (
-                <div className="absolute inset-0 z-20 flex justify-center items-center bg-white/60 rounded-lg cursor-not-allowed">
-                  <PageLoader />
-                </div>
-              )}
-            </div>
-          </PageAnimationWrapper>
+      {token ? (
+        <div className="bg-white">
+          <PageLoader />
         </div>
-      </div>
 
+      ) : (
+        <>
+          <div className={`flex justify-center bg-[#F2EEFF] py-8 sm:py-16`}>
+            <div className={`bg-white rounded-xl shadow-md w-full max-w-lg p-8`}>
+              {/* Title */}
+              <h1 className="niba-reg-font heading mb-2">Login</h1>
+
+              {/* Description */}
+              <p className="mb-6 reg-font paragraph">
+                Returning patient? Login now to re-order your treatment.
+              </p>
+
+              <PageAnimationWrapper>
+                <div
+                  className={`relative ${showLoader ? "pointer-events-none cursor-not-allowed" : ""
+                    }`}
+                >
+                  <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+                    <TextField
+                      label="Email Address"
+                      name="email"
+                      placeholder="Email Address"
+                      type="email"
+                      register={register}
+                      required
+                      errors={errors}
+                    />
+
+                    <TextField
+                      label="Password"
+                      name="password"
+                      placeholder="Password"
+                      type="password"
+                      register={register}
+                      required
+                      errors={errors}
+                    />
+                    <NextButton
+                      label="Login"
+                      disabled={!isValid}
+                      type="submit"
+                      className="mb-5"
+                    />
+                    <p className="reg-font text-black text-sm text-center">
+                      Are you a new patient?{" "}
+                      <Link
+                        href={"/acknowledgment"}
+                        className="text-primary underline"
+                      >
+                        Get started with the consultation
+                      </Link>
+                    </p>
+                    {/* <BackButton onClick={startConsultation} label="Are you a new patient? Get started with the consultation." /> */}
+                    <BackButton onClick={openLoginModal} label="Forgot password" />
+                    {/* <BackButton label="Back" className="mt-2" onClick={() => router.back()} /> */}
+                  </form>
+
+                  {showLoader && (
+                    <div className="absolute inset-0 z-20 flex justify-center items-center bg-white/60 rounded-lg cursor-not-allowed">
+                      <PageLoader />
+                    </div>
+                  )}
+                </div>
+              </PageAnimationWrapper>
+            </div>
+          </div>
+        </>
+      )}
       <LoginModal
         modes="forgot"
         show={showLoginModal}

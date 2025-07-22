@@ -29,8 +29,9 @@ import useAuthStore from "@/store/authStore";
 import usePasswordReset from "@/store/usePasswordReset";
 import useLastBmi from "@/store/useLastBmiStore";
 import useUserDataStore from "@/store/userDataStore";
+import OrderSummaryHeader from "./OrderSummaryHeader";
 
-const OrderSummary = ({ isConcentCheck, isShippingCheck, isBillingCheck }) => {
+const OrderSummary = ({ isConcentCheck, isShippingCheck, isBillingCheck, onComplete }) => {
   const router = useRouter();
   const [discountCode, setDiscountCode] = useState("");
   // Get some data to store✌✌
@@ -261,7 +262,7 @@ const OrderSummary = ({ isConcentCheck, isShippingCheck, isBillingCheck }) => {
             <div className="mb-24 sm:mb-0">
               <div className="bg-white p-6 rounded-2xl shadow-lg font-inter">
                 <div className="relative">
-                  <SectionHeader stepNumber={4} title="Order Summary" completed />
+                  <OrderSummaryHeader stepNumber={4} title="Order Summary" isCompleted={onComplete} />
                   <div className="absolute right-14 bottom-2 w-20">
                     <button
                       type="button"
@@ -331,8 +332,8 @@ const OrderSummary = ({ isConcentCheck, isShippingCheck, isBillingCheck }) => {
 
                   {Coupon && (
                     <div className="flex justify-between items-center mt-4">
-                      <p className="text-sm text-[#1f9e8c] bold-font">Discount</p>
-                      <p className="text-sm text-[#1f9e8c] bold-font">-£{discountAmount?.toFixed(2)}</p>
+                      <p className="text-sm text-[#47317c] bold-font">Discount</p>
+                      <p className="text-sm text-[#47317c] bold-font">-£{discountAmount?.toFixed(2)}</p>
                     </div>
                   )}
                   <div className="flex justify-between items-center mt-4">
@@ -360,15 +361,15 @@ const OrderSummary = ({ isConcentCheck, isShippingCheck, isBillingCheck }) => {
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -12 }}
                         transition={{ duration: 0.25, ease: "easeOut" }}
-                        className="relative mt-6 rounded-lg border-2 border-[#1f9e8c] bg-green-50 p-4 flex items-center justify-between"
+                        className="relative mt-6 rounded-lg border-2 border-[#47317c] bg-green-50 p-4 flex items-center justify-between"
                       >
                         <div className="flex items-center gap-3">
-                          <div className="flex items-center justify-center  border-[#1f9e8c] text-[#1f9e8c]">
+                          <div className="flex items-center justify-center  border-[#47317c] text-[#47317c]">
                             <GoCheckCircleFill size={32} />
                           </div>
 
                           <div>
-                            <p className="niba-bold-font text-[#1f9e8c]">
+                            <p className="niba-bold-font text-[#47317c]">
                               {Coupon?.Data?.code} <span className="reg-font paragraph">Applied</span>
                             </p>
                             <p className="text-gray-700 text-md  reg-font">
@@ -394,9 +395,8 @@ const OrderSummary = ({ isConcentCheck, isShippingCheck, isBillingCheck }) => {
                           type="button"
                           onClick={handleApplyCoupon}
                           disabled={!isApplyEnabled}
-                          className={`cursor-pointer px-6 text-sm bold-font text-white transition-all duration-200 ${
-                            isApplyEnabled ? "bg-primary hover:bg-primary" : "bg-gray-300 cursor-not-allowed"
-                          }`}
+                          className={`cursor-pointer px-6 text-sm bold-font text-white transition-all duration-200 ${isApplyEnabled ? "bg-primary hover:bg-primary" : "bg-gray-300 cursor-not-allowed"
+                            }`}
                         >
                           {couponLoading ? "Applying..." : "Apply"}
                         </button>

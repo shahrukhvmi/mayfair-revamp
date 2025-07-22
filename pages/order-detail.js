@@ -143,12 +143,7 @@ const OrderDetail = () => {
             <OrdersTabs
               activeTab={activeTab}
               onTabChange={setActiveTab}
-              tabs={[
-                "Order Details",
-                "Patient Details",
-                "Medical Questions",
-                "Shipping / Billing",
-              ]}
+              tabs={["Order Details", "Patient Details"]}
             />
 
             {/* Tab Content with Animation */}
@@ -166,7 +161,7 @@ const OrderDetail = () => {
                     {/* Product Detail */}
 
                     <div className="rounded-lg mb-6 ">
-                      <h2 className="text-xl niba-bold-font text-[#1C1C29] mb-4">
+                      <h2 className="text-xl font-bold text-[#1C1C29] mb-4">
                         Order Details
                       </h2>
 
@@ -225,8 +220,8 @@ const OrderDetail = () => {
                                     {orders?.type === "Fixed"
                                       ? `-£${orders?.discount_value}`
                                       : `-${parseFloat(
-                                          orders?.discount_value
-                                        ).toFixed(1)}%`}
+                                        orders?.discount_value
+                                      ).toFixed(1)}%`}
                                   </TableCell>
                                 </TableRow>
 
@@ -245,11 +240,10 @@ const OrderDetail = () => {
                                     Discount Type
                                   </TableCell>
                                   <TableCell></TableCell>
-                                  <TableCell className="text-gray-800 py-3">{`${
-                                    orders?.type === "Fixed"
-                                      ? "Fixed"
-                                      : "Percentage"
-                                  }`}</TableCell>
+                                  <TableCell className="text-gray-800 py-3">{`${orders?.type === "Fixed"
+                                    ? "Fixed"
+                                    : "Percentage"
+                                    }`}</TableCell>
                                 </TableRow>
                               </>
                             )}
@@ -282,9 +276,9 @@ const OrderDetail = () => {
               )}
               {activeTab === 1 && (
                 <>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-1 gap-4">
                     {/* Patient Information Section */}
-                    <div className="sm:bg-gray-50 rounded-lg p-4">
+                    <div className="sm:bg-gray-50 rounded-lg">
                       <h2 className="text-xl font-bold text-[#1C1C29] mb-4">
                         Patient Information
                       </h2>
@@ -340,9 +334,9 @@ const OrderDetail = () => {
                                   true
                                 ).isValid()
                                   ? moment(
-                                      patientData.dob,
-                                      "DD-MM-YYYY"
-                                    ).format("DD-MM-YYYY")
+                                    patientData.dob,
+                                    "DD-MM-YYYY"
+                                  ).format("DD-MM-YYYY")
                                   : "N/A"}
                               </TableCell>
                             </TableRow>
@@ -360,7 +354,7 @@ const OrderDetail = () => {
                     </div>
 
                     {/* GP Details Section */}
-                    <div className="sm:bg-gray-50 rounded-lg p-4">
+                    {/* <div className="sm:bg-gray-50 rounded-lg p-4">
                       <h2 className="text-xl font-bold text-[#1C1C29] mb-4">
                         GP Details
                       </h2>
@@ -416,10 +410,10 @@ const OrderDetail = () => {
                           </TableBody>
                         </Table>
                       </TableContainer>
-                    </div>
+                    </div> */}
 
                     {/* BMI Information Section */}
-                    <div className="sm:bg-gray-50 rounded-lg p-4">
+                    {/* <div className="sm:bg-gray-50 rounded-lg p-4">
                       <h2 className="text-xl font-bold text-[#1C1C29] mb-4">
                         BMI Information
                       </h2>
@@ -456,12 +450,12 @@ const OrderDetail = () => {
                           </TableBody>
                         </Table>
                       </TableContainer>
-                    </div>
+                    </div> */}
                   </div>
                 </>
               )}
 
-              {activeTab === 2 && (
+              {activeTab === 8 && (
                 <>
                   {/* Medical info */}
 
@@ -601,43 +595,43 @@ const OrderDetail = () => {
                   {order?.items?.some(
                     (item) => item.product_concent !== null
                   ) && (
-                    <>
-                      <h1 className="text-2xl font-light my-4">
-                        <span className="niba-bold-font">
-                          Product Related Consent
-                        </span>
-                      </h1>
+                      <>
+                        <h1 className="text-2xl font-light my-4">
+                          <span className="niba-bold-font">
+                            Product Related Consent
+                          </span>
+                        </h1>
 
-                      <div className="relative overflow-x-auto border rounded-lg">
-                        <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-                          <thead className="border-b text-md text-gray-700 bg-gray-50  [&>tr:not(:last-child)]:border-b [&>tr]:border-gray-200">
-                            <tr className="uppercase">
-                              {/* <th scope="col" className="px-6 py-3">SNo#</th> */}
+                        <div className="relative overflow-x-auto border rounded-lg">
+                          <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+                            <thead className="border-b text-md text-gray-700 bg-gray-50  [&>tr:not(:last-child)]:border-b [&>tr]:border-gray-200">
+                              <tr className="uppercase">
+                                {/* <th scope="col" className="px-6 py-3">SNo#</th> */}
 
-                              {/* <th scope="col" className="px-6 py-3">Answer</th> */}
-                            </tr>
-                          </thead>
-                          <tbody>
-                            {order?.items?.map((item, index) => {
-                              return (
-                                item.product_concent != null && (
-                                  <tr className="border-b border-gray-200 bg-gray-50  [&>tr:not(:last-child)]:border-b [&>tr]:border-gray-200">
-                                    <td className="px-6 py-3 text-gray-700 mt-1">
-                                      <div
-                                        dangerouslySetInnerHTML={{
-                                          __html: item.product_concent,
-                                        }}
-                                      />
-                                    </td>
-                                  </tr>
-                                )
-                              );
-                            })}
-                          </tbody>
-                        </table>
+                                {/* <th scope="col" className="px-6 py-3">Answer</th> */}
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {order?.items?.map((item, index) => {
+                                return (
+                                  item.product_concent != null && (
+                                    <tr className="border-b border-gray-200 bg-gray-50  [&>tr:not(:last-child)]:border-b [&>tr]:border-gray-200">
+                                      <td className="px-6 py-3 text-gray-700 mt-1">
+                                        <div
+                                          dangerouslySetInnerHTML={{
+                                            __html: item.product_concent,
+                                          }}
+                                        />
+                                      </td>
+                                    </tr>
+                                  )
+                                );
+                              })}
+                            </tbody>
+                          </table>
 
-                        {/* Additional styling for confirmation details */}
-                        <style jsx>{`
+                          {/* Additional styling for confirmation details */}
+                          <style jsx>{`
                           .mt-1 ul {
                             list-style-type: disc;
                             padding-left: 1.5rem;
@@ -647,9 +641,9 @@ const OrderDetail = () => {
                             color: #4a5568;
                           }
                         `}</style>
-                      </div>
-                    </>
-                  )}
+                        </div>
+                      </>
+                    )}
 
                   {confirmationInfo?.length > 0 && (
                     <>
@@ -831,7 +825,7 @@ const OrderDetail = () => {
                 </>
               )}
 
-              {activeTab === 3 && (
+              {activeTab === 9 && (
                 <>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     {/* Patient Information Section */}
@@ -857,8 +851,8 @@ const OrderDetail = () => {
                                 {shippingData?.first_name
                                   ? shippingData?.first_name
                                   : patientData?.firstName
-                                  ? patientData?.firstName
-                                  : "N/A"}
+                                    ? patientData?.firstName
+                                    : "N/A"}
                               </TableCell>
                             </TableRow>
 
@@ -876,8 +870,8 @@ const OrderDetail = () => {
                                 {shippingData?.last_name
                                   ? shippingData?.last_name
                                   : patientData?.lastName
-                                  ? patientData?.lastName
-                                  : "N/A"}
+                                    ? patientData?.lastName
+                                    : "N/A"}
                               </TableCell>
                             </TableRow>
 

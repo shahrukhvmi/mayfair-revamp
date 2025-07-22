@@ -1,22 +1,19 @@
 import React, { useEffect, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
-import { Inter } from "next/font/google";
 import SectionWrapper from "./SectionWrapper";
 import SectionHeader from "./SectionHeader";
-import { FaSearch } from "react-icons/fa";
+import { FaSearch, FaShippingFast } from "react-icons/fa";
 import TextField from "@/Components/TextField/TextField";
 import PageLoader from "@/Components/PageLoader/PageLoader";
 import { Client } from "getaddress-api";
-import NextButton from "@/Components/NextButton/NextButton";
 import MUISelectField from "@/Components/SelectField/SelectField";
 import useShippingOrBillingStore from "@/store/shipingOrbilling";
 import { useRouter } from "next/router";
 import useShipmentCountries from "@/store/useShipmentCountriesStore";
-import { RiRadioButtonFill } from "react-icons/ri";
-import { IoRadioButtonOff } from "react-icons/io5";
 import { motion } from "framer-motion";
 import toast from "react-hot-toast";
-import { MdOutlineCheckBox, MdOutlineCheckBoxOutlineBlank } from "react-icons/md";
+import { MdCheckBox, MdCheckBoxOutlineBlank, MdOutlineCheckBox, MdOutlineCheckBoxOutlineBlank } from "react-icons/md";
+import NextButton from "../NextButton/NextButton";
 
 const api = new Client("_UFb05P76EyMidU1VHIQ_A42976");
 
@@ -58,13 +55,13 @@ export default function ShippingAddress({ isCompleted, onComplete, setIsShipping
   const router = useRouter();
 
   const sameAsShippingValue = watch("same_as_shipping");
-
   useEffect(() => {
+    console.log(sameAsShippingValue, "sameAsShippingValue From ShippingAddress");
+
     if (typeof setIsBillingCheck === "function") {
       setIsBillingCheck(!!sameAsShippingValue);
     }
   }, [sameAsShippingValue, setIsBillingCheck]);
-
   useEffect(() => {
     if (sameAsShippingValue) {
       const selectedCountry = shipmentCountries.find((c) => c.id.toString() === shippingIndex);
@@ -86,7 +83,7 @@ export default function ShippingAddress({ isCompleted, onComplete, setIsShipping
   }, [sameAsShippingValue, shipping, shippingIndex, shipmentCountries]);
 
   useEffect(() => {
-    setBillingSameAsShipping(sameAsShippingValue);
+    setBillingSameAsShipping(!!sameAsShippingValue); // This ensures it is always a boolean
   }, [sameAsShippingValue, setBillingSameAsShipping]);
 
   useEffect(() => {
@@ -121,19 +118,17 @@ export default function ShippingAddress({ isCompleted, onComplete, setIsShipping
 
     setValue("same_as_shipping", shipping.same_as_shipping ?? false);
   }, [shipping?.country_name, shipmentCountries]);
+  const postal = watch("postalcode");
 
   const handleSearch = async () => {
     setAddressSearchLoading(true);
     const postal = watch("postalcode");
     if (!postal) {
       setAddressSearchLoading(false);
-      return;
     }
 
     try {
       const result = await api.find(postal);
-
-      console.log(result, "Postal Code Search");
 
       if (result && result.addresses?.addresses?.length) {
         setAddressOptions(result.addresses.addresses);
@@ -149,7 +144,18 @@ export default function ShippingAddress({ isCompleted, onComplete, setIsShipping
       alert("Something went wrong while fetching addresses.");
     }
   };
+  const watchedFields = watch(["first_name", "last_name", "shippingCountry", "postalcode", "addressone", "city"]);
 
+  // Check if all required fields are filled
+  useEffect(() => {
+    const allFilled = watchedFields.every((field) => field && field !== "");
+    setIsShippingCheck(allFilled);
+
+    // If "same as shipping" is checked and all shipping fields are filled, set billing check to true
+    if (typeof setIsBillingCheck === "function") {
+      setIsBillingCheck(allFilled && !!sameAsShippingValue);
+    }
+  }, [watchedFields, setIsShippingCheck, setIsBillingCheck, sameAsShippingValue]);
   const onSubmit = async (data) => {
     setShowLoader(true);
     await new Promise((resolve) => setTimeout(resolve, 500));
@@ -157,8 +163,8 @@ export default function ShippingAddress({ isCompleted, onComplete, setIsShipping
 
     const selectedCountry = shipmentCountries.find((c) => c.id.toString() === shippingIndex);
 
-    // ✅ Save shipping info
-    setShipping({
+    // ✅ Save shipping data
+    const shippingData = {
       id: selectedCountry?.id || "",
       country_name: selectedCountry?.name || "",
       country_price: selectedCountry?.price || "",
@@ -169,27 +175,19 @@ export default function ShippingAddress({ isCompleted, onComplete, setIsShipping
       last_name: data.last_name,
       city: data.city,
       state: "",
-      same_as_shipping: data.same_as_shipping, // ✅ ADD THIS LINE
-    });
+      same_as_shipping: data.same_as_shipping,
+    };
+    setShipping(shippingData);
 
-    if (data?.same_as_shipping == true) {
-      setBilling({
-        id: selectedCountry?.id || "",
-        country_name: selectedCountry?.name || "",
-        country_price: selectedCountry?.price || "",
-        postalcode: data.postalcode,
-        addressone: data.addressone,
-        addresstwo: data.addresstwo,
-        city: data.city,
-        state: "",
-        same_as_shipping: data.same_as_shipping, // ✅ Save this also
-      });
+    // ✅ Conditionally copy shipping to billing
+    if (data.same_as_shipping === true) {
+      setBilling({ ...shippingData });
     }
 
-    // ✅ Save billingSameAsShipping state
-    // API gives same_as_shipping as 1/0 but we use boolean in zustand so true/false
+    // ✅ Save this value to Zustand too
     setBillingSameAsShipping(data.same_as_shipping);
 
+    // ✅ Always call onComplete
     onComplete();
   };
 
@@ -216,142 +214,131 @@ export default function ShippingAddress({ isCompleted, onComplete, setIsShipping
     return () => subscription.unsubscribe();
   }, [watch, shipmentCountries, shippingIndex, setShipping]);
 
-  // Watch all required fields
-  const watchedFields = watch(["first_name", "last_name", "shippingCountry", "postalcode", "addressone", "city"]);
-
-  // Check if all required fields are filled
-  useEffect(() => {
-    const allFilled = watchedFields.every((field) => field && field !== "");
-    setIsShippingCheck(allFilled);
-
-    // If "same as shipping" is checked and all shipping fields are filled, set billing check to true
-    if (typeof setIsBillingCheck === "function") {
-      setIsBillingCheck(allFilled && !!sameAsShippingValue);
-    }
-  }, [watchedFields, setIsShippingCheck, setIsBillingCheck, sameAsShippingValue]);
-
   return (
     <>
       <SectionWrapper>
-        <SectionHeader stepNumber={2} title="Shipping Address" description="" completed={isCompleted} />
+        <SectionHeader stepNumber={<FaShippingFast />} title="Shipping Address" description="" isCompleted={isCompleted}>
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 mt-5">
+            <TextField label="First Name" name="first_name" register={register} required errors={errors} />
+            <TextField label="Last Name" name="last_name"  register={register} required errors={errors} />
 
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 mt-5">
-          <TextField label="First Name" name="first_name" placeholder="Enter your first name" register={register} required errors={errors} />
-          <TextField label="Last Name" name="last_name" placeholder="Enter your last name" register={register} required errors={errors} />
+            <Controller
+              name="shippingCountry"
+              control={control}
+              rules={{ required: "Country is required" }}
+              render={({ field }) => (
+                <MUISelectField
+                  label="Select Country"
+                  name="shippingCountry"
+                  value={field.value}
+                  required
+                  onChange={(e) => {
+                    const id = e.target.value;
+                    field.onChange(id); // ✅ set id to RHF
+                    setShippingIndex(id); // ✅ set id to local state
+                    // ✅ Find selected country
+                    const selectedCountry = shipmentCountries.find((c) => c.id.toString() === id);
 
-          <Controller
-            name="shippingCountry"
-            control={control}
-            rules={{ required: "Country is required" }}
-            render={({ field }) => (
+                    if (selectedCountry) {
+                      // ✅ Update shipping immediately when user changes country
+                      setShipping({
+                        ...shipping,
+                        id: selectedCountry.id,
+                        country_name: selectedCountry.name,
+                        country_price: selectedCountry.price, // ✅ Update price
+                      });
+                    }
+                  }}
+                  options={(shipmentCountries || []).map((addr) => ({
+                    value: addr.id.toString(), // ✅ Use country id as value
+                    label: addr.name,
+                  }))}
+                />
+              )}
+            />
+
+            <div className="relative">
+              <TextField label="Post code" name="postalcode" register={register} required errors={errors} />
+              {postal && (
+                <>
+                  <button
+                    type="button"
+                    onClick={handleSearch}
+                    className={`absolute right-3 transform -translate-y-1/2 text-white bg-primary px-3 py-1 rounded cursor-pointer w-28 flex items-center justify-center ${errors.postalcode ? "top-2/4" : "top-2/3"
+                      }`}
+                    disabled={addressSearchLoading}
+                  >
+                    {addressSearchLoading ? (
+                      <motion.div
+                        animate={{ rotate: 360 }}
+                        transition={{
+                          repeat: Infinity,
+                          duration: 1,
+                          ease: "linear",
+                        }}
+                        className="w-6 h-6 border-4 border-t-transparent rounded-full text-white"
+                      />
+                    ) : (
+                      <span className="flex items-center reg-font">
+                        <FaSearch className="inline-block me-2" />
+                        Search
+                      </span>
+                    )}
+                  </button>
+                </>
+              )}
+            </div>
+
+            {!addressSearchLoading && addressOptions.length > 0 && (
               <MUISelectField
-                label="Select Country"
-                name="shippingCountry"
-                value={field.value}
+                label="Select Your Address"
+                name="addressSelect"
+                value={selectedIndex}
                 required
                 onChange={(e) => {
-                  const id = e.target.value;
-                  field.onChange(id); // ✅ set id to RHF
-                  setShippingIndex(id); // ✅ set id to local state
-                  // ✅ Find selected country
-                  const selectedCountry = shipmentCountries.find((c) => c.id.toString() === id);
+                  const idx = e.target.value;
+                  const selected = addressOptions[idx];
+                  setSelectedIndex(idx);
 
-                  if (selectedCountry) {
-                    // ✅ Update shipping immediately when user changes country
-                    setShipping({
-                      ...shipping,
-                      id: selectedCountry.id,
-                      country_name: selectedCountry.name,
-                      country_price: selectedCountry.price, // ✅ Update price
-                    });
-                  }
+                  setValue("addressone", selected.line_1 || "", { shouldValidate: true });
+                  setValue("addresstwo", selected.line_2 || "", { shouldValidate: true });
+                  setValue("city", selected.town_or_city || "", { shouldValidate: true });
                 }}
-                options={(shipmentCountries || []).map((addr) => ({
-                  value: addr.id.toString(), // ✅ Use country id as value
-                  label: addr.name,
+                options={addressOptions.map((addr, idx) => ({
+                  value: idx,
+                  label: addr.formatted_address.join(", "),
                 }))}
               />
             )}
-          />
 
-          <div className="relative">
-            <TextField label="Post code" name="postalcode" placeholder="W1A 1AA" register={register} required errors={errors} />
-            <button
-              type="button"
-              onClick={handleSearch}
-              className={`absolute right-3 transform -translate-y-1/2 text-white bg-primary px-3 py-1 rounded cursor-pointer w-28 flex items-center justify-center ${
-                errors.postalcode ? "top-2/4" : "top-2/3"
-              }`}
-              disabled={addressSearchLoading}
-            >
-              {addressSearchLoading ? (
-                <motion.div
-                  animate={{ rotate: 360 }}
-                  transition={{
-                    repeat: Infinity,
-                    duration: 1,
-                    ease: "linear",
-                  }}
-                  className="w-6 h-6 border-4 border-t-transparent rounded-full text-white"
-                />
-              ) : (
-                <span className="flex items-center reg-font">
-                  <FaSearch className="inline-block me-2" />
-                  Search
-                </span>
+            <TextField label="Address" name="addressone"  register={register} required errors={errors} />
+            <TextField label="Address 2" name="addresstwo"  register={register} errors={errors} />
+            <TextField label="Town / City" name="city"  register={register} required errors={errors} />
+
+            <Controller
+              name="same_as_shipping"
+              control={control}
+              render={({ field }) => (
+                <div className="flex items-center space-x-2 cursor-pointer" onClick={() => field.onChange(!field.value)}>
+                  {field.value ? (
+                    <MdCheckBox className="text-primary mt-1" size={18} />
+                  ) : (
+                    <MdCheckBoxOutlineBlank className="text-[#47317c]  mt-1"  size={18}/>
+                  )}
+                  <span className="text-gray-700 reg-font mt-1">Make billing address same as shipping address</span>
+                </div>
               )}
-            </button>
-          </div>
-
-          {!addressSearchLoading && addressOptions.length > 0 && (
-            <MUISelectField
-              label="Select Your Address"
-              name="addressSelect"
-              value={selectedIndex}
-              required
-              onChange={(e) => {
-                const idx = e.target.value;
-                const selected = addressOptions[idx];
-                setSelectedIndex(idx);
-
-                setValue("addressone", selected.line_1 || "", { shouldValidate: true });
-                setValue("addresstwo", selected.line_2 || "", { shouldValidate: true });
-                setValue("city", selected.town_or_city || "", { shouldValidate: true });
-              }}
-              options={addressOptions.map((addr, idx) => ({
-                value: idx,
-                label: addr.formatted_address.join(", "),
-              }))}
             />
+
+            <NextButton label="Continue" disabled={!isValid} />
+          </form>
+
+          {showLoader && (
+            <div className="absolute inset-0 flex items-center justify-center bg-white/70 rounded ">
+              <PageLoader />
+            </div>
           )}
-
-          <TextField label="Address" name="addressone" placeholder="123 Main Street" register={register} required errors={errors} />
-          <TextField label="Address 2" name="addresstwo" placeholder="Flat 14" register={register} errors={errors} />
-          <TextField label="Town / City" name="city" placeholder="e.g., London" register={register} required errors={errors} />
-
-          <Controller
-            name="same_as_shipping"
-            control={control}
-            render={({ field }) => (
-              <div className="flex items-center space-x-2 cursor-pointer" onClick={() => field.onChange(!field.value)}>
-                {field.value ? (
-                  <MdOutlineCheckBox className="text-primary text-xl" />
-                ) : (
-                  <MdOutlineCheckBoxOutlineBlank className="text-primary text-xl" />
-                )}
-                <span className="text-gray-700 reg-font mt-1">Make billing address same as shipping address</span>
-              </div>
-            )}
-          />
-
-          <NextButton label="Continue" disabled={!isValid} />
-        </form>
-
-        {showLoader && (
-          <div className="absolute inset-0 flex items-center justify-center bg-white/70 rounded ">
-            <PageLoader />
-          </div>
-        )}
+        </SectionHeader>
       </SectionWrapper>
     </>
   );

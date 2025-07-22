@@ -1,7 +1,8 @@
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import { publicRoutes } from "./routes";
+import { loginRoute, publicRoutes } from "./routes";
 import useAuthStore from "@/store/authStore";
+import PageLoader from "@/Components/PageLoader/PageLoader";
 
 export default function RouteGuard({ children }) {
     const router = useRouter();
@@ -11,14 +12,19 @@ export default function RouteGuard({ children }) {
     useEffect(() => {
         const path = router.pathname;
         const isPublic = publicRoutes.includes(path);
+        const isLogin = path === loginRoute;
+
         if (!isPublic && !token) {
-            router.push("/");
-        }else {
+            router.push("/login/");
+        }
+        else if (isLogin && token) {
+            router.push("/dashboard");
+        } else {
             setLoading(false);
         }
-    }, [router.pathname, token]);
+    }, [router.pathname, token, loginRoute]);
 
-    if (loading) return <div>Loading...</div>;
+    if (loading) return <> <PageLoader /></>;
 
     return children;
 

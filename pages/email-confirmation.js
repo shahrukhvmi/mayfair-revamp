@@ -24,6 +24,7 @@ import usePasswordReset from "@/store/usePasswordReset";
 import useAuthUserDetailStore from "@/store/useAuthUserDetailStore";
 import MetaLayout from "@/Meta/MetaLayout";
 import { meta_url } from "@/config/constants";
+import useReturning from "@/store/useReturningPatient";
 
 export default function EmailConfirmation() {
   const [showLoader, setShowLoader] = useState(false);
@@ -47,6 +48,7 @@ export default function EmailConfirmation() {
   const { showLoginModal, closeLoginModal, openLoginModal } =
     useLoginModalStore();
   const { setAuthUserDetail } = useAuthUserDetailStore();
+  const { setIsReturningPatient } = useReturning();
 
   const {
     register,
@@ -72,6 +74,7 @@ export default function EmailConfirmation() {
       setUserData(user);
       setToken(user?.token);
       setIsPasswordReset(true);
+      setIsReturningPatient(user?.isReturning)
       Fetcher.axiosSetup.defaults.headers.common.Authorization = `Bearer ${user?.token}`;
       router.push("/steps-information");
     },
@@ -116,6 +119,7 @@ export default function EmailConfirmation() {
               company_id: 1,
             });
             const user = response?.data?.data;
+            clg
             setIsPasswordReset(false);
             setUserData(user);
             setAuthUserDetail(user);
@@ -124,6 +128,7 @@ export default function EmailConfirmation() {
             setLastName(user?.lname);
             setEmail(user?.email);
             setShowResetPassword(user?.show_password_reset);
+            setIsReturningPatient(user?.isReturning)
 
             toast.success("Login Successfully");
             Fetcher.axiosSetup.defaults.headers.common.Authorization = `Bearer ${user.token}`;
@@ -153,9 +158,8 @@ export default function EmailConfirmation() {
       >
         <PageAnimationWrapper>
           <div
-            className={`relative ${
-              showLoader ? "pointer-events-none cursor-not-allowed" : ""
-            }`}
+            className={`relative ${showLoader ? "pointer-events-none cursor-not-allowed" : ""
+              }`}
           >
             <form
               onSubmit={handleSubmit(handleSignupSubmit)}

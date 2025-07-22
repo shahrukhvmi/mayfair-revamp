@@ -148,7 +148,7 @@ export default function ResidentialAddress() {
                     <TextField
                       label="Post code"
                       name="postalCode"
-                      placeholder="W1A 1AA"
+                      
                       register={register}
                       required
                       errors={errors}
@@ -230,7 +230,7 @@ export default function ResidentialAddress() {
                       <TextField
                         label="Address"
                         name="address1"
-                        placeholder="123 Main Street"
+                    
                         register={register}
                         required
                         errors={errors}
@@ -238,14 +238,14 @@ export default function ResidentialAddress() {
                       <TextField
                         label="Address 2"
                         name="address2"
-                        placeholder="Flat 14"
+                      
                         register={register}
                         errors={errors}
                       />
                       <TextField
                         label="Town / City"
                         name="city"
-                        placeholder="e.g., London"
+                    
                         register={register}
                         required
                         errors={errors}
@@ -253,7 +253,7 @@ export default function ResidentialAddress() {
                       <TextField
                         label="Country"
                         name="country"
-                        placeholder="England"
+                     
                         register={register}
                         required
                         errors={errors}

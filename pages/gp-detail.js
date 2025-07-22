@@ -298,7 +298,7 @@ export default function GpDetail() {
                     label="Email"
                     name="email"
                     type="email"
-                    placeholder="Email"
+                  
                     register={register}
                     errors={errors}
                   />
@@ -307,7 +307,7 @@ export default function GpDetail() {
                     <TextField
                       label="Post code"
                       name="postalCode"
-                      placeholder="W1A 1AA"
+                      
                       register={register}
                       required
                       errors={errors}
@@ -389,7 +389,7 @@ export default function GpDetail() {
                       <TextField
                         label="GP Name"
                         name="gpName"
-                        placeholder="The Elmhurst..."
+                        
                         register={register}
                         required
                         errors={errors}
@@ -397,7 +397,7 @@ export default function GpDetail() {
                       <TextField
                         label="Address"
                         name="addressLine1"
-                        placeholder="123 Main Street"
+                       
                         register={register}
                         required
                         errors={errors}
@@ -405,14 +405,14 @@ export default function GpDetail() {
                       <TextField
                         label="Address 2"
                         name="addressLine2"
-                        placeholder="Flat 14"
+                       
                         register={register}
                         errors={errors}
                       />
                       <TextField
                         label="Town / City"
                         name="city"
-                        placeholder="London"
+                        
                         register={register}
                         required
                         errors={errors}
