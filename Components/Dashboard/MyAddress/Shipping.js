@@ -294,7 +294,7 @@ export default function Shipping({ shipmentCountries }) {
             errors={errors}
           />
           <div className="max-w-24">
-            <NextButton label="Continue" disabled={!isValid} />
+            <NextButton label="Update" disabled={!isValid} />
           </div>
         </form>
 
