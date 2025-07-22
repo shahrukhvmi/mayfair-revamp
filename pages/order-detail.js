@@ -1056,7 +1056,7 @@ const OrderDetail = () => {
 
             <div className="flex justify-start my-3">
               <Link href="/orders/">
-                <button className="reg-font px-6 py-2 bg-primary cursor-pointer text-white rounded-md hover:bg-primary transition">
+                <button className="reg-font px-6 py-2 bg-primary cursor-pointer text-white rounded-full hover:bg-primary transition">
                   Back
                 </button>
               </Link>
