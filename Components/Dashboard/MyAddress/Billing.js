@@ -46,9 +46,16 @@ export default function Billing({ billingCountries }) {
 
   const postalCodeValue = watch("postalcode");
   const selectedBillingCountry = watch("billingCountry");
-  const selectedCountryObj = (billingCountries || []).find((c) => c.id.toString() === selectedBillingCountry);
-  const allowedCountryNames = ["United Kingdom (Mainland)", "Channel Islands", "Northern Ireland"];
-  const isSearchAllowed = selectedCountryObj && allowedCountryNames.includes(selectedCountryObj.name);
+  const selectedCountryObj = (billingCountries || []).find(
+    (c) => c.id.toString() === selectedBillingCountry
+  );
+  const allowedCountryNames = [
+    "United Kingdom (Mainland)",
+    "Channel Islands",
+    "Northern Ireland",
+  ];
+  const isSearchAllowed =
+    selectedCountryObj && allowedCountryNames.includes(selectedCountryObj.name);
 
   // 🟢 Get billing data from profile
   const getProfileDataMutation = useMutation(getProfileData, {
@@ -58,7 +65,9 @@ export default function Billing({ billingCountries }) {
       setBilling(billingData);
     },
     onError: (error) => {
-      toast.error(error?.response?.data?.message || "Failed to load profile data.");
+      toast.error(
+        error?.response?.data?.message || "Failed to load profile data."
+      );
     },
   });
 
@@ -79,9 +88,13 @@ export default function Billing({ billingCountries }) {
     setValue("city", billing.city || "");
     setValue("state", billing.state || "");
 
-    const country = billingCountries.find((c) => c.name === billing.country_name || c.name === billing.country);
+    const country = billingCountries.find(
+      (c) => c.name === billing.country_name || c.name === billing.country
+    );
     if (country) {
-      setValue("billingCountry", country.id.toString(), { shouldValidate: true });
+      setValue("billingCountry", country.id.toString(), {
+        shouldValidate: true,
+      });
       setBillingIndex(country.id.toString());
     }
   }, [billing, billingCountries]);
@@ -125,7 +138,9 @@ export default function Billing({ billingCountries }) {
 
   const onSubmit = (data) => {
     setShowLoader(true);
-    const selectedCountry = billingCountries.find((c) => c.id.toString() === billingIndex);
+    const selectedCountry = billingCountries.find(
+      (c) => c.id.toString() === billingIndex
+    );
 
     const formData = {
       billing: true,
@@ -143,8 +158,13 @@ export default function Billing({ billingCountries }) {
   return (
     <SectionWrapper>
       <header className="pb-4">
-        <h1 className="md:text-3xl text-lg mb-2 headingDashBoard bold-font text-black">Billing Information</h1>
-        <p className="reg-font paragraph  text-left text-sm xl:w-3/4 mt-2">Update your billing details — changes will apply to future orders only.</p>
+        <h1 className="md:text-3xl text-lg mb-2 headingDashBoard bold-font text-black">
+          Billing Information
+        </h1>
+        <p className="reg-font paragraph  text-left text-sm xl:w-3/4 mt-2">
+          Update your billing details — changes will apply to future orders
+          only.
+        </p>
       </header>
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 mt-5">
         <Controller
@@ -179,7 +199,13 @@ export default function Billing({ billingCountries }) {
         />
 
         <div className="relative">
-          <TextField label="Post code" name="postalcode" register={register} required errors={errors} />
+          <TextField
+            label="Post code"
+            name="postalcode"
+            register={register}
+            required
+            errors={errors}
+          />
           {isSearchAllowed && (
             <button
               type="button"
@@ -209,35 +235,69 @@ export default function Billing({ billingCountries }) {
           )}
         </div>
 
-        {isSearchAllowed && postalCodeValue?.trim() && !addressSearchLoading && addressOptions.length > 0 && (
-          <MUISelectField
-            label="Select Your Address"
-            name="addressSelect"
-            value={selectedIndex}
-            required
-            onChange={(e) => {
-              const idx = e.target.value;
-              const selected = addressOptions[idx];
-              setSelectedIndex(idx);
+        {isSearchAllowed &&
+          postalCodeValue?.trim() &&
+          !addressSearchLoading &&
+          addressOptions.length > 0 && (
+            <MUISelectField
+              label="Select Your Address"
+              name="addressSelect"
+              value={selectedIndex}
+              required
+              onChange={(e) => {
+                const idx = e.target.value;
+                const selected = addressOptions[idx];
+                setSelectedIndex(idx);
 
-              setValue("addressone", selected.line_1 || "", { shouldValidate: true });
-              setValue("addresstwo", selected.line_2 || "", { shouldValidate: true });
-              setValue("city", selected.town_or_city || "", { shouldValidate: true });
-              setValue("state", selected.county || "", { shouldValidate: true });
-            }}
-            options={addressOptions.map((addr, idx) => ({
-              value: idx,
-              label: addr.formatted_address.join(", "),
-            }))}
-          />
-        )}
+                setValue("addressone", selected.line_1 || "", {
+                  shouldValidate: true,
+                });
+                setValue("addresstwo", selected.line_2 || "", {
+                  shouldValidate: true,
+                });
+                setValue("city", selected.town_or_city || "", {
+                  shouldValidate: true,
+                });
+                setValue("state", selected.county || "", {
+                  shouldValidate: true,
+                });
+              }}
+              options={addressOptions.map((addr, idx) => ({
+                value: idx,
+                label: addr.formatted_address.join(", "),
+              }))}
+            />
+          )}
 
-        <TextField label="Address" name="addressone"  register={register} required errors={errors} />
-        <TextField label="Address 2" name="addresstwo"  register={register} errors={errors} />
-        <TextField label="Town / City" name="city"  register={register} required errors={errors} />
-        <TextField label="State / County" name="state"  register={register} errors={errors} />
-
-        <NextButton label="Continue" disabled={!isValid} />
+        <TextField
+          label="Address"
+          name="addressone"
+          register={register}
+          required
+          errors={errors}
+        />
+        <TextField
+          label="Address 2"
+          name="addresstwo"
+          register={register}
+          errors={errors}
+        />
+        <TextField
+          label="Town / City"
+          name="city"
+          register={register}
+          required
+          errors={errors}
+        />
+        <TextField
+          label="State / County"
+          name="state"
+          register={register}
+          errors={errors}
+        />
+        <div className="max-w-24">
+          <NextButton label="Continue" disabled={!isValid} />
+        </div>
       </form>
 
       {showLoader && (

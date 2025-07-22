@@ -1,5 +1,5 @@
 import StepsHeader from "@/layout/stepsHeader";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Inter } from "next/font/google";
 import { useForm } from "react-hook-form";
 import NextButton from "@/Components/NextButton/NextButton";
@@ -18,6 +18,7 @@ import { useMutation } from "@tanstack/react-query";
 import useProductId from "@/store/useProductIdStore";
 import MetaLayout from "@/Meta/MetaLayout";
 import { meta_url } from "@/config/constants";
+import { Checkbox, FormControlLabel } from "@mui/material";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 
@@ -35,12 +36,30 @@ export default function DosageSelection() {
 
   console.log(items, "items");
 
-  const { handleSubmit } = useForm({
+  const {
+    register,
+    handleSubmit,
+    clearErrors,
+    setValue,
+    formState: { isValid, errors },
+  } = useForm({
     mode: "onChange",
   });
 
+  const [isExpiryRequired, setIsExpiryRequired] = useState(false);
   // Variation From zustand
   const { variation } = useVariationStore();
+
+  // ✅ useEffect to check if `product?.show_expiry` is `0` or `1`
+  useEffect(() => {
+    if (variation?.show_expiry === 1) {
+      setIsExpiryRequired(true);
+    } else {
+      setIsExpiryRequired(false);
+      clearErrors("terms");
+      setValue("terms", false);
+    }
+  }, [variation?.show_expiry, clearErrors, setValue]);
 
   const allowed = variation?.allowed;
   const [showDoseModal, setShowDoseModal] = useState(false);
@@ -340,6 +359,46 @@ export default function DosageSelection() {
                       })}
                   </div>
 
+                  {variation?.show_expiry === 1 && (
+                    <div className="flex flex-col space-y-2 text-sm py-6">
+                      <FormControlLabel
+                        control={
+                          <Checkbox
+                            {...register("terms", {
+                              required: isExpiryRequired
+                                ? "Please confirm that you have read and acknowledged the expiry information."
+                                : false,
+                            })}
+                            icon={
+                              <span className="w-5 h-5 border-2 border-gray-400 rounded-full flex items-center justify-center" />
+                            }
+                            checkedIcon={
+                              <span className="w-5 h-5 border-2 border-[#4565BF] rounded-full flex items-center justify-center">
+                                <span className="w-2.5 h-2.5 bg-[#4565BF] rounded-full" />
+                              </span>
+                            }
+                            sx={{
+                              "& .MuiSvgIcon-root": {
+                                display: "none",
+                              },
+                            }}
+                          />
+                        }
+                        label={
+                          <p className="font-sans font-bold text-sm italic text-black">
+                            Please confirm that you have reviewed the expiry
+                            dates of the selected doses.
+                          </p>
+                        }
+                      />
+                      {errors.terms && (
+                        <p className="text-red-600 text-xs font-semibold">
+                          {errors.terms.message}
+                        </p>
+                      )}
+                    </div>
+                  )}
+
                   <div className="bg-white rounded-lg shadow-lg  px-4 py-6 my-4">
                     {Array.isArray(variation?.addons) &&
                       variation?.addons.length > 0 && (
@@ -434,7 +493,7 @@ export default function DosageSelection() {
             ) : (
               <NextButton
                 onClick={handleSubmit(onSubmit)}
-                disabled={totalSelectedQty() === 0}
+                disabled={totalSelectedQty() === 0 || !isValid}
                 label="Proceed to Checkout"
                 className="w-full sm:w-auto"
               />

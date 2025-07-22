@@ -67,10 +67,14 @@ export default function Shipping({ shipmentCountries }) {
       setValue("city", shippingData.city || "");
 
       // Match country by name from static list
-      const country = shipmentCountries?.find((c) => c.name === shippingData.country);
+      const country = shipmentCountries?.find(
+        (c) => c.name === shippingData.country
+      );
 
       if (country) {
-        setValue("shippingCountry", country.id.toString(), { shouldValidate: true });
+        setValue("shippingCountry", country.id.toString(), {
+          shouldValidate: true,
+        });
         setShippingIndex(country.id.toString()); // OK to track here
       }
     },
@@ -133,7 +137,9 @@ export default function Shipping({ shipmentCountries }) {
   const onSubmit = async (data) => {
     setShowLoader(true);
 
-    const selectedCountry = shipmentCountries.find((c) => c.id.toString() === shippingIndex);
+    const selectedCountry = shipmentCountries.find(
+      (c) => c.id.toString() === shippingIndex
+    );
 
     // ✅ Save shipping info
     const formData = {
@@ -154,9 +160,12 @@ export default function Shipping({ shipmentCountries }) {
     <>
       <SectionWrapper>
         <header className="pb-4">
-          <h1 className="headingDashBoard bold-font md:text-3xl text-lg mb-2  text-black">Shipping Information</h1>
+          <h1 className="headingDashBoard bold-font md:text-3xl text-lg mb-2  text-black">
+            Shipping Information
+          </h1>
           <p className="reg-font paragraph  text-left text-sm xl:w-3/4 mt-2">
-            Update your shipping details — changes will apply to future orders only.
+            Update your shipping details — changes will apply to future orders
+            only.
           </p>
         </header>
 
@@ -182,7 +191,9 @@ export default function Shipping({ shipmentCountries }) {
                   setValue("addresstwo", "");
                   setValue("city", "");
 
-                  const selectedCountry = shipmentCountries.find((c) => c.id.toString() === id);
+                  const selectedCountry = shipmentCountries.find(
+                    (c) => c.id.toString() === id
+                  );
                   if (selectedCountry) {
                     setShipping({
                       id: selectedCountry.id,
@@ -200,7 +211,13 @@ export default function Shipping({ shipmentCountries }) {
           />
 
           <div className="relative">
-            <TextField label="Post code" name="postalcode"  register={register} required errors={errors} />
+            <TextField
+              label="Post code"
+              name="postalcode"
+              register={register}
+              required
+              errors={errors}
+            />
             <button
               type="button"
               onClick={handleSearch}
@@ -239,9 +256,15 @@ export default function Shipping({ shipmentCountries }) {
                 const selected = addressOptions[idx];
                 setSelectedIndex(idx);
 
-                setValue("addressone", selected.line_1 || "", { shouldValidate: true });
-                setValue("addresstwo", selected.line_2 || "", { shouldValidate: true });
-                setValue("city", selected.town_or_city || "", { shouldValidate: true });
+                setValue("addressone", selected.line_1 || "", {
+                  shouldValidate: true,
+                });
+                setValue("addresstwo", selected.line_2 || "", {
+                  shouldValidate: true,
+                });
+                setValue("city", selected.town_or_city || "", {
+                  shouldValidate: true,
+                });
               }}
               options={addressOptions.map((addr, idx) => ({
                 value: idx,
@@ -250,11 +273,29 @@ export default function Shipping({ shipmentCountries }) {
             />
           )}
 
-          <TextField label="Address" name="addressone"  register={register} required errors={errors} />
-          <TextField label="Address 2" name="addresstwo"  register={register} errors={errors} />
-          <TextField label="Town / City" name="city"  register={register} required errors={errors} />
-
-          <NextButton label="Continue" disabled={!isValid} />
+          <TextField
+            label="Address"
+            name="addressone"
+            register={register}
+            required
+            errors={errors}
+          />
+          <TextField
+            label="Address 2"
+            name="addresstwo"
+            register={register}
+            errors={errors}
+          />
+          <TextField
+            label="Town / City"
+            name="city"
+            register={register}
+            required
+            errors={errors}
+          />
+          <div className="max-w-24">
+            <NextButton label="Continue" disabled={!isValid} />
+          </div>
         </form>
 
         {showLoader && (
