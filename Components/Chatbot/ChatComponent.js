@@ -11,6 +11,8 @@ import {
 } from "react-icons/fa";
 import { FiMessageCircle, FiMaximize2, FiMinimize2 } from "react-icons/fi";
 import { app_url } from "@/config/constants";
+import { pusher_key } from "@/config/constants";
+import { pusher_cluster } from "@/config/constants";
 import toast, { Toaster } from "react-hot-toast";
 import Pusher from "pusher-js";
 import Echo from "laravel-echo";
@@ -490,12 +492,19 @@ export default function ChatComponent() {
   // }, [conversationId, setMessages]);
 
   useEffect(() => {
+    if (!conversationId || !isHumanTalk) return;
+
+    // 2. Optional: wait for document to be ready (client-side only)
+    if (typeof window === "undefined") return;
+
+    console.log("🟢 Initializing Echo...");
     window.Pusher = Pusher;
+    Pusher.logToConsole = true; // Optional: enable for debugging
 
     const echo = new Echo({
       broadcaster: "pusher",
-      key: "a801fe71eb894de6fe58",
-      cluster: "ap1",
+      key: pusher_key,
+      cluster: pusher_cluster,
       // wsHost: window.location.hostname,
       // wsPort: 6001,
       forceTLS: IS_LIVE ? true : false,
@@ -537,12 +546,21 @@ export default function ChatComponent() {
   }, [conversationId, setMessages]);
 
   useEffect(() => {
+    // 1. Wait until essential state is available
+    if (!conversationId || !isHumanTalk) return;
+
+    // 2. Optional: wait for document to be ready (client-side only)
+    if (typeof window === "undefined") return;
+
+    console.log("🟢 Initializing Echo...");
+
     window.Pusher = Pusher;
+    Pusher.logToConsole = true; // Optional: enable for debugging
 
     const echo = new Echo({
       broadcaster: "pusher",
-      key: "a801fe71eb894de6fe58",
-      cluster: "ap1",
+      key: pusher_key,
+      cluster: pusher_cluster,
       // wsHost: window.location.hostname,
       // wsPort: 6001,
       forceTLS: IS_LIVE ? true : false,
@@ -623,12 +641,21 @@ export default function ChatComponent() {
 
   useEffect(() => {
     if (isHumanTalk) {
+      // 1. Wait until essential state is available
+      if (!conversationId || !isHumanTalk) return;
+
+      // 2. Optional: wait for document to be ready (client-side only)
+      if (typeof window === "undefined") return;
+
+      console.log("🟢 Initializing Echo...");
+
       window.Pusher = Pusher;
+      Pusher.logToConsole = true; // Optional: enable for debugging
 
       const echo = new Echo({
         broadcaster: "pusher",
-        key: "a801fe71eb894de6fe58",
-        cluster: "ap1",
+        key: pusher_key,
+        cluster: pusher_cluster,
         // wsHost: window.location.hostname,
         // wsPort: 6001,
         forceTLS: IS_LIVE ? true : false,
@@ -650,12 +677,21 @@ export default function ChatComponent() {
   //end online status
   //chat history
   useEffect(() => {
+    // 1. Wait until essential state is available
+    if (!conversationId || !isHumanTalk) return;
+
+    // 2. Optional: wait for document to be ready (client-side only)
+    if (typeof window === "undefined") return;
+
+    console.log("🟢 Initializing Echo...");
+
     window.Pusher = Pusher;
+    Pusher.logToConsole = true; // Optional: enable for debugging
 
     const echo = new Echo({
       broadcaster: "pusher",
-      key: "a801fe71eb894de6fe58",
-      cluster: "ap1",
+      key: pusher_key,
+      cluster: pusher_cluster,
       // wsHost: window.location.hostname,
       // wsPort: 6001,
       forceTLS: IS_LIVE ? true : false,
@@ -667,7 +703,7 @@ export default function ChatComponent() {
 
     const channel = echo.channel(`user-panel.${userId}`);
 
-    channel.listen(".RequestChatHistory", (e) => {
+    channel.listen(".RequestChatHistory", async (e) => {
       console.log("📦 History requested:", e);
       console.log("messages", messages);
       // read chat history from localStorage
@@ -680,7 +716,14 @@ export default function ChatComponent() {
       const chatAgentId = chatUser.agent_id || agentId;
       console.log("chatAgentId", chatAgentId);
 
-      fetchAgentId();
+      // If agent_id not found, try to fetch it
+      if (!chatAgentId) {
+        await fetchAgentId(); // make sure fetchAgentId sets localStorage and state
+        const updatedUser = JSON.parse(
+          localStorage.getItem("chat_user") || "{}"
+        );
+        chatAgentId = updatedUser.agent_id;
+      }
       // send history to server
       fetch(app_url + "/send-history", {
         method: "POST",
