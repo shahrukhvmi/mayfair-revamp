@@ -196,6 +196,7 @@ export default function ChatComponent() {
   const [showUserSettings, setShowUserSettings] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [msgToBoth, setMsgToBoth] = useState(false);
+  const [isLoadingGlobal, setIsLoadingGlobal] = useState(false);
   // const [isTabActive, setIsTabActive] = useState(true);
   const [isTabActive, setIsTabActive] = useState(
     typeof window !== "undefined" ? !document.hidden : true
@@ -284,6 +285,12 @@ export default function ChatComponent() {
   }, []);
 
   const sendMessage = async () => {
+    setIsLoadingGlobal(true);
+    if (inputMsg.trim() === "") {
+      toast.error("Please type something.");
+      setIsLoadingGlobal(false);
+      return;
+    }
     await fetch(app_url + "/send-message", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -294,6 +301,24 @@ export default function ChatComponent() {
       }),
     });
     setInputMsg("");
+    setIsLoadingGlobal(false);
+    if (!conversationId || !isHumanTalk) return;
+    const chatHistory = JSON.parse(
+      localStorage.getItem("chat_history") || "[]"
+    );
+
+    const chatUser = JSON.parse(localStorage.getItem("chat_user") || "{}");
+    const chatAgentId = chatUser.agent_id || agentId;
+    console.log("chatAgentId", chatAgentId);
+
+    // If agent_id not found, try to fetch it
+    if (!chatAgentId) {
+      await fetchAgentId(); // make sure fetchAgentId sets localStorage and state
+      const updatedUser = JSON.parse(localStorage.getItem("chat_user") || "{}");
+      chatAgentId = updatedUser.agent_id;
+    }
+
+    await sendHistory(conversationId, chatAgentId, chatHistory);
   };
 
   const fetchAgentId = async () => {
@@ -676,6 +701,31 @@ export default function ChatComponent() {
 
   //end online status
   //chat history
+  const sendHistory = async (conversationId, chatAgentId, chatHistory) => {
+    console.log("Sending chat history");
+    try {
+      const response = await fetch(`${app_url}/send-history`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify({
+          user_id: conversationId,
+          agent_id: chatAgentId,
+          history: chatHistory,
+        }),
+      });
+
+      const data = await response.json();
+      console.log("✅ Chat history sent successfully:", data);
+      return data;
+    } catch (error) {
+      console.error("❌ Failed to send chat history:", error);
+      throw error;
+    }
+  };
+
   useEffect(() => {
     // 1. Wait until essential state is available
     if (!conversationId || !isHumanTalk) return;
@@ -725,25 +775,26 @@ export default function ChatComponent() {
         chatAgentId = updatedUser.agent_id;
       }
       // send history to server
-      fetch(app_url + "/send-history", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "application/json",
-        },
-        body: JSON.stringify({
-          user_id: conversationId,
-          // agent_id: 2,
-          agent_id: chatAgentId,
-          history: chatHistory,
-        }),
-      });
+      // fetch(app_url + "/send-history", {
+      //   method: "POST",
+      //   headers: {
+      //     "Content-Type": "application/json",
+      //     Accept: "application/json",
+      //   },
+      //   body: JSON.stringify({
+      //     user_id: conversationId,
+      //     // agent_id: 2,
+      //     agent_id: chatAgentId,
+      //     history: chatHistory,
+      //   }),
+      // });
+      await sendHistory(conversationId, chatAgentId, chatHistory);
     });
 
     return () => {
       echo.leave(`user-panel.${userId}`);
     };
-  }, [isOpen, conversationId, agentId, isHumanTalk]);
+  }, [conversationId, agentId, isHumanTalk]);
 
   //end chat history
 
@@ -2822,6 +2873,11 @@ export default function ChatComponent() {
                           id="chat-form"
                           className="flex flex-col w-full gap-2 p-3 px-4 text-gray-700 bg-white border-t border-gray-200 sm:p-4"
                           onSubmit={handleChatSubmit}
+                          disabled={
+                            inputMsg.trim() == "" ||
+                            isLoadingGlobal ||
+                            !inputMsg
+                          }
                         >
                           <div className="flex flex-1 w-full gap-2">
                             <textarea
@@ -2837,12 +2893,13 @@ export default function ChatComponent() {
                               spellCheck="false"
                               rows={1}
                               id="message"
+                              disabled={isLoadingGlobal}
                               onKeyDown={handleTextareaKeyDown}
                               onFocus={handleFocus}
                               onBlur={handleBlur}
                               className="flex-1 px-3 py-2 text-sm text-gray-700 placeholder-gray-400 border border-gray-200 rounded-xl sm:px-4 sm:text-base focus:outline-none focus:ring focus:border-gray-300"
                               placeholder="Type your message..."
-                              value={inputMsg}
+                              value={isLoadingGlobal ? "sending..." : inputMsg}
                               onChange={(e) => setInputMsg(e.target.value)}
                               required
                             ></textarea>
@@ -2851,13 +2908,13 @@ export default function ChatComponent() {
                               id="message-submit"
                               ref={messageSubmitButtonRef}
                               className={`self-end h-auto px-4 py-3 text-sm text-center text-white transition max-h-12 rounded-xl sm:text-base disabled:bg-gray-300 ${
-                                loading
+                                loading || isLoadingGlobal
                                   ? "bg-violet-600"
                                   : "bg-violet-600 hover:bg-violet-700"
                               }`}
-                              disabled={loading || !inputMsg}
+                              disabled={loading || isLoadingGlobal || !inputMsg}
                             >
-                              {loading ? "Sent" : "Send"}
+                              {loading || isLoadingGlobal ? "Send" : "Send"}
                             </button>
                           </div>
                         </form>

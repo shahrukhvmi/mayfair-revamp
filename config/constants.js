@@ -7,7 +7,7 @@ export const app_url = " https://staging.mayfairweightlossclinic.co.uk/api";
 export const passwordlink =
   "https://mayfair-revamp.netlify.app/email-confirmation";
 
-export const pusher_key = "e12b8fa1646968e644f3";
-export const pusher_cluster = "ap2";
+export const pusher_key = "db19d7e930487b8f7d2b";
+export const pusher_cluster = "ap1";
 
 export default { app_url };
