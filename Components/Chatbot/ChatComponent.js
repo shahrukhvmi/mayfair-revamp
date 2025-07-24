@@ -330,6 +330,7 @@ export default function ChatComponent() {
   };
 
   const fetchAgentId = async () => {
+    if (!isHumanTalk || !conversationId) return;
     try {
       const res = await fetch(`${app_url}/get-agent-id/${conversationId}`);
       const data = await res.json();
@@ -574,6 +575,7 @@ export default function ChatComponent() {
       // wsPort: 6001,
       forceTLS: IS_LIVE ? true : false,
       encrypted: IS_LIVE,
+      // authEndpoint: "http://127.0.0.1:8000/broadcasting/auth",
       // disableStats: true,
       // If using local websockets:
       // encrypted: false,
@@ -630,6 +632,7 @@ export default function ChatComponent() {
       // wsPort: 6001,
       forceTLS: IS_LIVE ? true : false,
       encrypted: IS_LIVE,
+      // authEndpoint: "http://127.0.0.1:8000/broadcasting/auth",
       // disableStats: true,
       // If using local websockets:
       // encrypted: false,
@@ -725,6 +728,7 @@ export default function ChatComponent() {
         // wsPort: 6001,
         forceTLS: IS_LIVE ? true : false,
         encrypted: IS_LIVE,
+        // authEndpoint: "http://127.0.0.1:8000/broadcasting/auth",
         // disableStats: true,
         // If using local websockets:
         // encrypted: false,
@@ -786,6 +790,7 @@ export default function ChatComponent() {
       // wsPort: 6001,
       forceTLS: IS_LIVE ? true : false,
       encrypted: IS_LIVE,
+      // authEndpoint: "http://127.0.0.1:8000/broadcasting/auth",
       // disableStats: true,
     });
 
@@ -1554,6 +1559,9 @@ export default function ChatComponent() {
       let chatUser = getLocal("chat_user", {});
       chatUser.isHumanTalk = false;
       chatUser.conversationId = null;
+      chatUser.agent_id = null;
+      setAgentId(null);
+      setConversationId(null);
       setLocal("chat_user", chatUser);
       toast.success("Chat has been ended.");
       const botMsgChatEnd = {
