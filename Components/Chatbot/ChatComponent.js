@@ -381,6 +381,38 @@ export default function ChatComponent() {
     // console.log("function: sendBot");
   }
 
+  const deleteChatHistory = async ({ agentId, userId }) => {
+    if (!agentId || !userId) {
+      console.error("Missing agentId or userId for deleting chat history.");
+      return;
+    }
+
+    try {
+      const response = await fetch(app_url + "/delete-history", {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify({
+          agent_id: agentId,
+          user_id: userId,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      console.log("🗑️ Deleted history:", data);
+      return data;
+    } catch (error) {
+      console.error("❌ Failed to delete history:", error);
+      throw error;
+    }
+  };
+
   // console.log("conversationId", conversationId);
 
   function fetchAndSetMessages(
@@ -1518,6 +1550,11 @@ export default function ChatComponent() {
         text: `The chat has been ended`,
       };
       setChatHistory((prev) => [...prev, botMsgChatEnd]);
+
+      await deleteChatHistory({
+        agentId: agentId,
+        userId: conversationId,
+      });
       // console.log("chat ended");
     } catch (errors) {
       toast.error("Failed to end chat.");
