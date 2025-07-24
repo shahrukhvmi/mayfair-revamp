@@ -18,6 +18,7 @@ import Pusher from "pusher-js";
 import Echo from "laravel-echo";
 import { BsChatDots, BsChatDotsFill } from "react-icons/bs";
 import { IoChatbubbles, IoChatbubblesOutline } from "react-icons/io5";
+import { is } from "date-fns/locale";
 
 const quickQuestions = [
   {
@@ -381,9 +382,9 @@ export default function ChatComponent() {
     // console.log("function: sendBot");
   }
 
-  const deleteChatHistory = async ({ agentId, userId }) => {
-    if (!agentId || !userId) {
-      console.error("Missing agentId or userId for deleting chat history.");
+  const deleteChatHistory = async ({ agent_Id, userId }) => {
+    if (!agent_Id || !userId) {
+      console.error("Missing agent_Id or userId for deleting chat history.");
       return;
     }
 
@@ -395,8 +396,8 @@ export default function ChatComponent() {
           Accept: "application/json",
         },
         body: JSON.stringify({
-          agent_id: agentId,
-          user_id: userId,
+          agent_id: agent_Id,
+          user_id: conversationId,
         }),
       });
 
@@ -1446,15 +1447,20 @@ export default function ChatComponent() {
   const handleFocus = () => {
     setInputIsFocus(true);
     adjustTextareaHeight();
-    fetch(`${app_url}/typing`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        chat_conversation_id: conversationId,
-        sender_type: "user",
-        is_typing: true,
-      }),
-    });
+    if (isHumanTalk) {
+      fetch(`${app_url}/typing`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify({
+          chat_conversation_id: conversationId,
+          sender_type: "user",
+          is_typing: true,
+        }),
+      });
+    }
   };
 
   const handleBlur = () => {
@@ -1462,15 +1468,20 @@ export default function ChatComponent() {
     if (inputMsg.trim() === "") {
       resetTextareaHeight();
     }
-    fetch(`${app_url}/typing`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        chat_conversation_id: conversationId,
-        sender_type: "user",
-        is_typing: false,
-      }),
-    });
+    if (isHumanTalk) {
+      fetch(`${app_url}/typing`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify({
+          chat_conversation_id: conversationId,
+          sender_type: "user",
+          is_typing: false,
+        }),
+      });
+    }
   };
 
   const adjustTextareaHeight = () => {
@@ -1552,7 +1563,7 @@ export default function ChatComponent() {
       setChatHistory((prev) => [...prev, botMsgChatEnd]);
 
       await deleteChatHistory({
-        agentId: agentId,
+        agent_Id: agentId,
         userId: conversationId,
       });
       // console.log("chat ended");
