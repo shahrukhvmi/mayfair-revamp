@@ -302,6 +302,13 @@ export default function ChatComponent() {
     });
     setInputMsg("");
     setIsLoadingGlobal(false);
+
+    setTimeout(() => {
+      if (textareaRef.current) {
+        textareaRef.current.focus();
+      }
+    }, 10);
+
     if (!conversationId || !isHumanTalk) return;
     const chatHistory = JSON.parse(
       localStorage.getItem("chat_history") || "[]"
@@ -1312,6 +1319,12 @@ export default function ChatComponent() {
     }
     // adjustTextareaHeight();
     // resetTextareaHeight();
+
+    setTimeout(() => {
+      if (textareaRef.current) {
+        textareaRef.current.focus();
+      }
+    }, 10);
   }
 
   const handleTextareaKeyDown = (e) => {
@@ -1324,6 +1337,12 @@ export default function ChatComponent() {
         handleSendMessage(e);
       }
     }
+
+    setTimeout(() => {
+      if (textareaRef.current) {
+        textareaRef.current.focus();
+      }
+    }, 10);
     // Shift+Enter will insert a new line by default (no need to handle)
   };
 
