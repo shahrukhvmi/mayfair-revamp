@@ -1,5 +1,5 @@
 "use client";
-import { act, use, useEffect, useRef, useState } from "react";
+import { act, use, useEffect, useMemo, useRef, useState } from "react";
 import {
   FaBars,
   FaSignOutAlt,
@@ -316,7 +316,7 @@ export default function ChatComponent() {
     );
 
     const chatUser = JSON.parse(localStorage.getItem("chat_user") || "{}");
-    const chatAgentId = chatUser.agent_id || agentId;
+    let chatAgentId = chatUser.agent_id || agentId;
     console.log("chatAgentId", chatAgentId);
 
     // If agent_id not found, try to fetch it
@@ -593,9 +593,11 @@ export default function ChatComponent() {
         let chatUser = getLocal("chat_user", {});
         chatUser.isHumanTalk = false;
         chatUser.conversationId = null;
+        chatUser.agent_id = null;
         setLocal("chat_user", chatUser);
         setConversationId("");
         setIsHumanTalk(false);
+        setAgentId(null);
         console.log("The chat has been ended", conversationId, isHumanTalk);
       }
       // console.log("e.message", e.message);
@@ -746,6 +748,10 @@ export default function ChatComponent() {
   //end online status
   //chat history
   const sendHistory = async (conversationId, chatAgentId, chatHistory) => {
+    if (!conversationId || !chatAgentId || !chatHistory) {
+      console.log("❌ Missing parameters");
+      return;
+    }
     console.log("Sending chat history");
     try {
       const response = await fetch(`${app_url}/send-history`, {
@@ -1643,9 +1649,39 @@ export default function ChatComponent() {
     f.label.toLowerCase().includes(faqSearch.toLowerCase())
   );
 
-  function getQuickBtns() {
+  // function getQuickBtns() {
+  //   if (!user || !user.email || !user.email_exist) return [];
+  //   const lowerInput = (inputMsg || "").toLowerCase();
+  //   const scored = quickQuestions.map((q) => ({
+  //     ...q,
+  //     score:
+  //       lowerInput.includes(q.message.toLowerCase()) ||
+  //       q.message.toLowerCase().includes(lowerInput)
+  //         ? 1
+  //         : q.label
+  //             .toLowerCase()
+  //             .split(" ")
+  //             .some((word) => lowerInput.includes(word))
+  //         ? 0.5
+  //         : 0,
+  //   }));
+  //   scored.sort((a, b) => b.score - a.score);
+  //   const topRelevant = scored.slice(0, 2);
+  //   const remaining = scored
+  //     .slice(2)
+  //     .sort(() => 0.5 - Math.random())
+  //     .slice(0, 3);
+  //   return [...topRelevant, ...remaining];
+  // }
+
+  const getQuickBtns = useMemo(() => {
     if (!user || !user.email || !user.email_exist) return [];
+
     const lowerInput = (inputMsg || "").toLowerCase();
+
+    // Only show if user has typed at least 1 character
+    // if (lowerInput.length === 0) return [];
+
     const scored = quickQuestions.map((q) => ({
       ...q,
       score:
@@ -1659,14 +1695,18 @@ export default function ChatComponent() {
           ? 0.5
           : 0,
     }));
+
     scored.sort((a, b) => b.score - a.score);
-    const topRelevant = scored.slice(0, 2);
+
+    const topRelevant = scored.slice(0, 1);
+    const qCount = isMaximized ? 11 : 4;
     const remaining = scored
-      .slice(2)
+      .slice(1)
       .sort(() => 0.5 - Math.random())
-      .slice(0, 3);
+      .slice(0, qCount);
+
     return [...topRelevant, ...remaining];
-  }
+  }, [inputMsg, user?.email, user?.email_exist, quickQuestions]);
 
   if (!hasMounted) return null;
 
@@ -2922,7 +2962,7 @@ export default function ChatComponent() {
                               divWidth <= cb.sm ? "px-4" : "px-3"
                             }`}
                           >
-                            {getQuickBtns().map((q) => (
+                            {getQuickBtns.map((q) => (
                               <button
                                 disabled={loading}
                                 key={q.label}
