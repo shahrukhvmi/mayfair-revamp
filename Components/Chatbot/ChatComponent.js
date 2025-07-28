@@ -70,11 +70,108 @@ const finalFaqs = [
     label: "Chatbot Guide - How to use?",
     message: "can you provide the guide how to use chatbot",
   },
+  // {
+  //   label: "Can I change/amend my order?",
+  //   message: "Can I change/amend my order?",
+  // },
+  // {
+  //   label: "I need to cancel my order",
+  //   message: "I need to cancel my order",
+  // },
+  {
+    label:
+      "If I place an order, can I request a specific delivery day? I need to be home.",
+    message:
+      "If I place an order, can I request a specific delivery day? I need to be home.",
+  },
+  {
+    label: "I received my order after 24hrs – is it still safe to use?",
+    message: "I received my order after 24hrs – is it still safe to use?",
+  },
+  {
+    label: "I received Mounjaro/Wegovy after delay – concerned about stability",
+    message:
+      "I received Mounjaro/Wegovy after delay – concerned about stability",
+  },
+  {
+    label: "I received my order late – unsure about safe use",
+    message: "I received my order late – unsure about safe use",
+  },
+  {
+    label:
+      "Royal Mail / DPD says I missed the delivery but I was home all day. Can you please redeliver my parcel?",
+    message:
+      "Royal Mail / DPD says I missed the delivery but I was home all day. Can you please redeliver my parcel?",
+  },
+  {
+    label: "Can i have my order delivered on Saturday?",
+    message: "Can i have my order delivered on Saturday?",
+  },
+  {
+    label:
+      "I need advice on how to come off the medication when I reach my weight goal",
+    message:
+      "I need advice on how to come off the medication when I reach my weight goal",
+  },
+  {
+    label: "Do you have any discounts?",
+    message: "Do you have any discounts?",
+  },
+  {
+    label: "Can I collect the parcel from the clinic?",
+    message: "Can I collect the parcel from the clinic?",
+  },
+  {
+    label:
+      "⁠I’m an existing patient. How can I reorder? Do I have to fill consultation again?",
+    message:
+      "⁠I’m an existing patient. How can I reorder? Do I have to fill consultation again?",
+  },
+  {
+    label: "⁠I’m unable to login into my account.",
+    message: "⁠I’m unable to login into my account.",
+  },
+  {
+    label: "I am unable to reset my password",
+    message: "I am unable to reset my password",
+  },
+  {
+    label: "⁠I tried placing an order but the payment keeps on failing.",
+    message: "⁠I tried placing an order but the payment keeps on failing.",
+  },
+  {
+    label: "I didn’t receive my refund.",
+    message: "I didn’t receive my refund.",
+  },
+  {
+    label: "Do you prescribe Ozempic?",
+    message: "Do you prescribe Ozempic?",
+  },
+  {
+    label: "Do you do the tablets?",
+    message: "Do you do the tablets?",
+  },
+  {
+    label: "Do you ship to Ireland?",
+    message: "Do you ship to Ireland?",
+  },
+  {
+    label: "Do you ship to USA/UAE/any country other than UK or Ireland?",
+    message: "Do you ship to USA/UAE/any country other than UK or Ireland?",
+  },
   {
     label:
       "Can you provide a letter or prescription that I can show at the airport when travelling?",
     message:
       "Can you provide a letter or prescription that I can show at the airport when travelling?",
+  },
+  {
+    label: "I ordered the wrong dose. Can I return or exchange?",
+    message: "I ordered the wrong dose. Can I return or exchange?",
+  },
+  {
+    label: "Can I order a higher dose pen and take lower doses form it?",
+    message: "Can I order a higher dose pen and take lower doses form it?",
   },
   {
     label: "Can I order a 15mg pen and use it to take 5mg doses?",
@@ -1277,6 +1374,37 @@ export default function ChatComponent() {
     setInputMsg("");
     setLoading(true);
 
+    // Get 2 latest messages from localStorage chat_history: 1st where sender is "user", 2nd where sender is "bot"
+    let contextMessages = [];
+    try {
+      const contextChatHistory = JSON.parse(
+        localStorage.getItem("chat_history") || "[]"
+      );
+      // Find last user message
+      const lastUserMsg = [...contextChatHistory]
+        .reverse()
+        .find((m) => m.sender === "user");
+      // Find last bot message
+      const lastBotMsg = [...contextChatHistory]
+        .reverse()
+        .find((m) => m.sender === "bot");
+
+      // Helper to trim message to 220 chars
+      const trimMsg = (msg) =>
+        msg.length > 220 ? msg.slice(0, 220) + "..." : msg;
+
+      if (lastUserMsg)
+        contextMessages.push({
+          sender: "user",
+          text: trimMsg(lastUserMsg.text || ""),
+        });
+      if (lastBotMsg)
+        contextMessages.push({
+          sender: "bot",
+          text: trimMsg(lastBotMsg.text || ""),
+        });
+    } catch {}
+
     try {
       const res = await fetch(app_url + "/consultant-chat", {
         method: "POST",
@@ -1286,6 +1414,8 @@ export default function ChatComponent() {
         },
         body: JSON.stringify({
           message: inputMsg.trim(),
+          context: contextMessages,
+          //get 2 latest messages from local storage chathistory 1st where type is user and 2nd where type is bot and send it to the server as context to understand the conversation...
           order_id: orderId || "",
           ...(user || {}),
         }),
@@ -1699,7 +1829,7 @@ export default function ChatComponent() {
     scored.sort((a, b) => b.score - a.score);
 
     const topRelevant = scored.slice(0, 1);
-    const qCount = isMaximized ? 11 : 4;
+    const qCount = isMaximized ? 9 : 4;
     const remaining = scored
       .slice(1)
       .sort(() => 0.5 - Math.random())
@@ -1780,6 +1910,12 @@ export default function ChatComponent() {
         setOrderId(localOrderId);
         setLocalOrderId(localOrderId);
         setLoading(false);
+
+        setTimeout(() => {
+          setOrderIdStatus("");
+          setStatus("");
+          console.log("Order ID status reset");
+        }, 5000);
       }
     };
 
@@ -1833,7 +1969,7 @@ export default function ChatComponent() {
         />
         <button
           type="submit"
-          className="bg-violet-600 hover:bg-violet-700"
+          className="cursor-pointer bg-violet-600 hover:bg-violet-700 disabled:bg-gray-400 disabled:cursor-not-allowed"
           style={{
             width: "100%",
             // backgroundColor: "#7f22fe",
@@ -1841,9 +1977,8 @@ export default function ChatComponent() {
             padding: "10px 16px",
             border: "none",
             borderRadius: 6,
-            cursor: "pointer",
           }}
-          disabled={loading}
+          disabled={loading || !localOrderId}
         >
           {loading ? "Continue" : "Continue"}
         </button>
