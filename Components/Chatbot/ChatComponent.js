@@ -311,6 +311,52 @@ export default function ChatComponent() {
     "2xl": 1536,
   };
 
+  //feedback start
+  const [rating, setRating] = useState(0);
+  const [hover, setHover] = useState(0);
+  const [review, setReview] = useState("");
+  const [showFeedback, setShowFeedback] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
+  const [thanked, setThanked] = useState(false);
+
+  // Your actual chat end logic here
+  const performChatEnd = () => {
+    console.log("🔚 Chat officially ended.");
+    // You can run API call or emit socket event here
+    setRating(0);
+    setHover(0);
+    setReview("");
+    setShowFeedback(false);
+    setSubmitted(false);
+    setThanked(false);
+  };
+
+  const handleEndChatClick = () => {
+    setShowFeedback(true);
+  };
+
+  const handleFeedbackSubmit = () => {
+    if (rating > 0) {
+      // You could send to API here
+      console.log("📩 Feedback submitted:", { rating, review });
+      setSubmitted(true);
+
+      setTimeout(() => {
+        setThanked(true);
+        performChatEnd();
+      }, 1500);
+    }
+  };
+
+  const handleSkip = () => {
+    setSubmitted(true);
+    setTimeout(() => {
+      setThanked(true);
+      performChatEnd();
+    }, 3000);
+  };
+  //feedback end
+
   const [messages, setMessages] = useState([]);
   const [lastMessageTime, setLastMessageTime] = useState("");
 
@@ -695,6 +741,9 @@ export default function ChatComponent() {
         setConversationId("");
         setIsHumanTalk(false);
         setAgentId(null);
+        setTimeout(() => {
+          setShowFeedback(true);
+        }, 200);
         console.log("The chat has been ended", conversationId, isHumanTalk);
       }
       // console.log("e.message", e.message);
@@ -1718,6 +1767,9 @@ export default function ChatComponent() {
     } finally {
       setLoading(false);
     }
+    setTimeout(() => {
+      setShowFeedback(true);
+    }, 200);
   };
 
   function onClickEandleEndChat() {
@@ -2319,6 +2371,89 @@ export default function ChatComponent() {
                     </>
                   ))}
               </header>
+
+              {/* ✅ End Chat Button */}
+              {/* {!showFeedback && (
+                <button
+                  onClick={handleEndChatClick}
+                  className="px-4 py-2 text-sm text-white bg-red-600 rounded-lg hover:bg-red-700"
+                >
+                  End Chat
+                </button>
+              )} */}
+
+              {/* ✅ Feedback UI */}
+              {showFeedback && !submitted && (
+                <div className="absolute top-0 left-0 flex items-center flex-1 w-full h-full px-4 pb-50 bg-opacity-80 backdrop-blur-sm z-99999">
+                  <div className="w-full max-w-md p-6 mx-auto bg-white border border-gray-200 shadow-md max-h-fit rounded-xl">
+                    <h3 className="mb-4 text-lg font-semibold text-center">
+                      🤔 How was your chat experience?
+                    </h3>
+
+                    <div className="flex justify-center gap-1 mb-4">
+                      {[1, 2, 3, 4, 5].map((star) => (
+                        <button
+                          key={star}
+                          onClick={() => setRating(star)}
+                          onMouseEnter={() => setHover(star)}
+                          onMouseLeave={() => setHover(0)}
+                          className="text-2xl transition"
+                        >
+                          <span
+                            className={
+                              star <= (hover || rating)
+                                ? "text-yellow-400"
+                                : "text-gray-300"
+                            }
+                          >
+                            ★
+                          </span>
+                        </button>
+                      ))}
+                    </div>
+
+                    <textarea
+                      className="w-full p-3 text-sm border border-gray-200 rounded-lg resize-none focus:outline-none focus:ring-1 focus:ring-violet-500"
+                      rows={3}
+                      placeholder="Leave a comment (optional)..."
+                      value={review}
+                      onChange={(e) => setReview(e.target.value)}
+                    ></textarea>
+
+                    <div className="flex justify-end gap-2 mt-4">
+                      <button
+                        onClick={handleFeedbackSubmit}
+                        className={`bg-violet-600 hover:bg-violet-700 text-white px-4 py-2 rounded-lg text-sm ${
+                          rating === 0 ? "opacity-50 cursor-not-allowed" : ""
+                        }`}
+                        disabled={rating === 0}
+                      >
+                        Submit
+                      </button>
+                      <button
+                        onClick={handleSkip}
+                        className="text-sm text-gray-500 hover:underline"
+                      >
+                        Skip
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* ✅ Thank you message */}
+              {submitted && !thanked && (
+                <div className="absolute left-0 flex items-center justify-center flex-1 w-full px-4 top-16 z-99999">
+                  <div className="p-6 mx-4 mt-6 text-center transition-all ease-in-out border border-gray-200 shadow-xl bg-green-50 rounded-xl">
+                    <h3 className="mb-2 text-lg font-semibold">
+                      🎉 Thank you for your feedback!
+                    </h3>
+                    <p className="text-gray-600">
+                      We appreciate you taking the time to help us improve.
+                    </p>
+                  </div>
+                </div>
+              )}
 
               {/* User Settings Modal */}
               {showUserSettings && (
@@ -3177,6 +3312,7 @@ export default function ChatComponent() {
           </div>
         </div>
       )}
+
       {!isOpen && (
         <button
           className="fixed z-50 flex items-center justify-center text-white rounded-full shadow-lg bottom-4 right-4 w-14 h-14 bg-violet-600 hover:bg-violet-700"
