@@ -177,10 +177,10 @@ const finalFaqs = [
     label: "Can I order a 15mg pen and use it to take 5mg doses?",
     message: "Can I order a 15mg pen and use it to take 5mg doses?",
   },
-  {
-    label: "What weight loss programs do you offer?",
-    message: "What weight loss programs do you offer",
-  },
+  // {
+  //   label: "What weight loss programs do you offer?",
+  //   message: "What weight loss programs do you offer",
+  // },
   {
     label: "How can I book a consultation?",
     message: "How can I book a consultation",
@@ -189,66 +189,66 @@ const finalFaqs = [
     label: "What is the cost of your treatments?",
     message: "What is the cost of your treatments",
   },
-  {
-    label: "Do you offer GLP-1 injections like Ozempic?",
-    message: "Do you offer GLP-1 injections like Ozempic",
-  },
-  {
-    label: "Is the consultation done online or in person?",
-    message: "Is the consultation done online or in person",
-  },
-  {
-    label: "Do you offer a refund if the treatment doesn't work?",
-    message: "Do you offer a refund if the treatment does not work",
-  },
-  {
-    label: "What are the side effects of weight loss injections?",
-    message: "What are the side effects of weight loss injections",
-  },
+  // {
+  //   label: "Do you offer GLP-1 injections like Ozempic?",
+  //   message: "Do you offer GLP-1 injections like Ozempic",
+  // },
+  // {
+  //   label: "Is the consultation done online or in person?",
+  //   message: "Is the consultation done online or in person",
+  // },
+  // {
+  //   label: "Do you offer a refund if the treatment doesn't work?",
+  //   message: "Do you offer a refund if the treatment does not work",
+  // },
+  // {
+  //   label: "What are the side effects of weight loss injections?",
+  //   message: "What are the side effects of weight loss injections",
+  // },
   {
     label: "How soon can I see results?",
     message: "How soon can I see results?",
   },
-  {
-    label: "Can I speak to a licensed doctor or clinician?",
-    message: "Can I speak to a licensed doctor or clinician",
-  },
-  {
-    label: "How do I reorder my medication?",
-    message: "How do I reorder my medication",
-  },
-  {
-    label: "What happens during my first consultation?",
-    message: "What happens during my first consultation",
-  },
+  // {
+  //   label: "Can I speak to a licensed doctor or clinician?",
+  //   message: "Can I speak to a licensed doctor or clinician",
+  // },
+  // {
+  //   label: "How do I reorder my medication?",
+  //   message: "How do I reorder my medication",
+  // },
+  // {
+  //   label: "What happens during my first consultation?",
+  //   message: "What happens during my first consultation",
+  // },
   {
     label: "Are your treatments safe and approved?",
     message: "Are your treatments safe and approved",
   },
-  {
-    label: "How do I cancel or reschedule an appointment?",
-    message: "How do I cancel or reschedule an appointment",
-  },
-  {
-    label: "Do I need a prescription before starting?",
-    message: "Do I need a prescription before starting",
-  },
-  {
-    label: "How do I check the status of my order?",
-    message: "How do I check the status of my order",
-  },
-  {
-    label: "What should I do if I missed my dose?",
-    message: "What should I do if I missed my dose",
-  },
-  {
-    label: "How can I track my progress?",
-    message: "How can I track my progress",
-  },
-  {
-    label: "Do you provide diet or fitness plans too?",
-    message: "Do you provide diet or fitness plans too",
-  },
+  // {
+  //   label: "How do I cancel or reschedule an appointment?",
+  //   message: "How do I cancel or reschedule an appointment",
+  // },
+  // {
+  //   label: "Do I need a prescription before starting?",
+  //   message: "Do I need a prescription before starting",
+  // },
+  // {
+  //   label: "How do I check the status of my order?",
+  //   message: "How do I check the status of my order",
+  // },
+  // {
+  //   label: "What should I do if I missed my dose?",
+  //   message: "What should I do if I missed my dose",
+  // },
+  // {
+  //   label: "How can I track my progress?",
+  //   message: "How can I track my progress",
+  // },
+  // {
+  //   label: "Do you provide diet or fitness plans too?",
+  //   message: "Do you provide diet or fitness plans too",
+  // },
   {
     label: "Can I speak to someone privately about my medical history?",
     message: "Can I speak to someone privately about my medical history",
@@ -1829,7 +1829,7 @@ export default function ChatComponent() {
     scored.sort((a, b) => b.score - a.score);
 
     const topRelevant = scored.slice(0, 1);
-    const qCount = isMaximized ? 9 : 4;
+    const qCount = isMaximized ? 7 : 4;
     const remaining = scored
       .slice(1)
       .sort(() => 0.5 - Math.random())
