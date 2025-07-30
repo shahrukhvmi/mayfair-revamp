@@ -273,7 +273,7 @@ function setLocal(key, value) {
   localStorage.setItem(key, JSON.stringify(value));
 }
 
-export default function ChatComponent() {
+export default function ChatComponent({ closeBtn, isWidgetOpen }) {
   const IS_LIVE = true;
   const [hasMounted, setHasMounted] = useState(false);
   const [user, setUser] = useState(null);
@@ -292,7 +292,8 @@ export default function ChatComponent() {
   const [showQuick, setShowQuick] = useState(false);
   const [otherTyping, setOtherTyping] = useState(false);
   const [showUserSettings, setShowUserSettings] = useState(false);
-  const [isOpen, setIsOpen] = useState(false);
+  // const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(isWidgetOpen ?? false);
   const [msgToBoth, setMsgToBoth] = useState(false);
   const [isLoadingGlobal, setIsLoadingGlobal] = useState(false);
   // const [isTabActive, setIsTabActive] = useState(true);
@@ -1057,7 +1058,8 @@ export default function ChatComponent() {
   });
   const chatBoxRef = useRef();
 
-  const [isMaximized, setIsMaximized] = useState(false);
+  // const [isMaximized, setIsMaximized] = useState(false);
+  const [isMaximized, setIsMaximized] = useState(isWidgetOpen ?? false);
   const [windowWidth, setWindowWidth] = useState(0);
   const [divWindow, setDivWindow] = useState(1918);
   const [divHeight, setDivHeight] = useState(0);
@@ -1881,7 +1883,7 @@ export default function ChatComponent() {
     scored.sort((a, b) => b.score - a.score);
 
     const topRelevant = scored.slice(0, 1);
-    const qCount = isMaximized ? 7 : 4;
+    const qCount = isMaximized ? 3 : 3;
     const remaining = scored
       .slice(1)
       .sort(() => 0.5 - Math.random())
@@ -2325,6 +2327,7 @@ export default function ChatComponent() {
                           onClick={() => setIsOpen(false)}
                           className={`px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm text-gray-400 border bg-gray-50 hover:border-gray-200 border-gray-50 rounded-lg flex items-center gap-1`}
                           aria-label="Close"
+                          disabled={closeBtn}
                         >
                           <FaMinus size={20} />
                           {/* <FiXCircle size={20} /> */}
@@ -2363,6 +2366,7 @@ export default function ChatComponent() {
                           onClick={() => setIsOpen(false)}
                           className={`px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm text-gray-400 border bg-gray-50 hover:border-gray-200 border-gray-50 rounded-lg flex items-center gap-1`}
                           aria-label="Close"
+                          disabled={closeBtn}
                         >
                           {/* <FiXCircle size={20} /> */}
                           <FaMinus size={20} />
