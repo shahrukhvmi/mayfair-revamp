@@ -65,5 +65,5 @@
   document.body.appendChild(iframe);
   setTimeout(() => {
     document.body.appendChild(closeBtn);
-  }, 900);
+  }, 1200);
 })();

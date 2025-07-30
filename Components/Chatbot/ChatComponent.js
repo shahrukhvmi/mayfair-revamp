@@ -1456,6 +1456,39 @@ export default function ChatComponent({ closeBtn, isWidgetOpen }) {
         });
     } catch {}
 
+    // let contextMessages = [];
+    // try {
+    //   const contextChatHistory = JSON.parse(
+    //     localStorage.getItem("chat_history") || "[]"
+    //   );
+
+    //   // Helper to trim message to 220 chars
+    //   const trimMsg = (msg) =>
+    //     msg.length > 220 ? msg.slice(0, 220) + "..." : msg;
+
+    //   // Find last 2 user messages
+    //   const lastUserMsgs = [...contextChatHistory]
+    //     .reverse()
+    //     .filter((m) => m.sender === "user")
+    //     .slice(0, 2)
+    //     .map((m) => ({
+    //       sender: "user",
+    //       text: trimMsg(m.text || ""),
+    //     }));
+
+    //   // Find last 2 bot messages
+    //   const lastBotMsgs = [...contextChatHistory]
+    //     .reverse()
+    //     .filter((m) => m.sender === "bot")
+    //     .slice(0, 2)
+    //     .map((m) => ({
+    //       sender: "bot",
+    //       text: trimMsg(m.text || ""),
+    //     }));
+
+    //   contextMessages = [...lastUserMsgs, ...lastBotMsgs];
+    // } catch {}
+
     try {
       const res = await fetch(app_url + "/consultant-chat", {
         method: "POST",
