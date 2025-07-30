@@ -1,9 +1,26 @@
 (function () {
+  // const allowedOrigins = [
+  //   "https://nimble-cheesecake-e7f6c4.netlify.app",
+  //   "http://localhost:3000",
+  //   "http://chat-embed.test",
+  // ];
+
+  // // Soft protection — validate document.referrer
+  // const referrer = document.referrer;
+  // const isValid = allowedOrigins.some((origin) => referrer.startsWith(origin));
+
+  // if (!isValid) {
+  //   console.warn("🚫 Unauthorized domain: ", referrer);
+  //   return; // Stop execution, don’t load the chatbot
+  // }
+
+  // ✅ Safe to proceed
   if (window.ChatBotLoaded) return;
   window.ChatBotLoaded = true;
 
   const iframe = document.createElement("iframe");
   iframe.src = "https://nimble-cheesecake-e7f6c4.netlify.app/embed";
+  // iframe.src = "http://localhost:3000/embed";
   iframe.style.position = "fixed";
   iframe.style.bottom = "20px";
   iframe.style.right = "20px";

@@ -48,12 +48,17 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // Chatbot loader
   btn.addEventListener("click", function () {
+    console.log("Button clicked");
     if (!window.ChatBotLoaded) {
+      console.log("ChatBot not loaded yet, loading now...");
       const script = document.createElement("script");
+      //   script.src = "http://localhost:3000/chatbot-embed.js";
       script.src =
         "https://nimble-cheesecake-e7f6c4.netlify.app/chatbot-embed.js";
       script.async = true;
       document.body.appendChild(script);
+    } else {
+      console.log("ChatBot already loaded.");
     }
   });
 });
