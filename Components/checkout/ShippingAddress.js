@@ -199,14 +199,14 @@ export default function ShippingAddress({
     sameAsShippingValue,
   ]);
 
-  useEffect(() => {
-    if (checkShippingForAccordion != null) {
-      console.log("All required fields are filled.");
-      setCloseShipping(true);
-    } else {
-      console.log("Not all required fields are filled.");
-    }
-  }, [checkShippingForAccordion]);
+  // useEffect(() => {
+  //   if (checkShippingForAccordion != null) {
+  //     console.log("All required fields are filled.");
+  //     setCloseShipping(true);
+  //   } else {
+  //     console.log("Not all required fields are filled.");
+  //   }
+  // }, [checkShippingForAccordion]);
 
   const onSubmit = async (data) => {
     setCloseShipping(true);

@@ -78,14 +78,14 @@ export default function BillingAddress({
     setIsBillingCheck(allFilled);
   }, [watchedFields, setIsBillingCheck]);
 
-  useEffect(() => {
-    if (checkBillingForAccordion != null) {
-      console.log("All required fields are filled.");
-      setCloseBilling(true);
-    } else {
-      console.log("Not all required fields are filled.");
-    }
-  }, [checkBillingForAccordion]);
+  // useEffect(() => {
+  //   if (checkBillingForAccordion != null) {
+  //     console.log("All required fields are filled.");
+  //     setCloseBilling(true);
+  //   } else {
+  //     console.log("Not all required fields are filled.");
+  //   }
+  // }, [checkBillingForAccordion]);
 
   // if (sameAsShipping) {
   //   return null; // ✅ Do not render anything if same as shipping

@@ -97,10 +97,10 @@ const Checkout = () => {
 
       <StepsHeader />
 
-      <div className="bottom-[30px] fixed left-10 cursor-pointer py-2 rounded-full border-2 border-[#4565BF] sm:block hidden">
+      <div className="bottom-[30px] fixed left-10 cursor-pointer py-2 rounded-full border-2 border-violet-700 sm:block hidden">
         <button
           onClick={back}
-          className="text-primary reg-font px-6 cursor-pointer"
+          className="text-violet-700 reg-font px-6 cursor-pointer"
         >
           <span>Back</span>
         </button>
