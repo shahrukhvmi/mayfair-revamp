@@ -10,7 +10,7 @@ const ThankYou = () => {
   const { items, orderId, checkOut } = useCartStore();
 
   const handleGoBack = () => {
-    GO.push("/dashboard");
+    GO.push("/photo-upload");
   };
   console.log(checkOut, "checkOut");
   return (
