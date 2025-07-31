@@ -36,7 +36,7 @@ const ProductCard = ({ id, title, image, price, status, buttonText, lastOrderDat
   const { setMedicalInfo, clearMedicalInfo } = useMedicalInfoStore();
   const { setPatientInfo, clearPatientInfo } = usePatientInfoStore();
   const { setAuthUserDetail, clearAuthUserDetail } = useAuthUserDetailStore();
-  const { billing, setBilling, shipping, setShipping, clearShipping, clearBilling } = useShippingOrBillingStore();
+  const { billing, setBilling, shipping, setShipping, setCheckShippingForAccordion, clearShipping, clearBilling, setCheckBillingForAccordion } = useShippingOrBillingStore();
   const { setLastBmi } = useLastBmi();
   const { firstName, lastName, setFirstName, setLastName } = useSignupStore();
   const { setIsReturningPatient } = useReturning();
@@ -65,7 +65,9 @@ const ProductCard = ({ id, title, image, price, status, buttonText, lastOrderDat
         setMedicalInfo(data?.data?.data?.medicalInfo);
         setPatientInfo(data?.data?.data?.patientInfo);
         setShipping(data?.data?.data?.shipping);
+        setCheckShippingForAccordion(data?.data?.data?.shipping)
         setBilling(data?.data?.data?.billing);
+        setCheckBillingForAccordion(data?.data?.data?.billing);
         setAuthUserDetail(data?.data?.data?.auth_user);
         setLastBmi(data?.data?.data?.bmi);
         setFirstName(data?.data?.data?.patientInfo?.firstName);

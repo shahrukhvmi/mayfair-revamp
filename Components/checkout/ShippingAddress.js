@@ -27,6 +27,7 @@ export default function ShippingAddress({
   onComplete,
   setIsShippingCheck,
   setIsBillingCheck,
+  setCloseShipping,
 }) {
   const [showLoader, setShowLoader] = useState(false);
   const [manual, setManual] = useState(false);
@@ -36,8 +37,14 @@ export default function ShippingAddress({
 
   const [shippingIndex, setShippingIndex] = useState("");
 
-  const { shipping, setShipping, setBillingSameAsShipping, setBilling } =
-    useShippingOrBillingStore();
+  const {
+    shipping,
+    setShipping,
+    setBillingSameAsShipping,
+    setBilling,
+    setCheckShippingForAccordion,
+    checkShippingForAccordion,
+  } = useShippingOrBillingStore();
   const { shipmentCountries } = useShipmentCountries();
 
   const {
@@ -180,6 +187,7 @@ export default function ShippingAddress({
   useEffect(() => {
     const allFilled = watchedFields.every((field) => field && field !== "");
 
+    setIsShippingCheck(allFilled);
     // If "same as shipping" is checked and all shipping fields are filled, set billing check to true
     if (typeof setIsBillingCheck === "function") {
       setIsBillingCheck(allFilled && !!sameAsShippingValue);
@@ -190,7 +198,18 @@ export default function ShippingAddress({
     setIsBillingCheck,
     sameAsShippingValue,
   ]);
+
+  useEffect(() => {
+    if (checkShippingForAccordion != null) {
+      console.log("All required fields are filled.");
+      setCloseShipping(true);
+    } else {
+      console.log("Not all required fields are filled.");
+    }
+  }, [checkShippingForAccordion]);
+
   const onSubmit = async (data) => {
+    setCloseShipping(true);
     setIsShippingCheck(true);
     setShowLoader(true);
     await new Promise((resolve) => setTimeout(resolve, 500));

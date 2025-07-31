@@ -112,6 +112,7 @@ const ProductSelection = ({ showProductSelection }) => {
       }
     } else {
       setRedirection("/personal-details");
+      setReorder(false);
     }
     console.log(treatment, "treatment-name");
     setSelectedProductId((prev) => (prev === id ? null : id));

@@ -15,7 +15,6 @@ import MetaLayout from "@/Meta/MetaLayout";
 import { meta_url } from "@/config/constants";
 import useReturning from "@/store/useReturningPatient";
 
-
 const Checkout = () => {
   const { isReturningPatient } = useReturning();
 
@@ -33,9 +32,10 @@ const Checkout = () => {
   const [isConcentCheck, setIsConcentCheck] = useState(false);
   const [isShippingCheck, setIsShippingCheck] = useState(false);
   const [isBillingCheck, setIsBillingCheck] = useState(false);
+  const [closeShipping, setCloseShipping] = useState(false);
+  const [closeBilling, setCloseBilling] = useState(false);
 
   const [showThankYouModal, setShowThankYouModal] = useState(false);
-  console.log(isShippingCheck, "isShippingCheck")
   const router = useRouter();
 
   const personalRef = useRef(null);
@@ -58,12 +58,19 @@ const Checkout = () => {
   };
 
   const getStepRefs = () => {
-    return [isPasswordReset && personalRef, addressRef, !billingSameAsShipping && billingRef, paymentRef, summaryRef].filter(Boolean);
+    return [
+      isPasswordReset && personalRef,
+      addressRef,
+      !billingSameAsShipping && billingRef,
+      paymentRef,
+      summaryRef,
+    ].filter(Boolean);
   };
   const stepRefs = getStepRefs();
 
   const goToNextStep = (stepIndexOverride) => {
-    const currentIndex = typeof stepIndexOverride === "number" ? stepIndexOverride : refIndex;
+    const currentIndex =
+      typeof stepIndexOverride === "number" ? stepIndexOverride : refIndex;
     const nextIndex = currentIndex + 1;
 
     // ✅ Mark correct step as complete
@@ -83,7 +90,7 @@ const Checkout = () => {
     router.push("/dosage-selection");
   };
 
-  console.log(showResetPassword, "showResetPassword")
+  console.log(showResetPassword, "showResetPassword");
   return (
     <>
       <MetaLayout canonical={`${meta_url}checkout/`} />
@@ -157,16 +164,20 @@ const Checkout = () => {
         {/* Sections */}
         {showResetPassword && !isReturningPatient && (
           <div ref={personalRef}>
-            <SetAPassword onComplete={() => goToNextStep(0)} isCompleted={completedSteps[0] || !isPasswordReset} />
+            <SetAPassword
+              onComplete={() => goToNextStep(0)}
+              isCompleted={completedSteps[0] || !isPasswordReset}
+            />
           </div>
         )}
 
         <div ref={addressRef}>
           <ShippingAddress
             onComplete={() => goToNextStep(1)}
-            isCompleted={completedSteps[1] || isShippingCheck}
+            isCompleted={completedSteps[1] || closeShipping}
             setIsShippingCheck={setIsShippingCheck}
             setIsBillingCheck={setIsBillingCheck}
+            setCloseShipping={setCloseShipping}
           />
         </div>
 
@@ -174,8 +185,10 @@ const Checkout = () => {
           <div ref={billingRef}>
             <BillingAddress
               onComplete={() => goToNextStep(2)}
-              isCompleted={completedSteps[2]}
-              setIsBillingCheck={setIsBillingCheck} />
+              isCompleted={completedSteps[2] || closeBilling}
+              setIsBillingCheck={setIsBillingCheck}
+              setCloseBilling={setCloseBilling}
+            />
           </div>
         )}
 

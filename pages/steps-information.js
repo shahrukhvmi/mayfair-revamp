@@ -60,6 +60,8 @@ export default function StepsInformation() {
     setShipping,
     clearShipping,
     clearBilling,
+    setCheckShippingForAccordion,
+    setCheckBillingForAccordion,
   } = useShippingOrBillingStore();
   const { clearToken } = useAuthStore();
   const { setIsPasswordReset } = usePasswordReset();
@@ -98,7 +100,9 @@ export default function StepsInformation() {
         setMedicalInfo(data?.data?.data?.medicalInfo);
         setPatientInfo(data?.data?.data?.patientInfo);
         setShipping(data?.data?.data?.shipping);
+        setCheckShippingForAccordion(data?.data?.data?.shipping);
         setBilling(data?.data?.data?.billing);
+        setCheckBillingForAccordion(data?.data?.data?.billing);
         setAuthUserDetail(data?.data?.data?.auth_user);
         setLastBmi(data?.data?.data?.bmi);
         setIsReturningPatient(data?.data?.data?.isReturning);

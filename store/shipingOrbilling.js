@@ -7,10 +7,19 @@ const useShippingOrBillingStore = create(
       shipping: null,
       billing: null,
       billingSameAsShipping: false, // ✅ NEW STATE added
+      checkShippingForAccordion: null,
+      checkBillingForAccordion: null,
 
       setShipping: (info) => set({ shipping: info }),
       setBilling: (info) => set({ billing: info }),
-      setBillingSameAsShipping: (status) => set({ billingSameAsShipping: status }),
+      setBillingSameAsShipping: (status) =>
+        set({ billingSameAsShipping: status }),
+
+      setCheckShippingForAccordion: (status) =>
+        set({ checkShippingForAccordion: status }),
+
+      setCheckBillingForAccordion: (state) =>
+        set({ checkBillingForAccordion: state }),
 
       clearShipping: () => set({ shipping: null }),
       clearBilling: () => set({ billing: null }),

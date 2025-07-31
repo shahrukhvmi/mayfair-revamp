@@ -54,7 +54,7 @@ export default function Index() {
   const onSubmit = async (data, e) => {
     const action = e.nativeEvent.submitter.value;
 
-    if (action === "Accept and re-order") {
+    if (action === "Returning Patient") {
       if (token && authUserDetail?.isReturning) {
         router.push("/steps-information");
         setIsFromReorder(true);
@@ -116,18 +116,22 @@ export default function Index() {
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
             <NextButton
               type="submit"
-              label="Accept and continue"
+              label="New Patient"
+              subHeading="Click here to start online consultation"
               disabled={!isValid}
             />
 
             <button
               type="submit"
               name="action"
-              value="Accept and re-order"
+              value="Returning Patient"
               disabled={!isValid}
               className=" w-full px-12   bold-font text-sm border-in duration-150 ease-in-out hover:bg-primary  py-3 rounded-full bold-font  transition my-3 border-2 text-primary hover:text-white border-primary cursor-pointer"
             >
-              Accept and re-order
+              Returning Patient
+              <p className="reg-font paragraph !text-[13px]">
+                Click here - your previous details will be saved
+              </p>
             </button>
           </form>
 

@@ -16,7 +16,13 @@ import NextButton from "../NextButton/NextButton";
 
 const api = new Client("_UFb05P76EyMidU1VHIQ_A42976");
 
-export default function BillingAddress({ isCompleted, onComplete, sameAsShipping, setIsBillingCheck }) {
+export default function BillingAddress({
+  isCompleted,
+  onComplete,
+  sameAsShipping,
+  setIsBillingCheck,
+  setCloseBilling,
+}) {
   const [showLoader, setShowLoader] = useState(false);
   const [manual, setManual] = useState(false);
   const [addressOptions, setAddressOptions] = useState([]);
@@ -24,7 +30,13 @@ export default function BillingAddress({ isCompleted, onComplete, sameAsShipping
   const [billingIndex, setBillingIndex] = useState("");
   const [addressSearchLoading, setAddressSearchLoading] = useState(false);
 
-  const { billing, setBilling, shipping, clearBilling } = useShippingOrBillingStore();
+  const {
+    billing,
+    setBilling,
+    shipping,
+    clearBilling,
+    checkBillingForAccordion,
+  } = useShippingOrBillingStore();
   const { billingCountries } = useBillingCountries();
   const prevBillingRef = useRef({});
 
@@ -66,24 +78,48 @@ export default function BillingAddress({ isCompleted, onComplete, sameAsShipping
     setIsBillingCheck(allFilled);
   }, [watchedFields, setIsBillingCheck]);
 
-  if (sameAsShipping) {
-    return null; // ✅ Do not render anything if same as shipping
-  }
+  useEffect(() => {
+    if (checkBillingForAccordion != null) {
+      console.log("All required fields are filled.");
+      setCloseBilling(true);
+    } else {
+      console.log("Not all required fields are filled.");
+    }
+  }, [checkBillingForAccordion]);
+
+  // if (sameAsShipping) {
+  //   return null; // ✅ Do not render anything if same as shipping
+  // }
 
   const postalCodeValue = watch("postalcode");
 
   const selectedBillingCountry = watch("billingCountry"); // get current selected billing country ID
   // Get selected country object
-  const selectedCountryObj = (billingCountries || []).find((c) => c.id.toString() === selectedBillingCountry);
+  const selectedCountryObj = (billingCountries || []).find(
+    (c) => c.id.toString() === selectedBillingCountry
+  );
 
-  const allowedCountryNames = ["United Kingdom (Mainland)", "Channel Islands", "Northern Ireland"];
-  const isSearchAllowed = selectedCountryObj && allowedCountryNames.includes(selectedCountryObj.name);
+  const allowedCountryNames = [
+    "United Kingdom (Mainland)",
+    "Channel Islands",
+    "Northern Ireland",
+  ];
+  const isSearchAllowed =
+    selectedCountryObj && allowedCountryNames.includes(selectedCountryObj.name);
 
   useEffect(() => {
-    const selectedCountryObj = (billingCountries || []).find((c) => c.id.toString() === selectedBillingCountry);
+    const selectedCountryObj = (billingCountries || []).find(
+      (c) => c.id.toString() === selectedBillingCountry
+    );
 
-    const allowedCountryNames = ["United Kingdom (Mainland)", "Channel Islands", "Northern Ireland"];
-    const isAllowed = selectedCountryObj && allowedCountryNames.includes(selectedCountryObj.name);
+    const allowedCountryNames = [
+      "United Kingdom (Mainland)",
+      "Channel Islands",
+      "Northern Ireland",
+    ];
+    const isAllowed =
+      selectedCountryObj &&
+      allowedCountryNames.includes(selectedCountryObj.name);
 
     if (!isAllowed && selectedCountryObj) {
       // If country is selected BUT not allowed → clear billing
@@ -106,9 +142,13 @@ export default function BillingAddress({ isCompleted, onComplete, sameAsShipping
       setValue("city", shipping.city || "");
       setValue("state", shipping.state || "");
 
-      const country = billingCountries?.find((c) => c?.name === shipping?.country_name); // ✅ FIND BY NAME NOT ID
+      const country = billingCountries?.find(
+        (c) => c?.name === shipping?.country_name
+      ); // ✅ FIND BY NAME NOT ID
       if (country) {
-        setValue("billingCountry", country.id.toString(), { shouldValidate: true });
+        setValue("billingCountry", country.id.toString(), {
+          shouldValidate: true,
+        });
         setBillingIndex(country?.id?.toString());
       }
 
@@ -121,9 +161,13 @@ export default function BillingAddress({ isCompleted, onComplete, sameAsShipping
       setValue("city", billing.city || "");
       setValue("state", billing.state || "");
 
-      const country = billingCountries?.find((c) => c.name === billing.country_name);
+      const country = billingCountries?.find(
+        (c) => c.name === billing.country_name
+      );
       if (country) {
-        setValue("billingCountry", country?.id?.toString(), { shouldValidate: true });
+        setValue("billingCountry", country?.id?.toString(), {
+          shouldValidate: true,
+        });
         setBillingIndex(country?.id?.toString());
       }
 
@@ -163,7 +207,9 @@ export default function BillingAddress({ isCompleted, onComplete, sameAsShipping
     await new Promise((resolve) => setTimeout(resolve, 500));
     setShowLoader(false);
 
-    const selectedCountry = billingCountries?.find((c) => c?.id?.toString() === billingIndex);
+    const selectedCountry = billingCountries?.find(
+      (c) => c?.id?.toString() === billingIndex
+    );
 
     setBilling({
       id: selectedCountry?.id || "",
@@ -183,8 +229,9 @@ export default function BillingAddress({ isCompleted, onComplete, sameAsShipping
   useEffect(() => {
     const subscription = watch((values) => {
       const selectedCountry =
-        billingCountries?.find((c) => c?.id?.toString() === values.billingCountry) ||
-        billingCountries?.find((c) => c?.id?.toString() === billingIndex);
+        billingCountries?.find(
+          (c) => c?.id?.toString() === values.billingCountry
+        ) || billingCountries?.find((c) => c?.id?.toString() === billingIndex);
 
       const updatedBilling = {
         id: selectedCountry?.id || "",
@@ -199,7 +246,8 @@ export default function BillingAddress({ isCompleted, onComplete, sameAsShipping
       };
 
       const prev = prevBillingRef.current;
-      const hasChanged = JSON.stringify(prev) !== JSON.stringify(updatedBilling);
+      const hasChanged =
+        JSON.stringify(prev) !== JSON.stringify(updatedBilling);
 
       if (hasChanged) {
         prevBillingRef.current = updatedBilling;
@@ -216,7 +264,12 @@ export default function BillingAddress({ isCompleted, onComplete, sameAsShipping
 
   return (
     <SectionWrapper>
-      <SectionHeader stepNumber={<SlNote />} title="Billing Address" description="" isCompleted={isCompleted}>
+      <SectionHeader
+        stepNumber={<SlNote />}
+        title="Billing Address"
+        description=""
+        isCompleted={isCompleted}
+      >
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 mt-5">
           <Controller
             name="billingCountry"
@@ -242,7 +295,13 @@ export default function BillingAddress({ isCompleted, onComplete, sameAsShipping
           />
 
           <div className="relative">
-            <TextField label="Post code" name="postalcode"  register={register} required errors={errors} />
+            <TextField
+              label="Post code"
+              name="postalcode"
+              register={register}
+              required
+              errors={errors}
+            />
             {isSearchAllowed && (
               <button
                 type="button"
@@ -272,33 +331,66 @@ export default function BillingAddress({ isCompleted, onComplete, sameAsShipping
             )}
           </div>
 
-          {isSearchAllowed && postalCodeValue?.trim() && !addressSearchLoading && addressOptions.length > 0 && (
-            <MUISelectField
-              label="Select Your Address"
-              name="addressSelect"
-              value={selectedIndex}
-              required
-              onChange={(e) => {
-                const idx = e.target.value;
-                const selected = addressOptions[idx];
-                setSelectedIndex(idx);
+          {isSearchAllowed &&
+            postalCodeValue?.trim() &&
+            !addressSearchLoading &&
+            addressOptions.length > 0 && (
+              <MUISelectField
+                label="Select Your Address"
+                name="addressSelect"
+                value={selectedIndex}
+                required
+                onChange={(e) => {
+                  const idx = e.target.value;
+                  const selected = addressOptions[idx];
+                  setSelectedIndex(idx);
 
-                setValue("addressone", selected.line_1 || "", { shouldValidate: true });
-                setValue("addresstwo", selected.line_2 || "", { shouldValidate: true });
-                setValue("city", selected.town_or_city || "", { shouldValidate: true });
-                setValue("state", selected.county || "", { shouldValidate: true });
-              }}
-              options={addressOptions.map((addr, idx) => ({
-                value: idx,
-                label: addr.formatted_address.join(", "),
-              }))}
-            />
-          )}
+                  setValue("addressone", selected.line_1 || "", {
+                    shouldValidate: true,
+                  });
+                  setValue("addresstwo", selected.line_2 || "", {
+                    shouldValidate: true,
+                  });
+                  setValue("city", selected.town_or_city || "", {
+                    shouldValidate: true,
+                  });
+                  setValue("state", selected.county || "", {
+                    shouldValidate: true,
+                  });
+                }}
+                options={addressOptions.map((addr, idx) => ({
+                  value: idx,
+                  label: addr.formatted_address.join(", "),
+                }))}
+              />
+            )}
 
-          <TextField label="Address" name="addressone"  register={register} required errors={errors} />
-          <TextField label="Address 2" name="addresstwo" register={register} errors={errors} />
-          <TextField label="Town / City" name="city" required  register={register} errors={errors} />
-          <TextField label="State / County" name="state"  register={register} errors={errors} />
+          <TextField
+            label="Address"
+            name="addressone"
+            register={register}
+            required
+            errors={errors}
+          />
+          <TextField
+            label="Address 2"
+            name="addresstwo"
+            register={register}
+            errors={errors}
+          />
+          <TextField
+            label="Town / City"
+            name="city"
+            required
+            register={register}
+            errors={errors}
+          />
+          <TextField
+            label="State / County"
+            name="state"
+            register={register}
+            errors={errors}
+          />
 
           <NextButton label="Continue" disabled={!isValid} />
         </form>
