@@ -23,7 +23,7 @@ body {
   /* background: var(--background); */
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
-  background-color: #F2EEFF;
+  background-color: #f2eeff;
 }
 
 /* global css */
@@ -46,7 +46,6 @@ body {
   color: darkslategray;
 }
 
-
 .subHeading {
   line-height: 150%;
   font-weight: 300;
@@ -62,7 +61,7 @@ body {
 }
 
 .bg-secondary {
-  background-color: #4DB581;
+  background-color: #4db581;
 }
 
 .text-primary {
@@ -86,14 +85,14 @@ body {
 }
 
 .product-concent-list ol {
-    list-style: outside;
+  list-style: outside;
 }
 .concent-anchor a {
   color: rgb(0, 0, 238);
 }
 
 .product-concent-list li {
-    margin-bottom: 12px;
+  margin-bottom: 12px;
 }
 
 @media (max-width: 768px) {
@@ -111,7 +110,6 @@ body {
 
   .headingDashBoard {
     font-size: 1.6rem;
-
   }
 }
 
@@ -130,6 +128,406 @@ body {
 
   .headingDashBoard {
     font-size: 1.4rem;
+  }
+}
 
+@keyframes slide-fade {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.animate-slide-fade {
+  animation: slide-fade 0.4s ease-out forwards;
+}
+
+@keyframes pulseBounce {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.12) translateY(-6px);
+  }
+}
+
+.chat-float-anim {
+  animation: pulseBounce 2s infinite;
+}
+
+/* GLOBAL ANIMATION CLASSES */
+
+.anim-pulse-bounce {
+  animation: pulseBounce 2s infinite;
+}
+.anim-wiggle {
+  animation: wiggle 1s infinite;
+}
+.anim-pop {
+  animation: pop 0.3s ease-out;
+}
+.anim-swing {
+  animation: swing 1s infinite;
+}
+.anim-fade-slide-up {
+  animation: fadeSlideUp 0.6s ease forwards;
+}
+.anim-bounce-y {
+  animation: bounceY 1.2s infinite;
+}
+.anim-float {
+  animation: float 3s ease-in-out infinite;
+}
+.anim-shake {
+  animation: shake 0.6s infinite;
+}
+.anim-pulse-glow {
+  animation: pulseGlow 2s infinite;
+}
+.anim-zoom-in-out {
+  animation: zoomInOut 2s ease-in-out infinite;
+}
+.anim-drift {
+  animation: drift 2s ease-in-out infinite;
+}
+.anim-jump {
+  animation: jump 1.4s infinite;
+}
+.anim-flip {
+  animation: flip 1.5s linear infinite;
+}
+.anim-spin {
+  animation: spin 1s linear infinite;
+}
+.anim-rotate-pop {
+  animation: rotatePop 0.4s ease-in-out;
+}
+.anim-blink {
+  animation: blink 1.2s infinite;
+}
+.anim-wave {
+  animation: wave 3s ease-in-out infinite;
+}
+.anim-breathe {
+  animation: breathe 2s ease-in-out infinite;
+}
+.anim-drop-in {
+  animation: dropIn 0.5s ease forwards;
+}
+.anim-drop-up {
+  animation: dropUp 0.5s ease forwards;
+}
+.anim-fade-pop {
+  animation: fadePop 0.4s ease-in-out forwards;
+}
+
+.anim-flip-2 {
+  animation: flip2 10s ease-in-out infinite;
+}
+
+.anim-flip-3 {
+  animation: flipWithPause 13s ease-in-out infinite;
+}
+
+.anim-flip-wave {
+  animation: flipWaveCycle 13s ease-in-out infinite;
+  transform-origin: center;
+}
+/* KEYFRAMES */
+
+@keyframes flipWaveCycle {
+  0% {
+    transform: rotateY(0deg);
+  }
+
+  38.46% {
+    transform: rotateY(360deg);
+  }
+
+  /* Start waving after flip */
+  46% {
+    transform: rotateY(360deg) rotateZ(0deg);
+  }
+  50% {
+    transform: rotateY(360deg) rotateZ(5deg);
+  }
+  54% {
+    transform: rotateY(360deg) rotateZ(-5deg);
+  }
+  58% {
+    transform: rotateY(360deg) rotateZ(3deg);
+  }
+  62% {
+    transform: rotateY(360deg) rotateZ(0deg);
+  }
+
+  /* Hold position until end */
+  100% {
+    transform: rotateY(360deg) rotateZ(0deg);
+  }
+}
+
+@keyframes pulseBounce {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.12) translateY(-6px);
+  }
+}
+
+@keyframes wiggle {
+  0%,
+  100% {
+    transform: rotate(0deg);
+  }
+  25% {
+    transform: rotate(5deg);
+  }
+  75% {
+    transform: rotate(-5deg);
+  }
+}
+
+@keyframes pop {
+  0% {
+    transform: scale(0.8);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes swing {
+  0% {
+    transform: rotate(0deg);
+  }
+  25% {
+    transform: rotate(15deg);
+  }
+  50% {
+    transform: rotate(-10deg);
+  }
+  75% {
+    transform: rotate(5deg);
+  }
+  100% {
+    transform: rotate(0deg);
+  }
+}
+
+@keyframes fadeSlideUp {
+  0% {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes bounceY {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-12px);
+  }
+}
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-4px);
+  }
+}
+
+@keyframes shake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-5px);
+  }
+  75% {
+    transform: translateX(5px);
+  }
+}
+
+@keyframes pulseGlow {
+  0%,
+  100% {
+    box-shadow: 0 0 0 rgba(255, 255, 255, 0);
+  }
+  50% {
+    box-shadow: 0 0 15px rgba(138, 43, 226, 0.6);
+  }
+}
+
+@keyframes zoomInOut {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.2);
+  }
+}
+
+@keyframes drift {
+  0% {
+    transform: translate(0, 0);
+  }
+  50% {
+    transform: translate(3px, -3px);
+  }
+  100% {
+    transform: translate(0, 0);
+  }
+}
+
+@keyframes jump {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
+}
+
+@keyframes flip {
+  0% {
+    transform: rotateY(0);
+  }
+  100% {
+    transform: rotateY(360deg);
+  }
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes rotatePop {
+  0% {
+    transform: scale(0.9) rotate(-10deg);
+  }
+  100% {
+    transform: scale(1) rotate(0);
+  }
+}
+
+@keyframes blink {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.3;
+  }
+}
+
+@keyframes wave {
+  0% {
+    transform: rotate(0deg);
+  }
+  20% {
+    transform: rotate(15deg);
+  }
+  40% {
+    transform: rotate(-10deg);
+  }
+  60% {
+    transform: rotate(15deg);
+  }
+  80% {
+    transform: rotate(-5deg);
+  }
+  100% {
+    transform: rotate(0deg);
+  }
+}
+
+@keyframes breathe {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}
+
+@keyframes dropIn {
+  0% {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes dropUp {
+  0% {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes fadePop {
+  0% {
+    opacity: 0;
+    transform: scale(0.5);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes flip2 {
+  0% {
+    transform: rotateY(0deg);
+  }
+  100% {
+    transform: rotateY(360deg);
+  }
+}
+
+@keyframes flipWithPause {
+  0% {
+    transform: rotateY(0deg);
+  }
+  38.46% {
+    /* 5s of 13s ≈ 38.46% */
+    transform: rotateY(360deg);
+  }
+  100% {
+    transform: rotateY(360deg); /* Hold */
   }
 }

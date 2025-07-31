@@ -286,6 +286,7 @@ export default function ChatComponent({ closeBtn, isWidgetOpen }) {
   const [inputMsg, setInputMsg] = useState("");
   const [isHumanTalk, setIsHumanTalk] = useState(false);
   const [conversationId, setConversationId] = useState(null);
+  const [feedbackConversationId, setFeedbackConversationId] = useState(null);
   const [agentId, setAgentId] = useState(null);
   const [loading, setLoading] = useState(false);
   const [showWelcome, setShowWelcome] = useState(true);
@@ -294,6 +295,7 @@ export default function ChatComponent({ closeBtn, isWidgetOpen }) {
   const [showUserSettings, setShowUserSettings] = useState(false);
   // const [isOpen, setIsOpen] = useState(false);
   const [isOpen, setIsOpen] = useState(isWidgetOpen ?? false);
+  const [visible, setVisible] = useState(false);
   const [msgToBoth, setMsgToBoth] = useState(false);
   const [isLoadingGlobal, setIsLoadingGlobal] = useState(false);
   // const [isTabActive, setIsTabActive] = useState(true);
@@ -322,7 +324,7 @@ export default function ChatComponent({ closeBtn, isWidgetOpen }) {
 
   // Your actual chat end logic here
   const performChatEnd = () => {
-    console.log("🔚 Chat officially ended.");
+    // console.log("🔚 Chat officially ended.");
     // You can run API call or emit socket event here
     setRating(0);
     setHover(0);
@@ -336,26 +338,23 @@ export default function ChatComponent({ closeBtn, isWidgetOpen }) {
     setShowFeedback(true);
   };
 
-  const handleFeedbackSubmit = () => {
-    if (rating > 0) {
-      // You could send to API here
-      console.log("📩 Feedback submitted:", { rating, review });
-      setSubmitted(true);
-
-      setTimeout(() => {
-        setThanked(true);
-        performChatEnd();
-      }, 1500);
-    }
-  };
-
   const handleSkip = () => {
     setSubmitted(true);
     setTimeout(() => {
-      setThanked(true);
       performChatEnd();
     }, 3000);
   };
+
+  const maxChars = 200;
+  const isLimitReached = review.length >= maxChars;
+  const starLabels = [
+    "😡 Terrible",
+    "😞 Bad",
+    "🙂 Okay",
+    "😊 Good",
+    "🤩 Excellent",
+  ];
+
   //feedback end
 
   const [messages, setMessages] = useState([]);
@@ -393,9 +392,10 @@ export default function ChatComponent({ closeBtn, isWidgetOpen }) {
       };
       setChatHistory((prev) => [...prev, botMsgHumanTalk]);
       const data = await response.json();
-      console.log("New Conversation Created:", data);
+      // console.log("New Conversation Created:", data);
       setConversationId(data?.id);
-      console.log("conversationId", conversationId);
+      setFeedbackConversationId(data?.id);
+      // console.log("conversationId", conversationId);
 
       let chatUser = getLocal("chat_user", {});
       chatUser.isHumanTalk = true;
@@ -427,6 +427,7 @@ export default function ChatComponent({ closeBtn, isWidgetOpen }) {
 
     setIsHumanTalk(!!chatUser.isHumanTalk);
     setConversationId(chatUser.conversationId);
+    setFeedbackConversationId(chatUser.conversationId);
   }, []);
 
   const sendMessage = async () => {
@@ -461,7 +462,7 @@ export default function ChatComponent({ closeBtn, isWidgetOpen }) {
 
     const chatUser = JSON.parse(localStorage.getItem("chat_user") || "{}");
     let chatAgentId = chatUser.agent_id || agentId;
-    console.log("chatAgentId", chatAgentId);
+    // console.log("chatAgentId", chatAgentId);
 
     // If agent_id not found, try to fetch it
     if (!chatAgentId) {
@@ -479,7 +480,7 @@ export default function ChatComponent({ closeBtn, isWidgetOpen }) {
       const res = await fetch(`${app_url}/get-agent-id/${conversationId}`);
       const data = await res.json();
 
-      console.log("Agent ID fetched:", data.agent_id);
+      // console.log("Agent ID fetched:", data.agent_id);
       if (
         data.agent_id !== null &&
         data.agent_id !== "" &&
@@ -487,7 +488,7 @@ export default function ChatComponent({ closeBtn, isWidgetOpen }) {
       ) {
         setAgentId(data.agent_id);
       }
-      console.log("Agent ID set:", agentId);
+      // console.log("Agent ID set:", agentId);
 
       if (data.agent_id) {
         const existingUser = JSON.parse(
@@ -509,7 +510,7 @@ export default function ChatComponent({ closeBtn, isWidgetOpen }) {
         }
       }
     } catch (error) {
-      console.error("Error fetching agent ID:", error);
+      // console.error("Error fetching agent ID:", error);
     }
   };
 
@@ -529,7 +530,7 @@ export default function ChatComponent({ closeBtn, isWidgetOpen }) {
 
   const deleteChatHistory = async ({ agent_Id, userId }) => {
     if (!agent_Id || !userId) {
-      console.error("Missing agent_Id or userId for deleting chat history.");
+      // console.error("Missing agent_Id or userId for deleting chat history.");
       return;
     }
 
@@ -551,10 +552,10 @@ export default function ChatComponent({ closeBtn, isWidgetOpen }) {
       }
 
       const data = await response.json();
-      console.log("🗑️ Deleted history:", data);
+      // console.log("🗑️ Deleted history:", data);
       return data;
     } catch (error) {
-      console.error("❌ Failed to delete history:", error);
+      // console.error("❌ Failed to delete history:", error);
       throw error;
     }
   };
@@ -589,7 +590,7 @@ export default function ChatComponent({ closeBtn, isWidgetOpen }) {
     } finally {
       setLoading(false);
     }
-    console.log("messages", messages);
+    // console.log("messages", messages);
   }
 
   function useSmartPolling({
@@ -707,7 +708,7 @@ export default function ChatComponent({ closeBtn, isWidgetOpen }) {
     // 2. Optional: wait for document to be ready (client-side only)
     if (typeof window === "undefined") return;
 
-    console.log("🟢 Initializing Echo...");
+    // console.log("🟢 Initializing Echo...");
     window.Pusher = Pusher;
     Pusher.logToConsole = true; // Optional: enable for debugging
 
@@ -745,7 +746,7 @@ export default function ChatComponent({ closeBtn, isWidgetOpen }) {
         setTimeout(() => {
           setShowFeedback(true);
         }, 200);
-        console.log("The chat has been ended", conversationId, isHumanTalk);
+        // console.log("The chat has been ended", conversationId, isHumanTalk);
       }
       // console.log("e.message", e.message);
       if (bottomRef.current) {
@@ -768,7 +769,7 @@ export default function ChatComponent({ closeBtn, isWidgetOpen }) {
     // 2. Optional: wait for document to be ready (client-side only)
     if (typeof window === "undefined") return;
 
-    console.log("🟢 Initializing Echo...");
+    // console.log("🟢 Initializing Echo...");
 
     window.Pusher = Pusher;
     Pusher.logToConsole = true; // Optional: enable for debugging
@@ -845,7 +846,7 @@ export default function ChatComponent({ closeBtn, isWidgetOpen }) {
           }
 
           const data = await res.json();
-          console.log("✅ Online status updated:", data);
+          // console.log("✅ Online status updated:", data);
         } catch (err) {
           // console.error("🔴 Failed to update online status: ", err);
         }
@@ -853,7 +854,7 @@ export default function ChatComponent({ closeBtn, isWidgetOpen }) {
 
       updateStatus();
     }
-    console.log("isTabActive", isTabActive);
+    // console.log("isTabActive", isTabActive);
   }, [isTabActive]);
 
   useEffect(() => {
@@ -864,7 +865,7 @@ export default function ChatComponent({ closeBtn, isWidgetOpen }) {
       // 2. Optional: wait for document to be ready (client-side only)
       if (typeof window === "undefined") return;
 
-      console.log("🟢 Initializing Echo...");
+      // console.log("🟢 Initializing Echo...");
 
       window.Pusher = Pusher;
       Pusher.logToConsole = true; // Optional: enable for debugging
@@ -885,7 +886,7 @@ export default function ChatComponent({ closeBtn, isWidgetOpen }) {
       });
 
       echo.private("user-status").listen("UserOnlineStatusUpdated", (data) => {
-        console.log("🟢 Status changed:", data);
+        // console.log("🟢 Status changed:", data);
       });
 
       return () => echo.leave("user-status");
@@ -896,10 +897,10 @@ export default function ChatComponent({ closeBtn, isWidgetOpen }) {
   //chat history
   const sendHistory = async (conversationId, chatAgentId, chatHistory) => {
     if (!conversationId || !chatAgentId || !chatHistory) {
-      console.log("❌ Missing parameters");
+      // console.log("❌ Missing parameters");
       return;
     }
-    console.log("Sending chat history");
+    // console.log("Sending chat history");
     try {
       const response = await fetch(`${app_url}/send-history`, {
         method: "POST",
@@ -915,10 +916,10 @@ export default function ChatComponent({ closeBtn, isWidgetOpen }) {
       });
 
       const data = await response.json();
-      console.log("✅ Chat history sent successfully:", data);
+      // console.log("✅ Chat history sent successfully:", data);
       return data;
     } catch (error) {
-      console.error("❌ Failed to send chat history:", error);
+      // console.error("❌ Failed to send chat history:", error);
       throw error;
     }
   };
@@ -930,7 +931,7 @@ export default function ChatComponent({ closeBtn, isWidgetOpen }) {
     // 2. Optional: wait for document to be ready (client-side only)
     if (typeof window === "undefined") return;
 
-    console.log("🟢 Initializing Echo...");
+    // console.log("🟢 Initializing Echo...");
 
     window.Pusher = Pusher;
     Pusher.logToConsole = true; // Optional: enable for debugging
@@ -952,8 +953,8 @@ export default function ChatComponent({ closeBtn, isWidgetOpen }) {
     const channel = echo.channel(`user-panel.${userId}`);
 
     channel.listen(".RequestChatHistory", async (e) => {
-      console.log("📦 History requested:", e);
-      console.log("messages", messages);
+      // console.log("📦 History requested:", e);
+      // console.log("messages", messages);
       // read chat history from localStorage
 
       const chatHistory = JSON.parse(
@@ -962,7 +963,7 @@ export default function ChatComponent({ closeBtn, isWidgetOpen }) {
 
       const chatUser = JSON.parse(localStorage.getItem("chat_user") || "{}");
       const chatAgentId = chatUser.agent_id || agentId;
-      console.log("chatAgentId", chatAgentId);
+      // console.log("chatAgentId", chatAgentId);
 
       // If agent_id not found, try to fetch it
       if (!chatAgentId) {
@@ -1764,6 +1765,7 @@ export default function ChatComponent({ closeBtn, isWidgetOpen }) {
 
   const handleEndChat = async (id) => {
     setLoading(true);
+    setFeedbackConversationId(conversationId);
     try {
       const response = await fetch(app_url + "/end-chat", {
         method: "POST",
@@ -2001,7 +2003,7 @@ export default function ChatComponent({ closeBtn, isWidgetOpen }) {
         setTimeout(() => {
           setOrderIdStatus("");
           setStatus("");
-          console.log("Order ID status reset");
+          // console.log("Order ID status reset");
         }, 5000);
       }
     };
@@ -2159,6 +2161,39 @@ export default function ChatComponent({ closeBtn, isWidgetOpen }) {
     }
   }
 
+  const handleFeedbackSubmit = async () => {
+    if (rating > 0) {
+      try {
+        await fetch(app_url + "/chat-feedback", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+            // If authenticated, include Authorization token
+          },
+          body: JSON.stringify({
+            chat_conversation_id: feedbackConversationId, // You must provide this
+            rating,
+            review,
+          }),
+        });
+
+        // console.log("📩 Feedback submitted:", { rating, review });
+
+        setSubmitted(true);
+        setTimeout(() => {
+          setThanked(true);
+        }, 0);
+
+        setTimeout(() => {
+          performChatEnd();
+        }, 2000);
+      } catch (error) {
+        // console.error("Feedback submission failed:", error);
+      }
+    }
+  };
+
   // UI
   return (
     <div
@@ -2180,12 +2215,12 @@ export default function ChatComponent({ closeBtn, isWidgetOpen }) {
               setIsMaximized(true);
             }
           }}
-          className="fixed flex items-center justify-center text-white rounded-full shadow-lg z-999 bottom-4 right-4 w-14 h-14 bg-violet-600 hover:bg-violet-700"
+          className="fixed flex items-center justify-center text-white rounded-full shadow-lg z-999 bottom-4 right-4 w-14 h-14 bg-violet-600 hover:bg-violet-700 anim-float"
           aria-label="Open Chat"
         >
           {/* <FiMessageCircle size={28} /> */}
           {/* <BsChatDots size={28} /> */}
-          <IoChatbubbles size={28} />
+          <IoChatbubbles size={28} className="anim-flip-wave" />
         </button>
       )}
 
@@ -2205,7 +2240,9 @@ export default function ChatComponent({ closeBtn, isWidgetOpen }) {
         //       : "bg-black"
         //   }
         <div
-          className={`fixed z-999 border scrollbar-hide border-gray-300 shadow-lg shadow-gray-500 flex flex-col transition-all font-sans ease-in-out duration-300 overflow-hidden ${getResponsiveClass()} ${
+          className={`fixed z-999 border scrollbar-hide border-gray-300 shadow-lg shadow-gray-500 flex flex-col transition-all font-sans ease-in-out duration-300 overflow-hidden ${
+            isOpen ? "anim-drop-up" : "anim-drop-in translate-y-[110%]"
+          } ${visible ? "translate-y-[110%]" : ""} ${getResponsiveClass()} ${
             window.innerWidth <= cb.sm
               ? ""
               : divWidth <= cb.sm
@@ -2357,7 +2394,13 @@ export default function ChatComponent({ closeBtn, isWidgetOpen }) {
                           </button>
                         )}
                         <button
-                          onClick={() => setIsOpen(false)}
+                          onClick={() =>
+                            setVisible(true) || // play drop-in animation
+                            setTimeout(() => {
+                              setIsOpen(false);
+                              setVisible(false); // hide after animation
+                            }, 200)
+                          }
                           className={`px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm text-gray-400 border bg-gray-50 hover:border-gray-200 border-gray-50 rounded-lg flex items-center gap-1`}
                           aria-label="Close"
                           disabled={closeBtn}
@@ -2396,7 +2439,13 @@ export default function ChatComponent({ closeBtn, isWidgetOpen }) {
                           </button>
                         )}
                         <button
-                          onClick={() => setIsOpen(false)}
+                          onClick={() =>
+                            setVisible(true) || // play drop-in animation
+                            setTimeout(() => {
+                              setIsOpen(false);
+                              setVisible(false); // hide after animation
+                            }, 200)
+                          }
                           className={`px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm text-gray-400 border bg-gray-50 hover:border-gray-200 border-gray-50 rounded-lg flex items-center gap-1`}
                           aria-label="Close"
                           disabled={closeBtn}
@@ -2422,19 +2471,25 @@ export default function ChatComponent({ closeBtn, isWidgetOpen }) {
               {/* ✅ Feedback UI */}
               {showFeedback && !submitted && (
                 <div className="absolute top-0 left-0 flex items-center flex-1 w-full h-full px-4 pb-50 bg-opacity-80 backdrop-blur-sm z-99999">
-                  <div className="w-full max-w-md p-6 mx-auto bg-white border border-gray-200 shadow-md max-h-fit rounded-xl">
-                    <h3 className="mb-4 text-lg font-semibold text-center">
-                      🤔 How was your chat experience?
-                    </h3>
+                  <div className="w-full max-w-md p-6 mx-auto bg-white border border-gray-200 shadow-md max-h-fit rounded-xl animate-slide-fade">
+                    <div className="flex items-baseline justify-center gap-1">
+                      <p className="transition-transform scale-110 cursor-default hover:scale-120 hover:rotate-3">
+                        🤔
+                      </p>
+                      <h3 className="mb-4 text-lg font-semibold text-center text-gray-700">
+                        How was your chat experience?
+                      </h3>
+                    </div>
 
-                    <div className="flex justify-center gap-1 mb-4">
+                    <div className="flex justify-center gap-1 mb-6">
                       {[1, 2, 3, 4, 5].map((star) => (
                         <button
                           key={star}
                           onClick={() => setRating(star)}
                           onMouseEnter={() => setHover(star)}
                           onMouseLeave={() => setHover(0)}
-                          className="text-2xl transition"
+                          className="relative text-2xl transition-transform group hover:scale-105 hover:rotate-0"
+                          // title={starLabels[star - 1]} // basic native tooltip
                         >
                           <span
                             className={
@@ -2445,25 +2500,71 @@ export default function ChatComponent({ closeBtn, isWidgetOpen }) {
                           >
                             ★
                           </span>
+
+                          {/* Optional custom tooltip below */}
+                          <div className="absolute px-2 py-1 text-xs text-white transition -translate-x-1/2 rounded opacity-0 pointer-events-none bg-violet-700 -top-4 left-1/2 group-hover:opacity-100 whitespace-nowrap">
+                            {starLabels[star - 1]}
+                          </div>
                         </button>
                       ))}
                     </div>
 
                     <textarea
-                      className="w-full p-3 text-sm border border-gray-200 rounded-lg resize-none focus:outline-none focus:ring-1 focus:ring-violet-500"
+                      className={`w-full p-3 text-sm border rounded-lg resize-none focus:outline-none focus:ring-1 ${
+                        isLimitReached
+                          ? " bg-red-50 focus:ring-red-50"
+                          : "focus:ring-violet-500"
+                      } ${
+                        isLimitReached ? "border-red-200" : "border-gray-200"
+                      }`}
                       rows={3}
+                      maxLength={maxChars}
                       placeholder="Leave a comment (optional)..."
                       value={review}
-                      onChange={(e) => setReview(e.target.value)}
+                      onChange={(e) =>
+                        setReview(e.target.value.slice(0, maxChars))
+                      }
                     ></textarea>
+
+                    <div className="w-full h-[1.5px] mb-1 bg-gray-200 rounded-full">
+                      <div
+                        className={`h-full transition-all rounded-full  ${
+                          isLimitReached ? "bg-red-600" : "bg-violet-600"
+                        }`}
+                        style={{
+                          width: `${Math.min(review.length / 2, 100)}%`,
+                        }}
+                      ></div>
+                    </div>
+
+                    <div className="flex justify-between">
+                      <p
+                        className={`text-xs text-left cursor-default ${
+                          isLimitReached ? "text-red-500" : "text-gray-400"
+                        }`}
+                      >
+                        {review.length}/{maxChars}
+                      </p>
+
+                      <div className="flex justify-between gap-1">
+                        {review.length > 180 && !isLimitReached && (
+                          <p className="text-xs text-yellow-600 cursor-default">
+                            Almost at the limit
+                          </p>
+                        )}
+                        <div className="text-xs text-left text-gray-400 cursor-default">
+                          {starLabels[rating - 1]}
+                        </div>
+                      </div>
+                    </div>
 
                     <div className="flex justify-end gap-2 mt-4">
                       <button
                         onClick={handleFeedbackSubmit}
-                        className={`bg-violet-600 hover:bg-violet-700 text-white px-4 py-2 rounded-lg text-sm ${
-                          rating === 0 ? "opacity-50 cursor-not-allowed" : ""
+                        className={`bg-violet-600 hover:bg-violet-700 text-white px-4 py-2 rounded-lg text-sm disabled:bg-gray-300 ${
+                          rating === 0 ? "cursor-not-allowed" : ""
                         }`}
-                        disabled={rating === 0}
+                        disabled={rating === 0 || isLimitReached || loading}
                       >
                         Submit
                       </button>
@@ -2479,7 +2580,7 @@ export default function ChatComponent({ closeBtn, isWidgetOpen }) {
               )}
 
               {/* ✅ Thank you message */}
-              {submitted && !thanked && (
+              {submitted && thanked && (
                 <div className="absolute left-0 flex items-center justify-center flex-1 w-full px-4 top-16 z-99999">
                   <div className="p-6 mx-4 mt-6 text-center transition-all ease-in-out border border-gray-200 shadow-xl bg-green-50 rounded-xl">
                     <h3 className="mb-2 text-lg font-semibold">
@@ -3350,7 +3451,7 @@ export default function ChatComponent({ closeBtn, isWidgetOpen }) {
         </div>
       )}
 
-      {!isOpen && (
+      {/* {!isOpen && (
         <button
           className="fixed z-50 flex items-center justify-center text-white rounded-full shadow-lg bottom-4 right-4 w-14 h-14 bg-violet-600 hover:bg-violet-700"
           onClick={() => setIsOpen(true)}
@@ -3358,7 +3459,7 @@ export default function ChatComponent({ closeBtn, isWidgetOpen }) {
         >
           <FiMessageCircle size={28} />
         </button>
-      )}
+      )} */}
     </div>
   );
 }
