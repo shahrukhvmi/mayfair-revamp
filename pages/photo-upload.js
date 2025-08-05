@@ -72,7 +72,7 @@ const PhotoUpload = () => {
             await ImageUplaodApi(payload);
 
             toast.success("Photos uploaded successfully!");
-            GO.push("/dashboard");
+            GO.push("/dashboard/");
         } catch (error) {
             console.error("Upload error:", error);
             toast.error("Failed to upload images. Please try again.");

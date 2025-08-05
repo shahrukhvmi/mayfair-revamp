@@ -35,12 +35,12 @@ import UploadTopPrompt from "@/Components/UploadTopPrompt/UploadTopPrompt";
 import useReorder from "@/store/useReorderStore";
 import useCartStore from "@/store/useCartStore";
 import useImageUploadStore from "@/store/useImageUploadStore ";
+import GetImageIsUplaod from "@/api/GetImageIsUplaod";
 
 const StepsHeader = ({ isOpen, toggleSidebar }) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const { showLoginModal, closeLoginModal, openLoginModal } =
     useLoginModalStore();
-  const { imageUploaded } = useImageUploadStore();
 
   const [showLoader, setShowLoader] = useState(false);
   const { orderId } = useCartStore();
@@ -195,13 +195,29 @@ const StepsHeader = ({ isOpen, toggleSidebar }) => {
   console.log(reorder, "reorderreorder")
 
 
+  const { imageUploaded, setImageUploaded } = useImageUploadStore();
+  useEffect(() => {
+    const fetchImageStatus = async () => {
+      try {
+        const res = await GetImageIsUplaod({ reorder });
+        console.log("Image Upload Response", res);
+        setImageUploaded(res?.data?.status);
+      } catch (error) {
+        console.error("Failed to fetch image status:", error);
+      }
+    };
+
+    fetchImageStatus();
+  }, [reorder]);
 
 
-  console.log(imageUploaded, "imageUploaded")
   return (
     <>
+      {
+        !imageUploaded &&
 
-      {specialRoutes.includes(pathname) && !imageUploaded && <UploadTopPrompt />}
+        specialRoutes.includes(pathname) && !imageUploaded && <UploadTopPrompt />
+      }
 
 
 
