@@ -1,16 +1,42 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { HiBadgeCheck } from "react-icons/hi";
-import FormWrapper from "../FormWrapper/FormWrapper";
 import NextButton from "../NextButton/NextButton";
 import useCartStore from "@/store/useCartStore";
+import useReorder from "@/store/useReorderStore";
+import GetImageIsUplaod from "@/api/GetImageIsUplaod";
+import useImageUploadStore from "@/store/useImageUploadStore ";
 
 const ThankYou = () => {
-  const GO = useRouter();
   const { items, orderId, checkOut } = useCartStore();
+  const GO = useRouter();
+const { imageUploaded, setImageUploaded } = useImageUploadStore();
+  useEffect(() => {
+    const fetchImageStatus = async () => {
+      try {
+        const res = await GetImageIsUplaod({ order_id: orderId });
+        console.log("Image Upload Response", res);
 
+        setImageUploaded(res?.data?.status);
+        console.log(res,"Image Upload Status");
+      } catch (error) {
+        console.error("Failed to fetch image status:", error);
+      }
+    };
+
+    if (orderId) fetchImageStatus();
+  }, [orderId]);
+
+  console.log(imageUploaded, "imageUpldsdsdsdsdoaded")
   const handleGoBack = () => {
-    GO.push("/dashboard");
+    if ( !imageUploaded) {
+
+      GO.push("/photo-upload");
+
+    } else {
+
+      GO.push("/dashboard");
+    }
   };
   console.log(checkOut, "checkOut");
   return (

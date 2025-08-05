@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FiMenu, FiX } from "react-icons/fi";
 import ApplicationLogo from "@/config/ApplicationLogo";
 import ApplicationUser from "@/config/ApplicationUser";
@@ -31,14 +31,19 @@ import useLastBmi from "@/store/useLastBmiStore";
 import useUserDataStore from "@/store/userDataStore";
 import useImpersonate from "@/store/useImpersonateStore";
 import useReturning from "@/store/useReturningPatient";
+import UploadTopPrompt from "@/Components/UploadTopPrompt/UploadTopPrompt";
+import useReorder from "@/store/useReorderStore";
+import useCartStore from "@/store/useCartStore";
+import useImageUploadStore from "@/store/useImageUploadStore ";
 
 const StepsHeader = ({ isOpen, toggleSidebar }) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const { showLoginModal, closeLoginModal, openLoginModal } =
     useLoginModalStore();
+  const { imageUploaded } = useImageUploadStore();
 
   const [showLoader, setShowLoader] = useState(false);
-
+  const { orderId } = useCartStore();
   const { clearBmi } = useBmiStore();
   const { clearCheckout } = useCheckoutStore();
   const { clearConfirmationInfo } = useConfirmationInfoStore();
@@ -58,6 +63,8 @@ const StepsHeader = ({ isOpen, toggleSidebar }) => {
   const { clearUserData } = useUserDataStore();
   const { setIsReturningPatient } = useReturning();
   const { impersonate, setImpersonate } = useImpersonate();
+  const { reorder } = useReorder();
+
   const {
     firstName,
     setFirstName,
@@ -182,10 +189,23 @@ const StepsHeader = ({ isOpen, toggleSidebar }) => {
     "/profile/",
   ];
 
-  const redirectTo = specialRoutes.includes(pathname) ? "/dashboard" : "/";
 
+
+  const redirectTo = specialRoutes.includes(pathname) ? "/dashboard" : "/";
+  console.log(reorder, "reorderreorder")
+
+
+
+
+  console.log(imageUploaded, "imageUploaded")
   return (
     <>
+
+      {specialRoutes.includes(pathname) && !imageUploaded && <UploadTopPrompt />}
+
+
+
+
       {impersonate && (
         <div className="bg-gray-100">
           <div className="bg-red-500 text-white text-center p-2 flex flex-col sm:flex-row justify-center items-center gap-2 text-sm sm:text-base reg-font">
@@ -227,7 +247,7 @@ const StepsHeader = ({ isOpen, toggleSidebar }) => {
           </div>
         </div>
       )}
-      <header className="bg-white w-full py-2 sm:px-14 px-4">
+      <header className="bg-white w-full py-2 sm:px-14 px-4 relative">
         <div className="sm:px-6 lg:px-6 flex items-center justify-between py-2">
           {/* Hamburger (Mobile) */}
           {validPathDashboard && (
