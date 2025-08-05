@@ -3,7 +3,7 @@ import React from 'react'
 
 const UploadTopPrompt = () => {
     return (
-        <div className="bg-violet-500 text-white py-2 px-4 sm:px-6 shadow-md w-full">
+        <div className="bg-red-400 text-white py-1 px-4 sm:px-6 shadow-md w-full">
             <div className="flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-3 text-sm sm:text-base reg-font text-center">
                 <div className="flex items-center gap-2">
                     <svg
