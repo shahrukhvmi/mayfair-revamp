@@ -3,8 +3,8 @@ import React from 'react'
 
 const UploadTopPrompt = () => {
     return (
-        <div className="bg-red-400 text-white py-1 px-4 sm:px-6 shadow-md w-full">
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-3 text-sm sm:text-base reg-font text-center">
+        <div className="bg-red-400 text-white py-2 px-4 sm:px-6 shadow-md w-full">
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-3 text-sm  reg-font text-center">
                 <div className="flex items-center gap-2">
                     <svg
                         stroke="currentColor"
@@ -21,7 +21,7 @@ const UploadTopPrompt = () => {
                     </svg>
                     <span className='reg-font'>
                        Image required to proceed.{' '}
-                        <Link href="/photo-upload" className="text-white underline hover:text-blue-200 transition niba-bold-font">
+                        <Link href="/photo-upload" className="text-white underline hover:text-blue-200 transition reg-font">
                             Click here to upload
                         </Link>
                     </span>

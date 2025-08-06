@@ -6,37 +6,42 @@ import useCartStore from "@/store/useCartStore";
 import useReorder from "@/store/useReorderStore";
 import GetImageIsUplaod from "@/api/GetImageIsUplaod";
 import useImageUploadStore from "@/store/useImageUploadStore ";
+import BackButton from "../BackButton/BackButton";
 
 const ThankYou = () => {
   const { items, orderId, checkOut } = useCartStore();
   const GO = useRouter();
-const { imageUploaded, setImageUploaded } = useImageUploadStore();
-  useEffect(() => {
-    const fetchImageStatus = async () => {
-      try {
-        const res = await GetImageIsUplaod({ order_id: orderId });
-        console.log("Image Upload Response", res);
+  // const { imageUploaded, setImageUploaded } = useImageUploadStore();
+  // useEffect(() => {
+  //   const fetchImageStatus = async () => {
+  //     try {
+  //       const res = await GetImageIsUplaod({ order_id: orderId });
+  //       console.log("Image Upload Response", res);
 
-        setImageUploaded(res?.data?.status);
-        console.log(res,"Image Upload Status");
-      } catch (error) {
-        console.error("Failed to fetch image status:", error);
-      }
-    };
+  //       setImageUploaded(res?.data?.status);
+  //       console.log(res, "Image Upload Status");
+  //     } catch (error) {
+  //       console.error("Failed to fetch image status:", error);
+  //     }
+  //   };
 
-    if (orderId) fetchImageStatus();
-  }, [orderId]);
+  //   if (orderId) fetchImageStatus();
+  // }, [orderId]);
 
-  console.log(imageUploaded, "imageUpldsdsdsdsdoaded")
+
   const handleGoBack = () => {
-    if ( !imageUploaded) {
+    // if ( !imageUploaded) {
 
-      GO.push("/photo-upload");
+    //   GO.push("/photo-upload");
 
-    } else {
+    // } else {
 
-      GO.push("/dashboard");
-    }
+    GO.push("/dashboard");
+    // }
+  };
+
+  const handleGoUpload = () => {
+    GO.push("/photo-upload");
   };
   console.log(checkOut, "checkOut");
   return (
@@ -176,6 +181,11 @@ const { imageUploaded, setImageUploaded } = useImageUploadStore();
             <NextButton
               onClick={handleGoBack}
               label="Continue to View Order Details"
+            />
+            <BackButton
+              onClick={handleGoUpload}
+              label="Click here to Photo Upload"
+              className="mt-4"
             />
           </div>
         </div>
