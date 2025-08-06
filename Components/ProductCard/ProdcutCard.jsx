@@ -70,8 +70,8 @@ const ProductCard = ({ id, title, image, price, status, buttonText, lastOrderDat
         setCheckBillingForAccordion(data?.data?.data?.billing);
         setAuthUserDetail(data?.data?.data?.auth_user);
         setLastBmi(data?.data?.data?.bmi);
-        setFirstName(data?.data?.data?.patientInfo?.firstName);
-        setLastName(data?.data?.data?.patientInfo?.lastName);
+        setFirstName(data?.data?.data?.auth_user?.fname);
+        setLastName(data?.data?.data?.auth_user?.lname);
         setIsReturningPatient(data?.data?.data?.isReturning);
       }
 
