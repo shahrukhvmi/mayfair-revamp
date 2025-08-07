@@ -347,13 +347,14 @@ export default function ChatComponent({ closeBtn, isWidgetOpen }) {
 
   const maxChars = 200;
   const isLimitReached = review.length >= maxChars;
-  const starLabels = [
-    "😡 Terrible",
-    "😞 Bad",
-    "🙂 Okay",
-    "😊 Good",
-    "🤩 Excellent",
-  ];
+  // const starLabels = [
+  //   "😡 Terrible",
+  //   "😞 Bad",
+  //   "🙂 Okay",
+  //   "😊 Good",
+  //   "🤩 Excellent",
+  // ];
+  const starLabels = ["😞", "😐", "🙂", "😀", "😍"];
 
   //feedback end
 
@@ -2387,9 +2388,9 @@ export default function ChatComponent({ closeBtn, isWidgetOpen }) {
                           >
                             {/* {isMaximized ? "🗕" : "🗖"} */}
                             {isMaximized ? (
-                              <FiMaximize2 size={20} />
-                            ) : (
                               <FiMinimize2 size={20} />
+                            ) : (
+                              <FiMaximize2 size={20} />
                             )}
                           </button>
                         )}
@@ -2432,9 +2433,9 @@ export default function ChatComponent({ closeBtn, isWidgetOpen }) {
                           >
                             {/* {isMaximized ? "🗕" : "🗖"} */}
                             {isMaximized ? (
-                              <FiMaximize2 size={20} />
-                            ) : (
                               <FiMinimize2 size={20} />
+                            ) : (
+                              <FiMaximize2 size={20} />
                             )}
                           </button>
                         )}
@@ -3246,7 +3247,7 @@ export default function ChatComponent({ closeBtn, isWidgetOpen }) {
                                   </div>
                                 )}
                                 <div
-                                  className={`bg-violet-100 text-gray-700 shadow-sm px-4 py-2 mt-1 rounded-xl ${
+                                  className={`bg-violet-100 text-gray-700 anim-drop-right border border-violet-200 shadow-inner px-4 py-2 mt-1 rounded-xl rounded-br-none text-shadow-sm text-shadow-gray-100 ${
                                     divWidth <= cb.sm
                                       ? "max-w-[95%]"
                                       : "max-w-[80%]"
@@ -3276,7 +3277,7 @@ export default function ChatComponent({ closeBtn, isWidgetOpen }) {
                                 className="flex justify-start w-full"
                               >
                                 <div
-                                  className={`bg-gray-200 text-gray-800 px-4 py-2 rounded-xl ${
+                                  className={`bg-gray-200 text-gray-800 anim-drop-left px-4 py-2 shadow-inner rounded-xl rounded-bl-none text-shadow-sm text-shadow-gray-100 border border-gray-300 ${
                                     divWidth <= cb.sm
                                       ? "max-w-[95%]"
                                       : "max-w-[80%]"
@@ -3295,10 +3296,10 @@ export default function ChatComponent({ closeBtn, isWidgetOpen }) {
                                 } w-full mb-2`}
                               >
                                 <div
-                                  className={`rounded-xl px-4 py-2 max-w-[80%] min-w-[5%] shadow-sm ${
+                                  className={`rounded-xl px-4 py-2 max-w-[80%] min-w-[5%] anim-drop-left shadow-inner rounded-bl-none text-shadow-sm text-shadow-gray-100 border border-gray-300 ${
                                     isUser
-                                      ? "bg-violet-100 text-gray-700"
-                                      : "bg-gray-200 text-gray-900 border border-gray-200"
+                                      ? "bg-violet-100 text-gray-800"
+                                      : "bg-gray-200 text-gray-800 border border-gray-200"
                                   }`}
                                   style={{ position: "relative" }}
                                 >
@@ -3330,14 +3331,14 @@ export default function ChatComponent({ closeBtn, isWidgetOpen }) {
 
                         {otherTyping && (
                           <div className="flex justify-start w-full mb-2">
-                            <div className="max-w-xs px-4 py-2 text-sm italic text-gray-600 bg-gray-300 rounded-xl animate-pulse">
+                            <div className="max-w-xs px-4 py-2 text-sm italic text-gray-600 bg-gray-300 rounded-bl-none anim-drop-left rounded-xl animate-pulse">
                               <span className="">Agent is typing...</span>
                             </div>
                           </div>
                         )}
                         {loading && (
                           <div className="flex justify-start">
-                            <div className="max-w-xs px-4 py-2 text-sm italic text-gray-600 bg-gray-300 rounded-xl animate-pulse">
+                            <div className="max-w-xs px-4 py-2 text-sm italic text-gray-600 bg-gray-300 rounded-bl-none anim-drop-left rounded-xl animate-pulse">
                               Typing...
                             </div>
                           </div>

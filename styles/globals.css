@@ -218,6 +218,12 @@ body {
 .anim-drop-in {
   animation: dropIn 0.5s ease forwards;
 }
+.anim-drop-right {
+  animation: dropRight 0.5s ease forwards;
+}
+.anim-drop-left {
+  animation: dropLeft 0.5s ease forwards;
+}
 .anim-drop-up {
   animation: dropUp 0.5s ease forwards;
 }
@@ -484,6 +490,28 @@ body {
   }
   100% {
     transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes dropRight {
+  0% {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes dropLeft {
+  0% {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(0);
     opacity: 1;
   }
 }
