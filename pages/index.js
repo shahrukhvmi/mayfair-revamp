@@ -129,7 +129,7 @@ export default function Index() {
               className=" w-full px-12   bold-font text-sm border-in duration-150 ease-in-out hover:bg-primary  py-3 rounded-full bold-font  transition my-3 border-2 text-primary hover:text-white border-primary cursor-pointer"
             >
               Returning Patient
-              <p className="reg-font paragraph !text-[13px]">
+              <p className="reg-font paragraph !text-[13px] text-primary">
                 Click here - your previous details will be saved
               </p>
             </button>

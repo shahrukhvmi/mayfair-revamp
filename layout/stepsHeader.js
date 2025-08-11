@@ -214,9 +214,11 @@ const StepsHeader = ({ isOpen, toggleSidebar }) => {
   return (
     <>
       {
-        !imageUploaded &&
+        !imageUploaded && (
 
-        specialRoutes.includes(pathname) && !imageUploaded && <UploadTopPrompt />
+
+          specialRoutes.includes(pathname) && !imageUploaded && <UploadTopPrompt />
+        )
       }
 
 

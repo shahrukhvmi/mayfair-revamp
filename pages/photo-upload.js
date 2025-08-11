@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { FiUpload } from 'react-icons/fi';
 import { AiOutlineCheckCircle } from 'react-icons/ai';
-import NextButton from '@/Components/NextButton/NextButton';
 import toast from 'react-hot-toast';
 import useReorder from '@/store/useReorderStore';
 import { ImageUplaodApi } from '@/api/ImageUploadApi';
@@ -68,14 +67,22 @@ const PhotoUpload = () => {
                 side: sideBase64,
                 order_id: orderId,
             };
+            console.log(data, "datadatadatadata")
 
             await ImageUplaodApi(payload);
 
+
+
             toast.success("Photos uploaded successfully!");
             GO.push("/dashboard/");
+
+
+
         } catch (error) {
-            console.error("Upload error:", error);
-            toast.error("Failed to upload images. Please try again.");
+
+            if (error?.response?.data?.message === "Unauthenticated.") {
+                toast.error("Failed to upload images. Please Login again."); GO.push("/login");
+            }
         } finally {
             setLoading(false); // Stop loading
         }
@@ -140,17 +147,18 @@ const PhotoUpload = () => {
         <div className="my-14">
             <form
                 onSubmit={handleSubmit(onSubmit)}
-                className="max-w-5xl mx-auto px-6 py-10 bg-white shadow-2xl rounded-3xl border border-gray-100"
+                className="max-w-5xl mx-auto my-auto px-6 py-10 bg-white shadow-2xl rounded-3xl border border-gray-100"
             >
                 <h2 className="text-4xl font-bold text-center text-gray-800 mb-4">
                     Upload Your Full-Body Photos
                 </h2>
 
-                <p className="text-center text-gray-600 text-sm mb-10 leading-relaxed">
-                    Upload a <strong>front-facing</strong> and <strong>side-facing</strong> full-body photo.
+                <p className="text-center text-gray-600 text-sm mb-10 leading-relaxed reg-font">
+                    Upload a <strong className='bold-font text-gray-800'>front-facing</strong> and <strong className='bold-font text-gray-800'>side-facing</strong> full-body photo.
                     Ensure your <span className="text-purple-600 font-medium">height and weight</span> are accurate.<br />
                     {/* <span className="text-red-500 font-medium">Note: Images will not be saved if incomplete.</span> */}
                 </p>
+
 
                 <div className="flex flex-wrap sm:flex-nowrap justify-center gap-6 mb-8">
                     <Controller
@@ -186,12 +194,18 @@ const PhotoUpload = () => {
                 </div>
 
                 <div className="text-center flex flex-col items-center">
-                    <NextButton
+                    <button
                         type="submit"
-                        label="Uplaod"
                         disabled={loading || !frontPhoto || !sidePhoto}
-                        loading={loading}
-                    />
+                        className={`px-6 py-2 rounded-lg text-white bold-font transition
+    ${loading || !frontPhoto || !sidePhoto
+                                ? 'bg-violet-300 cursor-not-allowed'
+                                : 'bg-[#47317c]'}`}
+                    >
+                        {loading ? 'Uploading...' : 'Upload'}
+                    </button>
+
+
                     {(!frontPhoto || !sidePhoto) && (
                         <p className="text-xs text-gray-400 mt-2">
                             Please upload both images to enable this button
@@ -199,7 +213,7 @@ const PhotoUpload = () => {
                     )}
                 </div>
             </form>
-        </div>
+        </div >
     );
 };
 

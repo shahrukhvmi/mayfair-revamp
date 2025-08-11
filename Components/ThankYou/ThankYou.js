@@ -61,10 +61,10 @@ const ThankYou = () => {
 
         <div className="space-y-6">
           <div>
-            {/* <h3 className="text-2xl font-semibold text-gray-800 border-b border-gray-200 pb-2 mb-4 text-center">Order Summary</h3> */}
+            {/* <h3 className="text-2xl reg-font text-gray-800 border-b border-gray-200 pb-2 mb-4 text-center">Order Summary</h3> */}
             <div className="overflow-x-auto rounded-xl border border-gray-200 shadow-md">
               <table className="min-w-full divide-y divide-gray-200 text-sm text-gray-700">
-                <thead className="bg-gray-100 text-gray-700 font-semibold">
+                <thead className="bg-gray-100 text-gray-700 reg-font">
                   <tr>
                     <th className="px-6 py-4 text-left bold-font">Items</th>
                     <th className="px-6 py-4 text-right bold-font">Amount</th>
@@ -149,7 +149,7 @@ const ThankYou = () => {
               account.
             </p>
             <p>
-              <span className="font-semibold underline text-black">
+              <span className="bold-font underline text-black">
                 Delivery:
               </span>{" "}
               All orders, once approved, are shipped via next-day tracked
@@ -160,14 +160,14 @@ const ThankYou = () => {
               accordingly.
             </p>
             <p>
-              <span className="font-semibold underline text-black">
+              <span className="bold-font underline text-black">
                 Changes or cancellation:
               </span>{" "}
               If there are any changes you would like to make to your order or
               to cancel it, please contact us immediately by email on{" "}
               <a
                 href="mailto:contact@mayfairweightlossclinic.co.uk."
-                className="text-violet-700 font-semibold underline"
+                className="text-violet-700 reg-font underline"
               >
                 contact@mayfairweightlossclinic.co.uk.
               </a>{" "}
@@ -175,18 +175,38 @@ const ThankYou = () => {
               not be able to cancel or return your order. This is due to
               legislation around prescription-only medication.
             </p>
+
+
+
+
+            <p>
+              <span className="bold-font underline text-black">
+                Photo Upload Request:
+              </span>{" "}
+              To proceed with your order, we kindly ask you to upload clear, recent photos as part of our prescription approval process.
+              These images help our prescribers verify your details and ensure the safe and appropriate supply of your treatment.
+
+              Once we have reviewed and approved your photos, your order will be processed and dispatched by our pharmacy.
+            </p>
+
+            <p className="italic reg-font">  Your privacy is important to us — all photos are stored securely and handled in strict confidence in line with data protection regulations.</p>
           </div>
 
           <div className="pt-6">
+
             <NextButton
-              onClick={handleGoBack}
-              label="Continue to View Order Details"
-            />
-            <BackButton
+
               onClick={handleGoUpload}
-              label="Click here to Photo Upload"
-              className="mt-4"
+              label="Upload photos to get your prescription approved "
             />
+            <NextButton
+              className="mt-4"
+              onClick={handleGoBack}
+              label="Continue to view order details"
+            />
+
+
+
           </div>
         </div>
       </div>
