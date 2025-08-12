@@ -9,6 +9,9 @@ import useCartStore from '@/store/useCartStore';
 import useImageUploadStore from '@/store/useImageUploadStore ';
 import GetImageIsUplaod from '@/api/GetImageIsUplaod';
 import { useRouter } from 'next/router';
+import { motion, AnimatePresence } from "framer-motion";
+import NextButton from '@/Components/NextButton/NextButton';
+import { FaCheckCircle } from "react-icons/fa";
 
 const PhotoUpload = () => {
     const GO = useRouter();
@@ -20,8 +23,8 @@ const PhotoUpload = () => {
     const sidePhoto = watch('sidePhoto');
     const [loading, setLoading] = useState(false);
 
-
-    const { setImageUploaded } = useImageUploadStore();
+    const [ImagesSend, setImagesSend] = useState(false)
+    const { setImageUploaded, imageUploaded } = useImageUploadStore();
     useEffect(() => {
         const fetchImageStatus = async () => {
             try {
@@ -29,6 +32,7 @@ const PhotoUpload = () => {
                 console.log("Image Upload Response", res);
 
                 setImageUploaded(res?.data?.status);
+                setImagesSend(res?.data?.status);
                 console.log(res, "Image Upload Status");
 
             } catch (error) {
@@ -73,8 +77,8 @@ const PhotoUpload = () => {
 
 
 
-            toast.success("Photos uploaded successfully!");
-            GO.push("/dashboard/");
+            // toast.success("Photos uploaded successfully!");
+            // GO.push("/dashboard/");
 
 
 
@@ -88,8 +92,16 @@ const PhotoUpload = () => {
         }
     };
 
-    console.log(reorder, "Reorder Status");
+    console.log(ImagesSend, "ImagesSend");
 
+    const [open, setOpen] = useState(false)
+    console.log(imageUploaded, "imageUploaded")
+    const handleAction = () => {
+        // if (ImagesSend) {
+
+        setOpen(true)
+        // }
+    }
     const renderUploadBox = (label, photo, type, placeholderUrl, suggestion) => (
         <div className="flex flex-col items-center w-full sm:w-1/2 px-3">
             <label className="w-full cursor-pointer">
@@ -145,6 +157,55 @@ const PhotoUpload = () => {
 
     return (
         <div className="my-14">
+            <AnimatePresence>
+                {open && ImagesSend && (
+                    <motion.div
+                        className="fixed inset-0 bg-black/50 backdrop-blur-sm flex justify-center items-center z-[9999]"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                    >
+                        <motion.div
+                            initial={{ y: 50, opacity: 0 }}
+                            animate={{ y: 0, opacity: 1 }}
+                            exit={{ y: 50, opacity: 0 }}
+                            transition={{ type: "spring", stiffness: 200, damping: 20 }}
+                            className="relative bg-white/90 backdrop-blur-md rounded-2xl shadow-lg p-8 max-w-md w-full border border-white/30"
+                        >
+                            {/* Animated Check Icon */}
+                            <motion.div
+                                initial={{ scale: 0 }}
+                                animate={{ scale: 1 }}
+                                transition={{ type: "spring", stiffness: 250, damping: 15 }}
+                                className="flex justify-center mb-4"
+                            >
+                                <FaCheckCircle className="text-primary" color='text-[#c9b2ed]' size={80} />
+                            </motion.div>
+
+                            {/* Title */}
+                            <h2 className="text-2xl font-bold text-center text-primary">
+                                You’re All Set!
+                            </h2>
+
+                            {/* Message */}
+                            <p className="text-md text-black text-center mt-3 mb-6 reg-font">
+                                Your photos have been uploaded and are now under review by our
+                                prescribers. We’ll approve your order once the review is complete
+                                and notify you straight away.
+                            </p>
+
+                            {/* Button */}
+                            <NextButton
+                                label="Return to Dashboard"
+                                onClick={() => GO.push("/dashboard")}
+                                className="w-full"
+                            // disabled={loading || !frontPhoto || !sidePhoto}
+                            // loading={loading}
+                            />
+                        </motion.div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
             <form
                 onSubmit={handleSubmit(onSubmit)}
                 className="max-w-5xl mx-auto my-auto px-6 py-10 bg-white shadow-2xl rounded-3xl border border-gray-100"
@@ -193,18 +254,19 @@ const PhotoUpload = () => {
 
                 </div>
 
-                <div className="text-center flex flex-col items-center">
+                <div className="flex flex-col items-center text-center">
                     <button
                         type="submit"
+                        onClick={handleAction}
                         disabled={loading || !frontPhoto || !sidePhoto}
-                        className={`px-6 py-2 rounded-lg text-white bold-font transition
-    ${loading || !frontPhoto || !sidePhoto
-                                ? 'bg-violet-300 cursor-not-allowed'
-                                : 'bg-[#47317c] cursor-pointer'}`}
+                        className={`px-6 py-3 rounded-full text-white bold-font text-sm transition-all duration-150 ease-in-out
+      flex justify-center items-center cursor-pointer
+      ${loading || !frontPhoto || !sidePhoto
+                                ? "bg-gray-300 !cursor-not-allowed"
+                                : "border-2 border-[#47317c] bg-[#47317c] hover:bg-[#3a2766]"}`}
                     >
                         {loading ? 'Uploading...' : 'Upload'}
                     </button>
-
 
                     {(!frontPhoto || !sidePhoto) && (
                         <p className="text-xs text-gray-400 mt-2">
@@ -212,6 +274,7 @@ const PhotoUpload = () => {
                         </p>
                     )}
                 </div>
+
             </form>
         </div >
     );

@@ -4,7 +4,7 @@ import { persist } from "zustand/middleware";
 const useImageUploadStore = create(
   persist(
     (set) => ({
-      imageUploaded: null,
+      imageUploaded: false,
       setImageUploaded: (status) => set({ imageUploaded: status }),
     }),
     {
