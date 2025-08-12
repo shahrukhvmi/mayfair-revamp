@@ -197,7 +197,7 @@ const PhotoUpload = () => {
                     <button
                         type="submit"
                         disabled={loading || !frontPhoto || !sidePhoto}
-                        className={`px-6 py-2 rounded-lg text-white bold-font transition
+                        className={`px-6 py-2 rounded-lg text-white bold-font transition cursor-pointer
     ${loading || !frontPhoto || !sidePhoto
                                 ? 'bg-violet-300 cursor-not-allowed'
                                 : 'bg-[#47317c]'}`}
