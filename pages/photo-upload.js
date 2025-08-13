@@ -12,10 +12,22 @@ import { useRouter } from 'next/router';
 import { motion, AnimatePresence } from "framer-motion";
 import NextButton from '@/Components/NextButton/NextButton';
 import { FaCheckCircle } from "react-icons/fa";
+import { useSearchParams } from 'next/navigation';
 
 const PhotoUpload = () => {
     const GO = useRouter();
-
+    // get Order id url to send photo uplaod api 
+    const searchParams = useSearchParams();
+    const [orderIdGetUrl, setOrderIdGetUrl] = useState(null)
+    useEffect(() => {
+        const param = searchParams.get("order_id");
+        if (param) {
+            const parsedId = parseInt(param, 10);
+            if (!isNaN(parsedId)) {
+                setOrderIdGetUrl(parsedId); // ✅ store in Zustand + localStorage
+            }
+        }
+    }, [searchParams, setOrderIdGetUrl]);
     const { reorder } = useReorder();
     const { control, setValue, handleSubmit, watch } = useForm();
     const { orderId } = useCartStore();
@@ -69,7 +81,7 @@ const PhotoUpload = () => {
             const payload = {
                 front: frontBase64,
                 side: sideBase64,
-                order_id: orderId,
+                order_id: orderIdGetUrl ? orderIdGetUrl : orderId,
             };
             console.log(data, "datadatadatadata")
 
