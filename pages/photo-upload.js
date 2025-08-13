@@ -16,6 +16,7 @@ import { useSearchParams } from 'next/navigation';
 
 const PhotoUpload = () => {
     const GO = useRouter();
+    const [open, setOpen] = useState(false)
     // get Order id url to send photo uplaod api 
     const searchParams = useSearchParams();
     const [orderIdGetUrl, setOrderIdGetUrl] = useState(null)
@@ -101,19 +102,21 @@ const PhotoUpload = () => {
             }
         } finally {
             setLoading(false); // Stop loading
+            setOpen(true);
+            console.log("MODAL TRUE....",open)
+
         }
     };
 
-    console.log(ImagesSend, "ImagesSend");
+    console.log(ImagesSend, "GDJSGHSFHDSHFBSDJFSDJFB");
 
-    const [open, setOpen] = useState(false)
+
     console.log(imageUploaded, "imageUploaded")
-    const handleAction = () => {
-        // if (ImagesSend) {
+    // const handleAction = () => {
+    //     // if (ImagesSend) {
 
-        setOpen(true)
-        // }
-    }
+    //     // }
+    // }
     const renderUploadBox = (label, photo, type, placeholderUrl, suggestion) => (
         <div className="flex flex-col items-center w-full sm:w-1/2 px-3">
             <label className="w-full cursor-pointer">
@@ -170,7 +173,7 @@ const PhotoUpload = () => {
     return (
         <div className="my-14">
             <AnimatePresence>
-                {open && ImagesSend && (
+                {open && (
                     <motion.div
                         className="fixed inset-0 bg-black/50 backdrop-blur-sm flex justify-center items-center z-[9999]"
                         initial={{ opacity: 0 }}
@@ -269,7 +272,7 @@ const PhotoUpload = () => {
                 <div className="flex flex-col items-center text-center">
                     <button
                         type="submit"
-                        onClick={handleAction}
+                        // onClick={handleAction}
                         disabled={loading || !frontPhoto || !sidePhoto}
                         className={`px-6 py-3 rounded-full text-white bold-font text-sm transition-all duration-150 ease-in-out
       flex justify-center items-center cursor-pointer
