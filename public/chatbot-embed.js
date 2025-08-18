@@ -19,7 +19,8 @@
   window.ChatBotLoaded = true;
 
   const iframe = document.createElement("iframe");
-  iframe.src = "https://nimble-cheesecake-e7f6c4.netlify.app/embed";
+  // iframe.src = "https://nimble-cheesecake-e7f6c4.netlify.app/embed";
+  iframe.src = "https://mayfair-chatbot-v2.netlify.app/embed";
   // iframe.src = "http://localhost:3000/embed";
   iframe.style.position = "fixed";
   iframe.style.bottom = "20px";

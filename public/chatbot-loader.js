@@ -53,8 +53,7 @@ document.addEventListener("DOMContentLoaded", function () {
       // console.log("ChatBot not loaded yet, loading now...");
       const script = document.createElement("script");
       //   script.src = "http://localhost:3000/chatbot-embed.js";
-      script.src =
-        "https://nimble-cheesecake-e7f6c4.netlify.app/chatbot-embed.js";
+      script.src = "https://mayfair-chatbot-v2.netlify.app/chatbot-embed.js";
       script.async = true;
       document.body.appendChild(script);
     } else {
