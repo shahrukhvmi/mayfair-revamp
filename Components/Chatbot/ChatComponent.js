@@ -1980,17 +1980,21 @@ export default function ChatComponent({ closeBtn, isWidgetOpen }) {
             orderIdInputRef.current.value = data.providedOrderId;
           }
         }
-        let botMessage = data.message.trim();
-        if (botMessage.includes("Rate limit reached")) {
-          const errorMessages = [
-            "Sorry, our system is busy. Please try again in a moment.",
-            "Too many requests. Please wait and try again.",
-            "We're experiencing high traffic. Please try again shortly.",
-            "Please slow down and try again in a few seconds.",
-            "Our assistant is a bit overwhelmed. Try again soon!",
-          ];
-          botMessage =
-            errorMessages[Math.floor(Math.random() * errorMessages.length)];
+        // console.log("Order ID response:", data);
+        let botMessage = null;
+        if (data.message) {
+          botMessage = data.message;
+          if (botMessage.includes("Rate limit reached")) {
+            const errorMessages = [
+              "Sorry, our system is busy. Please try again in a moment.",
+              "Too many requests. Please wait and try again.",
+              "We're experiencing high traffic. Please try again shortly.",
+              "Please slow down and try again in a few seconds.",
+              "Our assistant is a bit overwhelmed. Try again soon!",
+            ];
+            botMessage =
+              errorMessages[Math.floor(Math.random() * errorMessages.length)];
+          }
         }
         setOrderIdStatus(botMessage ?? "✅ Verified! Now you can continue.");
         setStatus(botMessage ?? "✅ Verified! Now you can continue.");
