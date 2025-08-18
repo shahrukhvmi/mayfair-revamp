@@ -158,7 +158,7 @@ const PhotoUpload = () => {
                             {!photo && (
                                 <div className="flex flex-col items-center justify-center">
                                     <FiUpload className="text-purple-600 w-8 h-8 mb-3" />
-                                    <p className="text-gray-700 text-sm reg-font">
+                                    <p className="text-gray-700 text-sm niba-semibold-font">
                                         Drag files to upload <br />
                                         <span className="text-gray-400 text-xs">or click to browse</span>
                                     </p>
