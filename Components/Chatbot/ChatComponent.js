@@ -2532,7 +2532,7 @@ export default function ChatComponent({ closeBtn, isWidgetOpen }) {
                     </div>
 
                     <textarea
-                      className={`w-full p-3 text-sm border rounded-lg resize-none focus:outline-none focus:ring-1 ${
+                      className={`w-full p-3 text-sm border text-gray-700 rounded-lg resize-none focus:outline-none focus:ring-1 ${
                         isLimitReached
                           ? " bg-red-50 focus:ring-red-50"
                           : "focus:ring-violet-500"
@@ -2605,7 +2605,7 @@ export default function ChatComponent({ closeBtn, isWidgetOpen }) {
               {submitted && thanked && (
                 <div className="absolute left-0 flex items-center justify-center flex-1 w-full px-4 top-16 z-99999">
                   <div className="p-6 mx-4 mt-6 text-center transition-all ease-in-out border border-gray-200 shadow-xl bg-green-50 rounded-xl">
-                    <h3 className="mb-2 text-lg font-semibold">
+                    <h3 className="mb-2 text-lg font-semibold text-green-700">
                       🎉 Thank you for your feedback!
                     </h3>
                     <p className="text-gray-600">
