@@ -13,7 +13,9 @@ import { FiMessageCircle, FiMaximize2, FiMinimize2 } from "react-icons/fi";
 import { app_url } from "@/config/constants";
 import { pusher_key } from "@/config/constants";
 import { pusher_cluster } from "@/config/constants";
-import toast, { Toaster } from "react-hot-toast";
+// import toast, { Toaster } from "react-hot-toast";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import Pusher from "pusher-js";
 import Echo from "laravel-echo";
 import { BsChatDots, BsChatDotsFill } from "react-icons/bs";
@@ -342,7 +344,7 @@ export default function ChatComponent({ closeBtn, isWidgetOpen }) {
     setSubmitted(true);
     setTimeout(() => {
       performChatEnd();
-    }, 3000);
+    }, 5000);
   };
 
   const maxChars = 200;
@@ -354,7 +356,13 @@ export default function ChatComponent({ closeBtn, isWidgetOpen }) {
   //   "😊 Good",
   //   "🤩 Excellent",
   // ];
-  const starLabels = ["😞", "😐", "🙂", "😀", "😍"];
+  const starLabels = [
+    "😞 Terrible",
+    "😐 Bad",
+    "🙂 Okay",
+    "😀 Good",
+    "😍 Excellent",
+  ];
 
   //feedback end
 
@@ -711,7 +719,7 @@ export default function ChatComponent({ closeBtn, isWidgetOpen }) {
 
     // console.log("🟢 Initializing Echo...");
     window.Pusher = Pusher;
-    Pusher.logToConsole = true; // Optional: enable for debugging
+    Pusher.logToConsole = false; // Optional: enable for debugging
 
     const echo = new Echo({
       broadcaster: "pusher",
@@ -773,7 +781,7 @@ export default function ChatComponent({ closeBtn, isWidgetOpen }) {
     // console.log("🟢 Initializing Echo...");
 
     window.Pusher = Pusher;
-    Pusher.logToConsole = true; // Optional: enable for debugging
+    Pusher.logToConsole = false; // Optional: enable for debugging
 
     const echo = new Echo({
       broadcaster: "pusher",
@@ -869,7 +877,7 @@ export default function ChatComponent({ closeBtn, isWidgetOpen }) {
       // console.log("🟢 Initializing Echo...");
 
       window.Pusher = Pusher;
-      Pusher.logToConsole = true; // Optional: enable for debugging
+      Pusher.logToConsole = false; // Optional: enable for debugging
 
       const echo = new Echo({
         broadcaster: "pusher",
@@ -935,7 +943,7 @@ export default function ChatComponent({ closeBtn, isWidgetOpen }) {
     // console.log("🟢 Initializing Echo...");
 
     window.Pusher = Pusher;
-    Pusher.logToConsole = true; // Optional: enable for debugging
+    Pusher.logToConsole = false; // Optional: enable for debugging
 
     const echo = new Echo({
       broadcaster: "pusher",
@@ -963,7 +971,7 @@ export default function ChatComponent({ closeBtn, isWidgetOpen }) {
       );
 
       const chatUser = JSON.parse(localStorage.getItem("chat_user") || "{}");
-      const chatAgentId = chatUser.agent_id || agentId;
+      let chatAgentId = chatUser.agent_id || agentId;
       // console.log("chatAgentId", chatAgentId);
 
       // If agent_id not found, try to fetch it
@@ -1668,7 +1676,7 @@ export default function ChatComponent({ closeBtn, isWidgetOpen }) {
     }));
 
     setShowUserSettings(false);
-    alert("Your details updated successfully!");
+    toast.success("Your details updated successfully!");
   }
 
   const handleFocus = () => {
@@ -2188,7 +2196,7 @@ export default function ChatComponent({ closeBtn, isWidgetOpen }) {
 
         setTimeout(() => {
           performChatEnd();
-        }, 2000);
+        }, 5000);
       } catch (error) {
         // console.error("Feedback submission failed:", error);
       }
@@ -2206,7 +2214,19 @@ export default function ChatComponent({ closeBtn, isWidgetOpen }) {
           : ""
       }`}
     >
-      <Toaster position="bottom-center" />
+      {/* <Toaster position="bottom-center" /> */}
+      <ToastContainer
+        position="top-left"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
       {/* Floating Icon */}
       {!isOpen && (
         <button
@@ -2333,6 +2353,7 @@ export default function ChatComponent({ closeBtn, isWidgetOpen }) {
                           </span>
                         </button>
                       )} */}
+
                       {isHumanTalk && (
                         <button
                           disabled={loading}
@@ -3239,7 +3260,7 @@ export default function ChatComponent({ closeBtn, isWidgetOpen }) {
 
                           if (msg.sender === "user") {
                             return (
-                              <div key={i} className="flex justify-end">
+                              <div key={i} className="flex justify-end my-1">
                                 {/* Sender name for agent */}
                                 {isAgent && (
                                   <div className="mb-1 text-sm font-semibold text-violet-700">
@@ -3274,10 +3295,10 @@ export default function ChatComponent({ closeBtn, isWidgetOpen }) {
                             return (
                               <div
                                 key={i}
-                                className="flex justify-start w-full"
+                                className="flex justify-start w-full mb-1"
                               >
                                 <div
-                                  className={`bg-gray-200 text-gray-800 anim-drop-left px-4 py-2 shadow-inner rounded-xl rounded-bl-none text-shadow-sm text-shadow-gray-100 border border-gray-300 ${
+                                  className={`bg-gray-200 text-gray-800 anim-drop-left px-4 py-2 shadow-inner rounded-xl rounded-tl-none text-shadow-sm text-shadow-gray-100 border border-gray-300 mt-1 ${
                                     divWidth <= cb.sm
                                       ? "max-w-[95%]"
                                       : "max-w-[80%]"
@@ -3293,10 +3314,10 @@ export default function ChatComponent({ closeBtn, isWidgetOpen }) {
                                 key={i}
                                 className={`flex ${
                                   isUser ? "justify-end" : "justify-start"
-                                } w-full mb-2`}
+                                } w-full my-2`}
                               >
                                 <div
-                                  className={`rounded-xl px-4 py-2 max-w-[80%] min-w-[5%] anim-drop-left shadow-inner rounded-bl-none text-shadow-sm text-shadow-gray-100 border border-gray-300 ${
+                                  className={`rounded-xl px-4 py-2 max-w-[80%] min-w-[5%] anim-drop-left shadow-inner rounded-tl-none text-shadow-sm text-shadow-gray-100 border border-gray-300 ${
                                     isUser
                                       ? "bg-violet-100 text-gray-800"
                                       : "bg-gray-200 text-gray-800 border border-gray-200"
@@ -3331,14 +3352,14 @@ export default function ChatComponent({ closeBtn, isWidgetOpen }) {
 
                         {otherTyping && (
                           <div className="flex justify-start w-full mb-2">
-                            <div className="max-w-xs px-4 py-2 text-sm italic text-gray-600 bg-gray-300 rounded-bl-none anim-drop-left rounded-xl animate-pulse">
+                            <div className="max-w-xs px-4 py-2 text-sm italic text-gray-600 bg-gray-200 border border-gray-300 rounded-tl-none shadow-inner anim-drop-left text-shadow-sm text-shadow-gray-100 rounded-xl animate-pulse">
                               <span className="">Agent is typing...</span>
                             </div>
                           </div>
                         )}
                         {loading && (
                           <div className="flex justify-start">
-                            <div className="max-w-xs px-4 py-2 text-sm italic text-gray-600 bg-gray-300 rounded-bl-none anim-drop-left rounded-xl animate-pulse">
+                            <div className="max-w-xs px-4 py-2 text-sm italic text-gray-600 bg-gray-200 border border-gray-300 rounded-tl-none shadow-inner anim-drop-left text-shadow-sm text-shadow-gray-100 rounded-xl animate-pulse">
                               Typing...
                             </div>
                           </div>

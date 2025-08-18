@@ -32,6 +32,7 @@
     "react-input-mask": "^2.0.4",
     "react-password-strength-bar": "^0.4.1",
     "react-phone-input-2": "^2.15.1",
+    "react-toastify": "^11.0.5",
     "use-debounce": "^10.0.4",
     "zustand": "^5.0.3"
   },
