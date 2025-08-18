@@ -11,8 +11,9 @@ import GetImageIsUplaod from '@/api/GetImageIsUplaod';
 import { useRouter } from 'next/router';
 import { motion, AnimatePresence } from "framer-motion";
 import NextButton from '@/Components/NextButton/NextButton';
-import { FaCheckCircle } from "react-icons/fa";
+import { FaCheck, FaCheckCircle } from "react-icons/fa";
 import { useSearchParams } from 'next/navigation';
+import StepsHeader from '@/layout/stepsHeader';
 
 const PhotoUpload = () => {
     const GO = useRouter();
@@ -71,40 +72,40 @@ const PhotoUpload = () => {
         });
     const onSubmit = async (data) => {
         try {
-            if (!data.frontPhoto || !data.sidePhoto) {
-                toast.error("Please upload both images.");
+            if (!data.frontPhoto) {
+                toast.error("Please upload Front images.");
                 return;
             }
             setLoading(true); // Start loading
             const frontBase64 = await toBase64(data.frontPhoto);
-            const sideBase64 = await toBase64(data.sidePhoto);
 
             const payload = {
                 front: frontBase64,
-                side: sideBase64,
                 order_id: orderIdGetUrl ? orderIdGetUrl : orderId,
             };
-            console.log(data, "datadatadatadata")
 
-            await ImageUplaodApi(payload);
+            const res = await ImageUplaodApi(payload);
 
-
-
-            // toast.success("Photos uploaded successfully!");
-            // GO.push("/dashboard/");
-
-
+            if (res?.status === 200) {
+                // toast.success("Photos uploaded successfully!");
+                setOpen(true); // ✅ sirf success pe modal open hoga
+                // GO.push("/dashboard/");
+            }
 
         } catch (error) {
+            console.log(error?.response?.data?.errors?.Order, "skdsksdljsdskdl");
 
             if (error?.response?.data?.message === "Unauthenticated.") {
-                toast.error("Failed to upload images. Please Login again."); GO.push("/login");
+                toast.error("Failed to upload images. Please Login again.");
+                GO.push("/login");
             }
-        } finally {
-            setLoading(false); // Stop loading
-            setOpen(true);
-            console.log("MODAL TRUE....",open)
 
+            if (error?.response?.data?.errors?.Order === "Order not found") {
+                toast.error(error?.response?.data?.errors?.Order);
+            }
+
+        } finally {
+            setLoading(false); // ✅ loading hamesha false hoga
         }
     };
 
@@ -117,142 +118,199 @@ const PhotoUpload = () => {
 
     //     // }
     // }
-    const renderUploadBox = (label, photo, type, placeholderUrl, suggestion) => (
-        <div className="flex flex-col items-center w-full sm:w-1/2 px-3">
-            <label className="w-full cursor-pointer">
-                <div className="bg-white border-2 border-dashed border-gray-300 rounded-2xl p-5 hover:border-purple-500 hover:shadow-lg transition-all duration-300 ease-in-out flex flex-col items-center justify-center text-center relative min-h-[260px]">
-                    <input
-                        type="file"
-                        accept="image/*"
-                        onChange={(e) => handleUpload(e, type)}
-                        className="hidden"
-                    />
 
-                    {!photo && (
-                        <div className="flex flex-col items-center justify-center mb-3">
-                            {/* Upload Icon (Aqua Color) */}
-                            <div className="bg-violet-100 rounded-full p-3 mb-2">
-                                <FiUpload className="text-violet-700 w-8 h-8" />
-                            </div>
 
-                            {/* Upload Text */}
-                            <p className="text-sm text-gray-500 font-medium">Drag files to upload</p>
-                            <span className="text-xs text-gray-400">or click to browse</span>
+
+
+    const renderUploadBox = (label, photo, type, placeholderUrl, suggestion) => {
+        const handleDrop = (e) => {
+            e.preventDefault();
+            if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+                setValue(type, e.dataTransfer.files[0]); // reuse your existing setValue
+            }
+        };
+
+        const handleDragOver = (e) => {
+            e.preventDefault();
+        };
+
+        return (
+
+            <>
+
+                <div className="flex flex-col items-center w-full sm:w-1/3 px-3">
+                    <label className="w-full cursor-pointer">
+                        <div
+                            onDrop={handleDrop}
+                            onDragOver={handleDragOver}
+                            className="border-2 border-dashed border-purple-400 rounded-2xl p-2R 
+                   hover:border-purple-600 hover:shadow-md transition-all duration-300 ease-in-out
+                   flex flex-col items-center justify-center text-center relative min-h-[140px] bg-white"
+                        >
+                            <input
+                                type="file"
+                                accept="image/*"
+                                onChange={(e) => handleUpload(e, type)}
+                                className="hidden"
+                            />
+
+                            {/* ✅ No photo → Show upload UI */}
+                            {!photo && (
+                                <div className="flex flex-col items-center justify-center">
+                                    <FiUpload className="text-purple-600 w-8 h-8 mb-3" />
+                                    <p className="text-gray-700 text-sm reg-font">
+                                        Drag files to upload <br />
+                                        <span className="text-gray-400 text-xs">or click to browse</span>
+                                    </p>
+                                </div>
+                            )}
+
+                            {/* ✅ With photo → Show preview */}
+                            {photo && (
+                                <div className="flex flex-col items-center">
+                                    <img
+                                        src={URL.createObjectURL(photo)}
+                                        alt={`${label} preview`}
+                                        className="w-28 h-40 object-contain rounded-lg mb-3"
+                                    />
+                                    <AiOutlineCheckCircle className="w-6 h-6 text-green-500 absolute top-3 right-3" />
+                                </div>
+                            )}
+
+                            {/* Label */}
+                            {/* <p className="mt-2 text-gray-800 font-medium">{label}</p> */}
                         </div>
-                    )}
+                    </label>
 
+                    {/* Suggestion / Helper text */}
+                    <p className="text-xs text-gray-500 mt-2 text-center italic">{suggestion}</p>
 
-                    <img
-                        src={photo ? URL.createObjectURL(photo) : placeholderUrl}
-                        alt={`${label} preview`}
-                        className="w-40 h-40 object-contain rounded-lg mb-3 transition-all"
-                    />
-
-                    <p className="text-base text-gray-800 font-medium">{label}</p>
-
-                    {photo && (
-                        <AiOutlineCheckCircle className="w-6 h-6 text-green-500 absolute top-3 right-3" />
-                    )}
+                    {/* {photo && (
+                    <p className="text-green-600 mt-1 text-sm italic">
+                        {label} uploaded successfully
+                    </p>
+                )} */}
                 </div>
-            </label>
+            </>
+        );
+    };
 
-            {/* ✅ Suggestion Text */}
-            <p className="text-xs text-gray-500 mt-2 text-center italic">
-                {suggestion}
-            </p>
-
-            {photo && (
-                <p className="text-green-600 mt-1 text-sm italic">
-                    {label} uploaded successfully
-                </p>
-            )}
-        </div>
-    );
 
 
     return (
-        <div className="my-14">
-            <AnimatePresence>
-                {open && (
-                    <motion.div
-                        className="fixed inset-0 bg-black/50 backdrop-blur-sm flex justify-center items-center z-[9999]"
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                    >
+        <>
+            <StepsHeader />
+
+            <div className="my-14">
+                <AnimatePresence>
+                    {open && (
                         <motion.div
-                            initial={{ y: 50, opacity: 0 }}
-                            animate={{ y: 0, opacity: 1 }}
-                            exit={{ y: 50, opacity: 0 }}
-                            transition={{ type: "spring", stiffness: 200, damping: 20 }}
-                            className="relative bg-white/90 backdrop-blur-md rounded-2xl shadow-lg p-8 max-w-md w-full border border-white/30"
+                            className="fixed inset-0 bg-black/50 backdrop-blur-sm flex justify-center items-center z-[9999]"
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
                         >
-                            {/* Animated Check Icon */}
                             <motion.div
-                                initial={{ scale: 0 }}
-                                animate={{ scale: 1 }}
-                                transition={{ type: "spring", stiffness: 250, damping: 15 }}
-                                className="flex justify-center mb-4"
+                                initial={{ y: 50, opacity: 0 }}
+                                animate={{ y: 0, opacity: 1 }}
+                                exit={{ y: 50, opacity: 0 }}
+                                transition={{ type: "spring", stiffness: 200, damping: 20 }}
+                                className="relative bg-white/90 backdrop-blur-md rounded-2xl shadow-lg p-8 max-w-md w-full border border-white/30"
                             >
-                                <FaCheckCircle className="text-primary" color='text-[#c9b2ed]' size={80} />
+                                {/* Animated Check Icon */}
+                                <motion.div
+                                    initial={{ scale: 0 }}
+                                    animate={{ scale: 1 }}
+                                    transition={{ type: "spring", stiffness: 250, damping: 15 }}
+                                    className="flex justify-center mb-4"
+                                >
+                                    <FaCheckCircle className="text-primary" color='text-[#c9b2ed]' size={80} />
+                                </motion.div>
+
+                                {/* Title */}
+                                <h2 className="text-2xl font-bold text-center text-primary">
+                                    You’re All Set!
+                                </h2>
+
+                                {/* Message */}
+                                <p className="text-md text-black text-center mt-3 mb-6 reg-font">
+                                    Your photos have been uploaded and are now under review by our
+                                    prescribers. We’ll approve your order once the review is complete
+                                    and notify you straight away.
+                                </p>
+
+                                {/* Button */}
+                                <NextButton
+                                    label="Return to Dashboard"
+                                    onClick={() => GO.push("/dashboard")}
+                                    className="w-full"
+                                // disabled={loading || !frontPhoto || !sidePhoto}
+                                // loading={loading}
+                                />
                             </motion.div>
-
-                            {/* Title */}
-                            <h2 className="text-2xl font-bold text-center text-primary">
-                                You’re All Set!
-                            </h2>
-
-                            {/* Message */}
-                            <p className="text-md text-black text-center mt-3 mb-6 reg-font">
-                                Your photos have been uploaded and are now under review by our
-                                prescribers. We’ll approve your order once the review is complete
-                                and notify you straight away.
-                            </p>
-
-                            {/* Button */}
-                            <NextButton
-                                label="Return to Dashboard"
-                                onClick={() => GO.push("/dashboard")}
-                                className="w-full"
-                            // disabled={loading || !frontPhoto || !sidePhoto}
-                            // loading={loading}
-                            />
                         </motion.div>
-                    </motion.div>
-                )}
-            </AnimatePresence>
-            <form
-                onSubmit={handleSubmit(onSubmit)}
-                className="max-w-5xl mx-auto my-auto px-6 py-10 bg-white shadow-2xl rounded-3xl border border-gray-100"
-            >
-                <h2 className="text-4xl font-bold text-center text-gray-800 mb-4">
-                    Upload Your Full-Body Photos
-                </h2>
-
-                <p className="text-center text-gray-600 text-sm mb-10 leading-relaxed reg-font">
-                    Upload a <strong className='bold-font text-gray-800'>front-facing</strong> and <strong className='bold-font text-gray-800'>side-facing</strong> full-body photo.
-                    Ensure your <span className="text-purple-600 font-medium">height and weight</span> are accurate.<br />
-                    {/* <span className="text-red-500 font-medium">Note: Images will not be saved if incomplete.</span> */}
-                </p>
+                    )}
+                </AnimatePresence>
+                <form
+                    onSubmit={handleSubmit(onSubmit)}
+                    className="max-w-3xl mx-auto my-auto px-6 py-10 bg-white shadow-2xl rounded-3xl border border-gray-100"
+                >
+                    <div className="mb-8 max-w-2xl mx-auto text-left">
+                        {/* Heading */}
+                        <h2 className="subHeading niba-semibold-font mb-2 border-b pb-3">
+                            Please upload a <span className='niba-bold-font text-black' >full body</span> picture of yourself.
+                        </h2>
 
 
-                <div className="flex flex-wrap sm:flex-nowrap justify-center gap-6 mb-8">
-                    <Controller
-                        name="frontPhoto"
-                        control={control}
-                        defaultValue={null}
-                        render={() =>
-                            renderUploadBox(
-                                'Front Photo',
-                                frontPhoto,
-                                'frontPhoto',
-                                '/images/front_image.png',
-                                'Make sure your full body and arms are visible, facing forward.'
-                            )
-                        }
-                    />
 
-                    <Controller
+                        {/* Description */}
+                        {/* <p className="text-gray-700 mb-4">
+                        Please upload a <span className="niba-bold-font">full body</span> picture of yourself.
+                    </p> */}
+
+                        {/* Bullet Points */}
+                        <ul className="list-disc pl-6 text-gray-800 text-sm space-y-2 thin-font pt-2">
+                            <li>We will only ask for this once.</li>
+                            <li>We realise it's inconvenient, but this is a regulatory requirement designed for your safety and to prevent inappropriate use.</li>
+
+                        </ul>
+                    </div>
+
+
+                    {/* Example Images */}
+                    <div className="flex justify-center gap-4 mb-4">
+                        <div className="flex flex-col items-center bg-white shadow-sm rounded-md mx-3 border-1">
+                            <img src="/images/full-body-ok.png" alt="correct" className="w-28 h-40 object-cover rounded-lg" />
+                            {/* <span className="text-green-500 font-bold my-1"><FaCheck size={18} /></span> */}
+                        </div>
+                        <div className="flex flex-col items-center bg-white shadow-sm rounded-md mx-3 border-1">
+                            <img src="/images/half-body-x.png" alt="incorrect" className="w-28 h-40 object-cover rounded-lg" />
+                            {/* <span className="text-red-500 font-bold my-1"><RxCross2 size={18} /></span> */}
+                        </div>
+                        <div className="flex flex-col items-center bg-white shadow-sm rounded-md mx-3 border-1">
+                            <img src="/images/face-x.png" alt="incorrect" className="w-28 h-40 object-cover rounded-lg" />
+                            {/* <span className="text-red-500 font-bold my-1"><RxCross2 size={18} /></span> */}
+                        </div>
+                    </div>
+
+
+
+
+                    <div className="flex flex-wrap sm:flex-nowrap justify-center gap-6 mb-8">
+                        <Controller
+                            name="frontPhoto"
+                            control={control}
+                            defaultValue={null}
+                            render={() =>
+                                renderUploadBox(
+                                    'Front Photo',
+                                    frontPhoto,
+                                    'frontPhoto',
+                                    '/images/front_image.png',)
+                            }
+                        />
+
+                        {/* <Controller
                         name="sidePhoto"
                         control={control}
                         defaultValue={null}
@@ -265,33 +323,34 @@ const PhotoUpload = () => {
                                 'Stand sideways with good posture and full body visible.'
                             )
                         }
-                    />
+                    /> */}
 
-                </div>
+                    </div>
 
-                <div className="flex flex-col items-center text-center">
-                    <button
-                        type="submit"
-                        // onClick={handleAction}
-                        disabled={loading || !frontPhoto || !sidePhoto}
-                        className={`px-6 py-3 rounded-full text-white bold-font text-sm transition-all duration-150 ease-in-out
+                    <div className="flex flex-col items-center text-center">
+                        <button
+                            type="submit"
+                            // onClick={handleAction}
+                            disabled={loading || !frontPhoto}
+                            className={`px-6 py-3 rounded-full text-white bold-font text-sm transition-all duration-150 ease-in-out
       flex justify-center items-center cursor-pointer
-      ${loading || !frontPhoto || !sidePhoto
-                                ? "bg-gray-300 !cursor-not-allowed"
-                                : "border-2 border-[#47317c] bg-[#47317c] hover:bg-[#3a2766]"}`}
-                    >
-                        {loading ? 'Uploading...' : 'Upload'}
-                    </button>
+      ${loading || !frontPhoto
+                                    ? "bg-gray-300 !cursor-not-allowed"
+                                    : "border-2 border-[#47317c] bg-[#47317c] hover:bg-[#3a2766]"}`}
+                        >
+                            {loading ? 'Uploading...' : 'Upload'}
+                        </button>
 
-                    {(!frontPhoto || !sidePhoto) && (
+                        {/* {(!frontPhoto) && (
                         <p className="text-xs text-gray-400 mt-2">
                             Please upload both images to enable this button
                         </p>
-                    )}
-                </div>
+                    )} */}
+                    </div>
 
-            </form>
-        </div >
+                </form>
+            </div >
+        </>
     );
 };
 
