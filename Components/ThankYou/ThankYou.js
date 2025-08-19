@@ -166,8 +166,7 @@ const ThankYou = () => {
               <span>
                 <RiErrorWarningLine className="text-black me-2" size={20} />
               </span>
-              Action Required - Upload your full body photo to complete your order
-
+              Action Required: Upload your full body photo to complete your order
 
             </button>
           </div>
