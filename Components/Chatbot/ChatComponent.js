@@ -24,8 +24,8 @@ import { is } from "date-fns/locale";
 
 const quickQuestions = [
   {
-    label: "My Last Consultation",
-    message: "Can you show me my previous consultation details?",
+    label: "My Consultation Details",
+    message: "Can you show me my consultation details?",
   },
   {
     label: "My Order Current Status",
@@ -41,8 +41,8 @@ const quickQuestions = [
   },
   { label: "Order Issues", message: "I need help with issues in my order." },
   {
-    label: "Consultation Summary",
-    message: "Can you give me a summary of my last consultation?",
+    label: "My Consultation Summary",
+    message: "Can you give me a summary of my consultation?",
   },
   {
     label: "Help with Prescription",
@@ -61,10 +61,10 @@ const quickQuestions = [
     message: "What are the official opening and closing hours of clinic?",
   },
   {
-    label: "Last Order Total",
-    message: "What was the total cost of my most recent order?",
+    label: "My Order Total",
+    message: "What was the total cost of my order?",
   },
-  { label: "My Orders", message: "Can you summarize my previous order?" },
+  { label: "Summarize My Order", message: "Can you summarize my order?" },
 ];
 
 const finalFaqs = [
@@ -1570,9 +1570,9 @@ export default function ChatComponent({ closeBtn, isWidgetOpen }) {
 
       const botMsg = { sender: "bot", text: replyText };
       if (isHumanTalk && msgToBoth) {
-        setTimeout(() => {
-          setChatHistory((prev) => [...prev, botMsg]);
-        }, 20);
+        // setTimeout(() => {
+        setChatHistory((prev) => [...prev, botMsg]);
+        // }, 20);
       } else {
         setChatHistory((prev) => [...prev, botMsg]);
       }
@@ -2296,6 +2296,7 @@ export default function ChatComponent({ closeBtn, isWidgetOpen }) {
               <header className="flex items-center justify-between w-full p-4 text-gray-600 bg-white border-b border-gray-200">
                 {user && user.email && (
                   <button
+                    title={showSidebar ? "Close Faq" : "Open Faq"}
                     id="open-faq"
                     className={`px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm text-gray-400 border bg-gray-50 hover:border-gray-200  rounded-lg flex items-center gap-1 ${
                       showSidebar ? "border-gray-200" : "border-gray-50"
@@ -2332,6 +2333,7 @@ export default function ChatComponent({ closeBtn, isWidgetOpen }) {
                       </p>
                       <input
                         id="order-id"
+                        title="Your order ID"
                         ref={orderIdInputRef}
                         type="text"
                         placeholder="Order ID"
@@ -2360,6 +2362,7 @@ export default function ChatComponent({ closeBtn, isWidgetOpen }) {
 
                       {isHumanTalk && (
                         <button
+                          title="End Chat"
                           disabled={loading}
                           onClick={onClickEandleEndChat}
                           className={`px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm text-gray-400 border bg-gray-50 hover:border-gray-200 border-gray-50 rounded-lg flex items-center gap-1`}
@@ -2374,6 +2377,7 @@ export default function ChatComponent({ closeBtn, isWidgetOpen }) {
                         </button>
                       )}
                       <button
+                        title="Clear Chat"
                         disabled={loading}
                         onClick={handleClearChat}
                         className={`px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm text-gray-400 border bg-gray-50 hover:border-gray-200 border-gray-50 rounded-lg flex items-center gap-1`}
@@ -2387,6 +2391,7 @@ export default function ChatComponent({ closeBtn, isWidgetOpen }) {
                         </span>
                       </button>
                       <button
+                        title="Exit Chat"
                         onClick={handleLogout}
                         disabled={loading}
                         className={`px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm text-gray-400 border bg-gray-50 hover:border-gray-200 border-gray-50 rounded-lg flex items-center gap-1`}
@@ -2402,6 +2407,7 @@ export default function ChatComponent({ closeBtn, isWidgetOpen }) {
                       <div className="flex items-center gap-1">
                         {window.innerWidth >= cb.sm && (
                           <button
+                            title={isMaximized ? "Minimize" : "Maximize"}
                             onClick={() => {
                               setIsMaximized((prev) => !prev);
                               if (window.innerWidth <= cb.sm) {
@@ -2420,6 +2426,7 @@ export default function ChatComponent({ closeBtn, isWidgetOpen }) {
                           </button>
                         )}
                         <button
+                          title="Close"
                           onClick={() =>
                             setVisible(true) || // play drop-in animation
                             setTimeout(() => {
@@ -2447,6 +2454,7 @@ export default function ChatComponent({ closeBtn, isWidgetOpen }) {
                       <div className="flex gap-1">
                         {window.innerWidth >= cb.sm && (
                           <button
+                            title={isMaximized ? "Minimize" : "Maximize"}
                             onClick={() => {
                               setIsMaximized((prev) => !prev);
                               if (window.innerWidth <= cb.sm) {
@@ -2465,6 +2473,7 @@ export default function ChatComponent({ closeBtn, isWidgetOpen }) {
                           </button>
                         )}
                         <button
+                          title="Close"
                           onClick={() =>
                             setVisible(true) || // play drop-in animation
                             setTimeout(() => {
@@ -2624,6 +2633,7 @@ export default function ChatComponent({ closeBtn, isWidgetOpen }) {
                 <div className="fixed inset-0 flex items-center justify-center px-4 z-99999 bg-opacity-30 backdrop-blur-sm">
                   <div className="relative w-full max-w-md p-6 bg-white border border-gray-300 rounded-lg shadow-lg shadow-gray-500">
                     <button
+                      title="Exit"
                       className={`top-6 right-6 absolute px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm text-gray-400 border bg-gray-50 hover:border-gray-200 border-gray-50 rounded-lg flex items-center gap-1`}
                       onClick={() => setShowUserSettings(false)}
                       aria-label="Close"
@@ -2783,6 +2793,7 @@ export default function ChatComponent({ closeBtn, isWidgetOpen }) {
                           {/* Gear/Settings Icon */}
                         </span>
                         <button
+                          title="Edit Your Details"
                           className={`px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm text-gray-400 border bg-gray-50 hover:border-gray-200 border-gray-50 rounded-lg flex items-center gap-1`}
                           aria-label="Edit Your Details"
                           onClick={() => {
