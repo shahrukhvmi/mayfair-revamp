@@ -278,17 +278,17 @@ const PhotoUpload = () => {
 
 
                     {/* Example Images */}
-                    <div className="flex justify-center gap-4 mb-4">
+                    <div className="flex justify-center gap-4 mb-8">
                         <div className="flex flex-col items-center bg-white shadow-sm rounded-md mx-3 border-1">
                             <img src="/images/full-body-ok.png" alt="correct" className="w-28 h-40 object-cover rounded-lg" />
                             {/* <span className="text-green-500 font-bold my-1"><FaCheck size={18} /></span> */}
                         </div>
                         <div className="flex flex-col items-center bg-white shadow-sm rounded-md mx-3 border-1">
-                            <img src="/images/half-body-x.png" alt="incorrect" className="w-28 h-40 object-cover rounded-lg" />
+                            <img src="/images/face-x.png" alt="incorrect" className="w-28 h-40 object-cover rounded-lg" />
                             {/* <span className="text-red-500 font-bold my-1"><RxCross2 size={18} /></span> */}
                         </div>
                         <div className="flex flex-col items-center bg-white shadow-sm rounded-md mx-3 border-1">
-                            <img src="/images/face-x.png" alt="incorrect" className="w-28 h-40 object-cover rounded-lg" />
+                            <img src="/images/half-body-x.png" alt="incorrect" className="w-28 h-40 object-cover rounded-lg" />
                             {/* <span className="text-red-500 font-bold my-1"><RxCross2 size={18} /></span> */}
                         </div>
                     </div>
