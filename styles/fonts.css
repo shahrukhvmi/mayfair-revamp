@@ -71,6 +71,8 @@
   font-style: normal;
   font-display: swap;
 }
+
+
 /* Define a CSS variable for the font */
 :root {
   --reg-font: "NibPro-Regular";

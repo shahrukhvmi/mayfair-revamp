@@ -4,27 +4,30 @@ import { HiBadgeCheck } from "react-icons/hi";
 import NextButton from "../NextButton/NextButton";
 import useCartStore from "@/store/useCartStore";
 import { RiErrorWarningLine } from "react-icons/ri";
+import useImageUploadStore from "@/store/useImageUploadStore ";
+import GetImageIsUplaod from "@/api/GetImageIsUplaod";
 
 const ThankYou = () => {
   const { items, orderId, checkOut } = useCartStore();
   const GO = useRouter();
-  // const { imageUploaded, setImageUploaded } = useImageUploadStore();
-  // useEffect(() => {
-  //   const fetchImageStatus = async () => {
-  //     try {
-  //       const res = await GetImageIsUplaod({ order_id: orderId });
-  //       console.log("Image Upload Response", res);
+  const { imageUploaded, setImageUploaded } = useImageUploadStore();
+  useEffect(() => {
+    const fetchImageStatus = async () => {
+      try {
+        const res = await GetImageIsUplaod({ order_id: orderId });
+        console.log("Image Upload Response", res);
 
-  //       setImageUploaded(res?.data?.status);
-  //       console.log(res, "Image Upload Status");
-  //     } catch (error) {
-  //       console.error("Failed to fetch image status:", error);
-  //     }
-  //   };
+        setImageUploaded(res?.data?.status);
+        console.log(res, "Image Upload Status");
+      } catch (error) {
+        console.error("Failed to fetch image status:", error);
+      }
+    };
 
-  //   if (orderId) fetchImageStatus();
-  // }, [orderId]);
+    if (orderId) fetchImageStatus();
+  }, [orderId]);
 
+  console.log(imageUploaded, "check");
 
   const handleGoBack = () => {
     // if ( !imageUploaded) {
@@ -136,45 +139,51 @@ const ThankYou = () => {
             </div>
           </div>
 
-
-
-
-
           <blockquote
             style={{
               margin: 0,
-              padding: '10px',
-              backgroundColor: '#F9F9F9',
-              borderLeft: '3px solid #ccc',
-              borderRight: '3px solid #ccc',
+              padding: "10px",
+              backgroundColor: "#F9F9F9",
+              borderLeft: "3px solid #ccc",
+              borderRight: "3px solid #ccc",
               borderRadius: 15,
               padding: 20,
-            }}>
+            }}
+          >
             <h2 className="niba-bold-font underline text-black mb-2">
               Photo Upload Request:
             </h2>{" "}
-            <p className="thin-font text-gray-700">    To proceed with your order, we kindly ask you to upload clear, recent photos as part of our prescription approval process.
-              This image help our prescribers verify your details and ensure the safe and appropriate supply of your treatment.
-
-              Once we have reviewed and approved your photo, your order will be processed and dispatched by our pharmacy.
+            <p className="thin-font text-gray-700">
+              {" "}
+              To proceed with your order, we kindly ask you to upload clear,
+              recent photos as part of our prescription approval process. This
+              image help our prescribers verify your details and ensure the safe
+              and appropriate supply of your treatment. Once we have reviewed
+              and approved your photo, your order will be processed and
+              dispatched by our pharmacy.
             </p>
-            <p className="thin-font text-gray-700 my-3 ">  Your privacy is important to us — photo are stored securely and handled in strict confidence in line with data protection regulations.</p>
+            <p className="thin-font text-gray-700 my-3 ">
+              {" "}
+              Your privacy is important to us — photo are stored securely and
+              handled in strict confidence in line with data protection
+              regulations.
+            </p>
           </blockquote>
 
           <div className="my-6 flex justify-center">
-            <button className="bg-[#f8d86e] border-[#FFF3CD] rounded-full py-3 text-black flex bold-font cursor-pointer w-full justify-center" onClick={handleGoUpload}>
+            <button
+              className="bg-[#f8d86e] border-[#FFF3CD] rounded-full py-3 text-black flex bold-font cursor-pointer w-full justify-center"
+              onClick={handleGoUpload}
+            >
               <span>
                 <RiErrorWarningLine className="text-black me-2" size={20} />
               </span>
-              Action Required: Upload your full body photo to complete your order
-
+              Action Required: Upload your full body photo to complete your
+              order
             </button>
           </div>
 
           <div className="text-left space-y-4 text-gray-700 text-sm leading-relaxed thin-font">
-
-
-
             <p>
               We have received your medical consultation form which is now being
               reviewed by our prescribers. You may be contacted by a member of
@@ -184,9 +193,7 @@ const ThankYou = () => {
               account.
             </p>
             <p>
-              <span className="bold-font underline text-black">
-                Delivery:
-              </span>{" "}
+              <span className="bold-font underline text-black">Delivery:</span>{" "}
               All orders, once approved, are shipped via next-day tracked
               delivery using either DPD or Royal Mail. Orders may take longer
               than one working day to approve due to the clinical checks
@@ -210,25 +217,19 @@ const ThankYou = () => {
               not be able to cancel or return your order. This is due to
               legislation around prescription-only medication.
             </p>
-
-
-
-
-
           </div>
-
-          <div className="pt-6">
-
-
-            <NextButton
-              className="mt-4"
-              onClick={handleGoBack}
-              label="Continue to view order details"
-            />
-
-
-
-          </div>
+          {imageUploaded && (
+            <>
+              <div className="pt-6">
+                <NextButton
+                  className="mt-4"
+                  onClick={handleGoBack}
+                  label="Continue to view order details"
+                  // disabled={!imageUploaded}
+                />
+              </div>
+            </>
+          )}
         </div>
       </div>
     </div>
