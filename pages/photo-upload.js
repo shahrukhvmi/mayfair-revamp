@@ -14,6 +14,10 @@ import NextButton from "@/Components/NextButton/NextButton";
 import { FaCheck, FaCheckCircle } from "react-icons/fa";
 import { useSearchParams } from "next/navigation";
 import StepsHeader from "@/layout/stepsHeader";
+import FullBody from "@/public/images/full-body-ok.png";
+import HalfBodyX from "@/public/images/half-body-x.png";
+import FaceX from "@/public/images/face-x.png";
+import Image from "next/image";
 
 const PhotoUpload = () => {
   const GO = useRouter();
@@ -290,24 +294,24 @@ const PhotoUpload = () => {
           {/* Example Images */}
           <div className="flex justify-center  sm:gap-4 mb-8">
             <div className="flex flex-col items-center bg-white shadow-sm rounded-md mx-0 sm:mx-3 border-1">
-              <img
-                src="/images/full-body-ok.png"
+              <Image
+                src={FullBody}
                 alt="correct"
                 className="w-28 h-40 object-cover rounded-lg"
               />
               {/* <span className="text-green-500 font-bold my-1"><FaCheck size={18} /></span> */}
             </div>
             <div className="flex flex-col items-center bg-white shadow-sm rounded-md mx-0 sm:mx-3 border-1">
-              <img
-                src="/images/face-x.png"
+              <Image
+                src={FaceX}
                 alt="incorrect"
                 className="w-28 h-40 object-cover rounded-lg"
               />
               {/* <span className="text-red-500 font-bold my-1"><RxCross2 size={18} /></span> */}
             </div>
             <div className="flex flex-col items-center bg-white shadow-sm rounded-md mx-0 sm:mx-3 border-1">
-              <img
-                src="/images/half-body-x.png"
+              <Image
+                src={HalfBodyX}
                 alt="incorrect"
                 className="w-28 h-40 object-cover rounded-lg"
               />

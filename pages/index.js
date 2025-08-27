@@ -13,6 +13,7 @@ import useAuthUserDetailStore from "@/store/useAuthUserDetailStore";
 import useReorderButtonStore from "@/store/useReorderButton";
 import MetaLayout from "@/Meta/MetaLayout";
 import { meta_url } from "@/config/constants";
+import Weight from "@/public/images/intro.svg";
 
 export default function Index() {
   const router = useRouter();
@@ -81,7 +82,7 @@ export default function Index() {
           {/* Icon */}
           <div className="flex justify-center">
             <Image
-              src="images/intro.svg"
+              src={Weight}
               alt="Weight Loss Icon"
               width={200}
               height={50}
