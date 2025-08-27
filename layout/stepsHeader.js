@@ -64,6 +64,7 @@ const StepsHeader = ({ isOpen, toggleSidebar }) => {
   const { setIsReturningPatient } = useReturning();
   const { impersonate, setImpersonate } = useImpersonate();
   const { reorder } = useReorder();
+  const { imageUploaded, setImageUploaded } = useImageUploadStore();
 
   const {
     firstName,
@@ -189,13 +190,9 @@ const StepsHeader = ({ isOpen, toggleSidebar }) => {
     "/profile/",
   ];
 
-
-
   const redirectTo = specialRoutes.includes(pathname) ? "/dashboard" : "/";
-  console.log(reorder, "reorderreorder")
+  console.log(reorder, "reorderreorder");
 
-
-  const { imageUploaded, setImageUploaded } = useImageUploadStore();
   useEffect(() => {
     const fetchImageStatus = async () => {
       try {
@@ -210,19 +207,11 @@ const StepsHeader = ({ isOpen, toggleSidebar }) => {
     fetchImageStatus();
   }, [reorder]);
 
-
   return (
     <>
-      {
-        !imageUploaded && (
-
-
-          specialRoutes.includes(pathname) && !imageUploaded && <UploadTopPrompt />
-        )
-      }
-
-
-
+      {!imageUploaded && specialRoutes.includes(pathname) && (
+        <UploadTopPrompt />
+      )}
 
       {impersonate && (
         <div className="bg-gray-100">
@@ -299,8 +288,9 @@ const StepsHeader = ({ isOpen, toggleSidebar }) => {
                       : firstName}
                   </span>
                   <IoIosArrowDown
-                    className={`text-gray-700 transform transition-transform duration-200 ${Boolean(anchorEl) ? "rotate-180" : ""
-                      }`}
+                    className={`text-gray-700 transform transition-transform duration-200 ${
+                      Boolean(anchorEl) ? "rotate-180" : ""
+                    }`}
                     size={20}
                   />
                 </div>

@@ -180,7 +180,7 @@ export default function StepsInformation() {
     }
   }, [productId]);
 
-  useEffect(() => {}, []);
+  // useEffect(() => {}, []);
 
   //   setTimeout(() => {
   //     router.push("/step1");

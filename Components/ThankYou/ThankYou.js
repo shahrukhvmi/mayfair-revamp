@@ -155,43 +155,46 @@ const ThankYou = () => {
             </h2>{" "}
             <p className="thin-font text-gray-700">
               {" "}
-              To proceed with your order, we kindly ask you to upload clear,
-              recent photos as part of our prescription approval process. This
-              image help our prescribers verify your details and ensure the safe
-              and appropriate supply of your treatment. Once we have reviewed
-              and approved your photo, your order will be processed and
-              dispatched by our pharmacy.
+              To complete your order, please upload a clear, recent full-body
+              photo as part of our prescription approval process. This helps our
+              prescribers verify your BMI and ensure the safe and appropriate
+              supply of your treatment.
+            </p>
+            <p className="thin-font text-gray-700 my-3">
+              {" "}
+              Once your photo has been reviewed and approved, your order will be
+              processed and dispensed by our pharmacy.
             </p>
             <p className="thin-font text-gray-700 my-3 ">
               {" "}
-              Your privacy is important to us — photo are stored securely and
-              handled in strict confidence in line with data protection
-              regulations.
+              Your privacy is important to us — all photos are stored securely,
+              encrypted, and handled in strict confidence in line with data
+              protection regulations.
             </p>
           </blockquote>
 
           <div className="my-6 flex justify-center">
             <button
-              className="bg-[#f8d86e] border-[#FFF3CD] rounded-full py-3 text-black flex bold-font cursor-pointer w-full justify-center"
+              className="bg-[#f8d86e] rounded-full border border-[#FFF3CD] py-3 ps-5 px-2 sm:px-6 text-black flex items-start sm:items-center bold-font cursor-pointer 
+               w-full  text-start sm:text-center"
               onClick={handleGoUpload}
             >
               <span>
                 <RiErrorWarningLine className="text-black me-2" size={20} />
               </span>
-              Action Required: Upload your full body photo to complete your
-              order
+              Click here to upload your full-body image to complete your order
             </button>
           </div>
 
           <div className="text-left space-y-4 text-gray-700 text-sm leading-relaxed thin-font">
-            <p>
+            {/* <p>
               We have received your medical consultation form which is now being
               reviewed by our prescribers. You may be contacted by a member of
               our medical team for more information prior to your medication
               being dispensed. Details of your order have been emailed to you
               and is also available to view on the "my orders" section of your
               account.
-            </p>
+            </p> */}
             <p>
               <span className="bold-font underline text-black">Delivery:</span>{" "}
               All orders, once approved, are shipped via next-day tracked

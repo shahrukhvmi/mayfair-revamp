@@ -51,11 +51,9 @@ export default function SignUp() {
     setShowLoader(true);
     await new Promise((resolve) => setTimeout(resolve, 500)); // Wait 2s
     if (isReturningPatient) {
-
       router.push("/calculate-bmi/");
     } else {
       router.push("/confirm-ethnicity");
-
     }
   };
 
@@ -73,8 +71,9 @@ export default function SignUp() {
         <PageAnimationWrapper>
           <div>
             <div
-              className={`relative ${showLoader ? "pointer-events-none cursor-not-allowed" : ""
-                }`}
+              className={`relative ${
+                showLoader ? "pointer-events-none cursor-not-allowed" : ""
+              }`}
             >
               <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
                 {/* Phone Number */}

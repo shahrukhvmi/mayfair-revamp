@@ -87,7 +87,7 @@ const PhotoUpload = () => {
 
       if (res?.status === 200) {
         // toast.success("Photos uploaded successfully!");
-        setOpen(true); // ✅ sirf success pe modal open hoga
+        setOpen(true);
         // GO.push("/dashboard/");
       }
     } catch (error) {
@@ -119,7 +119,14 @@ const PhotoUpload = () => {
     const handleDrop = (e) => {
       e.preventDefault();
       if (e.dataTransfer.files && e.dataTransfer.files[0]) {
-        setValue(type, e.dataTransfer.files[0]); // reuse your existing setValue
+        const file = e.dataTransfer.files[0];
+
+        // ✅ Only allow images
+        if (file.type.startsWith("image/")) {
+          setValue(type, file);
+        } else {
+          toast.error("Only image files are allowed.");
+        }
       }
     };
 
@@ -260,8 +267,7 @@ const PhotoUpload = () => {
                         </h2> */}
 
             <h2 className="subHeading !text-black bold-font mb-3 border-b pb-3">
-             
-               Submit your photos for prescriber review
+              Submit your photos for prescriber review
             </h2>
 
             {/* Description */}
