@@ -11,7 +11,7 @@ export default function FullScreenModal({ isOpen, onClose, children }) {
           exit={{ opacity: 0 }}
         >
           <motion.div
-            className="relative bg-white w-full max-w-2xl overflow-y-auto p-6 sm:p-8 shadow-xl !rounded-md"
+            className="relative bg-white w-full max-w-2xl overflow-y-auto p-6 sm:p-8 shadow-xl !rounded-md max-h-[90%] sm:max-h-full mx-2"
             initial={{ y: "100vh" }}
             animate={{ y: 0 }}
             exit={{ y: "100vh" }}
