@@ -216,6 +216,7 @@ const ProductSelection = ({ showProductSelection }) => {
                 onClick={hanlePrevData}
                 label="Continue"
                 loading={isButtonLoading}
+                className={'px-5'}
               />
             </div>
           </div>
