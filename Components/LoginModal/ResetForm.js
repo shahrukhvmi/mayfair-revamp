@@ -30,8 +30,8 @@ export default function ResetForm({ register, handleSubmit, errors, onSubmit, is
               focus:outline-none focus:ring-2 focus:ring-violet-300 focus:border-primary
               ${errors.password ? "border-red-500" : "border-black"}`}
           />
-          <button type="button" onClick={() => setShowPassword((prev) => !prev)} className="absolute top-4 right-3 text-gray-500">
-            {showPassword ? <FiEyeOff size={18} /> : <FiEye size={18} />}
+          <button type="button" onClick={() => setShowPassword((prev) => !prev)} className="absolute top-5 right-3 text-gray-500 cursor-pointer">
+            {showPassword ? <FiEye  size={18} /> : <FiEyeOff size={18} />}
           </button>
         </div>
         {errors.password && <p className="text-sm text-red-600 mt-1">{errors.password.message}</p>}
@@ -56,8 +56,8 @@ export default function ResetForm({ register, handleSubmit, errors, onSubmit, is
               focus:outline-none focus:ring-2 focus:ring-violet-300 focus:border-primary
               ${errors.password_confirmation ? "border-red-500" : "border-black"}`}
           />
-          <button type="button" onClick={() => setShowConfirm((prev) => !prev)} className="absolute top-4 right-3 text-gray-500">
-            {showConfirm ? <FiEyeOff size={18} /> : <FiEye size={18} />}
+          <button type="button" onClick={() => setShowConfirm((prev) => !prev)} className="absolute top-5 right-3 text-gray-500 cursor-pointer">
+            {showConfirm ? <FiEye  size={18} /> : <FiEyeOff size={18} />}
           </button>
         </div>
         {errors.password_confirmation && <p className="text-sm text-red-600 mt-1">{errors.password_confirmation.message}</p>}
