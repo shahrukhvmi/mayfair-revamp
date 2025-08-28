@@ -205,7 +205,7 @@ const PhotoUpload = () => {
   return (
     <>
       <StepsHeader />
-
+      <MetaLayout canonical={`${meta_url}photo-upload/`} />
       <div className="my-14">
         <AnimatePresence>
           {open && (
@@ -253,8 +253,8 @@ const PhotoUpload = () => {
                   label="Return to Dashboard"
                   onClick={() => GO.push("/dashboard")}
                   className="w-full"
-                  // disabled={loading || !frontPhoto || !sidePhoto}
-                  // loading={loading}
+                // disabled={loading || !frontPhoto || !sidePhoto}
+                // loading={loading}
                 />
               </motion.div>
             </motion.div>
@@ -356,11 +356,10 @@ const PhotoUpload = () => {
               disabled={loading || !frontPhoto}
               className={`reg-font px-6 py-3 rounded-full text-white font-semibold text-sm transition-all duration-150 ease-in-out
       flex items-center justify-center
-      ${
-        loading || !frontPhoto
-          ? "bg-gray-300 cursor-not-allowed"
-          : "bg-[#47317c] hover:bg-[#3a2766] border-2 border-[#47317c]"
-      }
+      ${loading || !frontPhoto
+                  ? "bg-gray-300 cursor-not-allowed"
+                  : "bg-[#47317c] hover:bg-[#3a2766] border-2 border-[#47317c]"
+                }
     `}
             >
               {loading ? "Uploading..." : "Upload"}

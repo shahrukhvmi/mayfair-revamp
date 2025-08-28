@@ -6,7 +6,7 @@ import React from "react";
 const thankYou = () => {
   return (
     <>
-      <MetaLayout canonical={`${meta_url}`} />
+      <MetaLayout canonical={`${meta_url}payment-failed/`} />
       <PaymentFailed />
     </>
   );

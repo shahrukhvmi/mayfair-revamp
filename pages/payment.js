@@ -17,7 +17,7 @@ const Payment = () => {
     const fetchPaymentData = async () => {
       try {
         const res = await fetch(
-          "https://staging.mayfairweightlossclinic.co.uk/api/PaymentDataOnOrderToken",
+          "https://app.mayfairweightlossclinic.co.uk/api/PaymentDataOnOrderToken",
           {
             method: "POST",
             headers: {

@@ -178,7 +178,7 @@ const StepsHeader = ({ isOpen, toggleSidebar }) => {
     setBillingSameAsShipping(false);
     setIsReturningPatient(false);
     window.location.href =
-      "https://staging.mayfairweightlossclinic.co.uk/dashboard";
+      "https://app.mayfairweightlossclinic.co.uk/dashboard";
   };
 
   const specialRoutes = [
