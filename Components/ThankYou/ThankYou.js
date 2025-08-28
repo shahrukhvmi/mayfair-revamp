@@ -8,7 +8,22 @@ import useImageUploadStore from "@/store/useImageUploadStore ";
 import GetImageIsUplaod from "@/api/GetImageIsUplaod";
 
 const ThankYou = () => {
+
+
   const { items, orderId, checkOut } = useCartStore();
+  const router = useRouter();
+
+  useEffect(() => {
+
+    if (!checkOut || Object.keys(checkOut).length === 0) {
+      router.replace("/dashboard"); // or any fallback page
+    }
+  }, [checkOut, router]);
+
+  if (!checkOut || Object.keys(checkOut).length === 0) {
+    return null; // Prevent flicker while redirecting
+  }
+  console.log(checkOut, "checkOut")
   const GO = useRouter();
   const { imageUploaded, setImageUploaded } = useImageUploadStore();
   useEffect(() => {
