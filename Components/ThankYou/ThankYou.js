@@ -64,9 +64,12 @@ const ThankYou = () => {
             {/* <h3 className="text-2xl reg-font text-gray-800 border-b border-gray-200 pb-2 mb-4 text-center">Order Summary</h3> */}
             <div className="overflow-x-auto rounded-xl border border-gray-200 shadow-md">
               <table className="min-w-full divide-y divide-gray-200 text-sm text-gray-700">
-                <thead className="bg-gray-100 text-gray-700 reg-font">
+                <thead className="bg-gray-100 text-gray-700 font-semibold">
                   <tr>
                     <th className="px-6 py-4 text-left bold-font">Items</th>
+                    <th className="px-6 py-4 text-right bold-font">
+                      Quantity
+                    </th>
                     <th className="px-6 py-4 text-right bold-font">Amount</th>
                     <th className="px-6 py-4 text-right"></th>
                   </tr>
@@ -74,12 +77,21 @@ const ThankYou = () => {
                 <tbody className="divide-y divide-gray-100 bg-white">
                   {items.doses.length > 0 &&
                     items.doses.map((item, index) => (
-                      <tr key={`dose-${index}`} className="hover:bg-gray-50">
-                        <td className="px-6 py-3 thin-font">
-                          {item?.product} {item?.name}
+                      <tr key={`addon-${index}`} className="hover:bg-gray-50">
+                        <td className="px-6 py-3 reg-font">
+                          {item?.product || item?.name || "Add-on"}
                         </td>
-                        <td className="px-6 py-3 text-right thin-font">
-                          £{parseFloat(item?.price).toFixed(2)}
+                        <td className="px-6 py-3 text-center reg-font">
+                          {item?.qty}
+                        </td>
+                        <td className="px-6 py-3 text-right reg-font">
+                          £
+                          {(
+                            parseFloat(item?.price) * (item?.qty || 1)
+                          ).toFixed(2)}
+                          <span className="text-gray-500 text-sm ml-1">
+                            {/* (£{parseFloat(item?.price).toFixed(2)} each) */}
+                          </span>
                         </td>
                       </tr>
                     ))}
@@ -87,11 +99,20 @@ const ThankYou = () => {
                   {items.addons.length > 0 &&
                     items.addons.map((item, index) => (
                       <tr key={`addon-${index}`} className="hover:bg-gray-50">
-                        <td className="px-6 py-3 thin-font">
+                        <td className="px-6 py-3 reg-font">
                           {item?.product || item?.name || "Add-on"}
                         </td>
-                        <td className="px-6 py-3 text-right thin-font">
-                          £{parseFloat(item?.price).toFixed(2)}
+                        <td className="px-6 py-3 text-center reg-font">
+                          {item?.qty}
+                        </td>
+                        <td className="px-6 py-3 text-right reg-font">
+                          £
+                          {(
+                            parseFloat(item?.price) * (item?.qty || 1)
+                          ).toFixed(2)}
+                          <span className="text-gray-500 text-sm ml-1">
+                            {/* (£{parseFloat(item?.price).toFixed(2)} each) */}
+                          </span>
                         </td>
                       </tr>
                     ))}
@@ -105,8 +126,15 @@ const ThankYou = () => {
                         {checkOut?.discount?.code &&
                           ` - Code: ${checkOut?.discount?.code}`}
                       </td>
-                      <td className="px-6 py-3 text-right thin-font">
-                        £{parseFloat(checkOut?.discount?.discount).toFixed(2)}
+                      <td></td>
+                      <td className="px-6 py-3 text-right reg-font text-primary">
+                        {checkOut?.discount?.type === "percentage"
+                          ? `${parseFloat(
+                            checkOut?.discount?.discount
+                          ).toFixed(2)}%`
+                          : `-£${parseFloat(
+                            checkOut?.discount?.discount
+                          ).toFixed(2)}`}
                       </td>
                     </tr>
                   )}
@@ -119,20 +147,27 @@ const ThankYou = () => {
                           ({checkOut?.shipment?.name})
                         </span>
                       </td>
-                      <td className="px-6 py-3 text-right thin-font ">
-                        {" "}
-                        £{parseFloat(checkOut?.shipment?.price).toFixed(2)}
+                      <td></td>
+                      <td className="px-6 py-3 text-right reg-font ">
+
+                        £{parseFloat(checkOut?.shipment?.price).toFixed(
+                          2)}
+
                       </td>
                     </tr>
                   )}
 
                   <tr className="bg-gray-100 font-bold text-gray-900">
-                    <td colSpan={2} className="px-6 py-3 text-right bold-font">
+                    <td
+                      colSpan={2}
+                      className="px-6 py-3 text-right bold-font"
+                    >
                       Total
                     </td>
                     <td className="px-6 py-3 text-right bold-font">
                       £{parseFloat(checkOut?.total).toFixed(2)}
                     </td>
+                    <td></td>
                   </tr>
                 </tbody>
               </table>
@@ -173,17 +208,17 @@ const ThankYou = () => {
             </p>
           </blockquote>
 
-          <div className="my-6 flex justify-center">
+          <div className="my-6 flex justify-center ">
             <button
-              className="bg-[#f8d86e] rounded-full border border-[#FFF3CD] py-3 px-4 sm:px-6 
-               text-black flex items-center justify-center bold-font cursor-pointer 
-               w-full text-center"
+              className="bg-[#f8d86e] border border-[#FFF3CD] rounded-xl sm:rounded-full  py-3 px-2 sm:px-6 text-black flex items-start sm:items-center bold-font cursor-pointer 
+               w-full  text-start sm:text-center"
               onClick={handleGoUpload}
             >
-              <RiErrorWarningLine className="text-black me-2" size={20} />
+              <RiErrorWarningLine className="text-black sm:mr-0 mr-2  sm:w-14 w-14 " size={20} />
               Click here to upload your full-body image to complete your order
             </button>
           </div>
+
 
 
           <div className="text-left space-y-4 text-gray-700 text-sm leading-relaxed thin-font">

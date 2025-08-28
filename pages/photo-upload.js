@@ -273,7 +273,7 @@ const PhotoUpload = () => {
                         </h2> */}
 
             <h2 className="subHeading !text-black bold-font mb-3 border-b pb-3">
-              Submit your photos for prescriber review
+              Submit your photo for prescriber review
             </h2>
 
             {/* Description */}
@@ -357,10 +357,10 @@ const PhotoUpload = () => {
               type="submit"
               disabled={loading || !frontPhoto}
               className={`reg-font px-6 py-3 rounded-full text-white font-semibold text-sm transition-all duration-150 ease-in-out
-      flex items-center justify-center
+      flex items-center justify-center 
       ${loading || !frontPhoto
                   ? "bg-gray-300 cursor-not-allowed"
-                  : "bg-[#47317c] hover:bg-[#3a2766] border-2 border-[#47317c]"
+                  : "bg-[#47317c] hover:bg-[#3a2766] border-2 border-[#47317c] cursor-pointer"
                 }
     `}
             >
