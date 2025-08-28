@@ -175,16 +175,16 @@ const ThankYou = () => {
 
           <div className="my-6 flex justify-center">
             <button
-              className="bg-[#f8d86e] rounded-full border border-[#FFF3CD] py-3 ps-5 px-2 sm:px-6 text-black flex items-start sm:items-center bold-font cursor-pointer 
-               w-full  text-start sm:text-center"
+              className="bg-[#f8d86e] rounded-full border border-[#FFF3CD] py-3 px-4 sm:px-6 
+               text-black flex items-center justify-center bold-font cursor-pointer 
+               w-full text-center"
               onClick={handleGoUpload}
             >
-              <span>
-                <RiErrorWarningLine className="text-black me-2" size={20} />
-              </span>
+              <RiErrorWarningLine className="text-black me-2" size={20} />
               Click here to upload your full-body image to complete your order
             </button>
           </div>
+
 
           <div className="text-left space-y-4 text-gray-700 text-sm leading-relaxed thin-font">
             {/* <p>
@@ -223,12 +223,12 @@ const ThankYou = () => {
           </div>
           {imageUploaded && (
             <>
-              <div className="pt-6">
+              <div className="">
                 <NextButton
-                  className="mt-4"
+                  className=""
                   onClick={handleGoBack}
                   label="Continue to view order details"
-                  // disabled={!imageUploaded}
+                // disabled={!imageUploaded}
                 />
               </div>
             </>

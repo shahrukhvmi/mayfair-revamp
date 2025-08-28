@@ -106,7 +106,7 @@ const MyAccount = () => {
         renderSkeletons()
       ) : productData?.products?.length > 0 ? (
         <>
-          <header className="pb-9 mt-10">
+          <header className="pb-9">
             <h1 className="text-left headingDashBoard bold-font ">
               Available Treatments
             </h1>

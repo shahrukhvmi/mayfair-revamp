@@ -18,6 +18,8 @@ import FullBody from "@/public/images/full-body-ok.png";
 import HalfBodyX from "@/public/images/half-body-x.png";
 import FaceX from "@/public/images/face-x.png";
 import Image from "next/image";
+import MetaLayout from "@/Meta/MetaLayout";
+import { meta_url } from "@/config/constants";
 
 const PhotoUpload = () => {
   const GO = useRouter();
@@ -350,7 +352,7 @@ const PhotoUpload = () => {
                     /> */}
           </div>
 
-          <div className="w-full flex justify-center mt-8">
+          <div className="w-full flex justify-center">
             <button
               type="submit"
               disabled={loading || !frontPhoto}

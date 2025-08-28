@@ -30,7 +30,7 @@ export default function LoginForm({ register, handleSubmit, errors, isLoading, o
 
       <p className="reg-font text-black text-sm text-center mt-5">
 
-        Are you a new patient? <a href={"/acknowledgment"} className="text-primary underline">Get started with the consultation</a>
+        Are you a new patient? <Link href={"/acknowledgment"} className="text-primary underline block mt-1"> Get started with the consultation</Link>
       </p>
       <div className="mt-2">
         <BackButton
