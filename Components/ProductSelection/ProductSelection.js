@@ -137,7 +137,7 @@ const ProductSelection = ({ showProductSelection }) => {
       {isLoading ? (
         renderSkeletons()
       ) : (
-        <div className="w-full flex flex-col items-center justify-center px-4 py-2 overflow-y-auto">
+        <div className="w-full flex flex-col items-center justify-center px-4 py-2">
           <div className="w-full flex flex-col items-center justify-center gap-8">
             {/* ───── Reorder Treatments ───── */}
 
@@ -216,7 +216,6 @@ const ProductSelection = ({ showProductSelection }) => {
                 onClick={hanlePrevData}
                 label="Continue"
                 loading={isButtonLoading}
-                className={"px-5"}
               />
             </div>
           </div>
