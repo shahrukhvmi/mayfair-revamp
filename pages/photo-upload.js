@@ -20,6 +20,7 @@ import FaceX from "@/public/images/face-x.png";
 import Image from "next/image";
 import MetaLayout from "@/Meta/MetaLayout";
 import { meta_url } from "@/config/constants";
+import useIdVerificationUploadStore from "@/store/useIdVerificationUploadStore";
 
 const PhotoUpload = () => {
   const GO = useRouter();
@@ -34,6 +35,11 @@ const PhotoUpload = () => {
   const frontPhoto = watch("frontPhoto");
   const sidePhoto = watch("sidePhoto");
   const [loading, setLoading] = useState(false);
+  const [ImagesSend, setImagesSend] = useState(false);
+  const [buttonLabel, setButtonLabel] = useState("Return to Dashboard");
+
+  const { imageUploaded, setImageUploaded } = useImageUploadStore();
+  const { idVerificationUpload } = useIdVerificationUploadStore();
 
   useEffect(() => {
     const param = searchParams.get("order_id");
@@ -44,9 +50,6 @@ const PhotoUpload = () => {
       }
     }
   }, [searchParams, setOrderIdGetUrl]);
-
-  const [ImagesSend, setImagesSend] = useState(false);
-  const { setImageUploaded, imageUploaded } = useImageUploadStore();
 
   useEffect(() => {
     const fetchImageStatus = async () => {
@@ -99,6 +102,12 @@ const PhotoUpload = () => {
       if (res?.status === 200) {
         // toast.success("Photos uploaded successfully!");
         setOpen(true);
+
+        if (!idVerificationUpload) {
+          setButtonLabel("Upload id verification photo");
+        } else {
+          setButtonLabel("Return to Dashboard");
+        }
         // GO.push("/dashboard/");
       }
     } catch (error) {
@@ -120,6 +129,14 @@ const PhotoUpload = () => {
   console.log(ImagesSend, "GDJSGHSFHDSHFBSDJFSDJFB");
 
   console.log(imageUploaded, "imageUploaded");
+
+  const handleRedirect = () => {
+    if (!idVerificationUpload) {
+      GO.push("/id-verification");
+    } else {
+      GO.push("/dashboard");
+    }
+  };
 
   const renderUploadBox = (label, photo, type, placeholderUrl, suggestion) => {
     const handleDrop = (e) => {
@@ -245,15 +262,15 @@ const PhotoUpload = () => {
 
                 {/* Message */}
                 <p className="text-md text-black text-center mt-3 mb-6 reg-font">
-                  Your photos have been uploaded and are now under review by our
-                  prescribers. We’ll approve your order once the review is
-                  complete and notify you straight away.
+                  {!idVerificationUpload
+                    ? "Your full body photo have been uploaded and are now under review by our prescribers. You need to complete the ID verification to proceed. Please click the button below to continue."
+                    : "Your photos have been uploaded and are now under review by our prescribers. We’ll approve your order once the review is complete and notify you straight away."}
                 </p>
 
                 {/* Button */}
                 <NextButton
-                  label="Return to Dashboard"
-                  onClick={() => GO.push("/dashboard")}
+                  label={buttonLabel}
+                  onClick={handleRedirect}
                   className="w-full"
                   // disabled={loading || !frontPhoto || !sidePhoto}
                   // loading={loading}

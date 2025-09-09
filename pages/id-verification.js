@@ -23,6 +23,8 @@ import {
   GetIdVerification,
   IdVerificationUpload,
 } from "@/api/IdVerificationApi";
+import useImageUploadStore from "@/store/useImageUploadStore ";
+import MUISelectField from "@/Components/SelectField/SelectField";
 
 const IdVerification = () => {
   const GO = useRouter();
@@ -39,8 +41,11 @@ const IdVerification = () => {
   const [loading, setLoading] = useState(false);
   const [selectedId, setSelectedId] = useState("passport");
   const [ImagesSend, setImagesSend] = useState(false);
+  const [buttonLabel, setButtonLabel] = useState("Return to Dashboard");
+
   const { idVerificationUpload, setIdVerificationUpload } =
     useIdVerificationUploadStore();
+  const { imageUploaded } = useImageUploadStore();
 
   const idImages = {
     passport: Passport,
@@ -118,6 +123,12 @@ const IdVerification = () => {
       if (res?.status === 200) {
         // toast.success("Photos uploaded successfully!");
         setOpen(true);
+
+        if (!imageUploaded) {
+          setButtonLabel("Upload full body photo");
+        } else {
+          setButtonLabel("Return to Dashboard");
+        }
         // GO.push("/dashboard/");
       }
     } catch (error) {
@@ -135,6 +146,14 @@ const IdVerification = () => {
   };
 
   console.log(ImagesSend, "GDJSGHSFHDSHFBSDJFSDJFB");
+
+  const handleRedirect = () => {
+    if (!imageUploaded) {
+      GO.push("/photo-upload");
+    } else {
+      GO.push("/dashboard");
+    }
+  };
 
   const renderUploadBox = (label, photo, type, placeholderUrl, suggestion) => {
     const handleDrop = (e) => {
@@ -157,13 +176,13 @@ const IdVerification = () => {
 
     return (
       <>
-        <div className="flex flex-col items-center w-full sm:w-1/3 px-3">
+        <div className="flex flex-col items-center w-full px-3">
           <label className="w-full cursor-pointer">
             <div
               onDrop={handleDrop}
               onDragOver={handleDragOver}
-              className="border-2 border-dashed border-purple-400 rounded-2xl p-2R 
-                   hover:border-purple-600 hover:shadow-md transition-all duration-300 ease-in-out
+              className="border-2 border-dashed border-[#1F9E8C] rounded-2xl p-2
+                   hover:border-[#1F9E8C] hover:shadow-md transition-all duration-300 ease-in-out
                    flex flex-col items-center justify-center text-center relative min-h-[140px] bg-white"
             >
               <input
@@ -172,11 +191,10 @@ const IdVerification = () => {
                 onChange={(e) => handleUpload(e, type)}
                 className="hidden"
               />
-
-              {/* ✅ No photo → Show upload UI */}
+              {/* :white_check_mark: No photo → Show upload UI */}
               {!photo && (
                 <div className="flex flex-col items-center justify-center">
-                  <FiUpload className="text-purple-600 w-7 h-7 mb-3" />
+                  <FiUpload className="text-[#1F9E8C] w-full h-7 mb-3" />
                   <p className="text-gray-700 text-sm reg-font">
                     Click here
                     <br />
@@ -186,29 +204,25 @@ const IdVerification = () => {
                   </p>
                 </div>
               )}
-
-              {/* ✅ With photo → Show preview */}
+              {/* :white_check_mark: With photo → Show preview */}
               {photo && (
                 <div className="flex flex-col items-center">
                   <img
                     src={URL.createObjectURL(photo)}
                     alt={`${label} preview`}
-                    className="w-28 h-40 object-contain rounded-lg mb-3"
+                    className="w-full object-contain rounded-lg mb-3"
                   />
-                  <AiOutlineCheckCircle className="w-6 h-6 text-green-500 absolute top-3 right-3" />
+                  <AiOutlineCheckCircle className="w-6 h-6 text-[#1F9E8C] absolute top-3 right-3" />
                 </div>
               )}
-
               {/* Label */}
               {/* <p className="mt-2 text-gray-800 font-medium">{label}</p> */}
             </div>
           </label>
-
           {/* Suggestion / Helper text */}
           <p className="text-xs text-gray-500 mt-2 text-center italic">
             {suggestion}
           </p>
-
           {/* {photo && (
                     <p className="text-green-600 mt-1 text-sm italic">
                         {label} uploaded successfully
@@ -260,15 +274,15 @@ const IdVerification = () => {
 
                 {/* Message */}
                 <p className="text-md text-black text-center mt-3 mb-6 reg-font">
-                  Your photos have been uploaded and are now under review by our
-                  prescribers. We’ll approve your order once the review is
-                  complete and notify you straight away.
+                  {!imageUploaded
+                    ? "Your ID Verification photo have been uploaded and are now under review by our prescribers. Seems like your full body photo is still pending. Please upload it to proceed."
+                    : "Your photos have been uploaded and are now under review by our prescribers. We’ll approve your order once the review is complete and notify you straight away."}
                 </p>
 
                 {/* Button */}
                 <NextButton
-                  label="Return to Dashboard"
-                  onClick={() => GO.push("/dashboard")}
+                  label={buttonLabel}
+                  onClick={handleRedirect}
                   className="w-full"
                   // disabled={loading || !frontPhoto || !sidePhoto}
                   // loading={loading}
@@ -315,20 +329,21 @@ const IdVerification = () => {
 
           {/* Dropdown */}
           <div className="flex justify-center mb-4">
-            <select
-              value={selectedId}
-              onChange={(e) => setSelectedId(e.target.value)}
-              className="w-full max-w-3xl reg-font text-gray-700 bg-white border border-gray-300 rounded-xl px-4 py-3 
-               text-base focus:outline-none focus:ring-2 focus:ring-[#47317c] focus:border-[#47317c] 
-               transition-all duration-150"
-            >
-              <option value="passport">Passport</option>
-              <option value="driving_license">Driving License</option>
-              <option value="pass_card">
-                Proof of age card (e.g. PASS card)
-              </option>
-              <option value="id_card">Government-issued ID card</option>
-            </select>
+            <div className="w-full">
+              <MUISelectField
+                value={selectedId}
+                onChange={(e) => setSelectedId(e.target.value)}
+                options={[
+                  { value: "passport", label: "Passport" },
+                  { value: "driving_license", label: "Driving License" },
+                  {
+                    value: "pass_card",
+                    label: "Proof of age card (e.g. PASS card)",
+                  },
+                  { value: "id_card", label: "Government-issued ID card" },
+                ]}
+              />
+            </div>
           </div>
 
           {/* Image Preview */}

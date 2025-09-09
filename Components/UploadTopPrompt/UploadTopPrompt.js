@@ -25,7 +25,7 @@ const UploadTopPrompt = () => {
   }
 
   return (
-    <div className="fixed top-4 left-1/2 bg-amber-500 text-white px-5 py-2 rounded-xl shadow-lg w-[100%] sm:w-auto animate-slide-down z-50">
+    <div className="sm:fixed top-4 left-1/3 bg-amber-500 text-white px-5 py-2 sm:rounded-xl shadow-lg w-[100%] sm:w-auto animate-slide-down z-50">
       <div className="flex items-center gap-4">
         {/* Icon */}
         <div className="bg-white/20 p-2 rounded-full">
