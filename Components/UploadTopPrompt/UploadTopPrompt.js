@@ -1,10 +1,31 @@
+import useIdVerificationUploadStore from "@/store/useIdVerificationUploadStore";
+import useImageUploadStore from "@/store/useImageUploadStore ";
 import Link from "next/link";
 import React from "react";
 import { FiUpload } from "react-icons/fi";
 
 const UploadTopPrompt = () => {
+  const { imageUploaded } = useImageUploadStore();
+  const { idVerificationUpload } = useIdVerificationUploadStore();
+
+  // Build dynamic message
+  let missingItems = [];
+  if (!imageUploaded) missingItems.push("photo");
+  if (!idVerificationUpload) missingItems.push("ID verification");
+
+  const message = missingItems.length
+    ? `Please upload your ${missingItems.join(" and ")} to complete your order.`
+    : "";
+
+  // if (!message) return null; // nothing missing → don't show prompt
+
+  let redirectTo = "/photo-upload"; // default
+  if (imageUploaded && !idVerificationUpload) {
+    redirectTo = "/id-verification";
+  }
+
   return (
-    <div className="fixed top-4 left-1/2   bg-amber-500 text-white px-5 py-2 rounded-xl shadow-lg w-[90%] sm:w-auto animate-slide-down z-50">
+    <div className="fixed top-4 left-1/2 bg-amber-500 text-white px-5 py-2 rounded-xl shadow-lg w-[100%] sm:w-auto animate-slide-down z-50">
       <div className="flex items-center gap-4">
         {/* Icon */}
         <div className="bg-white/20 p-2 rounded-full">
@@ -13,9 +34,9 @@ const UploadTopPrompt = () => {
 
         {/* Message */}
         <div className="text-sm reg-font">
-          Please upload your photos to complete your order{" "}
+          {message}{" "}
           <Link
-            href="/photo-upload"
+            href={redirectTo}
             className="font-medium underline underline-offset-4 hover:text-white/80 transition mx-2"
           >
             Click here to upload

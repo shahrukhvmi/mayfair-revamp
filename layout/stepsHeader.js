@@ -36,6 +36,8 @@ import useReorder from "@/store/useReorderStore";
 import useCartStore from "@/store/useCartStore";
 import useImageUploadStore from "@/store/useImageUploadStore ";
 import GetImageIsUplaod from "@/api/GetImageIsUplaod";
+import { GetIdVerification } from "@/api/IdVerificationApi";
+import useIdVerificationUploadStore from "@/store/useIdVerificationUploadStore";
 
 const StepsHeader = ({ isOpen, toggleSidebar }) => {
   const [anchorEl, setAnchorEl] = useState(null);
@@ -65,6 +67,10 @@ const StepsHeader = ({ isOpen, toggleSidebar }) => {
   const { impersonate, setImpersonate } = useImpersonate();
   const { reorder } = useReorder();
   const { imageUploaded, setImageUploaded } = useImageUploadStore();
+  const { idVerificationUpload, setIdVerificationUpload } =
+    useIdVerificationUploadStore();
+
+  console.log(idVerificationUpload, "ID VERIFICATION STATUS");
 
   const {
     firstName,
@@ -207,11 +213,24 @@ const StepsHeader = ({ isOpen, toggleSidebar }) => {
     fetchImageStatus();
   }, [reorder]);
 
+  useEffect(() => {
+    const fetchImageStatus = async () => {
+      try {
+        const res = await GetIdVerification({ reorder });
+        console.log("Verification Image Status", res);
+        setIdVerificationUpload(res?.data?.status);
+      } catch (error) {
+        console.error("Failed to fetch image status:", error);
+      }
+    };
+
+    fetchImageStatus();
+  }, [reorder]);
+
   return (
     <>
-      {!imageUploaded && specialRoutes.includes(pathname) && (
-        <UploadTopPrompt />
-      )}
+      {(!imageUploaded || !idVerificationUpload) &&
+        specialRoutes.includes(pathname) && <UploadTopPrompt />}
 
       {impersonate && (
         <div className="bg-gray-100">
