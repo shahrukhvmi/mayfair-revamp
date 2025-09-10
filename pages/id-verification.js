@@ -97,42 +97,39 @@ const IdVerification = () => {
     });
 
   const onSubmit = async (data) => {
-    const frontBase64 = await toBase64(data.frontPhoto);
-
-    const payload = {
-      front: frontBase64,
-      order_id: orderIdGetUrl ? orderIdGetUrl : orderId,
-      type: selectedId,
-    };
-
-    console.log(payload, "Form Data");
-
     try {
       if (!data.frontPhoto) {
-        toast.error("Please upload Front images.");
+        toast.error("Please upload a front image.");
         return;
       }
-      setLoading(true); // Start loading
+
+      setLoading(true);
+
       const frontBase64 = await toBase64(data.frontPhoto);
-      const payload = {
+
+      let payload = {
         front: frontBase64,
         order_id: orderIdGetUrl ? orderIdGetUrl : orderId,
         type: selectedId,
       };
-      const res = await IdVerificationUpload(payload);
-      if (res?.status === 200) {
-        // toast.success("Photos uploaded successfully!");
-        setOpen(true);
 
-        if (!imageUploaded) {
-          setButtonLabel("Upload full body photo");
-        } else {
-          setButtonLabel("Return to Dashboard");
-        }
-        // GO.push("/dashboard/");
+      if (data.sidePhoto) {
+        const sideBase64 = await toBase64(data.sidePhoto);
+        payload.side = sideBase64; // ✅ Only include if uploaded
+      }
+
+      console.log(payload, "Form Data");
+
+      const res = await IdVerificationUpload(payload);
+
+      if (res?.status === 200) {
+        setOpen(true);
+        setButtonLabel(
+          !imageUploaded ? "Upload full body photo" : "Return to Dashboard"
+        );
       }
     } catch (error) {
-      console.log(error?.response?.data?.errors?.Order, "skdsksdljsdskdl");
+      console.log(error?.response?.data, "Upload Error");
       if (error?.response?.data?.message === "Unauthenticated.") {
         toast.error("Failed to upload images. Please Login again.");
         GO.push("/login");
@@ -141,7 +138,7 @@ const IdVerification = () => {
         toast.error(error?.response?.data?.errors?.Order);
       }
     } finally {
-      setLoading(false); // ✅ loading hamesha false hoga
+      setLoading(false);
     }
   };
 
@@ -178,11 +175,21 @@ const IdVerification = () => {
       <>
         <div className="flex flex-col items-center w-full px-3">
           <label className="w-full cursor-pointer">
+            <p className="mt-2 mb-1 text-gray-800 font-medium reg-font">
+              {label.includes("*") ? (
+                <>
+                  {label.replace("*", "")}
+                  <span className="text-red-500">*</span>
+                </>
+              ) : (
+                label
+              )}
+            </p>
             <div
               onDrop={handleDrop}
               onDragOver={handleDragOver}
-              className="border-2 border-dashed border-[#1F9E8C] rounded-2xl p-2
-                   hover:border-[#1F9E8C] hover:shadow-md transition-all duration-300 ease-in-out
+              className="border-2 border-dashed border-violet-700 rounded-2xl p-2
+                   hover:border-violet-800 hover:shadow-md transition-all duration-300 ease-in-out
                    flex flex-col items-center justify-center text-center relative min-h-[140px] bg-white"
             >
               <input
@@ -194,7 +201,7 @@ const IdVerification = () => {
               {/* :white_check_mark: No photo → Show upload UI */}
               {!photo && (
                 <div className="flex flex-col items-center justify-center">
-                  <FiUpload className="text-[#1F9E8C] w-full h-7 mb-3" />
+                  <FiUpload className="text-violet-700 w-full h-7 mb-3" />
                   <p className="text-gray-700 text-sm reg-font">
                     Click here
                     <br />
@@ -216,7 +223,6 @@ const IdVerification = () => {
                 </div>
               )}
               {/* Label */}
-              {/* <p className="mt-2 text-gray-800 font-medium">{label}</p> */}
             </div>
           </label>
           {/* Suggestion / Helper text */}
@@ -295,22 +301,22 @@ const IdVerification = () => {
           onSubmit={handleSubmit(onSubmit)}
           className="max-w-3xl mx-auto my-auto px-6 sm:px-32 py-10 bg-white shadow-2xl rounded-3xl border border-gray-100"
         >
-          <div className="mb-8 max-w-2xl mx-auto text-left">
+          <div className="mb-4 max-w-2xl mx-auto text-left">
             {/* Heading */}
             {/* <h2 className="subHeading niba-semibold-font mb-2 border-b pb-3">
                             Please upload a <span className='niba-bold-font text-black' >full body</span> picture of yourself
                         </h2> */}
 
             <h2 className="subHeading !text-black bold-font mb-3 border-b pb-3">
-              Further verification required
+              ID verification required
             </h2>
 
             {/* Description */}
             <p className="text-gray-700 mb-1 reg-font">
-              As part of our service we use identity checking software to make
-              sure our patients are over the age of 18. On this occasion we have
-              been unable to verify your identity, to continue we need a few
-              more details from you.
+              As an online healthcare provider, we are required by law to
+              confirm that all patients are at least 18 years of age. Normally,
+              these checks are completed automatically against national identity
+              registers using the information you provide.
             </p>
 
             {/* Bullet Points */}
@@ -322,7 +328,7 @@ const IdVerification = () => {
                 inappropriate use.
               </li>
             </ul> */}
-            <p className="text-gray-700 mb-1 mt-6 reg-font">
+            <p className="text-gray-700 mb-0 mt-6 reg-font">
               How would you like to verify your identity?
             </p>
           </div>
@@ -347,7 +353,7 @@ const IdVerification = () => {
           </div>
 
           {/* Image Preview */}
-          <div className="flex justify-center sm:gap-4 mb-8">
+          {/* <div className="flex justify-center sm:gap-4 mb-8">
             <div className="flex flex-col items-center mx-0 sm:mx-3">
               <Image
                 src={idImages[selectedId]}
@@ -355,7 +361,7 @@ const IdVerification = () => {
                 className="w-4xl h-full object-cover rounded-lg"
               />
             </div>
-          </div>
+          </div> */}
 
           <div className="flex flex-wrap sm:flex-nowrap justify-center gap-6 mb-8">
             <Controller
@@ -364,10 +370,24 @@ const IdVerification = () => {
               defaultValue={null}
               render={() =>
                 renderUploadBox(
-                  "Front Photo",
+                  "Front*",
                   frontPhoto,
                   "frontPhoto",
                   "/images/front_image.png"
+                )
+              }
+            />
+
+            <Controller
+              name="sidePhoto"
+              control={control}
+              defaultValue={null}
+              render={() =>
+                renderUploadBox(
+                  "Back (optional)",
+                  sidePhoto,
+                  "sidePhoto",
+                  "/images/side_image.png"
                 )
               }
             />
