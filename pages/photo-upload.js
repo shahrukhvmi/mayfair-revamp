@@ -21,6 +21,7 @@ import Image from "next/image";
 import MetaLayout from "@/Meta/MetaLayout";
 import { meta_url } from "@/config/constants";
 import useIdVerificationUploadStore from "@/store/useIdVerificationUploadStore";
+import { GetIdVerification } from "@/api/IdVerificationApi";
 
 const PhotoUpload = () => {
   const GO = useRouter();
@@ -39,7 +40,8 @@ const PhotoUpload = () => {
   const [buttonLabel, setButtonLabel] = useState("Return to Dashboard");
 
   const { imageUploaded, setImageUploaded } = useImageUploadStore();
-  const { idVerificationUpload } = useIdVerificationUploadStore();
+  const { idVerificationUpload, setIdVerificationUpload } =
+    useIdVerificationUploadStore();
 
   useEffect(() => {
     const param = searchParams.get("order_id");
@@ -60,11 +62,32 @@ const PhotoUpload = () => {
         setImageUploaded(res?.data?.status);
         setImagesSend(res?.data?.status);
         console.log(res, "Image Upload Status");
+
+        if (!idVerificationUpload) {
+          setButtonLabel("Upload ID verification photo");
+        } else {
+          setButtonLabel("Return to Dashboard");
+        }
       } catch (error) {
         console.error("Failed to fetch image status:", error);
       }
     };
 
+    if (orderId) fetchImageStatus();
+  }, [orderId]);
+
+  useEffect(() => {
+    const fetchImageStatus = async () => {
+      try {
+        const res = await GetIdVerification({ order_id: orderId });
+        console.log("Image Upload Response", res);
+        setIdVerificationUpload(res?.data?.status);
+        setImagesSend(res?.data?.status);
+        console.log(res, "Image Upload Status");
+      } catch (error) {
+        console.error("Failed to fetch image status:", error);
+      }
+    };
     if (orderId) fetchImageStatus();
   }, [orderId]);
 

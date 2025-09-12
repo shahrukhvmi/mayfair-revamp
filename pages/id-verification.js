@@ -45,7 +45,7 @@ const IdVerification = () => {
 
   const { idVerificationUpload, setIdVerificationUpload } =
     useIdVerificationUploadStore();
-  const { imageUploaded } = useImageUploadStore();
+  const { imageUploaded, setImageUploaded } = useImageUploadStore();
 
   const idImages = {
     passport: Passport,
@@ -78,6 +78,21 @@ const IdVerification = () => {
       }
     };
 
+    if (orderId) fetchImageStatus();
+  }, [orderId]);
+
+  useEffect(() => {
+    const fetchImageStatus = async () => {
+      try {
+        const res = await GetImageIsUplaod({ order_id: orderId });
+        console.log("Image Upload Response", res);
+        setImageUploaded(res?.data?.status);
+        setImagesSend(res?.data?.status);
+        console.log(res, "Image Upload Status");
+      } catch (error) {
+        console.error("Failed to fetch image status:", error);
+      }
+    };
     if (orderId) fetchImageStatus();
   }, [orderId]);
 
