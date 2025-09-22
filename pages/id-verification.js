@@ -290,14 +290,14 @@ const IdVerification = () => {
 
                 {/* Title */}
                 <h2 className="text-2xl font-bold text-center text-primary">
-                  You’re All Set!
+                  ID successfully uploaded
                 </h2>
 
                 {/* Message */}
                 <p className="text-md text-black text-center mt-3 mb-6 reg-font">
                   {!imageUploaded
                     ? "Your ID Verification photo have been uploaded and are now under review by our prescribers. Seems like your full body photo is still pending. Please upload it to proceed."
-                    : "Your photos have been uploaded and are now under review by our prescribers. We’ll approve your order once the review is complete and notify you straight away."}
+                    : "Your ID has been uploaded and are now under review by our prescribers. We’ll approve your order once the review is complete and notify you straight away."}
                 </p>
 
                 {/* Button */}

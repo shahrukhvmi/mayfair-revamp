@@ -127,7 +127,7 @@ const PhotoUpload = () => {
         setOpen(true);
 
         if (!idVerificationUpload) {
-          setButtonLabel("Upload id verification photo");
+          setButtonLabel("Upload ID verification photo");
         } else {
           setButtonLabel("Return to Dashboard");
         }
@@ -280,14 +280,14 @@ const PhotoUpload = () => {
 
                 {/* Title */}
                 <h2 className="text-2xl font-bold text-center text-primary">
-                  You’re All Set!
+                  Image successfully uploaded
                 </h2>
 
                 {/* Message */}
                 <p className="text-md text-black text-center mt-3 mb-6 reg-font">
                   {!idVerificationUpload
                     ? "Your full body photo have been uploaded and are now under review by our prescribers. You need to complete the ID verification to proceed. Please click the button below to continue."
-                    : "Your photos have been uploaded and are now under review by our prescribers. We’ll approve your order once the review is complete and notify you straight away."}
+                    : "Your full body photo have been uploaded and are now under review by our prescribers. We’ll approve your order once the review is complete and notify you straight away."}
                 </p>
 
                 {/* Button */}
