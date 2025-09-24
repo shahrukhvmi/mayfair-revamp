@@ -67,11 +67,12 @@ export default function BmiDetail() {
   // Check if the ethnicity is "Yes" or "No" and if the BMI is below the required threshold
   const isEthnicityYes = patientInfo?.ethnicity === "Yes";
   const isEthnicityNo = patientInfo?.ethnicity === "No";
+  const isEthnicityNotDecided = patientInfo?.ethnicity === "Prefer not to say";
   let bmiError = "";
 
   if (isEthnicityYes && bmiValue < 25.5 && !isReturningPatient) {
     bmiError = "BMI must be at least 25.5";
-  } else if (isEthnicityNo && bmiValue < 27 && !isReturningPatient) {
+  } else if ( (isEthnicityNo || isEthnicityNotDecided) && bmiValue < 27 && !isReturningPatient) {
     bmiError = "BMI must be at least 27";
   }
   else if (isApproachingUnderweight && isReturningPatient) {
