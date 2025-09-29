@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { motion, AnimatePresence } from "framer-motion";
 import PageLoader from "@/Components/PageLoader/PageLoader";
+import { app_url } from "../config/constants";
 
 const Payment = () => {
   const router = useRouter();
@@ -16,17 +17,14 @@ const Payment = () => {
 
     const fetchPaymentData = async () => {
       try {
-        const res = await fetch(
-          "https://app.mayfairweightlossclinic.co.uk/api/PaymentDataOnOrderToken",
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              "Company-Id": 1,
-            },
-            body: JSON.stringify({ order_token: order_id }),
-          }
-        );
+        const res = await fetch(`${app_url}/PaymentDataOnOrderToken`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Company-Id": 1,
+          },
+          body: JSON.stringify({ order_token: order_id }),
+        });
 
         const data = await res.json();
 
