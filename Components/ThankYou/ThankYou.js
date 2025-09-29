@@ -223,16 +223,18 @@ const ThankYou = () => {
             </p>
           </blockquote>
 
-          <div className="my-6 flex justify-center ">
-            <button
-              className="bg-[#f8d86e] border border-[#FFF3CD] rounded-xl sm:rounded-full  py-3 px-2 sm:px-6 text-black flex items-start sm:items-center bold-font cursor-pointer 
-               w-full  text-start sm:text-center"
-              onClick={handleGoUpload}
-            >
-              <RiErrorWarningLine className="text-black sm:mr-0 mr-2  sm:w-14 w-14 " size={20} />
-              Click here to upload your full-body image to complete your order
-            </button>
-          </div>
+          {!imageUploaded && (
+            <div className="my-6 flex justify-center ">
+              <button
+                className="bg-[#f8d86e] border border-[#FFF3CD] rounded-xl sm:rounded-full  py-3 px-2 sm:px-6 text-black flex items-start sm:items-center bold-font cursor-pointer 
+                w-full  text-start sm:text-center"
+                onClick={handleGoUpload}
+              >
+                <RiErrorWarningLine className="text-black sm:mr-0 mr-2  sm:w-14 w-14 " size={20} />
+                Click here to upload your full-body image to complete your order
+              </button>
+            </div>
+          )}
 
 
 
