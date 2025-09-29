@@ -4,9 +4,7 @@ import { FiUpload } from "react-icons/fi";
 import { AiOutlineCheckCircle } from "react-icons/ai";
 import toast from "react-hot-toast";
 import useReorder from "@/store/useReorderStore";
-import { ImageUplaodApi } from "@/api/ImageUploadApi";
 import useCartStore from "@/store/useCartStore";
-import useImageUploadStore from "@/store/useImageUploadStore ";
 import GetImageIsUplaod from "@/api/GetImageIsUplaod";
 import { useRouter } from "next/router";
 import { motion, AnimatePresence } from "framer-motion";
@@ -14,14 +12,19 @@ import NextButton from "@/Components/NextButton/NextButton";
 import { FaCheck, FaCheckCircle } from "react-icons/fa";
 import { useSearchParams } from "next/navigation";
 import StepsHeader from "@/layout/stepsHeader";
-import FullBody from "@/public/images/full-body-ok.png";
-import HalfBodyX from "@/public/images/half-body-x.png";
-import FaceX from "@/public/images/face-x.png";
 import Image from "next/image";
 import MetaLayout from "@/Meta/MetaLayout";
 import { meta_url } from "@/config/constants";
+import PassCard from "@/public/images/passcard.png";
+import Driving from "@/public/images/driving.png";
+import Passport from "@/public/images/passport.png";
+import useIdVerificationUploadStore from "@/store/useIdVerificationUploadStore";
+import {
+  GetIdVerification,
+  IdVerificationUpload,
+} from "@/api/IdVerificationApi";
 
-const PhotoUpload = () => {
+const IdVerification = () => {
   const GO = useRouter();
   const [open, setOpen] = useState(false);
   // get Order id url to send photo uplaod api
@@ -34,6 +37,17 @@ const PhotoUpload = () => {
   const frontPhoto = watch("frontPhoto");
   const sidePhoto = watch("sidePhoto");
   const [loading, setLoading] = useState(false);
+  const [selectedId, setSelectedId] = useState("passport");
+  const [ImagesSend, setImagesSend] = useState(false);
+  const { idVerificationUpload, setIdVerificationUpload } =
+    useIdVerificationUploadStore();
+
+  const idImages = {
+    passport: Passport,
+    driving_license: Driving,
+    pass_card: PassCard,
+    id_card: PassCard,
+  };
 
   useEffect(() => {
     const param = searchParams.get("order_id");
@@ -45,16 +59,13 @@ const PhotoUpload = () => {
     }
   }, [searchParams, setOrderIdGetUrl]);
 
-  const [ImagesSend, setImagesSend] = useState(false);
-  const { setImageUploaded, imageUploaded } = useImageUploadStore();
-
   useEffect(() => {
     const fetchImageStatus = async () => {
       try {
-        const res = await GetImageIsUplaod({ order_id: orderId });
+        const res = await GetIdVerification({ order_id: orderId });
         console.log("Image Upload Response", res);
 
-        setImageUploaded(res?.data?.status);
+        setIdVerificationUpload(res?.data?.status);
         setImagesSend(res?.data?.status);
         console.log(res, "Image Upload Status");
       } catch (error) {
@@ -81,6 +92,16 @@ const PhotoUpload = () => {
     });
 
   const onSubmit = async (data) => {
+    const frontBase64 = await toBase64(data.frontPhoto);
+
+    const payload = {
+      front: frontBase64,
+      order_id: orderIdGetUrl ? orderIdGetUrl : orderId,
+      type: selectedId,
+    };
+
+    console.log(payload, "Form Data");
+
     try {
       if (!data.frontPhoto) {
         toast.error("Please upload Front images.");
@@ -88,14 +109,12 @@ const PhotoUpload = () => {
       }
       setLoading(true); // Start loading
       const frontBase64 = await toBase64(data.frontPhoto);
-
       const payload = {
         front: frontBase64,
         order_id: orderIdGetUrl ? orderIdGetUrl : orderId,
+        type: selectedId,
       };
-
-      const res = await ImageUplaodApi(payload);
-
+      const res = await IdVerificationUpload(payload);
       if (res?.status === 200) {
         // toast.success("Photos uploaded successfully!");
         setOpen(true);
@@ -103,12 +122,10 @@ const PhotoUpload = () => {
       }
     } catch (error) {
       console.log(error?.response?.data?.errors?.Order, "skdsksdljsdskdl");
-
       if (error?.response?.data?.message === "Unauthenticated.") {
         toast.error("Failed to upload images. Please Login again.");
         GO.push("/login");
       }
-
       if (error?.response?.data?.errors?.Order === "Order not found") {
         toast.error(error?.response?.data?.errors?.Order);
       }
@@ -118,8 +135,6 @@ const PhotoUpload = () => {
   };
 
   console.log(ImagesSend, "GDJSGHSFHDSHFBSDJFSDJFB");
-
-  console.log(imageUploaded, "imageUploaded");
 
   const renderUploadBox = (label, photo, type, placeholderUrl, suggestion) => {
     const handleDrop = (e) => {
@@ -273,51 +288,57 @@ const PhotoUpload = () => {
                         </h2> */}
 
             <h2 className="subHeading !text-black bold-font mb-3 border-b pb-3">
-              Submit your photo for prescriber review
+              Further verification required
             </h2>
 
             {/* Description */}
             <p className="text-gray-700 mb-1 reg-font">
-              Please upload a <span className="bold-font">full body</span>{" "}
-              picture of yourself.
+              As part of our service we use identity checking software to make
+              sure our patients are over the age of 18. On this occasion we have
+              been unable to verify your identity, to continue we need a few
+              more details from you.
             </p>
 
             {/* Bullet Points */}
-            <ul className="list-disc pl-6 text-gray-800 text-sm space-y-2 font-normal font-sans pt-2 my-10 sm:my-0">
+            {/* <ul className="list-disc pl-6 text-gray-800 text-sm space-y-2 font-normal font-sans pt-2 my-10 sm:my-0">
               <li>We will only ask for this once.</li>
               <li>
                 We realise it's inconvenient, but this is a regulatory
                 requirement designed for your safety and to prevent
                 inappropriate use.
               </li>
-            </ul>
+            </ul> */}
+            <p className="text-gray-700 mb-1 mt-6 reg-font">
+              How would you like to verify your identity?
+            </p>
           </div>
 
-          {/* Example Images */}
-          <div className="flex justify-center  sm:gap-4 mb-8">
-            <div className="flex flex-col items-center bg-white shadow-sm rounded-md mx-0 sm:mx-3 border-1">
+          {/* Dropdown */}
+          <div className="flex justify-center mb-4">
+            <select
+              value={selectedId}
+              onChange={(e) => setSelectedId(e.target.value)}
+              className="w-full max-w-3xl reg-font text-gray-700 bg-white border border-gray-300 rounded-xl px-4 py-3 
+               text-base focus:outline-none focus:ring-2 focus:ring-[#47317c] focus:border-[#47317c] 
+               transition-all duration-150"
+            >
+              <option value="passport">Passport</option>
+              <option value="driving_license">Driving License</option>
+              <option value="pass_card">
+                Proof of age card (e.g. PASS card)
+              </option>
+              <option value="id_card">Government-issued ID card</option>
+            </select>
+          </div>
+
+          {/* Image Preview */}
+          <div className="flex justify-center sm:gap-4 mb-8">
+            <div className="flex flex-col items-center mx-0 sm:mx-3">
               <Image
-                src={FullBody}
-                alt="correct"
-                className="w-28 h-40 object-cover rounded-lg"
+                src={idImages[selectedId]}
+                alt={selectedId}
+                className="w-4xl h-full object-cover rounded-lg"
               />
-              {/* <span className="text-green-500 font-bold my-1"><FaCheck size={18} /></span> */}
-            </div>
-            <div className="flex flex-col items-center bg-white shadow-sm rounded-md mx-0 sm:mx-3 border-1">
-              <Image
-                src={FaceX}
-                alt="incorrect"
-                className="w-28 h-40 object-cover rounded-lg"
-              />
-              {/* <span className="text-red-500 font-bold my-1"><RxCross2 size={18} /></span> */}
-            </div>
-            <div className="flex flex-col items-center bg-white shadow-sm rounded-md mx-0 sm:mx-3 border-1">
-              <Image
-                src={HalfBodyX}
-                alt="incorrect"
-                className="w-28 h-40 object-cover rounded-lg"
-              />
-              {/* <span className="text-red-500 font-bold my-1"><RxCross2 size={18} /></span> */}
             </div>
           </div>
 
@@ -374,4 +395,4 @@ const PhotoUpload = () => {
   );
 };
 
-export default PhotoUpload;
+export default IdVerification;
