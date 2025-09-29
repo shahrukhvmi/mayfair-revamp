@@ -191,7 +191,6 @@ const ThankYou = () => {
 
           <blockquote
             style={{
-              margin: 0,
               padding: "10px",
               backgroundColor: "#F9F9F9",
               borderLeft: "3px solid #ccc",
@@ -199,6 +198,7 @@ const ThankYou = () => {
               borderRadius: 15,
               padding: 20,
             }}
+            className={`${imageUploaded ? "my-6" : ""} `}
           >
             <h2 className="niba-bold-font underline text-black mb-2">
               Photo Upload Request:
