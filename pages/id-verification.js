@@ -23,6 +23,8 @@ import {
   GetIdVerification,
   IdVerificationUpload,
 } from "@/api/IdVerificationApi";
+import useImageUploadStore from "@/store/useImageUploadStore ";
+import MUISelectField from "@/Components/SelectField/SelectField";
 
 const IdVerification = () => {
   const GO = useRouter();
@@ -39,8 +41,11 @@ const IdVerification = () => {
   const [loading, setLoading] = useState(false);
   const [selectedId, setSelectedId] = useState("passport");
   const [ImagesSend, setImagesSend] = useState(false);
+  const [buttonLabel, setButtonLabel] = useState("Return to Dashboard");
+
   const { idVerificationUpload, setIdVerificationUpload } =
     useIdVerificationUploadStore();
+  const { imageUploaded, setImageUploaded } = useImageUploadStore();
 
   const idImages = {
     passport: Passport,
@@ -76,6 +81,21 @@ const IdVerification = () => {
     if (orderId) fetchImageStatus();
   }, [orderId]);
 
+  useEffect(() => {
+    const fetchImageStatus = async () => {
+      try {
+        const res = await GetImageIsUplaod({ order_id: orderId });
+        console.log("Image Upload Response", res);
+        setImageUploaded(res?.data?.status);
+        setImagesSend(res?.data?.status);
+        console.log(res, "Image Upload Status");
+      } catch (error) {
+        console.error("Failed to fetch image status:", error);
+      }
+    };
+    if (orderId) fetchImageStatus();
+  }, [orderId]);
+
   const handleUpload = (e, type) => {
     const file = e.target.files[0];
     if (file) {
@@ -92,36 +112,39 @@ const IdVerification = () => {
     });
 
   const onSubmit = async (data) => {
-    const frontBase64 = await toBase64(data.frontPhoto);
-
-    const payload = {
-      front: frontBase64,
-      order_id: orderIdGetUrl ? orderIdGetUrl : orderId,
-      type: selectedId,
-    };
-
-    console.log(payload, "Form Data");
-
     try {
       if (!data.frontPhoto) {
-        toast.error("Please upload Front images.");
+        toast.error("Please upload a front image.");
         return;
       }
-      setLoading(true); // Start loading
+
+      setLoading(true);
+
       const frontBase64 = await toBase64(data.frontPhoto);
-      const payload = {
+
+      let payload = {
         front: frontBase64,
         order_id: orderIdGetUrl ? orderIdGetUrl : orderId,
         type: selectedId,
       };
+
+      if (data.sidePhoto) {
+        const sideBase64 = await toBase64(data.sidePhoto);
+        payload.side = sideBase64; // ✅ Only include if uploaded
+      }
+
+      console.log(payload, "Form Data");
+
       const res = await IdVerificationUpload(payload);
+
       if (res?.status === 200) {
-        // toast.success("Photos uploaded successfully!");
         setOpen(true);
-        // GO.push("/dashboard/");
+        setButtonLabel(
+          !imageUploaded ? "Upload full body photo" : "Return to Dashboard"
+        );
       }
     } catch (error) {
-      console.log(error?.response?.data?.errors?.Order, "skdsksdljsdskdl");
+      console.log(error?.response?.data, "Upload Error");
       if (error?.response?.data?.message === "Unauthenticated.") {
         toast.error("Failed to upload images. Please Login again.");
         GO.push("/login");
@@ -130,11 +153,19 @@ const IdVerification = () => {
         toast.error(error?.response?.data?.errors?.Order);
       }
     } finally {
-      setLoading(false); // ✅ loading hamesha false hoga
+      setLoading(false);
     }
   };
 
   console.log(ImagesSend, "GDJSGHSFHDSHFBSDJFSDJFB");
+
+  const handleRedirect = () => {
+    if (!imageUploaded) {
+      GO.push("/photo-upload");
+    } else {
+      GO.push("/dashboard");
+    }
+  };
 
   const renderUploadBox = (label, photo, type, placeholderUrl, suggestion) => {
     const handleDrop = (e) => {
@@ -157,13 +188,23 @@ const IdVerification = () => {
 
     return (
       <>
-        <div className="flex flex-col items-center w-full sm:w-1/3 px-3">
+        <div className="flex flex-col items-center w-full px-3">
           <label className="w-full cursor-pointer">
+            <p className="mt-2 mb-1 text-gray-800 font-medium reg-font">
+              {label.includes("*") ? (
+                <>
+                  {label.replace("*", "")}
+                  <span className="text-red-500">*</span>
+                </>
+              ) : (
+                label
+              )}
+            </p>
             <div
               onDrop={handleDrop}
               onDragOver={handleDragOver}
-              className="border-2 border-dashed border-purple-400 rounded-2xl p-2R 
-                   hover:border-purple-600 hover:shadow-md transition-all duration-300 ease-in-out
+              className="border-2 border-dashed border-violet-700 rounded-2xl p-2
+                   hover:border-violet-800 hover:shadow-md transition-all duration-300 ease-in-out
                    flex flex-col items-center justify-center text-center relative min-h-[140px] bg-white"
             >
               <input
@@ -172,11 +213,10 @@ const IdVerification = () => {
                 onChange={(e) => handleUpload(e, type)}
                 className="hidden"
               />
-
-              {/* ✅ No photo → Show upload UI */}
+              {/* :white_check_mark: No photo → Show upload UI */}
               {!photo && (
                 <div className="flex flex-col items-center justify-center">
-                  <FiUpload className="text-purple-600 w-7 h-7 mb-3" />
+                  <FiUpload className="text-violet-700 w-full h-7 mb-3" />
                   <p className="text-gray-700 text-sm reg-font">
                     Click here
                     <br />
@@ -186,29 +226,24 @@ const IdVerification = () => {
                   </p>
                 </div>
               )}
-
-              {/* ✅ With photo → Show preview */}
+              {/* :white_check_mark: With photo → Show preview */}
               {photo && (
                 <div className="flex flex-col items-center">
                   <img
                     src={URL.createObjectURL(photo)}
                     alt={`${label} preview`}
-                    className="w-28 h-40 object-contain rounded-lg mb-3"
+                    className="w-full object-contain rounded-lg mb-3"
                   />
-                  <AiOutlineCheckCircle className="w-6 h-6 text-green-500 absolute top-3 right-3" />
+                  <AiOutlineCheckCircle className="w-6 h-6 text-[#1F9E8C] absolute top-3 right-3" />
                 </div>
               )}
-
               {/* Label */}
-              {/* <p className="mt-2 text-gray-800 font-medium">{label}</p> */}
             </div>
           </label>
-
           {/* Suggestion / Helper text */}
           <p className="text-xs text-gray-500 mt-2 text-center italic">
             {suggestion}
           </p>
-
           {/* {photo && (
                     <p className="text-green-600 mt-1 text-sm italic">
                         {label} uploaded successfully
@@ -255,20 +290,20 @@ const IdVerification = () => {
 
                 {/* Title */}
                 <h2 className="text-2xl font-bold text-center text-primary">
-                  You’re All Set!
+                  ID successfully uploaded
                 </h2>
 
                 {/* Message */}
                 <p className="text-md text-black text-center mt-3 mb-6 reg-font">
-                  Your photos have been uploaded and are now under review by our
-                  prescribers. We’ll approve your order once the review is
-                  complete and notify you straight away.
+                  {!imageUploaded
+                    ? "Your ID Verification photo have been uploaded and are now under review by our prescribers. Seems like your full body photo is still pending. Please upload it to proceed."
+                    : "Your ID has been uploaded and are now under review by our prescribers. We’ll approve your order once the review is complete and notify you straight away."}
                 </p>
 
                 {/* Button */}
                 <NextButton
-                  label="Return to Dashboard"
-                  onClick={() => GO.push("/dashboard")}
+                  label={buttonLabel}
+                  onClick={handleRedirect}
                   className="w-full"
                   // disabled={loading || !frontPhoto || !sidePhoto}
                   // loading={loading}
@@ -281,22 +316,22 @@ const IdVerification = () => {
           onSubmit={handleSubmit(onSubmit)}
           className="max-w-3xl mx-auto my-auto px-6 sm:px-32 py-10 bg-white shadow-2xl rounded-3xl border border-gray-100"
         >
-          <div className="mb-8 max-w-2xl mx-auto text-left">
+          <div className="mb-4 max-w-2xl mx-auto text-left">
             {/* Heading */}
             {/* <h2 className="subHeading niba-semibold-font mb-2 border-b pb-3">
                             Please upload a <span className='niba-bold-font text-black' >full body</span> picture of yourself
                         </h2> */}
 
             <h2 className="subHeading !text-black bold-font mb-3 border-b pb-3">
-              Further verification required
+              ID verification required
             </h2>
 
             {/* Description */}
             <p className="text-gray-700 mb-1 reg-font">
-              As part of our service we use identity checking software to make
-              sure our patients are over the age of 18. On this occasion we have
-              been unable to verify your identity, to continue we need a few
-              more details from you.
+              As an online healthcare provider, we are required by law to
+              confirm that all patients are at least 18 years of age. Normally,
+              these checks are completed automatically against national identity
+              registers using the information you provide.
             </p>
 
             {/* Bullet Points */}
@@ -308,31 +343,32 @@ const IdVerification = () => {
                 inappropriate use.
               </li>
             </ul> */}
-            <p className="text-gray-700 mb-1 mt-6 reg-font">
+            <p className="text-gray-700 mb-0 mt-6 reg-font">
               How would you like to verify your identity?
             </p>
           </div>
 
           {/* Dropdown */}
           <div className="flex justify-center mb-4">
-            <select
-              value={selectedId}
-              onChange={(e) => setSelectedId(e.target.value)}
-              className="w-full max-w-3xl reg-font text-gray-700 bg-white border border-gray-300 rounded-xl px-4 py-3 
-               text-base focus:outline-none focus:ring-2 focus:ring-[#47317c] focus:border-[#47317c] 
-               transition-all duration-150"
-            >
-              <option value="passport">Passport</option>
-              <option value="driving_license">Driving License</option>
-              <option value="pass_card">
-                Proof of age card (e.g. PASS card)
-              </option>
-              <option value="id_card">Government-issued ID card</option>
-            </select>
+            <div className="w-full">
+              <MUISelectField
+                value={selectedId}
+                onChange={(e) => setSelectedId(e.target.value)}
+                options={[
+                  { value: "passport", label: "Passport" },
+                  { value: "driving_license", label: "Driving License" },
+                  {
+                    value: "pass_card",
+                    label: "Proof of age card (e.g. PASS card)",
+                  },
+                  { value: "id_card", label: "Government-issued ID card" },
+                ]}
+              />
+            </div>
           </div>
 
           {/* Image Preview */}
-          <div className="flex justify-center sm:gap-4 mb-8">
+          {/* <div className="flex justify-center sm:gap-4 mb-8">
             <div className="flex flex-col items-center mx-0 sm:mx-3">
               <Image
                 src={idImages[selectedId]}
@@ -340,7 +376,7 @@ const IdVerification = () => {
                 className="w-4xl h-full object-cover rounded-lg"
               />
             </div>
-          </div>
+          </div> */}
 
           <div className="flex flex-wrap sm:flex-nowrap justify-center gap-6 mb-8">
             <Controller
@@ -349,10 +385,24 @@ const IdVerification = () => {
               defaultValue={null}
               render={() =>
                 renderUploadBox(
-                  "Front Photo",
+                  "Front*",
                   frontPhoto,
                   "frontPhoto",
                   "/images/front_image.png"
+                )
+              }
+            />
+
+            <Controller
+              name="sidePhoto"
+              control={control}
+              defaultValue={null}
+              render={() =>
+                renderUploadBox(
+                  "Back (optional)",
+                  sidePhoto,
+                  "sidePhoto",
+                  "/images/side_image.png"
                 )
               }
             />
