@@ -72,8 +72,8 @@ export default function BmiDetail() {
 
   if (isEthnicityYes && bmiValue < 25.5 && !isReturningPatient) {
     bmiError = "BMI must be at least 25.5";
-  } else if ( (isEthnicityNo || isEthnicityNotDecided) && bmiValue < 27 && !isReturningPatient) {
-    bmiError = "BMI must be at least 27";
+  } else if ( (isEthnicityNo || isEthnicityNotDecided) && bmiValue < 27.5 && !isReturningPatient) {
+    bmiError = "BMI must be at least 27.5";
   }
   else if (isApproachingUnderweight && isReturningPatient) {
     bmiError = "Your BMI is approaching the lower end of healthy weight. Due to the risk of becoming underweight, you are not able to proceed. Please arrange a telephone consultation with a member of our clinical team to discuss alternatives";
