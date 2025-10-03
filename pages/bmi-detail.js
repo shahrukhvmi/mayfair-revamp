@@ -55,14 +55,14 @@ export default function BmiDetail() {
   const shouldShowCheckboxes =
     patientInfo?.ethnicity == "Yes"
       ? bmiValue >= 25.5 && bmiValue <= 27.4
-      : bmiValue >= 27.5 && bmiValue <= 29.9;
+      : bmiValue >= 27 && bmiValue <= 29.9;
 
   const shouldShowInfoMessage =
     patientInfo?.ethnicity == "Yes" && bmiValue >= 27.5 && bmiValue <= 29.9;
-  const isApproachingUnderweight = bmiValue >= 19.5 && bmiValue <= 21.0;
+  const isApproachingUnderweight = bmiValue >= 20 && bmiValue <= 20.4;
 
   // Check For reorder and low BMI
-  const isReorderAndBmiLow = isReturningPatient && bmiValue < 19.4;
+  const isReorderAndBmiLow = isReturningPatient && bmiValue < 20;
 
   // Check if the ethnicity is "Yes" or "No" and if the BMI is below the required threshold
   const isEthnicityYes = patientInfo?.ethnicity === "Yes";
@@ -72,11 +72,15 @@ export default function BmiDetail() {
 
   if (isEthnicityYes && bmiValue < 25.5 && !isReturningPatient) {
     bmiError = "BMI must be at least 25.5";
-  } else if ( (isEthnicityNo || isEthnicityNotDecided) && bmiValue < 27.5 && !isReturningPatient) {
-    bmiError = "BMI must be at least 27.5";
-  }
-  else if (isApproachingUnderweight && isReturningPatient) {
-    bmiError = "Your BMI is approaching the lower end of healthy weight. Due to the risk of becoming underweight, you are not able to proceed. Please arrange a telephone consultation with a member of our clinical team to discuss alternatives";
+  } else if (
+    (isEthnicityNo || isEthnicityNotDecided) &&
+    bmiValue < 27 &&
+    !isReturningPatient
+  ) {
+    bmiError = "BMI must be at least 27";
+  } else if (isApproachingUnderweight && isReturningPatient) {
+    bmiError =
+      "Your BMI is approaching the lower end of healthy weight. Due to the risk of becoming underweight, you are not able to proceed. Please arrange a telephone consultation with a member of our clinical team to discuss alternatives";
   }
 
   const isNextDisabled =
@@ -205,8 +209,9 @@ export default function BmiDetail() {
               the risk of becoming underweight, you are not able to proceed.
               Please arrange a telephone consultation with a member of our
               clinical team to discuss alternatives. */}
-
-              Your BMI is in the underweight category. Therefore, losing further weight is not safe and you are not able to proceed further. Please contact us to discuss your options with the clinical team.
+              Your BMI is in the underweight category. Therefore, losing further
+              weight is not safe and you are not able to proceed further. Please
+              contact us to discuss your options with the clinical team.
             </div>
           )}
 
@@ -235,7 +240,7 @@ export default function BmiDetail() {
             {shouldShowCheckboxes && !isReturningPatient && (
               <>
                 {patientInfo?.ethnicity === "No" ||
-                  patientInfo?.ethnicity === "Prefer not to say" ? (
+                patientInfo?.ethnicity === "Prefer not to say" ? (
                   <p className="text-gray-800 font-normal">
                     Your BMI is between 27-29.9 which indicates you are
                     overweight.
@@ -307,6 +312,7 @@ export default function BmiDetail() {
                       render={({ field }) => (
                         <TextField
                           {...field}
+                          required
                           label="Explanation"
                           name="weight_related_comorbidity_explanation"
                           errors={errors}
