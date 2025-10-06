@@ -188,53 +188,56 @@ const ThankYou = () => {
               </table>
             </div>
           </div>
-
-          <blockquote
-            style={{
-              padding: "10px",
-              backgroundColor: "#F9F9F9",
-              borderLeft: "3px solid #ccc",
-              borderRight: "3px solid #ccc",
-              borderRadius: 15,
-              padding: 20,
-            }}
-            className={`${imageUploaded ? "my-6" : ""} `}
-          >
-            <h2 className="niba-bold-font underline text-black mb-2">
-              Photo Upload Request:
-            </h2>{" "}
-            <p className="thin-font text-gray-700">
-              {" "}
-              To complete your order, please upload a clear, recent full-body
-              photo as part of our prescription approval process. This helps our
-              prescribers verify your BMI and ensure the safe and appropriate
-              supply of your treatment.
-            </p>
-            <p className="thin-font text-gray-700 my-3">
-              {" "}
-              Once your photo has been reviewed and approved, your order will be
-              processed and dispensed by our pharmacy.
-            </p>
-            <p className="thin-font text-gray-700 my-3 ">
-              {" "}
-              Your privacy is important to us — all photos are stored securely,
-              encrypted, and handled in strict confidence in line with data
-              protection regulations.
-            </p>
-          </blockquote>
-
           {!imageUploaded && (
-            <div className="my-6 flex justify-center ">
-              <button
-                className="bg-[#f8d86e] border border-[#FFF3CD] rounded-xl sm:rounded-full  py-3 px-2 sm:px-6 text-black flex items-start sm:items-center bold-font cursor-pointer 
-                w-full  text-start sm:text-center"
-                onClick={handleGoUpload}
+
+            <>
+
+              <blockquote
+                style={{
+                  padding: "10px",
+                  backgroundColor: "#F9F9F9",
+                  borderLeft: "3px solid #ccc",
+                  borderRight: "3px solid #ccc",
+                  borderRadius: 15,
+                  padding: 20,
+                }}
+                className={`${imageUploaded ? "my-6" : ""} `}
               >
-                <RiErrorWarningLine className="text-black sm:mr-0 mr-2  sm:w-14 w-14 " size={20} />
-                Click here to upload your full-body image to complete your order
-              </button>
-            </div>
-          )}
+                <h2 className="niba-bold-font underline text-black mb-2">
+                  Photo Upload Request:
+                </h2>{" "}
+                <p className="thin-font text-gray-700">
+                  {" "}
+                  To complete your order, please upload a clear, recent full-body
+                  photo as part of our prescription approval process. This helps our
+                  prescribers verify your BMI and ensure the safe and appropriate
+                  supply of your treatment.
+                </p>
+                <p className="thin-font text-gray-700 my-3">
+                  {" "}
+                  Once your photo has been reviewed and approved, your order will be
+                  processed and dispensed by our pharmacy.
+                </p>
+                <p className="thin-font text-gray-700 my-3 ">
+                  {" "}
+                  Your privacy is important to us — all photos are stored securely,
+                  encrypted, and handled in strict confidence in line with data
+                  protection regulations.
+                </p>
+              </blockquote>
+
+
+              <div className="my-6 flex justify-center ">
+                <button
+                  className="bg-[#f8d86e] border border-[#FFF3CD] rounded-xl sm:rounded-full  py-3 px-2 sm:px-6 text-black flex items-start sm:items-center bold-font cursor-pointer 
+                w-full  text-start sm:text-center"
+                  onClick={handleGoUpload}
+                >
+                  <RiErrorWarningLine className="text-black sm:mr-0 mr-2  sm:w-14 w-14 " size={20} />
+                  Click here to upload your full-body image to complete your order
+                </button>
+              </div>
+            </>)}
 
 
 
