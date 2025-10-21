@@ -25,7 +25,8 @@ import toast from "react-hot-toast";
 import MetaLayout from "@/Meta/MetaLayout";
 import { meta_url } from "@/config/constants";
 
-const api = new Client("_UFb05P76EyMidU1VHIQ_A42976");
+// const api = new Client("_UFb05P76EyMidU1VHIQ_A42976"); old key
+const api = new Client("aYssNMkdXEGsdfGVZjiY0Q26381 ");
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 
 export default function ResidentialAddress() {

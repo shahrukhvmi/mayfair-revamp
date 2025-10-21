@@ -17,7 +17,7 @@ import { useMutation } from "@tanstack/react-query";
 import { getProfileData, sendProfileData } from "@/api/myProfileApi";
 import toast from "react-hot-toast";
 
-const api = new Client("_UFb05P76EyMidU1VHIQ_A42976");
+const api = new Client("aYssNMkdXEGsdfGVZjiY0Q26381");
 
 export default function Shipping({ shipmentCountries }) {
   const [showLoader, setShowLoader] = useState(false);
