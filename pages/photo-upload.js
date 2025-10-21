@@ -114,7 +114,7 @@ const PhotoUpload = () => {
       }
       setLoading(true); // Start loading
       const frontBase64 = await toBase64(data.frontPhoto);
-
+   
       const payload = {
         front: frontBase64,
         order_id: orderIdGetUrl ? orderIdGetUrl : orderId,
@@ -134,8 +134,8 @@ const PhotoUpload = () => {
         // GO.push("/dashboard/");
       }
     } catch (error) {
-      console.log(error?.response?.data?.errors?.Order, "skdsksdljsdskdl");
-
+      // console.log(error?.response?.data?.errors?.front, "skdsksdljsdskdl");
+      toast.error(error?.response?.data?.errors?.front)
       if (error?.response?.data?.message === "Unauthenticated.") {
         toast.error("Failed to upload images. Please Login again.");
         GO.push("/login");
@@ -295,8 +295,8 @@ const PhotoUpload = () => {
                   label={buttonLabel}
                   onClick={handleRedirect}
                   className="w-full"
-                  // disabled={loading || !frontPhoto || !sidePhoto}
-                  // loading={loading}
+                // disabled={loading || !frontPhoto || !sidePhoto}
+                // loading={loading}
                 />
               </motion.div>
             </motion.div>
@@ -398,11 +398,10 @@ const PhotoUpload = () => {
               disabled={loading || !frontPhoto}
               className={`reg-font px-6 py-3 rounded-full text-white font-semibold text-sm transition-all duration-150 ease-in-out
       flex items-center justify-center 
-      ${
-        loading || !frontPhoto
-          ? "bg-gray-300 cursor-not-allowed"
-          : "bg-[#47317c] hover:bg-[#3a2766] border-2 border-[#47317c] cursor-pointer"
-      }
+      ${loading || !frontPhoto
+                  ? "bg-gray-300 cursor-not-allowed"
+                  : "bg-[#47317c] hover:bg-[#3a2766] border-2 border-[#47317c] cursor-pointer"
+                }
     `}
             >
               {loading ? "Uploading..." : "Upload"}
