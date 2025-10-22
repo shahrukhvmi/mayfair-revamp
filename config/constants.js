@@ -36,4 +36,4 @@ switch (serverType) {
     meta_url = "https://mayfairweightlossclinic.co.uk/start-consultation/";
     break;
 }
-export { app_url };
+export { app_url, meta_url, passwordlink };

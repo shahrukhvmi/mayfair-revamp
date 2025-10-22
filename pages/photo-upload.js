@@ -17,13 +17,60 @@ import StepsHeader from "@/layout/stepsHeader";
 import FullBody from "@/public/images/full-body-ok.png";
 import HalfBodyX from "@/public/images/half-body-x.png";
 import FaceX from "@/public/images/face-x.png";
-import Image from "next/image";
+import Image from "next/image"; // ✅ renamed
+import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import MetaLayout from "@/Meta/MetaLayout";
 import { meta_url } from "@/config/constants";
 import useIdVerificationUploadStore from "@/store/useIdVerificationUploadStore";
 import { GetIdVerification } from "@/api/IdVerificationApi";
+import { heicTo, isHeic } from "heic-to"; // ✅ import heic converter
 
 const PhotoUpload = () => {
+
+
+  const MAX_SIZE_MB = 5;
+  const MAX_SIZE_BYTES = MAX_SIZE_MB * 1024 * 1024;
+
+  // ✅ Compress image using <canvas>
+  const compressImage = (file, quality = 0.8) => {
+    return new Promise((resolve, reject) => {
+      const img = new window.Image();
+      const objectUrl = URL.createObjectURL(file);
+      img.onload = () => {
+        const canvas = document.createElement("canvas");
+        const ctx = canvas.getContext("2d");
+
+        canvas.width = img.width;
+        canvas.height = img.height;
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+        canvas.toBlob(
+          (blob) => {
+            URL.revokeObjectURL(objectUrl);
+            if (blob) resolve(blob);
+            else reject(new Error("Image compression failed."));
+          },
+          "image/jpeg",
+          quality
+        );
+      };
+      img.onerror = () => {
+        URL.revokeObjectURL(objectUrl);
+        reject(new Error("Failed to load image for compression."));
+      };
+      img.src = objectUrl;
+    });
+  };
+  const toBase64 = (file) =>
+    new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result.split(",")[1]); // remove `data:image/...;base64,`
+      reader.onerror = reject;
+    });
+
+
+
   const GO = useRouter();
   const [open, setOpen] = useState(false);
   // get Order id url to send photo uplaod api
@@ -36,6 +83,7 @@ const PhotoUpload = () => {
   const frontPhoto = watch("frontPhoto");
   const sidePhoto = watch("sidePhoto");
   const [loading, setLoading] = useState(false);
+  const [loadingPhoto, setLoadingPhoto] = useState(false);
   const [ImagesSend, setImagesSend] = useState(false);
   const [buttonLabel, setButtonLabel] = useState("Return to Dashboard");
 
@@ -91,20 +139,75 @@ const PhotoUpload = () => {
     if (orderId) fetchImageStatus();
   }, [orderId]);
 
-  const handleUpload = (e, type) => {
+  // ✅ Handle upload + conversion + compression
+  const handleUpload = async (e, type) => {
     const file = e.target.files[0];
-    if (file) {
-      setValue(type, file);
+    if (!file) return;
+
+    setLoadingPhoto(true);
+
+    try {
+      // ✅ Validate image type
+      if (!file.type.startsWith("image/") && !isHeic(file)) {
+        toast.error("Please upload a valid image (JPEG, PNG, or HEIC).");
+        e.target.value = ""; // reset input
+        return;
+      }
+
+      let processedFile = file;
+
+      // ✅ Try HEIC conversion
+      if (isHeic(file)) {
+        try {
+          processedFile = await heicTo({
+            blob: file,
+            toType: "image/jpeg",
+            quality: 0.9,
+          });
+        } catch (err) {
+          console.warn("HEIC conversion failed:", err);
+
+          // 🚫 Block completely if file seems corrupted
+          if (file.size === 0 || !file.type || file.name === "") {
+            toast.error("This file appears to be corrupted. Please try another image.");
+            e.target.value = ""; // reset input
+            return;
+          }
+
+          // Otherwise continue using the original HEIC file
+          console.log("HEIC conversion failed — using original file instead.");
+        }
+      }
+
+      // ✅ Compress large files
+      if (processedFile.size > MAX_SIZE_BYTES) {
+        const compressedBlob = await compressImage(processedFile, 0.8);
+
+        if (compressedBlob.size > MAX_SIZE_BYTES) {
+          toast.error(`Image too large even after compression (max ${MAX_SIZE_MB} MB).`);
+          e.target.value = ""; // reset input
+          return;
+        }
+
+        processedFile = new File([compressedBlob], file.name, { type: "image/jpeg" });
+      }
+
+      // ✅ All checks passed
+      setValue(type, processedFile);
+      console.log("✅ Final processed file:", processedFile);
+    } catch (err) {
+      console.error("Error processing image:", err);
+      toast.error("Something went wrong while processing this image.");
+      e.target.value = ""; // reset input on any error
+    } finally {
+      setLoadingPhoto(false);
     }
   };
 
-  const toBase64 = (file) =>
-    new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onload = () => resolve(reader.result.split(",")[1]); // remove `data:image/...;base64,`
-      reader.onerror = reject;
-    });
+
+
+
+
 
   const onSubmit = async (data) => {
     try {
@@ -114,7 +217,7 @@ const PhotoUpload = () => {
       }
       setLoading(true); // Start loading
       const frontBase64 = await toBase64(data.frontPhoto);
-   
+
       const payload = {
         front: frontBase64,
         order_id: orderIdGetUrl ? orderIdGetUrl : orderId,
@@ -199,7 +302,16 @@ const PhotoUpload = () => {
               />
 
               {/* ✅ No photo → Show upload UI */}
-              {!photo && (
+
+
+              {loadingPhoto ? (
+                // 🔄 Show loading state
+                <div className="flex flex-col items-center justify-center">
+                  <AiOutlineLoading3Quarters className="animate-spin text-purple-600 w-7 h-7 mb-3" />
+                  <p className="text-gray-700 text-sm reg-font">Uploading...</p>
+                </div>
+              ) : !photo ? (
+                // 📤 Upload prompt
                 <div className="flex flex-col items-center justify-center">
                   <FiUpload className="text-purple-600 w-7 h-7 mb-3" />
                   <p className="text-gray-700 text-sm reg-font">
@@ -210,11 +322,9 @@ const PhotoUpload = () => {
                     </span>
                   </p>
                 </div>
-              )}
-
-              {/* ✅ With photo → Show preview */}
-              {photo && (
-                <div className="flex flex-col items-center">
+              ) : (
+                // 🖼️ Show uploaded photo
+                <div className="flex flex-col items-center relative">
                   <img
                     src={URL.createObjectURL(photo)}
                     alt={`${label} preview`}

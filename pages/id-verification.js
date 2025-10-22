@@ -25,11 +25,60 @@ import {
 } from "@/api/IdVerificationApi";
 import useImageUploadStore from "@/store/useImageUploadStore ";
 import MUISelectField from "@/Components/SelectField/SelectField";
+import { heicTo, isHeic } from "heic-to"; // ✅ import heic converter
+import { AiOutlineLoading3Quarters } from "react-icons/ai";
 
 const IdVerification = () => {
+
+  const MAX_SIZE_MB = 5;
+  const MAX_SIZE_BYTES = MAX_SIZE_MB * 1024 * 1024;
+
+  // ✅ Compress image using <canvas>
+  const compressImage = (file, quality = 0.8) => {
+    return new Promise((resolve, reject) => {
+      const img = new window.Image();
+      const objectUrl = URL.createObjectURL(file);
+      img.onload = () => {
+        const canvas = document.createElement("canvas");
+        const ctx = canvas.getContext("2d");
+
+        canvas.width = img.width;
+        canvas.height = img.height;
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+        canvas.toBlob(
+          (blob) => {
+            URL.revokeObjectURL(objectUrl);
+            if (blob) resolve(blob);
+            else reject(new Error("Image compression failed."));
+          },
+          "image/jpeg",
+          quality
+        );
+      };
+      img.onerror = () => {
+        URL.revokeObjectURL(objectUrl);
+        reject(new Error("Failed to load image for compression."));
+      };
+      img.src = objectUrl;
+    });
+  };
+
+
+  const toBase64 = (file) =>
+    new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result.split(",")[1]); // remove `data:image/...;base64,`
+      reader.onerror = reject;
+    });
+
+
+
   const GO = useRouter();
   const [open, setOpen] = useState(false);
-  // get Order id url to send photo uplaod api
+  const [loadingPhoto, setLoadingPhoto] = useState(false);
+
   const searchParams = useSearchParams();
   const [orderIdGetUrl, setOrderIdGetUrl] = useState(null);
 
@@ -96,20 +145,60 @@ const IdVerification = () => {
     if (orderId) fetchImageStatus();
   }, [orderId]);
 
-  const handleUpload = (e, type) => {
+  const handleUpload = async (e, type) => {
     const file = e.target.files[0];
-    if (file) {
-      setValue(type, file);
+    if (!file) return;
+
+    // start loader for that specific box
+    setLoadingPhoto((prev) => ({ ...prev, [type]: true }));
+
+    try {
+      if (!file.type.startsWith("image/") && !isHeic(file)) {
+        toast.error("Please upload a valid image (JPEG, PNG, or HEIC).");
+        e.target.value = "";
+        return;
+      }
+
+      let processedFile = file;
+
+      if (isHeic(file)) {
+        try {
+          processedFile = await heicTo({
+            blob: file,
+            toType: "image/jpeg",
+            quality: 0.9,
+          });
+        } catch (err) {
+          if (file.size === 0 || !file.type) {
+            toast.error("This file appears to be corrupted. Please try another image.");
+            e.target.value = "";
+            return;
+          }
+          console.log("HEIC conversion failed — using original file instead.");
+        }
+      }
+
+      if (processedFile.size > MAX_SIZE_BYTES) {
+        const compressedBlob = await compressImage(processedFile, 0.8);
+        if (compressedBlob.size > MAX_SIZE_BYTES) {
+          toast.error(`Image too large even after compression (max ${MAX_SIZE_MB} MB).`);
+          e.target.value = "";
+          return;
+        }
+        processedFile = new File([compressedBlob], file.name, { type: "image/jpeg" });
+      }
+
+      setValue(type, processedFile);
+    } catch (err) {
+      toast.error("Something went wrong while processing this image.");
+      e.target.value = "";
+    } finally {
+      // stop loader for that box
+      setLoadingPhoto((prev) => ({ ...prev, [type]: false }));
     }
   };
 
-  const toBase64 = (file) =>
-    new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onload = () => resolve(reader.result.split(",")[1]); // remove `data:image/...;base64,`
-      reader.onerror = reject;
-    });
+
 
   const onSubmit = async (data) => {
     try {
@@ -144,7 +233,15 @@ const IdVerification = () => {
         );
       }
     } catch (error) {
-      console.log(error?.response?.data, "Upload Error");
+      console.log(error?.response?.data?.errors?.front, "Upload Error");
+
+      if (error?.response?.data?.errors?.front) {
+        toast.error(error?.response?.data?.errors?.front)
+      }
+
+      if (error?.response?.data?.errors?.side) {
+        toast.error(error?.response?.data?.errors?.side)
+      }
       if (error?.response?.data?.message === "Unauthenticated.") {
         toast.error("Failed to upload images. Please Login again.");
         GO.push("/login");
@@ -157,7 +254,6 @@ const IdVerification = () => {
     }
   };
 
-  console.log(ImagesSend, "GDJSGHSFHDSHFBSDJFSDJFB");
 
   const handleRedirect = () => {
     if (!imageUploaded) {
@@ -188,6 +284,8 @@ const IdVerification = () => {
 
     return (
       <>
+
+
         <div className="flex flex-col items-center w-full px-3">
           <label className="w-full cursor-pointer">
             <p className="mt-2 mb-1 text-gray-800 font-medium reg-font">
@@ -200,12 +298,13 @@ const IdVerification = () => {
                 label
               )}
             </p>
+
             <div
               onDrop={handleDrop}
               onDragOver={handleDragOver}
               className="border-2 border-dashed border-violet-700 rounded-2xl p-2
-                   hover:border-violet-800 hover:shadow-md transition-all duration-300 ease-in-out
-                   flex flex-col items-center justify-center text-center relative min-h-[140px] bg-white"
+        hover:border-violet-800 hover:shadow-md transition-all duration-300 ease-in-out
+        flex flex-col items-center justify-center text-center relative min-h-[140px] bg-white"
             >
               <input
                 type="file"
@@ -213,8 +312,16 @@ const IdVerification = () => {
                 onChange={(e) => handleUpload(e, type)}
                 className="hidden"
               />
-              {/* :white_check_mark: No photo → Show upload UI */}
-              {!photo && (
+
+              {/* 🔄 Loading state */}
+              {loadingPhoto[type] ? (
+
+                <div className="flex flex-col items-center justify-center">
+                  <AiOutlineLoading3Quarters className="animate-spin text-violet-700 w-7 h-7 mb-3" />
+                  <p className="text-gray-700 text-sm reg-font">Uploading...</p>
+                </div>
+              ) : !photo ? (
+                /* 📤 Upload UI */
                 <div className="flex flex-col items-center justify-center">
                   <FiUpload className="text-violet-700 w-full h-7 mb-3" />
                   <p className="text-gray-700 text-sm reg-font">
@@ -225,9 +332,8 @@ const IdVerification = () => {
                     </span>
                   </p>
                 </div>
-              )}
-              {/* :white_check_mark: With photo → Show preview */}
-              {photo && (
+              ) : (
+                /* 🖼️ Preview UI */
                 <div className="flex flex-col items-center">
                   <img
                     src={URL.createObjectURL(photo)}
@@ -237,19 +343,15 @@ const IdVerification = () => {
                   <AiOutlineCheckCircle className="w-6 h-6 text-[#1F9E8C] absolute top-3 right-3" />
                 </div>
               )}
-              {/* Label */}
             </div>
           </label>
-          {/* Suggestion / Helper text */}
+
+          {/* 💡 Suggestion / helper text */}
           <p className="text-xs text-gray-500 mt-2 text-center italic">
             {suggestion}
           </p>
-          {/* {photo && (
-                    <p className="text-green-600 mt-1 text-sm italic">
-                        {label} uploaded successfully
-                    </p>
-                )} */}
         </div>
+
       </>
     );
   };
@@ -305,8 +407,8 @@ const IdVerification = () => {
                   label={buttonLabel}
                   onClick={handleRedirect}
                   className="w-full"
-                  // disabled={loading || !frontPhoto || !sidePhoto}
-                  // loading={loading}
+                // disabled={loading || !frontPhoto || !sidePhoto}
+                // loading={loading}
                 />
               </motion.div>
             </motion.div>
@@ -429,11 +531,10 @@ const IdVerification = () => {
               disabled={loading || !frontPhoto}
               className={`reg-font px-6 py-3 rounded-full text-white font-semibold text-sm transition-all duration-150 ease-in-out
       flex items-center justify-center 
-      ${
-        loading || !frontPhoto
-          ? "bg-gray-300 cursor-not-allowed"
-          : "bg-[#47317c] hover:bg-[#3a2766] border-2 border-[#47317c] cursor-pointer"
-      }
+      ${loading || !frontPhoto
+                  ? "bg-gray-300 cursor-not-allowed"
+                  : "bg-[#47317c] hover:bg-[#3a2766] border-2 border-[#47317c] cursor-pointer"
+                }
     `}
             >
               {loading ? "Uploading..." : "Upload"}
