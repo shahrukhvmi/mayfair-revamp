@@ -68,13 +68,13 @@ export default function DosageSelection() {
   const abandonCartMutation = useMutation(abandonCart, {
     onSuccess: (data) => {
       if (data) {
-        router.push("/checkout");
-        console.log(data, "This is Abandon Cart Data");
+        // router.push("/checkout");
+        // console.log(data, "This is Abandon Cart Data");
       }
     },
     onError: (error) => {
       if (error) {
-        router.push("/checkout");
+        // router.push("/checkout");
         console.log(error, "This is error");
       }
     },
@@ -83,9 +83,9 @@ export default function DosageSelection() {
   //Handle Submit Button
   const onSubmit = () => {
     setIsButtonLoading(true);
-    // router.push("/checkout");
+    router.push("/checkout");
 
-    abandonCartMutation.mutate(abandonData);
+
     // console.log(abandonData, "Abbandon Cart Data");
   };
 
@@ -147,13 +147,27 @@ export default function DosageSelection() {
         expiry: dose.expiry,
         isSelected: true,
       });
-      setAbandonData([
-        ...abandonData,
-        {
-          eid: dose.id,
-          pid: productId,
-        },
-      ]);
+      // setAbandonData([
+      //   ...abandonData,
+      //   {
+      //     eid: dose.id,
+      //     pid: productId,
+      //   },
+      // ]);
+
+      // setAbandonData(
+      //   {
+      //     eid: dose.id,
+      //     pid: productId,
+      //   },
+      // );
+
+      // ✅ Run abandonCartMutation right after adding
+      abandonCartMutation.mutate({
+        eid: dose.id,
+        pid: productId,
+      });
+
     } else {
       const productConcent = generateProductConcent(
         variation?.variations,
@@ -174,14 +188,19 @@ export default function DosageSelection() {
         isSelected: true,
       });
 
-      setAbandonData([
-        ...abandonData,
-        {
-          eid: dose.id,
-          pid: productId,
-        },
-      ]);
+      // setAbandonData([
+      //   ...abandonData,
+      //   {
+      //     eid: dose.id,
+      //     pid: productId,
+      //   },
+      // ]);
 
+      // ✅ Run abandonCartMutation right after adding
+      abandonCartMutation.mutate({
+        eid: dose.id,
+        pid: productId,
+      });
       // ✅ ✅ ✅ Check if modal was already shown for this dose
       if (!shownDoseIds.includes(dose.id)) {
         setSelectedDose({
@@ -218,7 +237,7 @@ export default function DosageSelection() {
   return (
     <>
       <MetaLayout canonical={`${meta_url}dosage-selection/`} />
-      <div className="bottom-[100px] fixed left-10 cursor-pointer py-2 rounded-full border-2 border-violet-700 sm:block hidden">
+      <div className="bottom-[100px] fixed left-10 cursor-pointer py-2 rounded-full border-2 border-violet-700 sm:block hidden ">
         {/* <BackButton label="Back" onClick={back} className="mt-2 sm:block hidden " /> */}
         <button
           label="Back"
@@ -413,12 +432,12 @@ export default function DosageSelection() {
                             .sort((a, b) => {
                               const aOutOfStock =
                                 a?.stock?.status === 0 ||
-                                a?.stock?.quantity === 0
+                                  a?.stock?.quantity === 0
                                   ? 1
                                   : 0;
                               const bOutOfStock =
                                 b?.stock?.status === 0 ||
-                                b?.stock?.quantity === 0
+                                  b?.stock?.quantity === 0
                                   ? 1
                                   : 0;
 

@@ -16,7 +16,7 @@ let passwordlink = "";
 let meta_url = "";
 switch (serverType) {
   case "local":
-    app_url = "http://192.168.1.194:7000/api";
+    app_url = "http://192.168.1.194:8000/api";
     passwordlink = "http://localhost:3000/email-confirmation";
     meta_url = "http://localhost:3000/";
     break;
