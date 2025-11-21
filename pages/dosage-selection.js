@@ -30,7 +30,7 @@ export default function DosageSelection() {
   const { addToCart, increaseQuantity, decreaseQuantity, items, totalAmount } =
     useCartStore();
   const { productId } = useProductId();
-
+  const [abandonData, setAbandonData] = useState([]);
   const { reorder } = useReorder();
 
   console.log(items, "items");
@@ -49,7 +49,7 @@ export default function DosageSelection() {
   // Variation From zustand
   const { variation } = useVariationStore();
 
-  console.log(variation,"variationvariation")
+  console.log(variation, "variationvariation")
 
   // ✅ useEffect to check if `product?.show_expiry` is `0` or `1`
   useEffect(() => {
@@ -85,7 +85,7 @@ export default function DosageSelection() {
   const onSubmit = () => {
     setIsButtonLoading(true);
     router.push("/checkout");
-    // abandonCartMutation.mutate(abandonData);
+    abandonCartMutation.mutate(abandonData);
 
     // console.log(abandonData, "Abbandon Cart Data");
   };
@@ -113,67 +113,77 @@ export default function DosageSelection() {
     return `If you are taking for the first time, you will need to start the treatment on the ${lowestDose} dose. If you start on the higher doses, the risk of side effects (e.g., nausea) will be very high. Please confirm that you are currently taking either the ${previousDose} or ${selectedDoseName} dose from a different provider.`;
   };
 
-const handleAddDose = async (dose) => {
-  const totalQty = totalSelectedQty() + 1;
+  const handleAddDose = async (dose) => {
+    const totalQty = totalSelectedQty() + 1;
 
-  if (allowed > 0 && totalQty > allowed) {
-    toast.error(`You can select only ${allowed} units in total.`);
-    return;
-  }
-
-  const stockQuantity = parseInt(dose?.stock?.quantity) || 0;
-  const existingItem = items?.doses?.find((i) => i.id === dose.id);
-  const currentQty = existingItem?.quantity || 0;
-
-  if (currentQty + 1 > stockQuantity) {
-    toast.error(`Only ${stockQuantity} units available in stock.`);
-    return;
-  }
-
-  const isFiveMg = dose?.name === "5 mg";
-  const firstTwoDoses = variation?.variations?.slice(0, 1).map((v) => v.name);
-  const isFirstTwoDose = firstTwoDoses.includes(dose?.name);
-
-  try {
-    // ✅ Wait for abandonCart API to resolve
-    const res = await abandonCartMutation.mutateAsync({
-      eid: dose.id,
-      pid: productId,
-    });
-
-    const abandonCartId = res?.data?.data?.id;
-
-    // ✅ Now safely call addToCart after getting the ID
-    addToCart({
-      id: dose.id,
-      abandonCartId: abandonCartId || null,
-      type: "dose",
-      name: dose.name,
-      price: parseFloat(dose.price),
-      allowed: parseInt(dose.allowed),
-      item_id: dose.id,
-      product: dose?.product_name || "Dose Product",
-      product_concent: isFirstTwoDose && !isFiveMg ? null : generateProductConcent(variation?.variations, dose?.name),
-      label: `${dose?.product_name} ${dose?.name}`,
-      expiry: dose.expiry,
-      isSelected: true,
-    });
-
-    // ✅ Show modal logic (unchanged)
-    if (!isFirstTwoDose && !isFiveMg && !shownDoseIds.includes(dose.id)) {
-      setSelectedDose({
-        ...dose,
-        productConcent: generateProductConcent(variation?.variations, dose?.name),
-      });
-      setShowDoseModal(true);
-      setShownDoseIds((prev) => [...prev, dose.id]);
+    if (allowed > 0 && totalQty > allowed) {
+      toast.error(`You can select only ${allowed} units in total.`);
+      return;
     }
 
-  } catch (error) {
-    console.error("Error in abandonCartMutation:", error);
-    toast.error("Failed to process cart. Please try again.");
-  }
-};
+    const stockQuantity = parseInt(dose?.stock?.quantity) || 0;
+    const existingItem = items?.doses?.find((i) => i.id === dose.id);
+    const currentQty = existingItem?.quantity || 0;
+
+    if (currentQty + 1 > stockQuantity) {
+      toast.error(`Only ${stockQuantity} units available in stock.`);
+      return;
+    }
+
+    const isFiveMg = dose?.name === "5 mg";
+    const firstTwoDoses = variation?.variations?.slice(0, 1).map((v) => v.name);
+    const isFirstTwoDose = firstTwoDoses.includes(dose?.name);
+
+    // try {
+    //   const res = await abandonCartMutation.mutateAsync({
+    //     eid: dose.id,
+    //     pid: productId,
+    //   });
+
+      // const abandonCartId = res?.data?.data?.id;
+
+      // ✅ Now safely call addToCart after getting the ID
+      addToCart({
+        id: dose.id,
+        // abandonCartId: abandonCartId || null,
+        type: "dose",
+        name: dose.name,
+        price: parseFloat(dose.price),
+        allowed: parseInt(dose.allowed),
+        item_id: dose.id,
+        product: dose?.product_name || "Dose Product",
+        product_concent: isFirstTwoDose && !isFiveMg ? null : generateProductConcent(variation?.variations, dose?.name),
+        label: `${dose?.product_name} ${dose?.name}`,
+        expiry: dose.expiry,
+        isSelected: true,
+      });
+
+      setAbandonData([
+        ...abandonData,
+        {
+          eid: dose.id,
+          pid: productId,
+        },
+      ]);
+
+      // setAbandonData(
+      //   {
+      //     eid: dose.id,
+      //     pid: productId,
+      //   },
+      // );
+
+      // ✅ Run abandonCartMutation right after adding
+      // abandonCartMutation.mutate({
+      //   eid: dose.id,
+      //   pid: productId,
+      // });
+
+    // } catch (error) {
+    //   console.error("Error in abandonCartMutation:", error);
+    //   toast.error("Failed to process cart. Please try again.");
+    // }
+  };
 
 
   //Add to cart Addons🔥
@@ -314,15 +324,15 @@ const handleAddDose = async (dose) => {
                         return 0;
                       })
                       .map((dose, index) => {
-                        console.log(dose.id,"dose")
+                        console.log(dose.id, "dose")
                         const cartDose = items.doses.find(
                           (item) => item.id === dose.id
                         );
 
-                        
+
                         const cartQty = cartDose?.qty || 0;
                         const abandonCartId = cartDose?.abandonCartId || 0;
-                        console.log(abandonCartId,"abandonCartId1")
+                        console.log(abandonCartId, "abandonCartId1")
 
                         return (
                           <Dose

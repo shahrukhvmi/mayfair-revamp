@@ -78,7 +78,7 @@ const Dose = ({ doseData, onAdd, onIncrement, onDecrement, isSelected, qty, allo
     removeItemCompletely(doseData?.id, "doses");
 
     console.log(abandonCartId, "aasasa")
-    RemoveAbandonCartMutation.mutate({ notification_id: abandonCartId });
+    // RemoveAbandonCartMutation.mutate({ notification_id: abandonCartId });
 
   };
 
