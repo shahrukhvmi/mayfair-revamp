@@ -59,7 +59,7 @@ export default function BmiDetail() {
 
   const shouldShowInfoMessage =
     patientInfo?.ethnicity == "Yes" && bmiValue >= 27.5 && bmiValue <= 29.9;
-  const isApproachingUnderweight = bmiValue >= 20 && bmiValue <= 20.4;
+  const isApproachingUnderweight = bmiValue >= 20 && bmiValue <= 20.9;
 
   // Check For reorder and low BMI
   const isReorderAndBmiLow = isReturningPatient && bmiValue < 20;
