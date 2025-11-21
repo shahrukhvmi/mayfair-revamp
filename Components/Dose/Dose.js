@@ -6,11 +6,24 @@ import moment from "moment/moment";
 import ConfirmationModal from "../Modal/ConfirmationModal";
 import useCartStore from "@/store/useCartStore";
 import { getNotified } from "@/api/GetNotified";
+import RemoveAbandonCartApi from "@/api/RemoveAbandonCartApi";
+import { useMutation } from "@tanstack/react-query";
 
-const Dose = ({ doseData, onAdd, onIncrement, onDecrement, isSelected, qty, allow, totalSelectedQty }) => {
+const Dose = ({ doseData, onAdd, onIncrement, onDecrement, isSelected, qty, allow, totalSelectedQty, abandonCartId }) => {
   const [showModal, setShowModal] = React.useState(false);
   const [isLoading, setIsLoading] = React.useState(false);
   const { removeItemCompletely } = useCartStore();
+
+  const RemoveAbandonCartMutation = useMutation(RemoveAbandonCartApi, {
+    onSuccess: (data) => {
+      // if (data) {
+      //   toast.success(data?.message || "Item removed successfully");
+      // }
+    },
+    onError: (error) => {
+      console.log(error, "This is error");
+    },
+  });
 
   const allowed = parseInt(allow || 100);
   const doseStatus = doseData?.stock?.status;
@@ -63,6 +76,10 @@ const Dose = ({ doseData, onAdd, onIncrement, onDecrement, isSelected, qty, allo
   const handleDelete = () => {
     setShowModal(false);
     removeItemCompletely(doseData?.id, "doses");
+
+    console.log(abandonCartId, "aasasa")
+    RemoveAbandonCartMutation.mutate({ notification_id: abandonCartId });
+
   };
 
   const handleNotifiedClick = async (dose) => {
@@ -127,15 +144,14 @@ const Dose = ({ doseData, onAdd, onIncrement, onDecrement, isSelected, qty, allo
         <div
           onClick={isOutOfStock || isAllowExceeded ? undefined : handleAdd}
           className={`flex flex-col sm:flex-row items-start sm:items-center justify-between w-full p-4 border-2 mt-3 transition-all duration-300 ease-in-out relative rounded-md border-primary gap-4 sm:gap-0
-    ${
-      isOutOfStock
-        ? "opacity-50 cursor-not-allowed bg-white border-gray-400"
-        : isSelected
-        ? "border-primary bg-violet-100 cursor-pointer"
-        : isAllowExceeded
-        ? "border-primary bg-white cursor-not-allowed opacity-60"
-        : "border-primary bg-white hover:bg-gray-50 cursor-pointer"
-    }`}
+    ${isOutOfStock
+              ? "opacity-50 cursor-not-allowed bg-white border-gray-400"
+              : isSelected
+                ? "border-primary bg-violet-100 cursor-pointer"
+                : isAllowExceeded
+                  ? "border-primary bg-white cursor-not-allowed opacity-60"
+                  : "border-primary bg-white hover:bg-gray-50 cursor-pointer"
+            }`}
         >
           {/* Overlay when out of stock */}
           {isOutOfStock && (
@@ -189,9 +205,8 @@ const Dose = ({ doseData, onAdd, onIncrement, onDecrement, isSelected, qty, allo
                   <button
                     type="button"
                     onClick={handleIncrement}
-                    className={`p-2 rounded-full ${
-                      qty >= allowed ? "cursor-not-allowed bg-gray-100 opacity-50" : "bg-gray-100 hover:bg-gray-200 cursor-pointer"
-                    }`}
+                    className={`p-2 rounded-full ${qty >= allowed ? "cursor-not-allowed bg-gray-100 opacity-50" : "bg-gray-100 hover:bg-gray-200 cursor-pointer"
+                      }`}
                   >
                     <FaPlus size={10} className="text-black" />
                   </button>

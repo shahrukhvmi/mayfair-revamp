@@ -6,43 +6,84 @@ import useCartStore from "@/store/useCartStore";
 import { RiErrorWarningLine } from "react-icons/ri";
 import useImageUploadStore from "@/store/useImageUploadStore ";
 import GetImageIsUplaod from "@/api/GetImageIsUplaod";
+import GetUserOrderApi from "@/api/GetUserOrderApi";
+import useAuthStore from "@/store/authStore";
+import Fetcher from "@/library/Fetcher";
+import toast from "react-hot-toast";
 
 const ThankYou = () => {
 
-
-  const { items, orderId, checkOut } = useCartStore();
+  const { orderId, checkOut, setOrderId, setCheckOut } = useCartStore();
+  const { token } = useAuthStore();
   const router = useRouter();
+  const [items, setItems] = useState(null);
 
-  useEffect(() => {
 
-    if (!checkOut || Object.keys(checkOut).length === 0) {
-      router.replace("/dashboard"); // or any fallback page
-    }
-  }, [checkOut, router]);
 
-  if (!checkOut || Object.keys(checkOut).length === 0) {
-    return null; // Prevent flicker while redirecting
-  }
-  console.log(checkOut, "checkOut")
+  // useEffect(() => {
+
+  //   if (!checkOut || Object.keys(checkOut).length === 0) {
+  //     router.replace("/dashboard");
+  //   }
+  // }, [checkOut, router]);
+
+  // if (!checkOut || Object.keys(checkOut).length === 0) {
+  //   return null;
+  // }
   const GO = useRouter();
   const { imageUploaded, setImageUploaded } = useImageUploadStore();
   useEffect(() => {
     const fetchImageStatus = async () => {
       try {
         const res = await GetImageIsUplaod({ order_id: orderId });
-        console.log("Image Upload Response", res);
 
         setImageUploaded(res?.data?.status);
-        console.log(res, "Image Upload Status");
+
+
       } catch (error) {
-        console.error("Failed to fetch image status:", error);
+        console.error("Failed to fetch image status:", error?.response?.data?.errors?.Order
+        );
       }
     };
 
     if (orderId) fetchImageStatus();
   }, [orderId]);
 
-  console.log(imageUploaded, "check");
+
+
+  useEffect(() => {
+    const fetchUserOrder = async () => {
+      try {
+
+        if (!token) {
+          toast.error("User not authenticated");
+          router.replace("/login");
+          return;
+        }
+        Fetcher.axiosSetup.defaults.headers.common.Authorization = `Bearer ${token}`;
+
+
+        const res = await GetUserOrderApi();
+        setOrderId(res?.data?.id);
+        setItems(res?.data?.items);
+        setCheckOut(res?.data?.consultation?.fields?.checkout)
+
+
+      } catch (error) {
+        toast.error(error?.response?.data?.errors?.Order || "An error occurred");
+        router.replace("/dashboard");
+        console.error("Failed to fetch user order:", error);
+      }
+    };
+
+
+      fetchUserOrder();
+    
+
+  }, [token]);
+
+
+
 
   const handleGoBack = () => {
     // if ( !imageUploaded) {
@@ -58,7 +99,7 @@ const ThankYou = () => {
   const handleGoUpload = () => {
     GO.push("/photo-upload");
   };
-  console.log(checkOut, "checkOut");
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-[#F2EEFF] px-4 sm:px-8 md:px-20 my-16">
       <div className="bg-white shadow-2xl rounded-3xl p-8 md:p-12 w-full max-w-3xl transition-all duration-300">
@@ -90,28 +131,27 @@ const ThankYou = () => {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-100 bg-white">
-                  {items.doses.length > 0 &&
-                    items.doses.map((item, index) => (
-                      <tr key={`addon-${index}`} className="hover:bg-gray-50">
-                        <td className="px-6 py-3 reg-font">
-                          {item?.product || item?.name || "Add-on"}
-                        </td>
-                        <td className="px-6 py-3 text-center reg-font">
-                          {item?.qty}
-                        </td>
-                        <td className="px-6 py-3 text-right reg-font">
-                          £
-                          {(
-                            parseFloat(item?.price) * (item?.qty || 1)
-                          ).toFixed(2)}
-                          <span className="text-gray-500 text-sm ml-1">
-                            {/* (£{parseFloat(item?.price).toFixed(2)} each) */}
-                          </span>
-                        </td>
-                      </tr>
-                    ))}
+                  {items?.map((item, index) => (
+                    <tr key={`addon-${index}`} className="hover:bg-gray-50">
+                      <td className="px-6 py-3 reg-font">
+                        {item?.label || item?.product || "Add-on"}
+                      </td>
+                      <td className="px-6 py-3 text-center reg-font">
+                        {item?.quantity}
+                      </td>
+                      <td className="px-6 py-3 text-right reg-font">
+                        £
+                        {(
+                          parseFloat(item?.price) * (item?.quantity || 1)
+                        ).toFixed(2)}
+                        <span className="text-gray-500 text-sm ml-1">
+                          {/* (£{parseFloat(item?.price).toFixed(2)} each) */}
+                        </span>
+                      </td>
+                    </tr>
+                  ))}
 
-                  {items.addons.length > 0 &&
+                  {/* {items.addons.length > 0 &&
                     items.addons.map((item, index) => (
                       <tr key={`addon-${index}`} className="hover:bg-gray-50">
                         <td className="px-6 py-3 reg-font">
@@ -126,11 +166,10 @@ const ThankYou = () => {
                             parseFloat(item?.price) * (item?.qty || 1)
                           ).toFixed(2)}
                           <span className="text-gray-500 text-sm ml-1">
-                            {/* (£{parseFloat(item?.price).toFixed(2)} each) */}
                           </span>
                         </td>
                       </tr>
-                    ))}
+                    ))} */}
 
                   {checkOut?.discount?.discount !== null && (
                     <tr className="hover:bg-gray-50">

@@ -137,6 +137,7 @@ const OrderSummary = ({
       if (data) {
         setPaymentData(data?.data?.paymentData);
         setOrderId(data?.data?.paymentData?.order_id);
+        console.log(first)
         clearCoupon();
       }
     },
