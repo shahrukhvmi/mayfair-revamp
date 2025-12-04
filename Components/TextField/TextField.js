@@ -27,6 +27,30 @@ const TextField = ({
   const isPassword = type === "password";
   const inputType = isPassword ? (showPassword ? "text" : "password") : type;
 
+
+  // 🔥 Build validation rules (for RHF)
+  const baseRules = {
+    ...(required ? { required: "This field is required" } : {}),
+    ...validation,
+  };
+  if (name === "city") {
+    const existingValidate = baseRules.validate;
+
+    baseRules.validate = (val) => {
+      // pehle agar user ne custom validate diya hai to usko respect karo
+      if (existingValidate) {
+        const result = existingValidate(val);
+        if (result !== true) return result;
+      }
+
+      // ab whitespace-only check
+      if (!val || val.trim() === "") {
+        return "Town / City cannot be empty or spaces only";
+      }
+
+      return true;
+    };
+  }
   return (
     <div className="mb-4 relative">
       {label && (
@@ -65,10 +89,7 @@ const TextField = ({
             disabled={disabled}
             onPaste={handlePaste}
             {...(register
-              ? register(name, {
-                required: required && "This field is required",
-                ...validation,
-              })
+              ? register(name, baseRules) // ✅ yahan updated rules use ho rahe hain
               : { value, onChange })}
             className={`reg-font w-full text-black px-3 py-4 border rounded-sm placeholder-gray-400 
               focus:outline-none focus:ring-violet-300 focus:border-primary

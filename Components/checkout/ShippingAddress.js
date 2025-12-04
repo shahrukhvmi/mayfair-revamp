@@ -247,6 +247,13 @@ export default function ShippingAddress({
     onComplete();
   };
 
+  if (name === "city") {
+    validationRules.setValueAs = (value) => value.trim();
+    validationRules.validate = (value) =>
+      value.trim() !== "" || `${label} cannot be empty or spaces only`;
+  }
+
+
   useEffect(() => {
     const subscription = watch((values) => {
       const selectedCountry =
@@ -347,9 +354,8 @@ export default function ShippingAddress({
                   <button
                     type="button"
                     onClick={handleSearch}
-                    className={`absolute right-3 transform -translate-y-1/2 text-white bg-primary px-3 py-1 rounded cursor-pointer w-28 flex items-center justify-center ${
-                      errors.postalcode ? "top-2/4" : "top-2/3"
-                    }`}
+                    className={`absolute right-3 transform -translate-y-1/2 text-white bg-primary px-3 py-1 rounded cursor-pointer w-28 flex items-center justify-center ${errors.postalcode ? "top-2/4" : "top-2/3"
+                      }`}
                     disabled={addressSearchLoading}
                   >
                     {addressSearchLoading ? (
