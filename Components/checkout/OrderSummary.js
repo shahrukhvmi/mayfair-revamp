@@ -33,6 +33,7 @@ import OrderSummaryHeader from "./OrderSummaryHeader";
 
 const OrderSummary = ({
   isConcentCheck,
+  isPostalCheck,
   isShippingCheck,
   isBillingCheck,
   onComplete,
@@ -270,9 +271,8 @@ const OrderSummary = ({
     checkoutMutation.mutate(formData);
   };
 
-  console.log(isConcentCheck, "isConcentCheck");
-  console.log(isShippingCheck, "isShippingCheck");
-  console.log(isBillingCheck, "isBillingCheck");
+
+  console.log(isPostalCheck, "22sasdsdsdsd");
 
   return (
     <>
@@ -460,11 +460,10 @@ const OrderSummary = ({
                           type="button"
                           onClick={handleApplyCoupon}
                           disabled={!isApplyEnabled}
-                          className={`cursor-pointer px-6 text-sm bold-font text-white transition-all duration-200 ${
-                            isApplyEnabled
-                              ? "bg-primary hover:bg-primary"
-                              : "bg-gray-300 cursor-not-allowed"
-                          }`}
+                          className={`cursor-pointer px-6 text-sm bold-font text-white transition-all duration-200 ${isApplyEnabled
+                            ? "bg-primary hover:bg-primary"
+                            : "bg-gray-300 cursor-not-allowed"
+                            }`}
                         >
                           {couponLoading ? "Applying..." : "Apply"}
                         </button>
@@ -488,8 +487,12 @@ const OrderSummary = ({
                   ) : (
                     <NextButton
                       disabled={
-                        !(isConcentCheck && isShippingCheck && isBillingCheck)
+                        !isConcentCheck ||
+                        !isShippingCheck ||
+                        !isBillingCheck ||
+                        isPostalCheck
                       }
+
                       label="Proceed to Payment "
                       onClick={handlePayment}
                     />

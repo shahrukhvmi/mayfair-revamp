@@ -30,6 +30,7 @@ const Checkout = () => {
   const { reorder } = useReorder();
   const { billingSameAsShipping } = useShippingOrBillingStore();
   const [isConcentCheck, setIsConcentCheck] = useState(false);
+  const [isPostalCheck, setIsPostalCheck] = useState(false);
   const [isShippingCheck, setIsShippingCheck] = useState(false);
   const [isBillingCheck, setIsBillingCheck] = useState(false);
   const [closeShipping, setCloseShipping] = useState(false);
@@ -37,7 +38,7 @@ const Checkout = () => {
 
   const [showThankYouModal, setShowThankYouModal] = useState(false);
   const router = useRouter();
-
+  console.log(isPostalCheck, "isPostalCheck")
   const personalRef = useRef(null);
   const addressRef = useRef(null);
   const billingRef = useRef(null);
@@ -178,6 +179,7 @@ const Checkout = () => {
             setIsShippingCheck={setIsShippingCheck}
             setIsBillingCheck={setIsBillingCheck}
             setCloseShipping={setCloseShipping}
+            setIsPostalCheck={setIsPostalCheck}
           />
         </div>
 
@@ -203,6 +205,7 @@ const Checkout = () => {
         <div ref={summaryRef}>
           <OrderSummary
             onComplete={isConcentCheck}
+            isPostalCheck={isPostalCheck}
             isConcentCheck={isConcentCheck}
             isShippingCheck={isShippingCheck}
             isBillingCheck={isBillingCheck}

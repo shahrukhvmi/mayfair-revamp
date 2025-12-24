@@ -9,6 +9,7 @@ const TextField = ({
   register,
   required = false,
   validation = {},
+  registerOptions = {},
   errors = {},
   disabled = false,
   disablePaste = false,
@@ -16,6 +17,7 @@ const TextField = ({
   onChange, // <-- Controlled input
   multiline = false,
   rows = 4,
+  readOnly = false,
 }) => {
   const [showPassword, setShowPassword] = useState(false);
   const handlePaste = (e) => {
@@ -83,18 +85,23 @@ const TextField = ({
       ) : (
         <div className="relative">
           <input
+            readOnly={readOnly}
             id={name}
             type={inputType}
             placeholder={placeholder}
             disabled={disabled}
             onPaste={handlePaste}
             {...(register
-              ? register(name, baseRules) // ✅ yahan updated rules use ho rahe hain
+              ? register(name, {
+                ...baseRules,
+                ...registerOptions,
+              })
               : { value, onChange })}
             className={`reg-font w-full text-black px-3 py-4 border rounded-sm placeholder-gray-400 
               focus:outline-none focus:ring-violet-300 focus:border-primary
               ${errors[name] ? "border-red-500" : "border-black"}
               ${isPassword ? "pr-12" : ""}
+               ${readOnly ? "bg-gray-100 text-gray-800 cursor-not-allowed select-none" : "text-black"}
             `}
           />
 
