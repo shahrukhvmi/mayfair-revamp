@@ -33,7 +33,7 @@ import OrderSummaryHeader from "./OrderSummaryHeader";
 
 const OrderSummary = ({
   isConcentCheck,
-  isPostalCheck,
+  // isPostalCheck,
   isShippingCheck,
   isBillingCheck,
   onComplete,
@@ -138,7 +138,6 @@ const OrderSummary = ({
       if (data) {
         setPaymentData(data?.data?.paymentData);
         setOrderId(data?.data?.paymentData?.order_id);
-        console.log(first)
         clearCoupon();
       }
     },
@@ -272,7 +271,7 @@ const OrderSummary = ({
   };
 
 
-  console.log(isPostalCheck, "22sasdsdsdsd");
+  // console.log(isPostalCheck, "22sasdsdsdsd");
 
   return (
     <>
@@ -489,8 +488,8 @@ const OrderSummary = ({
                       disabled={
                         !isConcentCheck ||
                         !isShippingCheck ||
-                        !isBillingCheck ||
-                        isPostalCheck
+                        !isBillingCheck 
+                        // isPostalCheck
                       }
 
                       label="Proceed to Payment "

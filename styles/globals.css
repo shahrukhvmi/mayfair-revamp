@@ -86,14 +86,15 @@ body {
 }
 
 .product-concent-list ol {
-    list-style: outside;
+  list-style: outside;
 }
+
 .concent-anchor a {
   color: rgb(0, 0, 238);
 }
 
 .product-concent-list li {
-    margin-bottom: 12px;
+  margin-bottom: 12px;
 }
 
 @media (max-width: 768px) {
@@ -140,6 +141,7 @@ body {
     opacity: 0;
     /* transform: translate(-50%, -20px); */
   }
+
   to {
     opacity: 1;
     /* transform: translate(-50%, 0); */
@@ -149,3 +151,55 @@ body {
 .animate-slide-down {
   animation: slide-down 0.8s ease-out forwards;
 }
+
+
+/* Laptop screens only */
+
+@media (min-width: 786px) and (max-width: 1022px) {
+  .journey-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1024px) and (max-width: 1366px) {
+
+  .journey-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .journey-card {
+    padding: 20px;
+  }
+
+  .journey-card-value {
+    font-size: 24px;
+  }
+
+  .journey-card-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+}
+
+@media (min-width: 1367px) and (max-width: 2800px) {
+
+  .journey-grid {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+  }
+
+  .journey-card {
+    padding: 20px;
+  }
+
+  .journey-card-value {
+    font-size: 24px;
+  }
+
+  .journey-card-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+}
+

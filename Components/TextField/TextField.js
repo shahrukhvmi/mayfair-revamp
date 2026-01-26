@@ -9,7 +9,7 @@ const TextField = ({
   register,
   required = false,
   validation = {},
-  registerOptions = {},
+  // registerOptions = {},
   errors = {},
   disabled = false,
   disablePaste = false,
@@ -94,7 +94,7 @@ const TextField = ({
             {...(register
               ? register(name, {
                 ...baseRules,
-                ...registerOptions,
+                // ...registerOptions,
               })
               : { value, onChange })}
             className={`reg-font w-full text-black px-3 py-4 border rounded-sm placeholder-gray-400 

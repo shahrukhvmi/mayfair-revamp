@@ -28,7 +28,7 @@ export default function ShippingAddress({
   setIsShippingCheck,
   setIsBillingCheck,
   setCloseShipping,
-  setIsPostalCheck
+  // setIsPostalCheck
 }) {
   const [showLoader, setShowLoader] = useState(false);
   const [manual, setManual] = useState(false);
@@ -37,7 +37,7 @@ export default function ShippingAddress({
   const [addressSearchLoading, setAddressSearchLoading] = useState(false);
 
   const [shippingIndex, setShippingIndex] = useState("");
-  const [isPostalCodeNotValid, setIsPostalCodeNotValid] = useState(false)
+  // const [isPostalCodeNotValid, setIsPostalCodeNotValid] = useState(false)
 
   const {
     shipping,
@@ -166,21 +166,21 @@ export default function ShippingAddress({
         setAddressOptions(result.addresses.addresses);
         setManual(true);
         setAddressSearchLoading(false);
-        setIsPostalCodeNotValid(false)
+        // setIsPostalCodeNotValid(false)
       } else {
         setAddressSearchLoading(false);
-        setIsPostalCodeNotValid(true);
+        // setIsPostalCodeNotValid(true);
         toast.error("Invalid Post code");
-        setIsPostalCheck(isPostalCodeNotValid)
-        setValue("addressone", "");
-        setValue("addresstwo", "");
-        setValue("city", "");
+        // setIsPostalCheck(isPostalCodeNotValid)
+        // setValue("addressone", "");
+        // setValue("addresstwo", "");
+        // setValue("city", "");
       }
     } catch (error) {
       setAddressSearchLoading(false);
       console.log("API error:", error);
-      setIsPostalCheck(isPostalCodeNotValid);
-      setIsPostalCodeNotValid(isPostalCodeNotValid);
+      // setIsPostalCheck(isPostalCodeNotValid);
+      // setIsPostalCodeNotValid(isPostalCodeNotValid);
     }
   };
   const watchedFields = watch([
@@ -206,14 +206,16 @@ export default function ShippingAddress({
     setIsShippingCheck,
     setIsBillingCheck,
     sameAsShippingValue,
-    isPostalCodeNotValid,
+    // isPostalCodeNotValid,
   ]);
 
 
+  // close 
+  // useEffect(() => {
+  //   setIsPostalCheck(isPostalCodeNotValid);
+  // }, [isPostalCodeNotValid]);
 
-  useEffect(() => {
-    setIsPostalCheck(isPostalCodeNotValid);
-  }, [isPostalCodeNotValid]);
+
   // useEffect(() => {
   //   if (checkShippingForAccordion != null) {
   //     console.log("All required fields are filled.");
@@ -355,18 +357,18 @@ export default function ShippingAddress({
                 />
               )}
             />
-            {console.log(isPostalCodeNotValid, "isPostalCodeNotValid")}
+            {/* {console.log(isPostalCodeNotValid, "isPostalCodeNotValid")}  */}
             <div className="relative">
               <TextField
                 label="Post code"
                 name="postalcode"
                 register={register}
-                registerOptions={{
-                  onChange: () => {
-                    setIsPostalCodeNotValid(true);
-                    setIsPostalCheck(true);
-                  },
-                }}
+                // registerOptions={{
+                //   onChange: () => {
+                //     setIsPostalCodeNotValid(true);
+                //     setIsPostalCheck(true);
+                //   },
+                // }}
                 required
                 errors={errors}
               />
@@ -399,8 +401,8 @@ export default function ShippingAddress({
                 </>
               )}
             </div>
-
-            {!isPostalCodeNotValid && !addressSearchLoading && addressOptions.length > 0 && (
+            {/* !isPostalCodeNotValid &&  */}
+            {!addressSearchLoading && addressOptions.length > 0 && (
               <MUISelectField
                 label="Select Your Address"
                 name="addressSelect"
@@ -440,7 +442,7 @@ export default function ShippingAddress({
               name="addresstwo"
               register={register}
               errors={errors}
-              readOnly
+            // readOnly
 
             />
             <TextField
@@ -449,7 +451,7 @@ export default function ShippingAddress({
               register={register}
               required
               errors={errors}
-              readOnly
+            // readOnly
             />
 
             <Controller
@@ -474,8 +476,8 @@ export default function ShippingAddress({
                 </div>
               )}
             />
-
-            <NextButton label="Continue" disabled={!isValid || isPostalCodeNotValid} />
+            {/* || isPostalCodeNotValid */}
+            <NextButton label="Continue" disabled={!isValid} />
           </form>
 
           {showLoader && (

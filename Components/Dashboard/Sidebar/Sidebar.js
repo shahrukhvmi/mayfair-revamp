@@ -11,6 +11,7 @@ import {
 import { GiMedicines } from "react-icons/gi";
 import ApplicationLogo from "@/config/ApplicationLogo";
 import styles from "@/styles/sidebar.module.css"; // ✅ Import as module
+import { FaWeight } from "react-icons/fa";
 
 const Sidebar = ({ isOpen, toggleSidebar }) => {
   const router = useRouter();
@@ -47,13 +48,20 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
       key: "tab-password",
       match: ["/change-password"],
     },
+
+    // {
+    //   href: "/weight-loss-journey",
+    //   label: "Weight Loss Journey",
+    //   icon: <FaWeight />,
+    //   key: "tab-weight",
+    //   match: ["/weight-loss-journey"]
+    // }
   ];
 
   return (
     <div
-      className={`sm:m-4 sm:rounded-lg fixed top-0 left-0 lg:relative h-full bg-[#F9FAFB] py-4 px-3 flex flex-col shadow-md transform transition-transform duration-300 ease-in-out z-50 sm:relative sm:translate-x-0 sm:w-64 ${
-        isOpen ? "translate-x-0" : "-translate-x-full"
-      }`}
+      className={`sm:m-4 sm:rounded-lg fixed top-0 left-0 lg:relative h-full bg-[#F9FAFB] py-4 px-3 flex flex-col shadow-md transform transition-transform duration-300 ease-in-out z-50 sm:relative sm:translate-x-0 sm:w-64 ${isOpen ? "translate-x-0" : "-translate-x-full"
+        }`}
     >
       <div className="flex justify-between p-1 mb-3 md:hidden">
         <ApplicationLogo className="w-32 sm:w-40" />
@@ -75,16 +83,14 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
             <Link href={item.href} legacyBehavior key={item.key}>
               <a
                 onClick={toggleSidebar}
-                className={`flex items-center p-2 rounded-md ${item.key} ${
-                  isActive
+                className={`flex items-center p-2 rounded-md ${item.key} ${isActive
                     ? `bg-primary text-white ${styles["active-tab"]}`
                     : "hover:bg-gray-200 darkGrayColor"
-                } medium-font niba-reg-font`}
+                  } medium-font niba-reg-font`}
               >
                 {React.cloneElement(item.icon, {
-                  className: `text-2xl mr-3 ${
-                    isActive ? "text-white" : "text-[#6B7280]"
-                  }`,
+                  className: `text-2xl mr-3 ${isActive ? "text-white" : "text-[#6B7280]"
+                    }`,
                 })}
                 <span
                   className={styles[`tab-text-${item.key.split("tab-")[1]}`]}
