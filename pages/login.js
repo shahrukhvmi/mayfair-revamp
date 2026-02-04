@@ -24,14 +24,17 @@ import useAuthUserDetailStore from "@/store/useAuthUserDetailStore";
 import MetaLayout from "@/Meta/MetaLayout";
 import { meta_url } from "@/config/constants";
 import useReturning from "@/store/useReturningPatient";
+import useCartStore from "@/store/useCartStore";
+import { useParams, useSearchParams } from "next/navigation";
 
 export default function LoginScreen() {
   const { setIsReturningPatient } = useReturning();
 
   const [showLoader, setShowLoader] = useState(false);
+  // const [review, setReview] = useState(null);
   const { userData, setUserData } = useUserDataStore();
   const { setLastName, setFirstName, setEmail } = useSignupStore();
-  const { token, setToken } = useAuthStore();
+  const { token, setToken, setReview, review } = useAuthStore();
   const { setIsPasswordReset, setShowResetPassword } = usePasswordReset();
   const { setImpersonate } = useImpersonate();
   const { setAuthUserDetail } = useAuthUserDetailStore();
@@ -54,6 +57,20 @@ export default function LoginScreen() {
   const { showLoginModal, closeLoginModal, openLoginModal } =
     useLoginModalStore();
 
+  const searchParams = useSearchParams();
+  const { setOrderId } = useCartStore();
+  const params = useParams();
+
+  useEffect(() => {
+    const orderId = searchParams.get("order_id");
+    const review = searchParams.get("review") === "true";
+    console.log(review, "review param");
+    if (orderId) setOrderId(orderId);
+    if (review) setReview(review);
+
+    console.log("review:", review);
+  }, [searchParams, params, setOrderId, setEmail]);
+
   const loginMutation = useMutation(Login, {
     onSuccess: (data) => {
       const user = data?.data?.data;
@@ -65,14 +82,14 @@ export default function LoginScreen() {
         setFirstName(user?.fname);
         setLastName(user?.lname);
         setEmail(user?.email);
-        setIsReturningPatient(user?.isReturning)
+        setIsReturningPatient(user?.isReturning);
         toast.success("Login Successfully");
         Fetcher.axiosSetup.defaults.headers.common.Authorization = `Bearer ${user.token}`;
         setShowLoader(false);
         setIsPasswordReset(false);
         setShowResetPassword(user?.show_password_reset);
-        
-        router.push("/dashboard");
+
+        // router.push("/dashboard");
       }
     },
     onError: (error) => {
@@ -149,7 +166,7 @@ export default function LoginScreen() {
         { impersonate_email: impersonateEmail, company_id: 1 },
         {
           onSettled: () => setShowLoader(false),
-        }
+        },
       );
     }
     // eslint-disable-next-line
@@ -165,12 +182,17 @@ export default function LoginScreen() {
     setEmail(data?.email);
     loginMutation.mutate(formData);
   };
-
+  console.log(review, "review");
   useEffect(() => {
-    if (token) {
-      router.push("/dashboard");
+    if (!token) return;
+    if (review === null) return;
+
+    if (review) {
+      router.replace("/review");
+    } else {
+      router.replace("/dashboard");
     }
-  }, [token])
+  }, [token, review]);
 
   return (
     <>
@@ -185,11 +207,12 @@ export default function LoginScreen() {
         <div className="bg-white">
           <PageLoader />
         </div>
-
       ) : (
         <>
           <div className={`flex justify-center bg-[#F2EEFF] py-8 sm:py-16`}>
-            <div className={`bg-white rounded-xl shadow-md w-full max-w-lg p-8`}>
+            <div
+              className={`bg-white rounded-xl shadow-md w-full max-w-lg p-8`}
+            >
               {/* Title */}
               <h1 className="niba-reg-font heading mb-2">Login</h1>
 
@@ -200,8 +223,9 @@ export default function LoginScreen() {
 
               <PageAnimationWrapper>
                 <div
-                  className={`relative ${showLoader ? "pointer-events-none cursor-not-allowed" : ""
-                    }`}
+                  className={`relative ${
+                    showLoader ? "pointer-events-none cursor-not-allowed" : ""
+                  }`}
                 >
                   <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
                     <TextField
@@ -239,7 +263,10 @@ export default function LoginScreen() {
                       </Link>
                     </p>
                     {/* <BackButton onClick={startConsultation} label="Are you a new patient? Get started with the consultation." /> */}
-                    <BackButton onClick={openLoginModal} label="Forgot password" />
+                    <BackButton
+                      onClick={openLoginModal}
+                      label="Forgot password"
+                    />
                     {/* <BackButton label="Back" className="mt-2" onClick={() => router.back()} /> */}
                   </form>
 

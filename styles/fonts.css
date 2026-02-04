@@ -31,10 +31,10 @@
   font-display: swap;
 }
 
-
 @font-face {
   font-family: "AtlasGrotesk-Regular";
-  src: url("../public/fonts/AtlasGrotesk/AtlasGrotesk-Regular.otf") format("opentype");
+  src: url("../public/fonts/AtlasGrotesk/AtlasGrotesk-Regular.otf")
+    format("opentype");
   font-weight: normal;
   font-style: normal;
   font-display: swap;
@@ -42,7 +42,8 @@
 
 @font-face {
   font-family: "AtlasGrotesk-Thin";
-  src: url("../public/fonts/AtlasGrotesk/AtlasGrotesk-Thin.otf") format("opentype");
+  src: url("../public/fonts/AtlasGrotesk/AtlasGrotesk-Thin.otf")
+    format("opentype");
   font-weight: normal;
   font-style: normal;
   font-display: swap;
@@ -50,7 +51,8 @@
 
 @font-face {
   font-family: "AtlasGrotesk-Bold";
-  src: url("../public/fonts/AtlasGrotesk/AtlasGrotesk-Bold.otf") format("opentype");
+  src: url("../public/fonts/AtlasGrotesk/AtlasGrotesk-Bold.otf")
+    format("opentype");
   font-weight: normal;
   font-style: normal;
   font-display: swap;
@@ -58,7 +60,8 @@
 
 @font-face {
   font-family: "AtlasGrotesk-Black";
-  src: url("../public/fonts/AtlasGrotesk/AtlasGrotesk-Black.otf") format("opentype");
+  src: url("../public/fonts/AtlasGrotesk/AtlasGrotesk-Black.otf")
+    format("opentype");
   font-weight: normal;
   font-style: normal;
   font-display: swap;
@@ -66,13 +69,46 @@
 
 @font-face {
   font-family: "AtlasGrotesk-Medium";
-  src: url("../public/fonts/AtlasGrotesk/AtlasGrotesk-Medium.otf") format("opentype");
+  src: url("../public/fonts/AtlasGrotesk/AtlasGrotesk-Medium.otf")
+    format("opentype");
   font-weight: normal;
   font-style: normal;
   font-display: swap;
 }
 
+@font-face {
+  font-family: "Montserrat-Medium";
+  src: url("../public/fonts/Montserrat/Montserrat-Medium.ttf")
+    format("opentype");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Montserrat-Regular";
+  src: url("../public/fonts/Montserrat/Montserrat-Regular.ttf")
+    format("opentype");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
 
+@font-face {
+  font-family: "Montserrat-SemiBold";
+  src: url("../public/fonts/Montserrat/Montserrat-SemiBold.ttf")
+    format("opentype");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Montserrat-Bold";
+  src: url("../public/fonts/Montserrat/Montserrat-Bold.ttf") format("opentype");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
 /* Define a CSS variable for the font */
 :root {
   --reg-font: "NibPro-Regular";
@@ -84,8 +120,24 @@
   --font-bold: "AtlasGrotesk-Bold";
   --font-black: "AtlasGrotesk-Black";
   --font-medium: "AtlasGrotesk-Medium";
+
+  --mont-reg: "Montserrat-Regular";
+  --mont-bold: "Montserrat-Bold";
+  --mont-medium: "Montserrat-Medium";
 }
 
+.mont-reg-font {
+  font-family: var(--mont-reg) !important;
+}
+.mont-bold-font {
+  font-family: var(--mont-bold) !important;
+}
+.mont-medium-font {
+  font-family: var(--mont-medium) !important;
+}
+.mont-semibold-font {
+  font-family: var(--mont-semibold) !important;
+}
 /* Global class */
 .niba-reg-font {
   font-family: var(--reg-font) !important;
@@ -93,29 +145,24 @@
 
 .thin-font {
   font-family: var(--font-thin) !important;
-
 }
-.reg-font{
-  font-family: var( --font-reg) !important;
+.reg-font {
+  font-family: var(--font-reg) !important;
 }
 .bold-font {
   font-family: var(--font-bold) !important;
-
 }
 
 .black-font {
   font-family: var(--font-black) !important;
-
 }
 .medium-font {
   font-family: var(--font-medium) !important;
-
 }
 
 .niba-bold-font {
   font-family: var(--bold-font) !important;
 }
-
 
 .niba-light-font {
   font-family: var(--light-font) !important;

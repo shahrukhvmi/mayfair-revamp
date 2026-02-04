@@ -6,7 +6,7 @@ const nextConfig = {
     unoptimized: true,
   },
   output: "export",
-  basePath: '/start-consultation',
+  basePath: "/start-consultation",
 };
 
 export default nextConfig;
