@@ -4,7 +4,7 @@ import { Inter } from "next/font/google";
 import { FaSearch } from "react-icons/fa";
 import TextField from "@/Components/TextField/TextField";
 import PageLoader from "@/Components/PageLoader/PageLoader";
-import { Client } from "getaddress-api";
+// import { Client } from "getaddress-api";
 import NextButton from "@/Components/NextButton/NextButton";
 import MUISelectField from "@/Components/SelectField/SelectField";
 import { useRouter } from "next/router";
@@ -17,7 +17,7 @@ import { useMutation } from "@tanstack/react-query";
 import { getProfileData, sendProfileData } from "@/api/myProfileApi";
 import toast from "react-hot-toast";
 
-const api = new Client("aYssNMkdXEGsdfGVZjiY0Q26381");
+// const api = new Client("aYssNMkdXEGsdfGVZjiY0Q26381");
 
 export default function Shipping({ shipmentCountries }) {
   const [showLoader, setShowLoader] = useState(false);
@@ -68,7 +68,7 @@ export default function Shipping({ shipmentCountries }) {
 
       // Match country by name from static list
       const country = shipmentCountries?.find(
-        (c) => c.name === shippingData.country
+        (c) => c.name === shippingData.country,
       );
 
       if (country) {
@@ -98,16 +98,25 @@ export default function Shipping({ shipmentCountries }) {
 
   const handleSearch = async () => {
     setAddressSearchLoading(true);
+
     const postal = watch("postalcode");
     if (!postal) {
       alert("Please enter a postcode.");
       setAddressSearchLoading(false);
+      return;
     }
 
     try {
-      const result = await api.find(postal);
-      if (result && result.addresses?.addresses?.length) {
-        setAddressOptions(result.addresses.addresses);
+      const res = await fetch(
+        `https://api.ideal-postcodes.co.uk/v1/postcodes/${encodeURIComponent(
+          postal,
+        )}?api_key=${process.env.NEXT_PUBLIC_IDEAL_POSTCODES_KEY}`,
+      );
+
+      const data = await res.json();
+
+      if (data && Array.isArray(data.result) && data.result.length) {
+        setAddressOptions(data.result);
         setManual(true);
         setAddressSearchLoading(false);
       } else {
@@ -117,6 +126,7 @@ export default function Shipping({ shipmentCountries }) {
     } catch (error) {
       console.error("API error:", error);
       alert("Something went wrong while fetching addresses.");
+      setAddressSearchLoading(false);
     }
   };
 
@@ -138,7 +148,7 @@ export default function Shipping({ shipmentCountries }) {
     setShowLoader(true);
 
     const selectedCountry = shipmentCountries.find(
-      (c) => c.id.toString() === shippingIndex
+      (c) => c.id.toString() === shippingIndex,
     );
 
     // ✅ Save shipping info
@@ -192,7 +202,7 @@ export default function Shipping({ shipmentCountries }) {
                   setValue("city", "");
 
                   const selectedCountry = shipmentCountries.find(
-                    (c) => c.id.toString() === id
+                    (c) => c.id.toString() === id,
                   );
                   if (selectedCountry) {
                     setShipping({
@@ -262,13 +272,21 @@ export default function Shipping({ shipmentCountries }) {
                 setValue("addresstwo", selected.line_2 || "", {
                   shouldValidate: true,
                 });
-                setValue("city", selected.town_or_city || "", {
+                setValue("city", selected.post_town || "", {
                   shouldValidate: true,
                 });
               }}
               options={addressOptions.map((addr, idx) => ({
                 value: idx,
-                label: addr.formatted_address.join(", "),
+                label: [
+                  addr.line_1,
+                  addr.line_2,
+                  addr.line_3,
+                  addr.post_town,
+                  addr.postcode,
+                ]
+                  .filter(Boolean)
+                  .join(", "),
               }))}
             />
           )}

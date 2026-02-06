@@ -11,7 +11,7 @@ import PageAnimationWrapper from "@/Components/PageAnimationWrapper/PageAnimatio
 import PageLoader from "@/Components/PageLoader/PageLoader";
 import BackButton from "@/Components/BackButton/BackButton";
 import usePatientInfoStore from "@/store/patientInfoStore";
-import { Client } from "getaddress-api";
+// import { Client } from "getaddress-api";
 import {
   FormControl,
   InputLabel,
@@ -24,9 +24,10 @@ import { motion } from "framer-motion";
 import toast from "react-hot-toast";
 import MetaLayout from "@/Meta/MetaLayout";
 import { meta_url } from "@/config/constants";
+// import { PostcodeLookup } from "@ideal-postcodes/postcode-lookup";
 
 // const api = new Client("_UFb05P76EyMidU1VHIQ_A42976"); old key
-const api = new Client("aYssNMkdXEGsdfGVZjiY0Q26381 ");
+// const api = new Client("aYssNMkdXEGsdfGVZjiY0Q26381 ");
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 
 export default function ResidentialAddress() {
@@ -67,27 +68,32 @@ export default function ResidentialAddress() {
 
   const handleSearch = async () => {
     setAddressSearchLoading(true);
-    const postal = watch("postalCode");
+
+    const postal = watch("postalCode")?.trim();
     if (!postal) {
-      // alert("Please enter a postcode.");
       setAddressSearchLoading(false);
+      return;
     }
 
     try {
-      const result = await api.find(postal);
-      console.log(result, "result");
+      const res = await fetch(
+        `https://api.ideal-postcodes.co.uk/v1/postcodes/${encodeURIComponent(
+          postal,
+        )}?api_key=${process.env.NEXT_PUBLIC_IDEAL_POSTCODES_KEY}`,
+      );
 
-      if (result && result.addresses?.addresses?.length) {
-        setAddressOptions(result.addresses.addresses);
+      const data = await res.json();
+
+      if (data?.result?.length) {
+        setAddressOptions(data.result);
         setManual(true);
-        setAddressSearchLoading(false);
       } else {
-        setAddressSearchLoading(false);
-        toast.error("Invalid Post code");
+        toast.error("No addresses found");
       }
     } catch (error) {
-      console.error("API error:", error);
-      alert("Something went wrong while fetching addresses.");
+      console.error("Ideal Postcodes error:", error);
+      toast.error("Address lookup failed");
+    } finally {
       setAddressSearchLoading(false);
     }
   };
@@ -149,7 +155,6 @@ export default function ResidentialAddress() {
                     <TextField
                       label="Post code"
                       name="postalCode"
-                      
                       register={register}
                       required
                       errors={errors}
@@ -199,7 +204,7 @@ export default function ResidentialAddress() {
                         setValue("address2", selected.line_2 || "", {
                           shouldValidate: true,
                         }); // optional but still validate
-                        setValue("city", selected.town_or_city || "", {
+                        setValue("city", selected.post_town || "", {
                           shouldValidate: true,
                         });
                         setValue("country", selected.country || "", {
@@ -208,7 +213,15 @@ export default function ResidentialAddress() {
                       }}
                       options={addressOptions.map((addr, idx) => ({
                         value: idx,
-                        label: addr.formatted_address.join(", "),
+                        label: [
+                          addr.line_1,
+                          addr.line_2,
+                          addr.line_3,
+                          addr.post_town,
+                          addr.postcode,
+                        ]
+                          .filter(Boolean)
+                          .join(", "),
                       }))}
                       error={errors?.addressSelect?.message}
                     />
@@ -231,7 +244,6 @@ export default function ResidentialAddress() {
                       <TextField
                         label="Address"
                         name="address1"
-                    
                         register={register}
                         required
                         errors={errors}
@@ -239,14 +251,12 @@ export default function ResidentialAddress() {
                       <TextField
                         label="Address 2"
                         name="address2"
-                      
                         register={register}
                         errors={errors}
                       />
                       <TextField
                         label="Town / City"
                         name="city"
-                    
                         register={register}
                         required
                         errors={errors}
@@ -254,7 +264,6 @@ export default function ResidentialAddress() {
                       <TextField
                         label="Country"
                         name="country"
-                     
                         register={register}
                         required
                         errors={errors}

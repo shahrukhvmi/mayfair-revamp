@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { FaSearch } from "react-icons/fa";
 import { motion } from "framer-motion";
-import { Client } from "getaddress-api";
+// import { Client } from "getaddress-api";
 import toast from "react-hot-toast";
 import { useMutation } from "@tanstack/react-query";
 
@@ -13,7 +13,7 @@ import MUISelectField from "@/Components/SelectField/SelectField";
 import SectionWrapper from "@/Components/checkout/SectionWrapper";
 import { getProfileData, sendProfileData } from "@/api/myProfileApi";
 
-const api = new Client("aYssNMkdXEGsdfGVZjiY0Q26381");
+// const api = new Client("aYssNMkdXEGsdfGVZjiY0Q26381");
 
 export default function Billing({ billingCountries }) {
   const [showLoader, setShowLoader] = useState(false);
@@ -47,7 +47,7 @@ export default function Billing({ billingCountries }) {
   const postalCodeValue = watch("postalcode");
   const selectedBillingCountry = watch("billingCountry");
   const selectedCountryObj = (billingCountries || []).find(
-    (c) => c.id.toString() === selectedBillingCountry
+    (c) => c.id.toString() === selectedBillingCountry,
   );
   const allowedCountryNames = [
     "United Kingdom (Mainland)",
@@ -66,7 +66,7 @@ export default function Billing({ billingCountries }) {
     },
     onError: (error) => {
       toast.error(
-        error?.response?.data?.message || "Failed to load profile data."
+        error?.response?.data?.message || "Failed to load profile data.",
       );
     },
   });
@@ -89,7 +89,7 @@ export default function Billing({ billingCountries }) {
     setValue("state", billing.state || "");
 
     const country = billingCountries.find(
-      (c) => c.name === billing.country_name || c.name === billing.country
+      (c) => c.name === billing.country_name || c.name === billing.country,
     );
     if (country) {
       setValue("billingCountry", country.id.toString(), {
@@ -109,9 +109,16 @@ export default function Billing({ billingCountries }) {
     }
 
     try {
-      const result = await api.find(postalCodeValue);
-      if (result && result.addresses?.addresses?.length) {
-        setAddressOptions(result.addresses.addresses);
+      const res = await fetch(
+        `https://api.ideal-postcodes.co.uk/v1/postcodes/${encodeURIComponent(
+          postalCodeValue.trim(),
+        )}?api_key=${process.env.NEXT_PUBLIC_IDEAL_POSTCODES_KEY}`,
+      );
+
+      const data = await res.json();
+
+      if (data && Array.isArray(data.result) && data.result.length) {
+        setAddressOptions(data.result);
         setManual(true);
       } else {
         setAddressSearchLoading(false);
@@ -139,7 +146,7 @@ export default function Billing({ billingCountries }) {
   const onSubmit = (data) => {
     setShowLoader(true);
     const selectedCountry = billingCountries.find(
-      (c) => c.id.toString() === billingIndex
+      (c) => c.id.toString() === billingIndex,
     );
 
     const formData = {
@@ -255,7 +262,7 @@ export default function Billing({ billingCountries }) {
                 setValue("addresstwo", selected.line_2 || "", {
                   shouldValidate: true,
                 });
-                setValue("city", selected.town_or_city || "", {
+                setValue("city", selected.post_town || "", {
                   shouldValidate: true,
                 });
                 setValue("state", selected.county || "", {
@@ -264,7 +271,15 @@ export default function Billing({ billingCountries }) {
               }}
               options={addressOptions.map((addr, idx) => ({
                 value: idx,
-                label: addr.formatted_address.join(", "),
+                label: [
+                  addr.line_1,
+                  addr.line_2,
+                  addr.line_3,
+                  addr.post_town,
+                  addr.postcode,
+                ]
+                  .filter(Boolean)
+                  .join(", "),
               }))}
             />
           )}

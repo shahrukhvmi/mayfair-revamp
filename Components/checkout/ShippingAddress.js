@@ -5,7 +5,7 @@ import SectionHeader from "./SectionHeader";
 import { FaSearch, FaShippingFast } from "react-icons/fa";
 import TextField from "@/Components/TextField/TextField";
 import PageLoader from "@/Components/PageLoader/PageLoader";
-import { Client } from "getaddress-api";
+// import { Client } from "getaddress-api";
 import MUISelectField from "@/Components/SelectField/SelectField";
 import useShippingOrBillingStore from "@/store/shipingOrbilling";
 import { useRouter } from "next/router";
@@ -20,7 +20,7 @@ import {
 } from "react-icons/md";
 import NextButton from "../NextButton/NextButton";
 
-const api = new Client("aYssNMkdXEGsdfGVZjiY0Q26381");
+// const api = new Client("aYssNMkdXEGsdfGVZjiY0Q26381");
 
 export default function ShippingAddress({
   isCompleted,
@@ -78,7 +78,7 @@ export default function ShippingAddress({
   useEffect(() => {
     console.log(
       sameAsShippingValue,
-      "sameAsShippingValue From ShippingAddress"
+      "sameAsShippingValue From ShippingAddress",
     );
 
     if (typeof setIsBillingCheck === "function") {
@@ -88,7 +88,7 @@ export default function ShippingAddress({
   useEffect(() => {
     if (sameAsShippingValue) {
       const selectedCountry = shipmentCountries.find(
-        (c) => c.id.toString() === shippingIndex
+        (c) => c.id.toString() === shippingIndex,
       );
 
       setBilling({
@@ -127,7 +127,7 @@ export default function ShippingAddress({
 
     // ✅ Find country by name
     const country = shipmentCountries.find(
-      (c) => c.name === shipping.country_name
+      (c) => c.name === shipping.country_name,
     );
     if (country) {
       setValue("shippingCountry", country.id.toString(), {
@@ -154,16 +154,24 @@ export default function ShippingAddress({
 
   const handleSearch = async () => {
     setAddressSearchLoading(true);
+
     const postal = watch("postalcode");
     if (!postal) {
       setAddressSearchLoading(false);
+      return;
     }
 
     try {
-      const result = await api.find(postal);
+      const res = await fetch(
+        `https://api.ideal-postcodes.co.uk/v1/postcodes/${encodeURIComponent(
+          postal,
+        )}?api_key=${process.env.NEXT_PUBLIC_IDEAL_POSTCODES_KEY}`,
+      );
 
-      if (result && result.addresses?.addresses?.length) {
-        setAddressOptions(result.addresses.addresses);
+      const data = await res.json();
+
+      if (data && Array.isArray(data.result) && data.result.length) {
+        setAddressOptions(data.result);
         setManual(true);
         setAddressSearchLoading(false);
         // setIsPostalCodeNotValid(false)
@@ -183,6 +191,7 @@ export default function ShippingAddress({
       // setIsPostalCodeNotValid(isPostalCodeNotValid);
     }
   };
+
   const watchedFields = watch([
     "first_name",
     "last_name",
@@ -209,12 +218,10 @@ export default function ShippingAddress({
     // isPostalCodeNotValid,
   ]);
 
-
-  // close 
+  // close
   // useEffect(() => {
   //   setIsPostalCheck(isPostalCodeNotValid);
   // }, [isPostalCodeNotValid]);
-
 
   // useEffect(() => {
   //   if (checkShippingForAccordion != null) {
@@ -233,7 +240,7 @@ export default function ShippingAddress({
     setShowLoader(false);
 
     const selectedCountry = shipmentCountries.find(
-      (c) => c.id.toString() === shippingIndex
+      (c) => c.id.toString() === shippingIndex,
     );
 
     // ✅ Save shipping data
@@ -270,12 +277,11 @@ export default function ShippingAddress({
       value.trim() !== "" || `${label} cannot be empty or spaces only`;
   }
 
-
   useEffect(() => {
     const subscription = watch((values) => {
       const selectedCountry =
         shipmentCountries.find(
-          (c) => c.id.toString() === values.shippingCountry
+          (c) => c.id.toString() === values.shippingCountry,
         ) || shipmentCountries.find((c) => c.id.toString() === shippingIndex);
 
       setShipping({
@@ -337,7 +343,7 @@ export default function ShippingAddress({
                     setShippingIndex(id); // ✅ set id to local state
                     // ✅ Find selected country
                     const selectedCountry = shipmentCountries.find(
-                      (c) => c.id.toString() === id
+                      (c) => c.id.toString() === id,
                     );
 
                     if (selectedCountry) {
@@ -377,8 +383,9 @@ export default function ShippingAddress({
                   <button
                     type="button"
                     onClick={handleSearch}
-                    className={`absolute right-3 transform -translate-y-1/2 text-white bg-primary px-3 py-1 rounded cursor-pointer w-28 flex items-center justify-center ${errors.postalcode ? "top-2/4" : "top-2/3"
-                      }`}
+                    className={`absolute right-3 transform -translate-y-1/2 text-white bg-primary px-3 py-1 rounded cursor-pointer w-28 flex items-center justify-center ${
+                      errors.postalcode ? "top-2/4" : "top-2/3"
+                    }`}
                     disabled={addressSearchLoading}
                   >
                     {addressSearchLoading ? (
@@ -419,13 +426,21 @@ export default function ShippingAddress({
                   setValue("addresstwo", selected.line_2 || "", {
                     shouldValidate: true,
                   });
-                  setValue("city", selected.town_or_city || "", {
+                  setValue("city", selected.post_town || "", {
                     shouldValidate: true,
                   });
                 }}
                 options={addressOptions.map((addr, idx) => ({
                   value: idx,
-                  label: addr.formatted_address.join(", "),
+                  label: [
+                    addr.line_1,
+                    addr.line_2,
+                    addr.line_3,
+                    addr.post_town,
+                    addr.postcode,
+                  ]
+                    .filter(Boolean)
+                    .join(", "),
                 }))}
               />
             )}
@@ -442,8 +457,7 @@ export default function ShippingAddress({
               name="addresstwo"
               register={register}
               errors={errors}
-            // readOnly
-
+              // readOnly
             />
             <TextField
               label="Town / City"
@@ -451,7 +465,7 @@ export default function ShippingAddress({
               register={register}
               required
               errors={errors}
-            // readOnly
+              // readOnly
             />
 
             <Controller

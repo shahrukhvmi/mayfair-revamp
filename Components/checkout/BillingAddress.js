@@ -6,7 +6,7 @@ import SectionHeader from "./SectionHeader";
 import TextField from "@/Components/TextField/TextField";
 import PageLoader from "@/Components/PageLoader/PageLoader";
 import MUISelectField from "@/Components/SelectField/SelectField";
-import { Client } from "getaddress-api";
+// import { Client } from "getaddress-api";
 import useShippingOrBillingStore from "@/store/shipingOrbilling";
 import useBillingCountries from "@/store/useBillingCountriesStore";
 import { motion } from "framer-motion";
@@ -14,7 +14,7 @@ import toast from "react-hot-toast";
 import { SlNote } from "react-icons/sl";
 import NextButton from "../NextButton/NextButton";
 
-const api = new Client("aYssNMkdXEGsdfGVZjiY0Q26381");
+// const api = new Client("aYssNMkdXEGsdfGVZjiY0Q26381");
 
 export default function BillingAddress({
   isCompleted,
@@ -96,7 +96,7 @@ export default function BillingAddress({
   const selectedBillingCountry = watch("billingCountry"); // get current selected billing country ID
   // Get selected country object
   const selectedCountryObj = (billingCountries || []).find(
-    (c) => c.id.toString() === selectedBillingCountry
+    (c) => c.id.toString() === selectedBillingCountry,
   );
 
   const allowedCountryNames = [
@@ -109,7 +109,7 @@ export default function BillingAddress({
 
   useEffect(() => {
     const selectedCountryObj = (billingCountries || []).find(
-      (c) => c.id.toString() === selectedBillingCountry
+      (c) => c.id.toString() === selectedBillingCountry,
     );
 
     const allowedCountryNames = [
@@ -143,7 +143,7 @@ export default function BillingAddress({
       setValue("state", shipping.state || "");
 
       const country = billingCountries?.find(
-        (c) => c?.name === shipping?.country_name
+        (c) => c?.name === shipping?.country_name,
       ); // ✅ FIND BY NAME NOT ID
       if (country) {
         setValue("billingCountry", country.id.toString(), {
@@ -162,7 +162,7 @@ export default function BillingAddress({
       setValue("state", billing.state || "");
 
       const country = billingCountries?.find(
-        (c) => c.name === billing.country_name
+        (c) => c.name === billing.country_name,
       );
       if (country) {
         setValue("billingCountry", country?.id?.toString(), {
@@ -178,26 +178,41 @@ export default function BillingAddress({
   // Handle postcode search
   const handleSearch = async () => {
     setAddressSearchLoading(true);
-    // const postal = watch("postalcode");
 
-    if (!postalCodeValue?.trim()) {
+    const postal = watch("postalcode");
+    if (!postal) {
       setAddressSearchLoading(false);
       return;
     }
 
     try {
-      const result = await api?.find(postalCodeValue);
-      if (result && result.addresses?.addresses?.length) {
-        setAddressOptions(result.addresses.addresses);
+      const res = await fetch(
+        `https://api.ideal-postcodes.co.uk/v1/postcodes/${encodeURIComponent(
+          postal,
+        )}?api_key=${process.env.NEXT_PUBLIC_IDEAL_POSTCODES_KEY}`,
+      );
+
+      const data = await res.json();
+
+      if (data && Array.isArray(data.result) && data.result.length) {
+        setAddressOptions(data.result);
         setManual(true);
         setAddressSearchLoading(false);
+        // setIsPostalCodeNotValid(false)
       } else {
         setAddressSearchLoading(false);
+        // setIsPostalCodeNotValid(true);
         toast.error("Invalid Post code");
+        // setIsPostalCheck(isPostalCodeNotValid)
+        // setValue("addressone", "");
+        // setValue("addresstwo", "");
+        // setValue("city", "");
       }
     } catch (error) {
-      console.error("API error:", error);
-      alert("Something went wrong while fetching addresses.");
+      setAddressSearchLoading(false);
+      console.log("API error:", error);
+      // setIsPostalCheck(isPostalCodeNotValid);
+      // setIsPostalCodeNotValid(isPostalCodeNotValid);
     }
   };
 
@@ -208,7 +223,7 @@ export default function BillingAddress({
     setShowLoader(false);
 
     const selectedCountry = billingCountries?.find(
-      (c) => c?.id?.toString() === billingIndex
+      (c) => c?.id?.toString() === billingIndex,
     );
 
     setBilling({
@@ -230,7 +245,7 @@ export default function BillingAddress({
     const subscription = watch((values) => {
       const selectedCountry =
         billingCountries?.find(
-          (c) => c?.id?.toString() === values.billingCountry
+          (c) => c?.id?.toString() === values.billingCountry,
         ) || billingCountries?.find((c) => c?.id?.toString() === billingIndex);
 
       const updatedBilling = {
@@ -351,7 +366,7 @@ export default function BillingAddress({
                   setValue("addresstwo", selected.line_2 || "", {
                     shouldValidate: true,
                   });
-                  setValue("city", selected.town_or_city || "", {
+                  setValue("city", selected.post_town || "", {
                     shouldValidate: true,
                   });
                   setValue("state", selected.county || "", {
@@ -360,7 +375,15 @@ export default function BillingAddress({
                 }}
                 options={addressOptions.map((addr, idx) => ({
                   value: idx,
-                  label: addr.formatted_address.join(", "),
+                  label: [
+                    addr.line_1,
+                    addr.line_2,
+                    addr.line_3,
+                    addr.post_town,
+                    addr.postcode,
+                  ]
+                    .filter(Boolean)
+                    .join(", "),
                 }))}
               />
             )}
