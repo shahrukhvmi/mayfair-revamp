@@ -117,7 +117,7 @@ export default function DosageSelection() {
   const generateProductConcent = (variations, selectedDoseName) => {
     const lowestDose = getLowestDose(variations);
 
-    return `You have selected the ${selectedDoseName} dose. As this is not the recommended starting dose, we require verification of your prior treatment history. Following payment confirmation, you will be required to provide clinical evidence demonstrating your previous dosage regimen with another healthcare provider. This is necessary to ensure safe dose escalation and minimize potential adverse effects such as nausea. Please only proceed if you can provide this documentation.`;
+    return `You have selected the <span class="mont-medium-font">${selectedDoseName}</span> dose. As this is not the recommended starting dose, we require verification of your prior treatment history. Following payment confirmation, you will be required to provide clinical evidence demonstrating your previous dosage regimen with another healthcare provider. This is necessary to ensure safe dose escalation and minimize potential adverse effects such as nausea. Please only proceed if you can provide this documentation.`;
   };
 
   const handleAddDose = (dose) => {
@@ -288,7 +288,7 @@ export default function DosageSelection() {
           ]);
         } else {
           // Skipping doses → Show modal with consent
-          const returningPatientConsent = `Your last order was for the ${lastDoseName} dose. You have now selected the ${selectedDoseName} dose, which represents a significant dose escalation. Following payment confirmation, you will be required to provide clinical documentation from your healthcare provider verifying your current dosage regimen. This verification is essential to ensure safe treatment progression and minimize potential adverse effects such as nausea.`;
+          const returningPatientConsent = `Your last order (Order ID: <span class="mont-medium-font">#${lastOrder.order_id}</span>, placed on <span class="mont-medium-font">(${lastOrder.order_date})</span> was for the <span class="mont-medium-font">${lastDoseName}</span> dose. You have now selected the <span class="mont-medium-font">${selectedDoseName}</span> dose, which represents a significant dose escalation. Following payment confirmation, you will be required to provide clinical documentation from your healthcare provider verifying your current dosage regimen. This verification is essential to ensure safe treatment progression and minimize potential adverse effects such as nausea.`;
 
           addToCart({
             id: dose.id,
@@ -382,9 +382,12 @@ export default function DosageSelection() {
                 Dosage Confirmation
               </h2>
               {selectedDose?.productConcent && (
-                <p className="text-md paragraph rounded-md p-3 reg-font mb-4">
-                  {selectedDose?.productConcent}
-                </p>
+                <p
+                  className="text-md paragraph rounded-md p-3 mont-reg-font mb-4"
+                  dangerouslySetInnerHTML={{
+                    __html: selectedDose?.productConcent,
+                  }}
+                />
               )}
               <NextButton
                 label=" I Confirm"
