@@ -41,8 +41,10 @@ import useIdVerificationUploadStore from "@/store/useIdVerificationUploadStore";
 import TopToastExplainenation from "@/Components/UploadTopPrompt/TopToastExplainenation";
 import { GetPrescriptionEvidence } from "@/api/PrescriptionEvidenceApi";
 import useExplanationEvidenceStore from "@/store/useExplanationEvidenceStore";
+import lastOrderStore from "@/store/lastOrderStore";
 
 const StepsHeader = ({ isOpen, toggleSidebar }) => {
+  const { clearLastOrder } = lastOrderStore();
   const [anchorEl, setAnchorEl] = useState(null);
   const { showLoginModal, closeLoginModal, openLoginModal } =
     useLoginModalStore();
@@ -72,11 +74,11 @@ const StepsHeader = ({ isOpen, toggleSidebar }) => {
   const { imageUploaded, setImageUploaded } = useImageUploadStore();
   const { idVerificationUpload, setIdVerificationUpload } =
     useIdVerificationUploadStore();
-  const { explainenationEvidence, setExplainenationEvidence } =
-    useExplanationEvidenceStore();
-
-  console.log(idVerificationUpload, "ID VERIFICATION STATUS");
-  console.log(explainenationEvidence, "EXPLANATION EVIDENCE STATUS");
+  const {
+    explainenationEvidence,
+    setExplainenationEvidence,
+    setExplainenationEvidenceDetails,
+  } = useExplanationEvidenceStore();
 
   const {
     firstName,
@@ -119,6 +121,7 @@ const StepsHeader = ({ isOpen, toggleSidebar }) => {
     setImpersonate(false);
     setBillingSameAsShipping(false);
     setIsReturningPatient(false);
+    clearLastOrder();
     router.push("/login");
   };
 
@@ -221,6 +224,7 @@ const StepsHeader = ({ isOpen, toggleSidebar }) => {
     fetchImageStatus();
   }, [reorder]);
 
+  // here isExplanationEvidence store
   useEffect(() => {
     const fetchImageStatus = async () => {
       try {
@@ -234,27 +238,29 @@ const StepsHeader = ({ isOpen, toggleSidebar }) => {
 
     fetchImageStatus();
   }, [reorder]);
-
+  const GetEvidence = async () => {
+    try {
+      const res = await GetPrescriptionEvidence({ token });
+      console.log("Prescription Evidence Status", res);
+      setExplainenationEvidence(res?.data?.require_evidence);
+      setExplainenationEvidenceDetails(res?.data);
+    } catch (error) {
+      console.error("Failed to fetch prescription evidence status:", error);
+    }
+  };
   useEffect(() => {
-    const GetEvidence = async () => {
-      try {
-        const res = await GetPrescriptionEvidence({ token });
-        console.log("Prescription Evidence Status", res);
-        setExplainenationEvidence(res?.data?.require_evidence);
-      } catch (error) {
-        console.error("Failed to fetch prescription evidence status:", error);
-      }
-    };
-
     GetEvidence();
   }, []);
   return (
     <>
-      {(!imageUploaded || !idVerificationUpload) &&
-        specialRoutes.includes(pathname) && <UploadTopPrompt />}
-
-      {explainenationEvidence && specialRoutes.includes(pathname) && (
-        <TopToastExplainenation />
+      {specialRoutes.includes(pathname) && (
+        <>
+          {!explainenationEvidence ? (
+            <TopToastExplainenation />
+          ) : (
+            (imageUploaded || idVerificationUpload) && <UploadTopPrompt />
+          )}
+        </>
       )}
 
       {impersonate && (

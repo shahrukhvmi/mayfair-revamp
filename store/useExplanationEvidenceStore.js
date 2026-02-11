@@ -5,14 +5,18 @@ const useExplanationEvidenceStore = create(
   persist(
     (set) => ({
       explainenationEvidence: false,
+      explainenationEvidenceDetails: null,
 
       setExplainenationEvidence: (status) =>
         set({ explainenationEvidence: status }),
+      setExplainenationEvidenceDetails: (details) =>
+        set({ explainenationEvidenceDetails: details }),
     }),
     {
-      name: "explainenation-evidence-storage", // localStorage key
+      name: "explainenation-evidence-storage",
       partialize: (state) => ({
         explainenationEvidence: state.explainenationEvidence,
+        explainenationEvidenceDetails: state.explainenationEvidenceDetails,
       }),
     },
   ),
