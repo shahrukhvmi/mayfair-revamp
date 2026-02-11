@@ -30,6 +30,7 @@ import usePasswordReset from "@/store/usePasswordReset";
 import useLastBmi from "@/store/useLastBmiStore";
 import useUserDataStore from "@/store/userDataStore";
 import OrderSummaryHeader from "./OrderSummaryHeader";
+import lastOrderStore from "@/store/lastOrderStore";
 
 const OrderSummary = ({
   isConcentCheck,
@@ -72,6 +73,7 @@ const OrderSummary = ({
   const { setIsPasswordReset } = usePasswordReset();
   const { clearLastBmi } = useLastBmi();
   const { clearUserData } = useUserDataStore();
+  const { clearLastOrder } = lastOrderStore();
 
   const { clearFirstName, clearLastName, clearEmail, clearConfirmationEmail } =
     useSignupStore();
@@ -171,6 +173,7 @@ const OrderSummary = ({
         clearEmail();
         clearConfirmationEmail();
         setIsButtonLoading(false);
+        clearLastOrder();
         router.push("/login");
       } else if (errors && typeof errors === "object") {
         setIsButtonLoading(false);
@@ -269,7 +272,6 @@ const OrderSummary = ({
 
     checkoutMutation.mutate(formData);
   };
-
 
   // console.log(isPostalCheck, "22sasdsdsdsd");
 
@@ -459,10 +461,11 @@ const OrderSummary = ({
                           type="button"
                           onClick={handleApplyCoupon}
                           disabled={!isApplyEnabled}
-                          className={`cursor-pointer px-6 text-sm bold-font text-white transition-all duration-200 ${isApplyEnabled
-                            ? "bg-primary hover:bg-primary"
-                            : "bg-gray-300 cursor-not-allowed"
-                            }`}
+                          className={`cursor-pointer px-6 text-sm bold-font text-white transition-all duration-200 ${
+                            isApplyEnabled
+                              ? "bg-primary hover:bg-primary"
+                              : "bg-gray-300 cursor-not-allowed"
+                          }`}
                         >
                           {couponLoading ? "Applying..." : "Apply"}
                         </button>
@@ -486,12 +489,9 @@ const OrderSummary = ({
                   ) : (
                     <NextButton
                       disabled={
-                        !isConcentCheck ||
-                        !isShippingCheck ||
-                        !isBillingCheck 
+                        !isConcentCheck || !isShippingCheck || !isBillingCheck
                         // isPostalCheck
                       }
-
                       label="Proceed to Payment "
                       onClick={handlePayment}
                     />
