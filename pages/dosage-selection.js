@@ -19,6 +19,7 @@ import useProductId from "@/store/useProductIdStore";
 import MetaLayout from "@/Meta/MetaLayout";
 import { meta_url } from "@/config/constants";
 import { Checkbox, FormControlLabel } from "@mui/material";
+import lastOrderStore from "@/store/lastOrderStore";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 
@@ -33,6 +34,10 @@ export default function DosageSelection() {
   const { productId } = useProductId();
 
   const { reorder } = useReorder();
+
+  const { lastOrder } = lastOrderStore();
+
+  console.log(lastOrder, "lastOrder");
 
   console.log(items, "items");
 
@@ -49,6 +54,8 @@ export default function DosageSelection() {
   const [isExpiryRequired, setIsExpiryRequired] = useState(false);
   // Variation From zustand
   const { variation } = useVariationStore();
+
+  console.log(variation, "variation");
 
   // ✅ useEffect to check if `product?.show_expiry` is `0` or `1`
   useEffect(() => {
@@ -93,33 +100,36 @@ export default function DosageSelection() {
   const totalSelectedQty = () =>
     items?.doses.reduce((total, v) => total + v.qty, 0);
 
-  // ✅ Put here → outside your component or at the top inside your component file
-  const generateProductConcent = (variations, selectedDoseName) => {
+  // ✅ NEW: Function to find the lowest dose
+  const getLowestDose = (variations) => {
+    if (!variations || variations.length === 0) return null;
+
     const sortedVariations = [...variations].sort((a, b) => {
-      console.log(a, b, "sfkjefjfsj");
       const aMg = parseFloat(a.name);
       const bMg = parseFloat(b.name);
       return aMg - bMg;
     });
 
-    const lowestDose = sortedVariations[0]?.name;
-    const selectedIndex = sortedVariations.findIndex(
-      (v) => v.name === selectedDoseName,
-    );
-    const previousDose =
-      selectedIndex > 0 ? sortedVariations[selectedIndex - 1]?.name : null;
+    return sortedVariations[0];
+  };
 
-    return `If you are taking for the first time, you will need to start the treatment on the ${lowestDose} dose. If you start on the higher doses, the risk of side effects (e.g., nausea) will be very high. Please confirm that you are currently taking either the ${previousDose} or ${selectedDoseName} dose from a different provider.`;
+  // ✅ UPDATED: Generate consent message for new patients
+  const generateProductConcent = (variations, selectedDoseName) => {
+    const lowestDose = getLowestDose(variations);
+
+    return `You have selected the ${selectedDoseName} dose. As this is not the recommended starting dose, we require verification of your prior treatment history. Following payment confirmation, you will be required to provide clinical evidence demonstrating your previous dosage regimen with another healthcare provider. This is necessary to ensure safe dose escalation and minimize potential adverse effects such as nausea. Please only proceed if you can provide this documentation.`;
   };
 
   const handleAddDose = (dose) => {
     const totalQty = totalSelectedQty() + 1;
 
+    // Check allowed quantity
     if (allowed > 0 && totalQty > allowed) {
       toast.error(`You can select only ${allowed} units in total.`);
       return;
     }
 
+    // Check stock
     const stockQuantity = parseInt(dose?.stock?.quantity) || 0;
     const existingItem = items?.doses?.find((i) => i.id === dose.id);
     const currentQty = existingItem?.quantity || 0;
@@ -129,72 +139,196 @@ export default function DosageSelection() {
       return;
     }
 
-    const isFiveMg = dose?.name === "5 mg";
-    const firstTwoDoses = variation?.variations?.slice(0, 1).map((v) => v.name);
-    const isFirstTwoDose = firstTwoDoses.includes(dose?.name);
+    // ✅ NEW LOGIC: Check if this is the lowest dose
+    const lowestDose = getLowestDose(variation?.variations);
+    const isLowestDose = dose?.id === lowestDose?.id;
 
-    if ((isFirstTwoDose && !isFiveMg) || reorder == true) {
-      addToCart({
-        id: dose.id,
-        type: "dose",
-        name: dose.name,
-        price: parseFloat(dose.price),
-        allowed: parseInt(dose.allowed),
-        item_id: dose.id,
-        product: dose?.product_name || "Dose Product",
-        product_concent: null,
-        label: `${dose?.product_name} ${dose?.name}`,
-        expiry: dose.expiry,
-        isSelected: true,
-      });
-      setAbandonData([
-        ...abandonData,
-        {
-          eid: dose.id,
-          pid: productId,
-        },
-      ]);
-    } else {
-      addToCart({
-        id: dose.id,
-        type: "dose",
-        name: dose.name,
-        price: parseFloat(dose.price),
-        allowed: parseInt(dose.allowed),
-        item_id: dose.id,
-        product: dose?.product_name || "Dose Product",
-        product_concent:
-          isFirstTwoDose && !isFiveMg
-            ? null
-            : generateProductConcent(variation?.variations, dose?.name),
-        label: `${dose?.product_name} ${dose?.name}`,
-        expiry: dose.expiry,
-        isSelected: true,
-      });
-
-      setAbandonData([
-        ...abandonData,
-        {
-          eid: dose.id,
-          pid: productId,
-        },
-      ]);
-
-      // ✅ ✅ ✅ Check if modal was already shown for this dose
-      if (!shownDoseIds.includes(dose.id)) {
-        setSelectedDose({
-          ...dose,
-          productConcent: generateProductConcent(
+    // ✅ NEW LOGIC: For new patients (reorder === false)
+    if (reorder === false) {
+      // If selecting lowest dose
+      if (isLowestDose) {
+        // No modal needed - just add to cart
+        addToCart({
+          id: dose.id,
+          type: "dose",
+          name: dose.name,
+          price: parseFloat(dose.price),
+          allowed: parseInt(dose.allowed),
+          item_id: dose.id,
+          product: dose?.product_name || "Dose Product",
+          product_concent: null,
+          label: `${dose?.product_name} ${dose?.name}`,
+          expiry: dose.expiry,
+          isSelected: true,
+        });
+        setAbandonData([
+          ...abandonData,
+          {
+            eid: dose.id,
+            pid: productId,
+          },
+        ]);
+      } else {
+        // Higher dose selected - show modal with proof requirement
+        addToCart({
+          id: dose.id,
+          type: "dose",
+          name: dose.name,
+          price: parseFloat(dose.price),
+          allowed: parseInt(dose.allowed),
+          item_id: dose.id,
+          product: dose?.product_name || "Dose Product",
+          product_concent: generateProductConcent(
             variation?.variations,
             dose?.name,
           ),
+          label: `${dose?.product_name} ${dose?.name}`,
+          expiry: dose.expiry,
+          isSelected: true,
         });
-        setShowDoseModal(true);
 
-        // ✅ ✅ ✅ Mark this dose as shown
-        setShownDoseIds((prev) => [...prev, dose.id]);
+        setAbandonData([
+          ...abandonData,
+          {
+            eid: dose.id,
+            pid: productId,
+          },
+        ]);
+
+        // Show modal if not already shown for this dose
+        if (!shownDoseIds.includes(dose.id)) {
+          setSelectedDose({
+            ...dose,
+            productConcent: generateProductConcent(
+              variation?.variations,
+              dose?.name,
+            ),
+          });
+          setShowDoseModal(true);
+          setShownDoseIds((prev) => [...prev, dose.id]);
+        }
+      }
+    } else {
+      // ✅ RETURNING PATIENT LOGIC
+
+      // Check if we have last order data
+      const hasLastOrderData =
+        lastOrder &&
+        lastOrder.last_order_items &&
+        lastOrder.last_order_items.length > 0;
+      const isSameProduct =
+        hasLastOrderData && lastOrder.product_id === productId;
+
+      // If no last order data OR different product → No modal, just add to cart
+      if (!hasLastOrderData || !isSameProduct) {
+        addToCart({
+          id: dose.id,
+          type: "dose",
+          name: dose.name,
+          price: parseFloat(dose.price),
+          allowed: parseInt(dose.allowed),
+          item_id: dose.id,
+          product: dose?.product_name || "Dose Product",
+          product_concent: null,
+          label: `${dose?.product_name} ${dose?.name}`,
+          expiry: dose.expiry,
+          isSelected: true,
+        });
+        setAbandonData([
+          ...abandonData,
+          {
+            eid: dose.id,
+            pid: productId,
+          },
+        ]);
+      } else {
+        // Same product - check dose progression
+        const lastDoseName = lastOrder.last_order_items[0].item_name;
+        const selectedDoseName = dose?.name;
+
+        // Get sorted variations to find positions
+        const sortedVariations = [...variation?.variations].sort((a, b) => {
+          const aMg = parseFloat(a.name);
+          const bMg = parseFloat(b.name);
+          return aMg - bMg;
+        });
+
+        // Find index of last ordered dose and selected dose
+        const lastDoseIndex = sortedVariations.findIndex(
+          (v) => v.name === lastDoseName,
+        );
+        const selectedDoseIndex = sortedVariations.findIndex(
+          (v) => v.name === selectedDoseName,
+        );
+
+        // Check if user is selecting same dose or next dose (valid progression)
+        const isValidProgression = selectedDoseIndex <= lastDoseIndex + 1;
+
+        if (isValidProgression) {
+          // Same or next dose → No modal, no consent
+          addToCart({
+            id: dose.id,
+            type: "dose",
+            name: dose.name,
+            price: parseFloat(dose.price),
+            allowed: parseInt(dose.allowed),
+            item_id: dose.id,
+            product: dose?.product_name || "Dose Product",
+            product_concent: null,
+            label: `${dose?.product_name} ${dose?.name}`,
+            expiry: dose.expiry,
+            isSelected: true,
+          });
+          setAbandonData([
+            ...abandonData,
+            {
+              eid: dose.id,
+              pid: productId,
+            },
+          ]);
+        } else {
+          // Skipping doses → Show modal with consent
+          const returningPatientConsent = `Your last order was for the ${lastDoseName} dose. You have now selected the ${selectedDoseName} dose, which represents a significant dose escalation. Following payment confirmation, you will be required to provide clinical documentation from your healthcare provider verifying your current dosage regimen. This verification is essential to ensure safe treatment progression and minimize potential adverse effects such as nausea.`;
+
+          addToCart({
+            id: dose.id,
+            type: "dose",
+            name: dose.name,
+            price: parseFloat(dose.price),
+            allowed: parseInt(dose.allowed),
+            item_id: dose.id,
+            product: dose?.product_name || "Dose Product",
+            product_concent: returningPatientConsent,
+            label: `${dose?.product_name} ${dose?.name}`,
+            expiry: dose.expiry,
+            isSelected: true,
+          });
+
+          setAbandonData([
+            ...abandonData,
+            {
+              eid: dose.id,
+              pid: productId,
+            },
+          ]);
+
+          // Show modal if not already shown for this dose
+          if (!shownDoseIds.includes(dose.id)) {
+            setSelectedDose({
+              ...dose,
+              productConcent: returningPatientConsent,
+            });
+            setShowDoseModal(true);
+            setShownDoseIds((prev) => [...prev, dose.id]);
+          }
+        }
       }
     }
+  };
+
+  // Function to remove dose from shownDoseIds when deleted from cart
+  const handleDoseRemoved = (doseId) => {
+    setShownDoseIds((prev) => prev.filter((id) => id !== doseId));
   };
 
   //Add to cart Addons🔥
@@ -355,6 +489,7 @@ export default function DosageSelection() {
                             onDecrement={() =>
                               decreaseQuantity(dose.id, "dose")
                             }
+                            onDoseRemoved={handleDoseRemoved}
                           />
                         );
                       })}

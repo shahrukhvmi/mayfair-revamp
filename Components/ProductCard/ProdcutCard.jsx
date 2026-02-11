@@ -20,8 +20,18 @@ import useLastBmi from "@/store/useLastBmiStore";
 import useCouponStore from "@/store/couponStore";
 import useSignupStore from "@/store/signupStore";
 import useReturning from "@/store/useReturningPatient";
+import lastOrderStore from "@/store/lastOrderStore";
 
-const ProductCard = ({ id, title, image, price, status, buttonText, lastOrderDate, reorder }) => {
+const ProductCard = ({
+  id,
+  title,
+  image,
+  price,
+  status,
+  buttonText,
+  lastOrderDate,
+  reorder,
+}) => {
   const router = useRouter();
   const { productId, setProductId } = useProductId();
   const { setReorder } = useReorder();
@@ -31,12 +41,23 @@ const ProductCard = ({ id, title, image, price, status, buttonText, lastOrderDat
 
   const { setBmi, clearBmi } = useBmiStore();
   const { setCheckout, clearCheckout } = useCheckoutStore();
-  const { setConfirmationInfo, clearConfirmationInfo } = useConfirmationInfoStore();
+  const { setConfirmationInfo, clearConfirmationInfo } =
+    useConfirmationInfoStore();
   const { setGpDetails, clearGpDetails } = useGpDetailsStore();
   const { setMedicalInfo, clearMedicalInfo } = useMedicalInfoStore();
   const { setPatientInfo, clearPatientInfo } = usePatientInfoStore();
   const { setAuthUserDetail, clearAuthUserDetail } = useAuthUserDetailStore();
-  const { billing, setBilling, shipping, setShipping, setCheckShippingForAccordion, clearShipping, clearBilling, setCheckBillingForAccordion } = useShippingOrBillingStore();
+  const { setLastOrder, clearLastOrder } = lastOrderStore();
+  const {
+    billing,
+    setBilling,
+    shipping,
+    setShipping,
+    setCheckShippingForAccordion,
+    clearShipping,
+    clearBilling,
+    setCheckBillingForAccordion,
+  } = useShippingOrBillingStore();
   const { setLastBmi } = useLastBmi();
   const { firstName, lastName, setFirstName, setLastName } = useSignupStore();
   const { setIsReturningPatient } = useReturning();
@@ -57,6 +78,7 @@ const ProductCard = ({ id, title, image, price, status, buttonText, lastOrderDat
         clearBilling();
         clearShipping();
         clearAuthUserDetail();
+        clearLastOrder();
       } else if (data?.data) {
         setBmi(data?.data?.data?.bmi);
         setCheckout(data?.data?.data?.checkout);
@@ -65,7 +87,7 @@ const ProductCard = ({ id, title, image, price, status, buttonText, lastOrderDat
         setMedicalInfo(data?.data?.data?.medicalInfo);
         setPatientInfo(data?.data?.data?.patientInfo);
         setShipping(data?.data?.data?.shipping);
-        setCheckShippingForAccordion(data?.data?.data?.shipping)
+        setCheckShippingForAccordion(data?.data?.data?.shipping);
         setBilling(data?.data?.data?.billing);
         setCheckBillingForAccordion(data?.data?.data?.billing);
         setAuthUserDetail(data?.data?.data?.auth_user);
@@ -73,6 +95,7 @@ const ProductCard = ({ id, title, image, price, status, buttonText, lastOrderDat
         setFirstName(data?.data?.data?.auth_user?.fname);
         setLastName(data?.data?.data?.auth_user?.lname);
         setIsReturningPatient(data?.data?.data?.isReturning);
+        setLastOrder(data?.data?.data?.last_order);
       }
 
       if (reorder) {
@@ -117,11 +140,15 @@ const ProductCard = ({ id, title, image, price, status, buttonText, lastOrderDat
     <>
       <div className="relative bg-white rounded-lg rounded-b-2xl overflow-hidden transition-transform shadow-md">
         {/* Out of Stock Overlay */}
-        {!status && <div className="h-full w-full left-0 absolute bg-[rgba(119,136,153,0.4)] cursor-not-allowed z-10 thin-font"></div>}
+        {!status && (
+          <div className="h-full w-full left-0 absolute bg-[rgba(119,136,153,0.4)] cursor-not-allowed z-10 thin-font"></div>
+        )}
 
         {/* Out of Stock Ribbon */}
         {!status && (
-          <div className="absolute -left-8 top-7 bg-red-500 text-white px-[30px] text-xs py-1 rounded-tl -rotate-45 z-20 thin-font">Out of stock</div>
+          <div className="absolute -left-8 top-7 bg-red-500 text-white px-[30px] text-xs py-1 rounded-tl -rotate-45 z-20 thin-font">
+            Out of stock
+          </div>
         )}
 
         {/* Price Ribbon */}
@@ -145,7 +172,9 @@ const ProductCard = ({ id, title, image, price, status, buttonText, lastOrderDat
         <div className="bg-[#EDE9FE] p-5 text-center rounded-2xl">
           <h2 className="text-lg bold-font mb-3 text-gray-900">{title}</h2>
 
-          <p className="mb-3 text-sm font-semibold text-gray-700">{lastOrderDate && `Last Ordered: ${lastOrderDate}`}</p>
+          <p className="mb-3 text-sm font-semibold text-gray-700">
+            {lastOrderDate && `Last Ordered: ${lastOrderDate}`}
+          </p>
 
           <div className="w-full text-center">
             <button
