@@ -38,6 +38,9 @@ import useImageUploadStore from "@/store/useImageUploadStore ";
 import GetImageIsUplaod from "@/api/GetImageIsUplaod";
 import { GetIdVerification } from "@/api/IdVerificationApi";
 import useIdVerificationUploadStore from "@/store/useIdVerificationUploadStore";
+import TopToastExplainenation from "@/Components/UploadTopPrompt/TopToastExplainenation";
+import { GetPrescriptionEvidence } from "@/api/PrescriptionEvidenceApi";
+import useExplanationEvidenceStore from "@/store/useExplanationEvidenceStore";
 
 const StepsHeader = ({ isOpen, toggleSidebar }) => {
   const [anchorEl, setAnchorEl] = useState(null);
@@ -69,8 +72,11 @@ const StepsHeader = ({ isOpen, toggleSidebar }) => {
   const { imageUploaded, setImageUploaded } = useImageUploadStore();
   const { idVerificationUpload, setIdVerificationUpload } =
     useIdVerificationUploadStore();
+  const { explainenationEvidence, setExplainenationEvidence } =
+    useExplanationEvidenceStore();
 
   console.log(idVerificationUpload, "ID VERIFICATION STATUS");
+  console.log(explainenationEvidence, "EXPLANATION EVIDENCE STATUS");
 
   const {
     firstName,
@@ -196,7 +202,6 @@ const StepsHeader = ({ isOpen, toggleSidebar }) => {
     "/order-detail/",
     "/profile/",
     "/weight-loss-journey/",
-    "/review/",
   ];
 
   const redirectTo = specialRoutes.includes(pathname) ? "/dashboard" : "/";
@@ -230,10 +235,27 @@ const StepsHeader = ({ isOpen, toggleSidebar }) => {
     fetchImageStatus();
   }, [reorder]);
 
+  useEffect(() => {
+    const GetEvidence = async () => {
+      try {
+        const res = await GetPrescriptionEvidence({ token });
+        console.log("Prescription Evidence Status", res);
+        setExplainenationEvidence(res?.data?.require_evidence);
+      } catch (error) {
+        console.error("Failed to fetch prescription evidence status:", error);
+      }
+    };
+
+    GetEvidence();
+  }, []);
   return (
     <>
       {(!imageUploaded || !idVerificationUpload) &&
         specialRoutes.includes(pathname) && <UploadTopPrompt />}
+
+      {explainenationEvidence && specialRoutes.includes(pathname) && (
+        <TopToastExplainenation />
+      )}
 
       {impersonate && (
         <div className="bg-gray-100">

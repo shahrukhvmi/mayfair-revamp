@@ -29,5 +29,6 @@ export const publicRoutes = [
   "/payment",
   "/photo-upload",
   "/id-verification",
+  "/explanation-evidence",
 ];
 export const loginRoute = "/login";
