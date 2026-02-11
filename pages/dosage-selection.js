@@ -25,12 +25,13 @@ const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 export default function DosageSelection() {
   const [shownDoseIds, setShownDoseIds] = useState([]);
   const [isButtonLoading, setIsButtonLoading] = useState(false);
+  const [abandonData, setAbandonData] = useState([]);
   const router = useRouter();
   // const {  } = useCartStore();
   const { addToCart, increaseQuantity, decreaseQuantity, items, totalAmount } =
     useCartStore();
   const { productId } = useProductId();
-  const [abandonData, setAbandonData] = useState([]);
+
   const { reorder } = useReorder();
 
   console.log(items, "items");
@@ -48,8 +49,6 @@ export default function DosageSelection() {
   const [isExpiryRequired, setIsExpiryRequired] = useState(false);
   // Variation From zustand
   const { variation } = useVariationStore();
-
-  console.log(variation, "variationvariation")
 
   // ✅ useEffect to check if `product?.show_expiry` is `0` or `1`
   useEffect(() => {
@@ -69,13 +68,13 @@ export default function DosageSelection() {
   const abandonCartMutation = useMutation(abandonCart, {
     onSuccess: (data) => {
       if (data) {
-        // router.push("/checkout");
-
+        router.push("/checkout");
+        console.log(data, "This is Abandon Cart Data");
       }
     },
     onError: (error) => {
       if (error) {
-        // router.push("/checkout");
+        router.push("/checkout");
         console.log(error, "This is error");
       }
     },
@@ -84,9 +83,9 @@ export default function DosageSelection() {
   //Handle Submit Button
   const onSubmit = () => {
     setIsButtonLoading(true);
-    router.push("/checkout");
-    abandonCartMutation.mutate(abandonData);
+    // router.push("/checkout");
 
+    abandonCartMutation.mutate(abandonData);
     // console.log(abandonData, "Abbandon Cart Data");
   };
 
@@ -105,7 +104,7 @@ export default function DosageSelection() {
 
     const lowestDose = sortedVariations[0]?.name;
     const selectedIndex = sortedVariations.findIndex(
-      (v) => v.name === selectedDoseName
+      (v) => v.name === selectedDoseName,
     );
     const previousDose =
       selectedIndex > 0 ? sortedVariations[selectedIndex - 1]?.name : null;
@@ -113,7 +112,7 @@ export default function DosageSelection() {
     return `If you are taking for the first time, you will need to start the treatment on the ${lowestDose} dose. If you start on the higher doses, the risk of side effects (e.g., nausea) will be very high. Please confirm that you are currently taking either the ${previousDose} or ${selectedDoseName} dose from a different provider.`;
   };
 
-  const handleAddDose = async (dose) => {
+  const handleAddDose = (dose) => {
     const totalQty = totalSelectedQty() + 1;
 
     if (allowed > 0 && totalQty > allowed) {
@@ -134,25 +133,40 @@ export default function DosageSelection() {
     const firstTwoDoses = variation?.variations?.slice(0, 1).map((v) => v.name);
     const isFirstTwoDose = firstTwoDoses.includes(dose?.name);
 
-    // try {
-    //   const res = await abandonCartMutation.mutateAsync({
-    //     eid: dose.id,
-    //     pid: productId,
-    //   });
-
-      // const abandonCartId = res?.data?.data?.id;
-
-      // ✅ Now safely call addToCart after getting the ID
+    if ((isFirstTwoDose && !isFiveMg) || reorder == true) {
       addToCart({
         id: dose.id,
-        // abandonCartId: abandonCartId || null,
         type: "dose",
         name: dose.name,
         price: parseFloat(dose.price),
         allowed: parseInt(dose.allowed),
         item_id: dose.id,
         product: dose?.product_name || "Dose Product",
-        product_concent: isFirstTwoDose && !isFiveMg ? null : generateProductConcent(variation?.variations, dose?.name),
+        product_concent: null,
+        label: `${dose?.product_name} ${dose?.name}`,
+        expiry: dose.expiry,
+        isSelected: true,
+      });
+      setAbandonData([
+        ...abandonData,
+        {
+          eid: dose.id,
+          pid: productId,
+        },
+      ]);
+    } else {
+      addToCart({
+        id: dose.id,
+        type: "dose",
+        name: dose.name,
+        price: parseFloat(dose.price),
+        allowed: parseInt(dose.allowed),
+        item_id: dose.id,
+        product: dose?.product_name || "Dose Product",
+        product_concent:
+          isFirstTwoDose && !isFiveMg
+            ? null
+            : generateProductConcent(variation?.variations, dose?.name),
         label: `${dose?.product_name} ${dose?.name}`,
         expiry: dose.expiry,
         isSelected: true,
@@ -166,25 +180,22 @@ export default function DosageSelection() {
         },
       ]);
 
-      // setAbandonData(
-      //   {
-      //     eid: dose.id,
-      //     pid: productId,
-      //   },
-      // );
+      // ✅ ✅ ✅ Check if modal was already shown for this dose
+      if (!shownDoseIds.includes(dose.id)) {
+        setSelectedDose({
+          ...dose,
+          productConcent: generateProductConcent(
+            variation?.variations,
+            dose?.name,
+          ),
+        });
+        setShowDoseModal(true);
 
-      // ✅ Run abandonCartMutation right after adding
-      // abandonCartMutation.mutate({
-      //   eid: dose.id,
-      //   pid: productId,
-      // });
-
-    // } catch (error) {
-    //   console.error("Error in abandonCartMutation:", error);
-    //   toast.error("Failed to process cart. Please try again.");
-    // }
+        // ✅ ✅ ✅ Mark this dose as shown
+        setShownDoseIds((prev) => [...prev, dose.id]);
+      }
+    }
   };
-
 
   //Add to cart Addons🔥
   const handleAddAddon = (addon) => {
@@ -208,7 +219,7 @@ export default function DosageSelection() {
   return (
     <>
       <MetaLayout canonical={`${meta_url}dosage-selection/`} />
-      <div className="bottom-[100px] fixed left-10 cursor-pointer py-2 rounded-full border-2 border-violet-700 sm:block hidden ">
+      <div className="bottom-[100px] fixed left-10 cursor-pointer py-2 rounded-full border-2 border-violet-700 sm:block hidden">
         {/* <BackButton label="Back" onClick={back} className="mt-2 sm:block hidden " /> */}
         <button
           label="Back"
@@ -324,15 +335,10 @@ export default function DosageSelection() {
                         return 0;
                       })
                       .map((dose, index) => {
-                        console.log(dose.id, "dose")
                         const cartDose = items.doses.find(
-                          (item) => item.id === dose.id
+                          (item) => item.id === dose.id,
                         );
-
-
                         const cartQty = cartDose?.qty || 0;
-                        const abandonCartId = cartDose?.abandonCartId || 0;
-                        console.log(abandonCartId, "abandonCartId1")
 
                         return (
                           <Dose
@@ -340,7 +346,6 @@ export default function DosageSelection() {
                             doseData={dose}
                             allow={allowed}
                             qty={cartQty}
-                            abandonCartId={abandonCartId}
                             totalSelectedQty={totalSelectedQty}
                             isSelected={cartQty > 0}
                             onAdd={() => handleAddDose(dose)}
@@ -409,12 +414,12 @@ export default function DosageSelection() {
                             .sort((a, b) => {
                               const aOutOfStock =
                                 a?.stock?.status === 0 ||
-                                  a?.stock?.quantity === 0
+                                a?.stock?.quantity === 0
                                   ? 1
                                   : 0;
                               const bOutOfStock =
                                 b?.stock?.status === 0 ||
-                                  b?.stock?.quantity === 0
+                                b?.stock?.quantity === 0
                                   ? 1
                                   : 0;
 
@@ -422,7 +427,7 @@ export default function DosageSelection() {
                             })
                             .map((addon) => {
                               const cartAddon = items.addons.find(
-                                (item) => item.id === addon.id
+                                (item) => item.id === addon.id,
                               );
                               const cartQty = cartAddon?.qty || 0;
 
