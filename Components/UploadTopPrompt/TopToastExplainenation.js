@@ -195,7 +195,7 @@ const TopToastExplanation = () => {
           damping: 20,
           duration: 0.6,
         }}
-        className="fixed top-4 left-1/2 transform -translate-x-1/2 z-50 w-[95%] sm:w-auto z-60"
+        className="fixed top-4 left-1/2 transform -translate-x-1/2 z-50 w-[95%] sm:w-auto max-w-2xl px-2 z-60"
       >
         <motion.div
           animate={{
@@ -210,7 +210,7 @@ const TopToastExplanation = () => {
             repeat: Infinity,
             ease: "easeInOut",
           }}
-          className="relative bg-gradient-to-br from-amber-400 via-amber-500 to-orange-500 text-white px-5 py-2 rounded-2xl shadow-2xl backdrop-blur-lg overflow-hidden"
+          className="relative bg-gradient-to-br from-amber-400 via-amber-500 to-orange-500 text-white px-3 sm:px-5 py-2 sm:py-3 rounded-xl sm:rounded-2xl shadow-2xl backdrop-blur-lg overflow-hidden"
         >
           {/* Animated Background Particles */}
           <div className="absolute inset-0 overflow-hidden pointer-events-none">
@@ -242,7 +242,7 @@ const TopToastExplanation = () => {
           </div>
 
           {/* Content */}
-          <div className="relative flex items-center gap-3 sm:gap-4">
+          <div className="relative flex items-center gap-2 sm:gap-4">
             {/* Animated Icon */}
             <motion.div
               animate={{
@@ -254,10 +254,10 @@ const TopToastExplanation = () => {
                 repeat: Infinity,
                 ease: "easeInOut",
               }}
-              className="flex-shrink-0 mt-0.5"
+              className="flex-shrink-0"
             >
               <div className="relative">
-                <BiError className="text-3xl sm:text-4xl text-white drop-shadow-lg" />
+                <BiError className="text-xl sm:text-3xl text-white drop-shadow-lg" />
                 <motion.div
                   animate={{
                     scale: [1, 1.5, 1],
@@ -275,12 +275,10 @@ const TopToastExplanation = () => {
 
             {/* Text Content */}
             <div className="flex-1 min-w-0">
-              <div className="flex items-center gap-2 mb-1">
-                <h3 className="text-base sm:text-lg font-bold mont-bold-font tracking-wide">
-                  Action Required
-                </h3>
-              </div>
-              <p className="text-xs sm:text-sm text-white/95 mont-medium-font leading-relaxed">
+              <h3 className="text-xs sm:text-base font-bold mont-bold-font">
+                Action Required
+              </h3>
+              <p className="text-[10px] sm:text-sm text-white/95 mont-medium-font">
                 Your order needs medical explanation to proceed
               </p>
             </div>
@@ -290,9 +288,9 @@ const TopToastExplanation = () => {
               onClick={() => setShowModal(true)}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              className=" cursor-pointer flex-shrink-0 px-4 sm:px-6 py-2 sm:py-2 bg-white text-amber-600 rounded-xl font-bold mont-bold-font text-sm sm:text-base shadow-lg hover:shadow-xl transition-all duration-300 hover:bg-amber-50 border-2 border-white/20"
+              className="cursor-pointer flex-shrink-0 px-2.5 sm:px-5 py-1.5 sm:py-2 bg-white text-amber-600 rounded-lg sm:rounded-xl font-bold mont-bold-font text-[11px] sm:text-base shadow-lg hover:shadow-xl transition-all duration-300 hover:bg-amber-50 border-2 border-white/20 whitespace-nowrap"
             >
-              <span className="flex items-center gap-2">Order Complete</span>
+              Order Complete
             </motion.button>
           </div>
 
@@ -301,7 +299,7 @@ const TopToastExplanation = () => {
             initial={{ scaleX: 0 }}
             animate={{ scaleX: 1 }}
             transition={{ duration: 5, ease: "linear" }}
-            className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-white/40 via-white/60 to-white/40 origin-left"
+            className="absolute bottom-0 left-0 right-0 h-0.5 sm:h-1 bg-gradient-to-r from-white/40 via-white/60 to-white/40 origin-left"
           />
         </motion.div>
       </motion.div>

@@ -255,7 +255,7 @@ const StepsHeader = ({ isOpen, toggleSidebar }) => {
     <>
       {specialRoutes.includes(pathname) && (
         <>
-          {explainenationEvidence ? (
+          {!explainenationEvidence ? (
             <TopToastExplainenation />
           ) : (
             (imageUploaded || idVerificationUpload) && <UploadTopPrompt />
