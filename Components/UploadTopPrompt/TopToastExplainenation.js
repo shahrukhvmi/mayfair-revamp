@@ -404,7 +404,7 @@ const TopToastExplanation = () => {
                         <textarea
                           {...field}
                           placeholder="Please provide detailed medical explanation for your prescription..."
-                          className="w-full p-4 border-2 rounded-2xl border-gray-200 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent resize-none h-36 mont-reg-font text-gray-700 transition-all duration-300 hover:border-purple-300 bg-gradient-to-br from-white to-purple-50/30"
+                          className="w-full p-4 border-2 rounded-2xl border-gray-200 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent resize-none h-26 mont-reg-font text-gray-700 transition-all duration-300 hover:border-purple-300 bg-gradient-to-br from-white to-purple-50/30"
                         />
                       )}
                     />
@@ -436,7 +436,7 @@ const TopToastExplanation = () => {
                           />
                           <motion.div
                             whileHover={{ scale: 1.02 }}
-                            className="w-full min-h-[160px] border-2 border-dashed rounded-2xl flex flex-col items-center justify-center border-purple-300 transition-all p-4 bg-gradient-to-br from-purple-50 to-pink-50 group-hover:border-purple-500 group-hover:shadow-lg"
+                            className="w-full min-h-[100px] border-2 border-dashed rounded-2xl flex flex-col items-center justify-center border-purple-300 transition-all p-4 bg-gradient-to-br from-purple-50 to-pink-50 group-hover:border-purple-500 group-hover:shadow-lg"
                           >
                             {evidence ? (
                               <motion.div
@@ -497,7 +497,7 @@ const TopToastExplanation = () => {
                                 className="flex flex-col items-center justify-center text-purple-400"
                               >
                                 <div className="relative mb-3">
-                                  <FiUpload className="w-12 h-12" />
+                                  <FiUpload className="w-8 h-8" />
                                   <motion.div
                                     animate={{
                                       scale: [1, 1.2, 1],
@@ -535,10 +535,10 @@ const TopToastExplanation = () => {
                       disabled={loading || !description}
                       whileHover={{ scale: loading || !description ? 1 : 1.02 }}
                       whileTap={{ scale: loading || !description ? 1 : 0.98 }}
-                      className={`w-full py-4 cursor-pointer rounded-2xl text-white font-bold mont-bold-font text-lg transition-all duration-300 shadow-lg ${
+                      className={`w-full py-4  rounded-2xl text-white font-bold mont-bold-font text-lg transition-all duration-300 shadow-lg ${
                         loading || !description
                           ? "bg-gray-300 cursor-not-allowed"
-                          : "bg-gradient-to-r from-purple-600 to-purple-600 hover:from-purple-700 hover:to-purple-700 hover:shadow-xl"
+                          : "cursor-pointer bg-[#47317c] hover:bg-purple-800 hover:shadow-xl"
                       }`}
                     >
                       {loading ? (
