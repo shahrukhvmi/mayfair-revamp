@@ -178,9 +178,9 @@ const TopToastExplanation = () => {
 
   const getMessage = () => {
     if (explainenationEvidenceDetails.patient_type === "new") {
-      return `As a new patient starting with ${explainenationEvidenceDetails.latest_dose}, please provide proof that you've completed ${explainenationEvidenceDetails.next_allowed_dose} treatment with another provider.`;
+      return `As a new patient starting with <span class="mont-medium-font">${explainenationEvidenceDetails.latest_dose}</span>, please provide proof that you've completed <span class="mont-medium-font">${explainenationEvidenceDetails.next_allowed_dose}</span> treatment with another provider.`;
     } else {
-      return `To proceed with ${explainenationEvidenceDetails.latest_dose}, please provide documentation confirming you're currently on ${explainenationEvidenceDetails.next_allowed_dose} or higher with another provider.`;
+      return `To proceed with <span class="mont-medium-font">${explainenationEvidenceDetails.latest_dose}</span>, please provide documentation confirming you're currently on <span class="mont-medium-font">${explainenationEvidenceDetails.next_allowed_dose}</span> or higher with another provider.`;
     }
   };
   return (
@@ -295,12 +295,12 @@ const TopToastExplanation = () => {
           </div>
 
           {/* Progress Bar Animation */}
-          <motion.div
+          {/* <motion.div
             initial={{ scaleX: 0 }}
             animate={{ scaleX: 1 }}
             transition={{ duration: 5, ease: "linear" }}
             className="absolute bottom-0 left-0 right-0 h-0.5 sm:h-1 bg-gradient-to-r from-white/40 via-white/60 to-white/40 origin-left"
-          />
+          /> */}
         </motion.div>
       </motion.div>
 
@@ -376,7 +376,7 @@ const TopToastExplanation = () => {
                     Provide Evidence
                   </h2>
                   <p className="text-gray-600 text-sm mont-reg-font max-w-md mx-auto">
-                    {getMessage()}
+                    <div dangerouslySetInnerHTML={{ __html: getMessage() }} />
                   </p>
                 </div>
 
