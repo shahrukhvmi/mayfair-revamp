@@ -32,8 +32,8 @@ switch (serverType) {
   default:
     app_url = "https://app.mayfairweightlossclinic.co.uk/api/";
     passwordlink =
-      "https://mayfairweightlossclinic.co.uk/start-consultation/email-confirmation";
-    meta_url = "https://mayfairweightlossclinic.co.uk/start-consultation/";
+      "https://www.mayfairweightlossclinic.co.uk/start-consultation/email-confirmation";
+    meta_url = "https://www.mayfairweightlossclinic.co.uk/start-consultation/";
     break;
 }
 export { app_url, meta_url, passwordlink };
