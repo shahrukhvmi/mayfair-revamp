@@ -214,58 +214,16 @@ export default function DosageSelection() {
       // Check if we have last order data
       const hasLastOrderData =
         lastOrder &&
-        lastOrder.last_order_items &&
+        lastOrder.order_id !== null &&
+        lastOrder.product_id !== null &&
+        lastOrder.last_order_items !== null &&
         lastOrder.last_order_items.length > 0;
-      const isSameProduct =
-        hasLastOrderData && lastOrder.product_id === productId;
 
-      // If no last order data OR different product → No modal, just add to cart
-      if (!hasLastOrderData || !isSameProduct) {
-        addToCart({
-          id: dose.id,
-          type: "dose",
-          name: dose.name,
-          price: parseFloat(dose.price),
-          allowed: parseInt(dose.allowed),
-          item_id: dose.id,
-          product: dose?.product_name || "Dose Product",
-          product_concent: null,
-          label: `${dose?.product_name} ${dose?.name}`,
-          expiry: dose.expiry,
-          isSelected: true,
-        });
-        setAbandonData([
-          ...abandonData,
-          {
-            eid: dose.id,
-            pid: productId,
-          },
-        ]);
-      } else {
-        // Same product - check dose progression
-        const lastDoseName = lastOrder.last_order_items[0].item_name;
-        const selectedDoseName = dose?.name;
-
-        // Get sorted variations to find positions
-        const sortedVariations = [...variation?.variations].sort((a, b) => {
-          const aMg = parseFloat(a.name);
-          const bMg = parseFloat(b.name);
-          return aMg - bMg;
-        });
-
-        // Find index of last ordered dose and selected dose
-        const lastDoseIndex = sortedVariations.findIndex(
-          (v) => v.name === lastDoseName,
-        );
-        const selectedDoseIndex = sortedVariations.findIndex(
-          (v) => v.name === selectedDoseName,
-        );
-
-        // Check if user is selecting same dose or next dose (valid progression)
-        const isValidProgression = selectedDoseIndex <= lastDoseIndex + 1;
-
-        if (isValidProgression) {
-          // Same or next dose → No modal, no consent
+      // If no valid last order data → Treat as NEW PATIENT
+      if (!hasLastOrderData) {
+        // Apply new patient logic
+        if (isLowestDose) {
+          // No modal needed - just add to cart
           addToCart({
             id: dose.id,
             type: "dose",
@@ -287,9 +245,7 @@ export default function DosageSelection() {
             },
           ]);
         } else {
-          // Skipping doses → Show modal with consent
-          const returningPatientConsent = `Your last order (Order ID: <span class="mont-medium-font">#${lastOrder.order_id}</span>, placed on <span class="mont-medium-font">(${lastOrder.order_date})</span> was for the <span class="mont-medium-font">${lastDoseName}</span> dose. You have now selected the <span class="mont-medium-font">${selectedDoseName}</span> dose, which represents a significant dose escalation. Following payment confirmation, you will be required to provide clinical documentation from your healthcare provider verifying your current dosage regimen. This verification is essential to ensure safe treatment progression and minimize potential adverse effects such as nausea.`;
-
+          // Higher dose selected - show modal with proof requirement
           addToCart({
             id: dose.id,
             type: "dose",
@@ -298,7 +254,10 @@ export default function DosageSelection() {
             allowed: parseInt(dose.allowed),
             item_id: dose.id,
             product: dose?.product_name || "Dose Product",
-            product_concent: returningPatientConsent,
+            product_concent: generateProductConcent(
+              variation?.variations,
+              dose?.name,
+            ),
             label: `${dose?.product_name} ${dose?.name}`,
             expiry: dose.expiry,
             isSelected: true,
@@ -316,10 +275,121 @@ export default function DosageSelection() {
           if (!shownDoseIds.includes(dose.id)) {
             setSelectedDose({
               ...dose,
-              productConcent: returningPatientConsent,
+              productConcent: generateProductConcent(
+                variation?.variations,
+                dose?.name,
+              ),
             });
             setShowDoseModal(true);
             setShownDoseIds((prev) => [...prev, dose.id]);
+          }
+        }
+      } else {
+        // Has valid last order data
+        const isSameProduct = lastOrder.product_id === productId;
+
+        // If different product → No modal, just add to cart
+        if (!isSameProduct) {
+          addToCart({
+            id: dose.id,
+            type: "dose",
+            name: dose.name,
+            price: parseFloat(dose.price),
+            allowed: parseInt(dose.allowed),
+            item_id: dose.id,
+            product: dose?.product_name || "Dose Product",
+            product_concent: null,
+            label: `${dose?.product_name} ${dose?.name}`,
+            expiry: dose.expiry,
+            isSelected: true,
+          });
+          setAbandonData([
+            ...abandonData,
+            {
+              eid: dose.id,
+              pid: productId,
+            },
+          ]);
+        } else {
+          // Same product - check dose progression
+          const lastDoseName = lastOrder.last_order_items[0].item_name;
+          const selectedDoseName = dose?.name;
+
+          // Get sorted variations to find positions
+          const sortedVariations = [...variation?.variations].sort((a, b) => {
+            const aMg = parseFloat(a.name);
+            const bMg = parseFloat(b.name);
+            return aMg - bMg;
+          });
+
+          // Find index of last ordered dose and selected dose
+          const lastDoseIndex = sortedVariations.findIndex(
+            (v) => v.name === lastDoseName,
+          );
+          const selectedDoseIndex = sortedVariations.findIndex(
+            (v) => v.name === selectedDoseName,
+          );
+
+          // Check if user is selecting same dose or next dose (valid progression)
+          const isValidProgression = selectedDoseIndex <= lastDoseIndex + 1;
+
+          if (isValidProgression) {
+            // Same or next dose → No modal, no consent
+            addToCart({
+              id: dose.id,
+              type: "dose",
+              name: dose.name,
+              price: parseFloat(dose.price),
+              allowed: parseInt(dose.allowed),
+              item_id: dose.id,
+              product: dose?.product_name || "Dose Product",
+              product_concent: null,
+              label: `${dose?.product_name} ${dose?.name}`,
+              expiry: dose.expiry,
+              isSelected: true,
+            });
+            setAbandonData([
+              ...abandonData,
+              {
+                eid: dose.id,
+                pid: productId,
+              },
+            ]);
+          } else {
+            // Skipping doses → Show modal with consent
+            const returningPatientConsent = `Your last order (Order ID: <span class="mont-medium-font">#${lastOrder.order_id}</span>, placed on <span class="mont-medium-font">(${lastOrder.order_date})</span>) was for the <span class="mont-medium-font">${lastDoseName}</span> dose. You have now selected the <span class="mont-medium-font">${selectedDoseName}</span> dose, which represents a significant dose escalation. Following payment confirmation, you will be required to provide clinical documentation from your healthcare provider verifying your current dosage regimen. This verification is essential to ensure safe treatment progression and minimize potential adverse effects such as nausea.`;
+
+            addToCart({
+              id: dose.id,
+              type: "dose",
+              name: dose.name,
+              price: parseFloat(dose.price),
+              allowed: parseInt(dose.allowed),
+              item_id: dose.id,
+              product: dose?.product_name || "Dose Product",
+              product_concent: returningPatientConsent,
+              label: `${dose?.product_name} ${dose?.name}`,
+              expiry: dose.expiry,
+              isSelected: true,
+            });
+
+            setAbandonData([
+              ...abandonData,
+              {
+                eid: dose.id,
+                pid: productId,
+              },
+            ]);
+
+            // Show modal if not already shown for this dose
+            if (!shownDoseIds.includes(dose.id)) {
+              setSelectedDose({
+                ...dose,
+                productConcent: returningPatientConsent,
+              });
+              setShowDoseModal(true);
+              setShownDoseIds((prev) => [...prev, dose.id]);
+            }
           }
         }
       }
