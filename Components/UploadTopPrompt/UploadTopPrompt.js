@@ -16,8 +16,8 @@ const UploadTopPrompt = () => {
   const message = missingItems.length
     ? `Please upload your ${missingItems.join(" and ")} to complete your order.`
     : "";
-
-  // if (!message) return null; // nothing missing → don't show prompt
+  console.log(message, "message");
+  if (!message) return null; // nothing missing → don't show prompt
 
   let redirectTo = "/photo-upload"; // default
   if (imageUploaded && !idVerificationUpload) {

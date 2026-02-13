@@ -258,7 +258,7 @@ const StepsHeader = ({ isOpen, toggleSidebar }) => {
           {explainenationEvidence ? (
             <TopToastExplainenation />
           ) : (
-            (imageUploaded || idVerificationUpload) && <UploadTopPrompt />
+            (!imageUploaded || !idVerificationUpload) && <UploadTopPrompt />
           )}
         </>
       )}

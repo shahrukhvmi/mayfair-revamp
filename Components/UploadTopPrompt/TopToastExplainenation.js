@@ -161,7 +161,9 @@ const TopToastExplanation = () => {
 
       const res = await PostPrescriptionEvidence(payload);
       if (res?.status === 200 || res?.data?.success) {
-        toast.success("Evidence submitted successfully!");
+        toast.success(
+          "Thank you. Your information has been submitted for clinical review. Our healthcare team will process your order and contact you if any additional details are needed.",
+        );
         handleCloseModal();
 
         GetEvidence();
@@ -170,7 +172,6 @@ const TopToastExplanation = () => {
       }
     } catch (err) {
       toast.error(err.response.data.errors.evidence || "Submission failed.");
-      console.error(err.response.data.errors.evidence, "Evidence upload error");
     } finally {
       setLoading(false);
     }
@@ -178,11 +179,12 @@ const TopToastExplanation = () => {
 
   const getMessage = () => {
     if (explainenationEvidenceDetails.patient_type === "new") {
-      return `As a new patient starting with <span class="mont-medium-font">${explainenationEvidenceDetails.latest_dose}</span>, please provide proof that you've completed <span class="mont-medium-font">${explainenationEvidenceDetails.next_allowed_dose}</span> treatment with another provider.`;
+      return `To complete your order for Mounjaro <span class="medium-font">${explainenationEvidenceDetails?.product_name} ${explainenationEvidenceDetails.latest_dose}</span>, please provide details about your previous treatment. As a new patient ordering a higher dose, we require confirmation that you have completed prior dose progression with another healthcare provider, or clinical justification for starting at this level. Please explain your treatment history and upload any supporting documentation from your previous provider. Our clinical team reviews each order to ensure safe and appropriate prescribing.`;
     } else {
-      return `To proceed with <span class="mont-medium-font">${explainenationEvidenceDetails.latest_dose}</span>, please provide documentation confirming you're currently on <span class="mont-medium-font">${explainenationEvidenceDetails.next_allowed_dose}</span> or higher with another provider.`;
+      return `To complete your order for  <span class="medium-font">${explainenationEvidenceDetails?.product_name} ${explainenationEvidenceDetails.latest_dose}</span>, please provide details regarding your dose progression. As you are ordering a higher dose, we require confirmation that you are currently taking <span class="medium-font">${explainenationEvidenceDetails.next_allowed_dose}</span>  mg or above, or clinical justification for this dose escalation. Please explain your treatment history and upload any supporting documentation from your healthcare provider. Our clinical team reviews each order to ensure safe and appropriate prescribing.`;
     }
   };
+
   return (
     <>
       {/* Modern Animated Toast Notification */}
@@ -195,22 +197,15 @@ const TopToastExplanation = () => {
           damping: 20,
           duration: 0.6,
         }}
-        className="fixed top-4 left-1/2 transform -translate-x-1/2 z-50 w-[95%] sm:w-auto max-w-2xl px-2 z-60"
+        className="fixed top-2 left-1/2 transform -translate-x-1/2 z-50 w-[100%] sm:w-auto max-w-2xl px-2 z-60"
       >
         <motion.div
-          animate={{
-            boxShadow: [
-              "0 10px 40px rgba(251, 191, 36, 0.3)",
-              "0 10px 60px rgba(251, 191, 36, 0.5)",
-              "0 10px 40px rgba(251, 191, 36, 0.3)",
-            ],
-          }}
           transition={{
             duration: 2,
             repeat: Infinity,
             ease: "easeInOut",
           }}
-          className="relative bg-gradient-to-br from-amber-400 via-amber-500 to-orange-500 text-white px-3 sm:px-5 py-2 sm:py-3 rounded-xl sm:rounded-2xl shadow-2xl backdrop-blur-lg overflow-hidden"
+          className="relative bg-gradient-to-br from-amber-400 via-amber-500 to-orange-500 text-white px-3 sm:px-5 py-2 sm:py-3 rounded-xl sm:rounded-2xl  overflow-hidden"
         >
           {/* Animated Background Particles */}
           <div className="absolute inset-0 overflow-hidden pointer-events-none">
@@ -275,11 +270,11 @@ const TopToastExplanation = () => {
 
             {/* Text Content */}
             <div className="flex-1 min-w-0">
-              <h3 className="text-xs sm:text-base font-bold mont-bold-font">
+              <h3 className="text-xs sm:text-base bold-font">
                 Action Required
               </h3>
-              <p className="text-[10px] sm:text-sm text-white/95 mont-medium-font">
-                Your order needs medical explanation to proceed
+              <p className="text-[10px] sm:text-sm text-white/95 reg-font">
+                please provide the required information to complete your order
               </p>
             </div>
 
@@ -288,9 +283,9 @@ const TopToastExplanation = () => {
               onClick={() => setShowModal(true)}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              className="cursor-pointer flex-shrink-0 px-2.5 sm:px-5 py-1.5 sm:py-2 bg-white text-amber-600 rounded-lg sm:rounded-xl font-bold mont-bold-font text-[11px] sm:text-base shadow-lg hover:shadow-xl transition-all duration-300 hover:bg-amber-50 border-2 border-white/20 whitespace-nowrap"
+              className="cursor-pointer flex-shrink-0 px-2.5 sm:px-5 py-1.5 sm:py-2 bg-white text-amber-600 rounded-lg sm:rounded-xl font-bold bold-font text-[11px] sm:text-base shadow-lg hover:shadow-xl transition-all duration-300 hover:bg-amber-50 border-2 border-white/20 whitespace-nowrap"
             >
-              Order Complete
+              Continue
             </motion.button>
           </div>
 
@@ -329,7 +324,7 @@ const TopToastExplanation = () => {
                   stiffness: 300,
                   damping: 30,
                 }}
-                className="bg-white rounded-3xl shadow-2xl p-6 sm:p-8 w-full max-w-lg relative my-8 border border-purple-100"
+                className="bg-white rounded-3xl p-6 sm:p-8 w-full max-w-2xl relative my-8 border border-purple-100"
                 onClick={(e) => e.stopPropagation()}
               >
                 {/* Decorative Elements */}
@@ -372,10 +367,10 @@ const TopToastExplanation = () => {
                   >
                     <FiFileText className="text-3xl text-white" />
                   </motion.div> */}
-                  <h2 className="text-2xl sm:text-3xl mont-bold-font text-gray-800 mb-2">
-                    Provide Evidence
+                  <h2 className="text-2xl sm:text-3xl bold-font text-gray-800 mb-2">
+                    Dose Verification Required
                   </h2>
-                  <p className="text-gray-600 text-sm mont-reg-font max-w-md mx-auto">
+                  <p className="text-gray-600 text-sm thin-font">
                     <div dangerouslySetInnerHTML={{ __html: getMessage() }} />
                   </p>
                 </div>
@@ -391,9 +386,9 @@ const TopToastExplanation = () => {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.2 }}
                   >
-                    <label className="flex items-center gap-2 mb-3 font-semibold text-gray-700 mont-medium-font">
+                    <label className="flex items-center gap-2 mb-3 text-gray-700 bold-font">
                       <FiFileText className="text-purple-500" />
-                      Medical Explanation
+                      Treatment Details
                       <span className="text-red-500">*</span>
                     </label>
                     <Controller
@@ -403,8 +398,8 @@ const TopToastExplanation = () => {
                       render={({ field }) => (
                         <textarea
                           {...field}
-                          placeholder="Please provide detailed medical explanation for your prescription..."
-                          className="w-full p-4 border-2 rounded-2xl border-gray-200 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent resize-none h-26 mont-reg-font text-gray-700 transition-all duration-300 hover:border-purple-300 bg-gradient-to-br from-white to-purple-50/30"
+                          placeholder="Please describe your current dosage, treatment timeline, and reason for selecting this dose..."
+                          className="w-full p-4 border-2 rounded-sm border-gray-200 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent resize-y h-26 reg-font text-gray-700 transition-all duration-300 hover:border-purple-300 bg-gradient-to-br from-white to-purple-50/30"
                         />
                       )}
                     />
@@ -416,7 +411,7 @@ const TopToastExplanation = () => {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.3 }}
                   >
-                    <label className="flex items-center gap-2 mb-3 font-semibold text-gray-700 mont-medium-font">
+                    <label className="flex items-center gap-2 mb-3 text-gray-700 bold-font">
                       <FiUpload className="text-purple-500" />
                       Upload Attachment
                       <span className="text-gray-400 text-xs font-normal">
@@ -436,7 +431,7 @@ const TopToastExplanation = () => {
                           />
                           <motion.div
                             whileHover={{ scale: 1.02 }}
-                            className="w-full min-h-[100px] border-2 border-dashed rounded-2xl flex flex-col items-center justify-center border-purple-300 transition-all p-4 bg-gradient-to-br from-purple-50 to-pink-50 group-hover:border-purple-500 group-hover:shadow-lg"
+                            className="w-full min-h-[100px] border-2 border-dashed rounded-sm flex flex-col items-center justify-center border-purple-300 transition-all p-4 bg-gradient-to-br from-purple-50 to-pink-50 group-hover:border-purple-500 group-hover:shadow-lg"
                           >
                             {evidence ? (
                               <motion.div
@@ -447,18 +442,18 @@ const TopToastExplanation = () => {
                                 {evidence.type === "application/pdf" ? (
                                   <div className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-red-50 to-orange-50 rounded-xl shadow-inner border border-red-100">
                                     <motion.svg
-                                      animate={{ y: [0, -5, 0] }}
-                                      transition={{
-                                        duration: 2,
-                                        repeat: Infinity,
-                                      }}
+                                      // animate={{ y: [0, -5, 0] }}
+                                      // transition={{
+                                      //   duration: 2,
+                                      //   repeat: Infinity,
+                                      // }}
                                       className="w-14 h-14 text-red-600 mb-2"
                                       fill="currentColor"
                                       viewBox="0 0 20 20"
                                     >
                                       <path d="M4 18h12V6h-4V2H4v16zm-2 1V0h12l4 4v16H2v-1z" />
                                     </motion.svg>
-                                    <span className="text-sm text-gray-700 mont-medium-font truncate max-w-[200px] px-2">
+                                    <span className="text-sm text-gray-700 medium-font truncate max-w-[200px] px-2">
                                       {evidence.name}
                                     </span>
                                     <motion.div
@@ -489,11 +484,11 @@ const TopToastExplanation = () => {
                             ) : (
                               <motion.div
                                 animate={{ y: [0, -5, 0] }}
-                                transition={{
-                                  duration: 2,
-                                  repeat: Infinity,
-                                  ease: "easeInOut",
-                                }}
+                                // transition={{
+                                //   duration: 2,
+                                //   repeat: Infinity,
+                                //   ease: "easeInOut",
+                                // }}
                                 className="flex flex-col items-center justify-center text-purple-400"
                               >
                                 <div className="relative mb-3">
@@ -510,10 +505,10 @@ const TopToastExplanation = () => {
                                     className="absolute inset-0 bg-purple-500 rounded-full blur-lg"
                                   />
                                 </div>
-                                <span className="text-sm font-medium mont-medium-font mb-1">
+                                <span className="text-sm font-medium medium-font mb-1">
                                   Click to upload document
                                 </span>
-                                <span className="text-xs text-gray-400 mont-reg-font">
+                                <span className="text-xs text-gray-400 reg-font lowercase">
                                   PNG, JPEG, WEBP or PDF (Max 5MB)
                                 </span>
                               </motion.div>
@@ -535,7 +530,7 @@ const TopToastExplanation = () => {
                       disabled={loading || !description}
                       whileHover={{ scale: loading || !description ? 1 : 1.02 }}
                       whileTap={{ scale: loading || !description ? 1 : 0.98 }}
-                      className={`w-full py-4  rounded-2xl text-white font-bold mont-bold-font text-lg transition-all duration-300 shadow-lg ${
+                      className={`w-full py-4  rounded-2xl text-white font-bold bold-font text-lg transition-all duration-300 shadow-lg ${
                         loading || !description
                           ? "bg-gray-300 cursor-not-allowed"
                           : "cursor-pointer bg-[#47317c] hover:bg-purple-800 hover:shadow-xl"
@@ -556,7 +551,7 @@ const TopToastExplanation = () => {
                         </span>
                       ) : (
                         <span className="flex items-center justify-center gap-2">
-                          Submit Evidence
+                          Submit
                         </span>
                       )}
                     </motion.button>
