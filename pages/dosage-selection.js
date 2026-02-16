@@ -128,7 +128,7 @@ export default function DosageSelection() {
 
   // ✅ UPDATED: Generate consent message for new patients (returns base64)
   const generateProductConcent = (variations, selectedDoseName) => {
-    const consentMessage = `You have selected the <span class="mont-medium-font">${selectedDoseName}</span> dose. As this is not the recommended starting dose, we require verification of your prior treatment history. Following payment confirmation, you will be required to provide clinical evidence demonstrating your previous dosage regimen with another healthcare provider. This is necessary to ensure safe dose escalation and minimize potential adverse effects such as nausea. Please only proceed if you can provide this documentation.`;
+    const consentMessage = `You have selected the <span class="medium-font">${selectedDoseName}</span> dose. As this is not the recommended starting dose, we require verification of your prior treatment history. Following payment confirmation, you will be required to provide clinical evidence demonstrating your previous dosage regimen with another healthcare provider. This is necessary to ensure safe dose escalation and minimize potential adverse effects such as nausea. Please only proceed if you can provide this documentation.`;
 
     return encodeConsentToBase64(consentMessage);
   };
@@ -373,7 +373,7 @@ export default function DosageSelection() {
             // const returningPatientConsent = `Your last order (Order ID: <span class="mont-medium-font">#${lastOrder.order_id}</span>, placed on <span class="mont-medium-font">(${lastOrder.order_date})</span>) was for the <span class="mont-medium-font">${lastDoseName}</span> dose. You have now selected the <span class="mont-medium-font">${selectedDoseName}</span> dose, which represents a significant dose escalation. Following payment confirmation, you will be required to provide clinical documentation from your healthcare provider verifying your current dosage regimen. This verification is essential to ensure safe treatment progression and minimize potential adverse effects such as nausea.`;
 
             // Skipping doses → Show modal with consent
-            const returningPatientConsentMessage = `Your last order (Order ID: <span class="mont-medium-font">#${lastOrder.order_id}</span>, placed on <span class="mont-medium-font">(${lastOrder.order_date})</span>) was for the <span class="mont-medium-font">${lastDoseName}</span> dose. You have now selected the <span class="mont-medium-font">${selectedDoseName}</span> dose, which represents a significant dose escalation. Following payment confirmation, you will be required to provide clinical documentation from your healthcare provider verifying your current dosage regimen. This verification is essential to ensure safe treatment progression and minimize potential adverse effects such as nausea.`;
+            const returningPatientConsentMessage = `Your last order for <span class="medium-font">${lastOrder?.product_name}</span> (Order ID: <span class="medium-font">#${lastOrder.order_id}</span>, placed on <span class="medium-font">(${lastOrder.order_date})</span>) was for the <span class="medium-font">${lastDoseName}</span> dose. You have now selected the <span class="medium-font">${selectedDoseName}</span> dose, which represents a significant dose escalation. Following payment confirmation, you will be required to provide clinical documentation from your healthcare provider verifying your current dosage regimen. This verification is essential to ensure safe treatment progression and minimize potential adverse effects such as nausea.`;
 
             const returningPatientConsent = encodeConsentToBase64(
               returningPatientConsentMessage,
@@ -473,7 +473,7 @@ export default function DosageSelection() {
               </h2>
               {selectedDose?.productConcent && (
                 <p
-                  className="text-md paragraph rounded-md p-3 mont-reg-font mb-4"
+                  className="text-md paragraph rounded-md p-3 reg-font mb-4"
                   dangerouslySetInnerHTML={{
                     __html: selectedDose.productConcent
                       ? decodeURIComponent(
@@ -618,7 +618,7 @@ export default function DosageSelection() {
                           />
                         }
                         label={
-                          <p className="font-sans font-bold text-sm italic text-black">
+                          <p className="bold-font text-sm text-black">
                             Please confirm that you have reviewed the expiry
                             dates of the selected doses.
                           </p>
