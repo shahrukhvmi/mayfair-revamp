@@ -15,7 +15,7 @@ export const showClinicalReviewToast = () => {
               ease: [0.22, 1, 0.36, 1], // smooth cubic-bezier
             }}
             className="
-              max-w-xl w-full
+              max-w-2xl w-full
               bg-white/95 backdrop-blur-md
               shadow-xl shadow-black/5
               border border-gray-100
