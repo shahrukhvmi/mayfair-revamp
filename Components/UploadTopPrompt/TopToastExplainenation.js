@@ -15,6 +15,7 @@ import {
   PostPrescriptionEvidence,
 } from "@/api/PrescriptionEvidenceApi";
 import useAuthStore from "@/store/authStore";
+import { showClinicalReviewToast } from "./showClinicalReviewToast";
 
 const TopToastExplanation = () => {
   const MAX_SIZE_MB = 5;
@@ -161,9 +162,8 @@ const TopToastExplanation = () => {
 
       const res = await PostPrescriptionEvidence(payload);
       if (res?.status === 200 || res?.data?.success) {
-        toast.success(
-          "Thank you. Your information has been submitted for clinical review. Our healthcare team will process your order and contact you if any additional details are needed.",
-        );
+        showClinicalReviewToast();
+
         handleCloseModal();
 
         GetEvidence();
@@ -179,12 +179,11 @@ const TopToastExplanation = () => {
 
   const getMessage = () => {
     if (explainenationEvidenceDetails.patient_type === "new") {
-      return `To complete your order for Mounjaro <span class="medium-font">${explainenationEvidenceDetails?.product_name} ${explainenationEvidenceDetails.latest_dose}</span>, please provide details about your previous treatment. As a new patient ordering a higher dose, we require confirmation that you have completed prior dose progression with another healthcare provider, or clinical justification for starting at this level. Please explain your treatment history and upload any supporting documentation from your previous provider. Our clinical team reviews each order to ensure safe and appropriate prescribing.`;
+      return `To complete your order for <span class="medium-font">${explainenationEvidenceDetails?.product_name} ${explainenationEvidenceDetails.latest_dose}</span>, please provide details about your previous treatment. As a new patient ordering a higher dose, we require confirmation that you have completed prior dose progression with another healthcare provider, or clinical justification for starting at this level. Please explain your treatment history and upload any supporting documentation from your previous provider. Our clinical team reviews each order to ensure safe and appropriate prescribing.`;
     } else {
-      return `To complete your order for  <span class="medium-font">${explainenationEvidenceDetails?.product_name} ${explainenationEvidenceDetails.latest_dose}</span>, please provide details regarding your dose progression. As you are ordering a higher dose, we require confirmation that you are currently taking <span class="medium-font">${explainenationEvidenceDetails.next_allowed_dose}</span>  mg or above, or clinical justification for this dose escalation. Please explain your treatment history and upload any supporting documentation from your healthcare provider. Our clinical team reviews each order to ensure safe and appropriate prescribing.`;
+      return `To complete your order for  <span class="medium-font">${explainenationEvidenceDetails?.product_name} ${explainenationEvidenceDetails.latest_dose}</span>, please provide details regarding your dose progression. As you are ordering a higher dose, we require confirmation that you are currently taking <span class="medium-font">${explainenationEvidenceDetails?.product_name} ${explainenationEvidenceDetails.next_allowed_dose}</span>  or above, or clinical justification for this dose escalation. Please explain your treatment history and upload any supporting documentation from your healthcare provider. Our clinical team reviews each order to ensure safe and appropriate prescribing.`;
     }
   };
-
   return (
     <>
       {/* Modern Animated Toast Notification */}
@@ -274,7 +273,7 @@ const TopToastExplanation = () => {
                 Action Required
               </h3>
               <p className="text-[10px] sm:text-sm text-white/95 reg-font">
-                please provide the required information to complete your order
+                Please provide the required information to complete your order
               </p>
             </div>
 
