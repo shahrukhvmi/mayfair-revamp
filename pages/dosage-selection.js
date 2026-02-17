@@ -128,7 +128,7 @@ export default function DosageSelection() {
 
   // ✅ UPDATED: Generate consent message for new patients (returns base64)
   const generateProductConcent = (variations, selectedDoseName) => {
-    const consentMessage = `You have selected the <span class="medium-font">${selectedDoseName}</span> dose. As this is not the recommended starting dose, we require verification of your prior treatment history. Following payment confirmation, you will be required to provide clinical evidence demonstrating your previous dosage regimen with another healthcare provider. This is necessary to ensure safe dose escalation and minimize potential adverse effects such as nausea. Please only proceed if you can provide this documentation.`;
+    const consentMessage = `You have selected <span class="bold-font">${variation?.name}</span> <span class="bold-font">${selectedDoseName}</span> dose. As this is not the recommended starting dose, we require verification of your prior treatment history.<br/><br/>Following payment confirmation, you will be required to provide clinical evidence demonstrating your previous dosage regimen with another healthcare provider. This is necessary to ensure safe dose escalation and minimize potential adverse effects such as nausea. Please only proceed if you can provide this documentation.`;
 
     return encodeConsentToBase64(consentMessage);
   };
