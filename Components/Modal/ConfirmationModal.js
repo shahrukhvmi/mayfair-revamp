@@ -7,7 +7,7 @@ const ConfirmationModal = ({ showModal, onConfirm, onCancel, removeItem }) => {
   return (
     <AnimatePresence>
       {showModal && (
-        <div className="fixed inset-0 flex items-center justify-center bg-opacity-40 backdrop-blur-sm z-50">
+        <div className="fixed inset-0 flex items-center justify-center bg-opacity-40 backdrop-blur-sm z-60">
           {/* Modal Container */}
           <motion.div
             initial={{ opacity: 0, y: -50 }}
@@ -24,7 +24,9 @@ const ConfirmationModal = ({ showModal, onConfirm, onCancel, removeItem }) => {
             </div>
 
             {/* Text */}
-            <p className="text-center text-gray-800 font-med mb-6">Are you sure you want to remove?</p>
+            <p className="text-center text-gray-800 font-med mb-6">
+              Are you sure you want to remove?
+            </p>
 
             {/* Buttons */}
             <div className="flex justify-center gap-4">
