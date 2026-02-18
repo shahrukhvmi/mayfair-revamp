@@ -196,7 +196,7 @@ const TopToastExplanation = () => {
           damping: 20,
           duration: 0.6,
         }}
-        className="fixed top-2 left-1/2 transform -translate-x-1/2 z-50 w-[100%] sm:w-auto max-w-2xl px-2 z-60"
+        className="sm:fixed top-2 left-1/2 transform -translate-x-1/2 z-50 w-[100%] sm:w-auto max-w-2xl px-2 z-60"
       >
         <motion.div
           transition={{
