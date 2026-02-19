@@ -153,13 +153,22 @@ export default function DosageSelection() {
     }
 
     // ✅ NEW LOGIC: Check if this is the lowest dose
-    const lowestDose = getLowestDose(variation?.variations);
+    const sortedVariations = [...variation?.variations].sort((a, b) => {
+      const aMg = parseFloat(a.name);
+      const bMg = parseFloat(b.name);
+      return aMg - bMg;
+    });
+
+    const lowestDose = sortedVariations[0];
+    const secondDose = sortedVariations[1];
+
     const isLowestDose = dose?.id === lowestDose?.id;
+    const isSecondDose = secondDose && dose?.id === secondDose?.id;
 
     // ✅ NEW LOGIC: For new patients (reorder === false)
     if (reorder === false) {
       // If selecting lowest dose
-      if (isLowestDose) {
+      if (isLowestDose || isSecondDose) {
         // No modal needed - just add to cart
         addToCart({
           id: dose.id,
@@ -324,8 +333,10 @@ export default function DosageSelection() {
             },
           ]);
         } else {
-          // Same product - check dose progression
+          // Same product - check dose progression AND treatment gap
           const lastDoseName = lastOrder.last_order_items[0].item_name;
+          const lastQuantity = lastOrder.last_order_items[0].quantity;
+          const monthsSinceLastOrder = lastOrder.monthsSinceLastOrder;
           const selectedDoseName = dose?.name;
 
           // Get sorted variations to find positions
@@ -335,7 +346,7 @@ export default function DosageSelection() {
             return aMg - bMg;
           });
 
-          // Find index of last ordered dose and selected dose
+          // Find indexes
           const lastDoseIndex = sortedVariations.findIndex(
             (v) => v.name === lastDoseName,
           );
@@ -343,72 +354,213 @@ export default function DosageSelection() {
             (v) => v.name === selectedDoseName,
           );
 
+          // Calculate if there's a treatment gap based on order date
+          const lastOrderDate = new Date(
+            lastOrder.order_date.split("-").reverse().join("-"),
+          ); // Convert "DD-MM-YYYY" to "YYYY-MM-DD"
+          const currentDate = new Date();
+
+          // Calculate expected next order date (last order date + quantity months + 1 month grace)
+          const expectedNextOrderDate = new Date(lastOrderDate);
+          expectedNextOrderDate.setMonth(
+            expectedNextOrderDate.getMonth() + lastQuantity + 1,
+          );
+
+          // Check if there's a gap (current date is after expected date)
+          const hasGap = currentDate > expectedNextOrderDate;
+
+          // Calculate gap in months if exists
+          let gapMonths = 0;
+          if (hasGap) {
+            const monthsDiff =
+              (currentDate.getFullYear() -
+                expectedNextOrderDate.getFullYear()) *
+                12 +
+              (currentDate.getMonth() - expectedNextOrderDate.getMonth());
+            gapMonths = Math.max(1, monthsDiff); // At least 1 month gap
+          }
+
           // Check if user is selecting same dose or next dose (valid progression)
           const isValidProgression = selectedDoseIndex <= lastDoseIndex + 1;
 
-          if (isValidProgression) {
-            // Same or next dose → No modal, no consent
-            addToCart({
-              id: dose.id,
-              type: "dose",
-              name: dose.name,
-              price: parseFloat(dose.price),
-              allowed: parseInt(dose.allowed),
-              item_id: dose.id,
-              product: dose?.product_name || "Dose Product",
-              product_concent: null,
-              label: `${dose?.product_name} ${dose?.name}`,
-              expiry: dose.expiry,
-              isSelected: true,
-            });
-            setAbandonData([
-              ...abandonData,
-              {
-                eid: dose.id,
-                pid: productId,
-              },
-            ]);
-          } else {
-            // // Skipping doses → Show modal with consent
-            // const returningPatientConsent = `Your last order (Order ID: <span class="mont-medium-font">#${lastOrder.order_id}</span>, placed on <span class="mont-medium-font">(${lastOrder.order_date})</span>) was for the <span class="mont-medium-font">${lastDoseName}</span> dose. You have now selected the <span class="mont-medium-font">${selectedDoseName}</span> dose, which represents a significant dose escalation. Following payment confirmation, you will be required to provide clinical documentation from your healthcare provider verifying your current dosage regimen. This verification is essential to ensure safe treatment progression and minimize potential adverse effects such as nausea.`;
+          // Check if selecting lowest or second dose
+          const isSelectingLowDoses = isLowestDose || isSecondDose;
 
-            // Skipping doses → Show modal with consent
-            const returningPatientConsentMessage = `Your last order for <span class="bold-font">${lastOrder?.product_name}</span>   (Order ID: <span class="bold-font">#${lastOrder.order_id}</span>) was placed on <span class="bold-font">${lastOrder.order_date}</span> for the <span class="bold-font">${lastDoseName}</span> dose. You have now selected the <span class="bold-font">${selectedDoseName}</span> dose, which represents a significant dose escalation.<br/><br/>Following payment confirmation, you will be <span class="bold-font"> required to provide details regarding your dose progression and escalation</span> to date. This information is essential to ensure safe treatment progression and to help minimize potential adverse effects.`;
-
-            const returningPatientConsent = encodeConsentToBase64(
-              returningPatientConsentMessage,
-            );
-
-            addToCart({
-              id: dose.id,
-              type: "dose",
-              name: dose.name,
-              price: parseFloat(dose.price),
-              allowed: parseInt(dose.allowed),
-              item_id: dose.id,
-              product: dose?.product_name || "Dose Product",
-              product_concent: returningPatientConsent,
-              label: `${dose?.product_name} ${dose?.name}`,
-              expiry: dose.expiry,
-              isSelected: true,
-            });
-
-            setAbandonData([
-              ...abandonData,
-              {
-                eid: dose.id,
-                pid: productId,
-              },
-            ]);
-
-            // Show modal if not already shown for this dose
-            if (!shownDoseIds.includes(dose.id)) {
-              setSelectedDose({
-                ...dose,
-                productConcent: returningPatientConsent,
+          // ========== SCENARIO 1: NO GAP ==========
+          if (!hasGap) {
+            if (isValidProgression) {
+              // Same or next dose → No modal, no consent
+              addToCart({
+                id: dose.id,
+                type: "dose",
+                name: dose.name,
+                price: parseFloat(dose.price),
+                allowed: parseInt(dose.allowed),
+                item_id: dose.id,
+                product: dose?.product_name || "Dose Product",
+                product_concent: null,
+                label: `${dose?.product_name} ${dose?.name}`,
+                expiry: dose.expiry,
+                isSelected: true,
               });
-              setShowDoseModal(true);
-              setShownDoseIds((prev) => [...prev, dose.id]);
+              setAbandonData([
+                ...abandonData,
+                {
+                  eid: dose.id,
+                  pid: productId,
+                },
+              ]);
+            } else {
+              // Skipping doses → Show modal with dose escalation message
+              const returningPatientConsentMessage = `Your last order for <span class="bold-font">${lastOrder?.product_name}</span> (Order ID: <span class="bold-font">#${lastOrder.order_id}</span>) was placed on <span class="bold-font">${lastOrder.order_date}</span> for the <span class="bold-font">${lastDoseName}</span> dose. You have now selected the <span class="bold-font">${selectedDoseName}</span> dose, which represents a significant dose escalation.<br/><br/>Following payment confirmation, you will be <span class="bold-font">required to provide details regarding your dose progression and escalation</span> to date. This information is essential to ensure safe treatment progression and to help minimize potential adverse effects.`;
+
+              const returningPatientConsent = encodeConsentToBase64(
+                returningPatientConsentMessage,
+              );
+
+              addToCart({
+                id: dose.id,
+                type: "dose",
+                name: dose.name,
+                price: parseFloat(dose.price),
+                allowed: parseInt(dose.allowed),
+                item_id: dose.id,
+                product: dose?.product_name || "Dose Product",
+                product_concent: returningPatientConsent,
+                label: `${dose?.product_name} ${dose?.name}`,
+                expiry: dose.expiry,
+                isSelected: true,
+              });
+
+              setAbandonData([
+                ...abandonData,
+                {
+                  eid: dose.id,
+                  pid: productId,
+                },
+              ]);
+
+              // Show modal if not already shown for this dose
+              if (!shownDoseIds.includes(dose.id)) {
+                setSelectedDose({
+                  ...dose,
+                  productConcent: returningPatientConsent,
+                });
+                setShowDoseModal(true);
+                setShownDoseIds((prev) => [...prev, dose.id]);
+              }
+            }
+          }
+          // ========== SCENARIO 2: HAS GAP ==========
+          else {
+            // If selecting lowest or second dose → No modal (starting fresh)
+            if (isSelectingLowDoses) {
+              addToCart({
+                id: dose.id,
+                type: "dose",
+                name: dose.name,
+                price: parseFloat(dose.price),
+                allowed: parseInt(dose.allowed),
+                item_id: dose.id,
+                product: dose?.product_name || "Dose Product",
+                product_concent: null,
+                label: `${dose?.product_name} ${dose?.name}`,
+                expiry: dose.expiry,
+                isSelected: true,
+              });
+              setAbandonData([
+                ...abandonData,
+                {
+                  eid: dose.id,
+                  pid: productId,
+                },
+              ]);
+            }
+            // If selecting same/next dose (last dose or allowed dose) → Show GAP message
+            else if (isValidProgression) {
+              const monthsDiff =
+                (currentDate.getFullYear() -
+                  expectedNextOrderDate.getFullYear()) *
+                  12 +
+                (currentDate.getMonth() - expectedNextOrderDate.getMonth());
+              const gapMonths = Math.max(1, monthsDiff);
+
+              const treatmentGapMessage = `Your last order for <span class="bold-font">${lastOrder?.product_name}</span> (Order ID: <span class="bold-font">#${lastOrder.order_id}</span>) was placed on <span class="bold-font">${lastOrder.order_date}</span> for the <span class="bold-font">${lastDoseName}</span> dose. There is a <span class="bold-font">${gapMonths}-month gap</span> in your treatment history.<br/><br/>Following payment confirmation, you will be <span class="bold-font">required to provide evidence</span> that you continued treatment with another healthcare provider during this period, or explain the reason for this gap. This information is essential to ensure safe and appropriate prescribing.`;
+
+              const treatmentGapConsent =
+                encodeConsentToBase64(treatmentGapMessage);
+
+              addToCart({
+                id: dose.id,
+                type: "dose",
+                name: dose.name,
+                price: parseFloat(dose.price),
+                allowed: parseInt(dose.allowed),
+                item_id: dose.id,
+                product: dose?.product_name || "Dose Product",
+                product_concent: treatmentGapConsent,
+                label: `${dose?.product_name} ${dose?.name}`,
+                expiry: dose.expiry,
+                isSelected: true,
+              });
+
+              setAbandonData([
+                ...abandonData,
+                {
+                  eid: dose.id,
+                  pid: productId,
+                },
+              ]);
+
+              // Show modal if not already shown for this dose
+              if (!shownDoseIds.includes(dose.id)) {
+                setSelectedDose({
+                  ...dose,
+                  productConcent: treatmentGapConsent,
+                });
+                setShowDoseModal(true);
+                setShownDoseIds((prev) => [...prev, dose.id]);
+              }
+            }
+            // If selecting higher dose (skipping) → Show DOSE ESCALATION message (not gap)
+            else {
+              const returningPatientConsentMessage = `Your last order for <span class="bold-font">${lastOrder?.product_name}</span> (Order ID: <span class="bold-font">#${lastOrder.order_id}</span>) was placed on <span class="bold-font">${lastOrder.order_date}</span> for the <span class="bold-font">${lastDoseName}</span> dose. You have now selected the <span class="bold-font">${selectedDoseName}</span> dose, which represents a significant dose escalation.<br/><br/>Following payment confirmation, you will be <span class="bold-font">required to provide details regarding your dose progression and escalation</span> to date. This information is essential to ensure safe treatment progression and to help minimize potential adverse effects.`;
+
+              const returningPatientConsent = encodeConsentToBase64(
+                returningPatientConsentMessage,
+              );
+
+              addToCart({
+                id: dose.id,
+                type: "dose",
+                name: dose.name,
+                price: parseFloat(dose.price),
+                allowed: parseInt(dose.allowed),
+                item_id: dose.id,
+                product: dose?.product_name || "Dose Product",
+                product_concent: returningPatientConsent,
+                label: `${dose?.product_name} ${dose?.name}`,
+                expiry: dose.expiry,
+                isSelected: true,
+              });
+
+              setAbandonData([
+                ...abandonData,
+                {
+                  eid: dose.id,
+                  pid: productId,
+                },
+              ]);
+
+              // Show modal if not already shown for this dose
+              if (!shownDoseIds.includes(dose.id)) {
+                setSelectedDose({
+                  ...dose,
+                  productConcent: returningPatientConsent,
+                });
+                setShowDoseModal(true);
+                setShownDoseIds((prev) => [...prev, dose.id]);
+              }
             }
           }
         }
