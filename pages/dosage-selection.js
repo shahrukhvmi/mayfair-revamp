@@ -363,7 +363,7 @@ export default function DosageSelection() {
           // Calculate expected next order date (last order date + quantity months + 1 month grace)
           const expectedNextOrderDate = new Date(lastOrderDate);
           expectedNextOrderDate.setMonth(
-            expectedNextOrderDate.getMonth() + lastQuantity + 1,
+            expectedNextOrderDate.getMonth() + lastQuantity + 2,
           );
 
           // Check if there's a gap (current date is after expected date)
