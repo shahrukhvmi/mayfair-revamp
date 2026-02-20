@@ -485,7 +485,7 @@ export default function DosageSelection() {
                 (currentDate.getMonth() - expectedNextOrderDate.getMonth());
               const gapMonths = Math.max(1, monthsDiff);
 
-              const treatmentGapMessage = `Your last order for <span class="bold-font">${lastOrder?.product_name}</span> (Order ID: <span class="bold-font">#${lastOrder.order_id}</span>) was placed on <span class="bold-font">${lastOrder.order_date}</span> for the <span class="bold-font">${lastDoseName}</span> dose. There is a <span class="bold-font">${gapMonths}-month gap</span> in your treatment history.<br/><br/>Following payment confirmation, you will be <span class="bold-font">required to provide evidence</span> that you continued treatment with another healthcare provider during this period, or explain the reason for this gap. This information is essential to ensure safe and appropriate prescribing.`;
+              const treatmentGapMessage = `Your last order for <span class="bold-font">${lastOrder?.product_name}</span> (Order ID: <span class="bold-font">#${lastOrder.order_id}</span>) was placed on <span class="bold-font">${lastOrder.order_date}</span> for the <span class="bold-font">${lastDoseName}</span> dose. There is a gap in your treatment history.<br/><br/>Following payment confirmation, you will be <span class="bold-font">required to provide evidence</span> that you continued treatment with another healthcare provider during this period, or explain the reason for this gap. This information is essential to ensure safe and appropriate prescribing.`;
 
               const treatmentGapConsent =
                 encodeConsentToBase64(treatmentGapMessage);
