@@ -91,8 +91,6 @@ const UploadBox = ({
         <div className="flex flex-col items-center w-full  px-3">
           <label className="w-full cursor-pointer">
             <div
-              onDrop={handleDrop}
-              onDragOver={handleDragOver}
               className="border-2 border-dashed border-purple-400 rounded-2xl p-2R 
                  hover:border-purple-600 hover:shadow-md transition-all duration-300 ease-in-out
                  flex flex-col items-center justify-center text-center relative min-h-[140px] bg-white"
