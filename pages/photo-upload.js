@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { FiUpload } from "react-icons/fi";
 import { AiOutlineCheckCircle } from "react-icons/ai";
@@ -24,6 +24,136 @@ import { meta_url } from "@/config/constants";
 import useIdVerificationUploadStore from "@/store/useIdVerificationUploadStore";
 import { GetIdVerification } from "@/api/IdVerificationApi";
 import { heicTo, isHeic } from "heic-to"; // ✅ import heic converter
+
+// ✅ Allowed file types
+const ALLOWED_TYPES = [
+  "image/jpeg",
+  "image/jpg",
+  "image/png",
+  "image/webp",
+  "image/heic",
+  "image/heif",
+  "image/avif",
+];
+
+// ✅ Separate UploadBox component to properly use hooks and fix memory leak
+const UploadBox = ({
+  label,
+  photo,
+  type,
+  placeholderUrl,
+  suggestion,
+  loadingPhoto,
+  onUpload,
+  onSetValue,
+}) => {
+  // ✅ FIX: Memoize blob URL — only created once per photo, not on every render
+  const photoUrl = useMemo(() => {
+    if (!photo || !(photo instanceof File)) return null;
+    return URL.createObjectURL(photo);
+  }, [photo]);
+
+  // ✅ FIX: Revoke old blob URL when photo changes or component unmounts — stops memory leak
+  useEffect(() => {
+    return () => {
+      if (photoUrl) URL.revokeObjectURL(photoUrl);
+    };
+  }, [photoUrl]);
+
+  const handleDrop = (e) => {
+    e.preventDefault();
+    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+      const file = e.dataTransfer.files[0];
+
+      // ✅ FIX: Validate here directly — do NOT call handleUpload with a fake synthetic event
+      const isPdf = file.type === "application/pdf";
+      const isAllowedImage = ALLOWED_TYPES.includes(file.type);
+
+      if (!isPdf && !isAllowedImage) {
+        toast.error(
+          "Only JPEG, PNG, WEBP, HEIC, HEIF, AVIF, or PDF files are allowed.",
+        );
+        return;
+      }
+
+      // ✅ Call parent handleUpload with a safe event-like object
+      onUpload({ target: { files: [file], value: "" } }, type);
+    }
+  };
+
+  const handleDragOver = (e) => {
+    e.preventDefault();
+  };
+
+  return (
+    <>
+      <div className="flex flex-col items-center w-full sm:w-1/3 px-3">
+        <label className="w-full cursor-pointer">
+          <div
+            onDrop={handleDrop}
+            onDragOver={handleDragOver}
+            className="border-2 border-dashed border-purple-400 rounded-2xl p-2R 
+                 hover:border-purple-600 hover:shadow-md transition-all duration-300 ease-in-out
+                 flex flex-col items-center justify-center text-center relative min-h-[140px] bg-white"
+          >
+            <input
+              type="file"
+              accept="image/jpeg,image/jpg,image/png,image/webp,image/heic,image/heif,image/avif,application/pdf"
+              onChange={(e) => onUpload(e, type)}
+              className="hidden"
+            />
+
+            {/* ✅ No photo → Show upload UI */}
+
+            {loadingPhoto ? (
+              // 🔄 Show loading state
+              <div className="flex flex-col items-center justify-center">
+                <AiOutlineLoading3Quarters className="animate-spin text-purple-600 w-7 h-7 mb-3" />
+                <p className="text-gray-700 text-sm reg-font">Uploading...</p>
+              </div>
+            ) : !photo ? (
+              // 📤 Upload prompt
+              <div className="flex flex-col items-center justify-center">
+                <FiUpload className="text-purple-600 w-7 h-7 mb-3" />
+                <p className="text-gray-700 text-sm reg-font">
+                  Click here
+                  <br />
+                  <span className="text-gray-400 text-xs">
+                    or drag the image to upload
+                  </span>
+                </p>
+              </div>
+            ) : (
+              // 🖼️ Show uploaded photo
+              <div className="flex flex-col items-center relative">
+                <img
+                  src={photoUrl} // ✅ FIX: memoized URL, not URL.createObjectURL() on every render
+                  alt={`${label} preview`}
+                  className="w-28 h-40 object-contain rounded-lg mb-3"
+                />
+                <AiOutlineCheckCircle className="w-6 h-6 text-green-500 absolute top-3 right-3" />
+              </div>
+            )}
+
+            {/* Label */}
+            {/* <p className="mt-2 text-gray-800 font-medium">{label}</p> */}
+          </div>
+        </label>
+
+        {/* Suggestion / Helper text */}
+        <p className="text-xs text-gray-500 mt-2 text-center italic">
+          {suggestion}
+        </p>
+
+        {/* {photo && (
+                  <p className="text-green-600 mt-1 text-sm italic">
+                      {label} uploaded successfully
+                  </p>
+              )} */}
+      </div>
+    </>
+  );
+};
 
 const PhotoUpload = () => {
   const MAX_SIZE_MB = 30;
@@ -59,6 +189,7 @@ const PhotoUpload = () => {
       img.src = objectUrl;
     });
   };
+
   const toBase64 = (file) =>
     new Promise((resolve, reject) => {
       const reader = new FileReader();
@@ -140,13 +271,36 @@ const PhotoUpload = () => {
     const file = e.target.files[0];
     if (!file) return;
 
+    if (file.size > MAX_SIZE_BYTES) {
+      toast.error(`File too large. Maximum allowed size is ${MAX_SIZE_MB} MB.`);
+      if (e.target.value !== undefined) e.target.value = "";
+      return;
+    }
+
     setLoadingPhoto(true);
 
     try {
-      // ✅ Validate image type
-      if (!file.type.startsWith("image/") && !isHeic(file)) {
-        toast.error("Please upload a valid image (JPEG, PNG, or HEIC).");
-        e.target.value = ""; // reset input
+      // ✅ FIX: Clean single validation block — no recursive self-call, no duplicate checks
+      const isPdf = file.type === "application/pdf";
+      const isAllowedImage = ALLOWED_TYPES.includes(file.type) || isHeic(file);
+
+      if (!isPdf && !isAllowedImage) {
+        toast.error(
+          "Only JPEG, PNG, WEBP, HEIC, HEIF, AVIF, or PDF files are allowed.",
+        );
+        if (e.target.value !== undefined) e.target.value = "";
+        setValue(type, null);
+        return;
+      }
+
+      // ✅ Handle PDF — no compression or HEIC conversion needed
+      if (isPdf) {
+        if (file.size > MAX_SIZE_BYTES) {
+          toast.error(`PDF too large (max ${MAX_SIZE_MB} MB).`);
+          if (e.target.value !== undefined) e.target.value = "";
+          return;
+        }
+        setValue(type, file);
         return;
       }
 
@@ -168,7 +322,7 @@ const PhotoUpload = () => {
             toast.error(
               "This file appears to be corrupted. Please try another image.",
             );
-            e.target.value = ""; // reset input
+            if (e.target.value !== undefined) e.target.value = "";
             return;
           }
 
@@ -185,7 +339,7 @@ const PhotoUpload = () => {
           toast.error(
             `Image too large even after compression (max ${MAX_SIZE_MB} MB).`,
           );
-          e.target.value = ""; // reset input
+          if (e.target.value !== undefined) e.target.value = "";
           return;
         }
 
@@ -200,7 +354,7 @@ const PhotoUpload = () => {
     } catch (err) {
       console.error("Error processing image:", err);
       toast.error("Something went wrong while processing this image.");
-      e.target.value = ""; // reset input on any error
+      if (e.target.value !== undefined) e.target.value = "";
     } finally {
       setLoadingPhoto(false);
     }
@@ -234,7 +388,6 @@ const PhotoUpload = () => {
         // GO.push("/dashboard/");
       }
     } catch (error) {
-      // console.log(error?.response?.data?.errors?.front, "skdsksdljsdskdl");
       toast.error(error?.response?.data?.errors?.front);
       if (error?.response?.data?.message === "Unauthenticated.") {
         toast.error("Failed to upload images. Please Login again.");
@@ -244,6 +397,9 @@ const PhotoUpload = () => {
       if (error?.response?.data?.errors?.Order === "Order not found") {
         toast.error(error?.response?.data?.errors?.Order);
       }
+
+      // ✅ Clear the file on any API error — forces user to re-select
+      setValue("frontPhoto", null);
     } finally {
       setLoading(false); // ✅ loading hamesha false hoga
     }
@@ -259,95 +415,6 @@ const PhotoUpload = () => {
     } else {
       GO.push("/dashboard");
     }
-  };
-
-  const renderUploadBox = (label, photo, type, placeholderUrl, suggestion) => {
-    const handleDrop = (e) => {
-      e.preventDefault();
-      if (e.dataTransfer.files && e.dataTransfer.files[0]) {
-        const file = e.dataTransfer.files[0];
-
-        // ✅ Only allow images
-        if (file.type.startsWith("image/")) {
-          setValue(type, file);
-        } else {
-          toast.error("Only image files are allowed.");
-        }
-      }
-    };
-
-    const handleDragOver = (e) => {
-      e.preventDefault();
-    };
-
-    return (
-      <>
-        <div className="flex flex-col items-center w-full sm:w-1/3 px-3">
-          <label className="w-full cursor-pointer">
-            <div
-              onDrop={handleDrop}
-              onDragOver={handleDragOver}
-              className="border-2 border-dashed border-purple-400 rounded-2xl p-2R 
-                   hover:border-purple-600 hover:shadow-md transition-all duration-300 ease-in-out
-                   flex flex-col items-center justify-center text-center relative min-h-[140px] bg-white"
-            >
-              <input
-                type="file"
-                accept="image/*"
-                onChange={(e) => handleUpload(e, type)}
-                className="hidden"
-              />
-
-              {/* ✅ No photo → Show upload UI */}
-
-              {loadingPhoto ? (
-                // 🔄 Show loading state
-                <div className="flex flex-col items-center justify-center">
-                  <AiOutlineLoading3Quarters className="animate-spin text-purple-600 w-7 h-7 mb-3" />
-                  <p className="text-gray-700 text-sm reg-font">Uploading...</p>
-                </div>
-              ) : !photo ? (
-                // 📤 Upload prompt
-                <div className="flex flex-col items-center justify-center">
-                  <FiUpload className="text-purple-600 w-7 h-7 mb-3" />
-                  <p className="text-gray-700 text-sm reg-font">
-                    Click here
-                    <br />
-                    <span className="text-gray-400 text-xs">
-                      or drag the image to upload
-                    </span>
-                  </p>
-                </div>
-              ) : (
-                // 🖼️ Show uploaded photo
-                <div className="flex flex-col items-center relative">
-                  <img
-                    src={URL.createObjectURL(photo)}
-                    alt={`${label} preview`}
-                    className="w-28 h-40 object-contain rounded-lg mb-3"
-                  />
-                  <AiOutlineCheckCircle className="w-6 h-6 text-green-500 absolute top-3 right-3" />
-                </div>
-              )}
-
-              {/* Label */}
-              {/* <p className="mt-2 text-gray-800 font-medium">{label}</p> */}
-            </div>
-          </label>
-
-          {/* Suggestion / Helper text */}
-          <p className="text-xs text-gray-500 mt-2 text-center italic">
-            {suggestion}
-          </p>
-
-          {/* {photo && (
-                    <p className="text-green-600 mt-1 text-sm italic">
-                        {label} uploaded successfully
-                    </p>
-                )} */}
-        </div>
-      </>
-    );
   };
 
   return (
@@ -393,7 +460,7 @@ const PhotoUpload = () => {
                 <p className="text-md text-black text-center mt-3 mb-6 reg-font">
                   {!idVerificationUpload
                     ? "Your full body photo have been uploaded and are now under review by our prescribers. You need to complete the ID verification to proceed. Please click the button below to continue."
-                    : "Your full body photo have been uploaded and are now under review by our prescribers. We’ll approve your order once the review is complete and notify you straight away."}
+                    : "Your full body photo have been uploaded and are now under review by our prescribers. We'll approve your order once the review is complete and notify you straight away."}
                 </p>
 
                 {/* Button */}
@@ -472,14 +539,17 @@ const PhotoUpload = () => {
               name="frontPhoto"
               control={control}
               defaultValue={null}
-              render={() =>
-                renderUploadBox(
-                  "Front Photo",
-                  frontPhoto,
-                  "frontPhoto",
-                  "/images/front_image.png",
-                )
-              }
+              render={() => (
+                <UploadBox
+                  label="Front Photo"
+                  photo={frontPhoto}
+                  type="frontPhoto"
+                  placeholderUrl="/images/front_image.png"
+                  loadingPhoto={loadingPhoto}
+                  onUpload={handleUpload}
+                  onSetValue={setValue}
+                />
+              )}
             />
 
             {/* <Controller
