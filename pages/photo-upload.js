@@ -144,6 +144,7 @@ const PhotoUpload = () => {
 
     try {
       // ✅ Validate image type
+      // :white_check_mark: Only allow images
       const ALLOWED_TYPES = [
         "image/jpeg",
         "image/jpg",
@@ -153,6 +154,17 @@ const PhotoUpload = () => {
         "image/heif",
         "image/avif",
       ];
+      if (
+        ALLOWED_TYPES.includes(file.type) ||
+        isHeic(file) ||
+        file.type === "application/pdf"
+      ) {
+        handleUpload({ target: { files: [file] } }, type);
+      } else {
+        toast.error(
+          "Only JPEG, PNG, WEBP, HEIC, HEIF, AVIF, or PDF files are allowed.",
+        );
+      }
       const isPdf = file.type === "application/pdf";
       const isImage = ALLOWED_TYPES.includes(file.type) || isHeic(file);
 
@@ -161,6 +173,7 @@ const PhotoUpload = () => {
           "Only JPEG, PNG, WEBP, HEIC, HEIF, AVIF, or PDF files are allowed.",
         );
         e.target.value = "";
+        setValue(type, null);
         return;
       }
 
@@ -289,9 +302,8 @@ const PhotoUpload = () => {
     const handleDrop = (e) => {
       e.preventDefault();
       if (e.dataTransfer.files && e.dataTransfer.files[0]) {
-        const file = e.dataTransfer.files[0];
+        const file = e.dataTransfer.files[0]; // :white_check_mark: Only allow images
 
-        // ✅ Only allow images
         const ALLOWED_TYPES = [
           "image/jpeg",
           "image/jpg",
@@ -301,16 +313,15 @@ const PhotoUpload = () => {
           "image/heif",
           "image/avif",
         ];
-        if (
-          ALLOWED_TYPES.includes(file.type) ||
-          isHeic(file) ||
-          file.type === "application/pdf"
-        ) {
-          handleUpload({ target: { files: [file] } }, type);
-        } else {
+        const isPdf = file.type === "application/pdf";
+        const isAllowedImage = ALLOWED_TYPES.includes(file.type);
+
+        if (!isPdf && !isAllowedImage) {
           toast.error(
             "Only JPEG, PNG, WEBP, HEIC, HEIF, AVIF, or PDF files are allowed.",
           );
+        } else {
+          handleUpload({ target: { files: [file] } }, type);
         }
       }
     };
