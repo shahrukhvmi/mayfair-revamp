@@ -144,46 +144,9 @@ const PhotoUpload = () => {
 
     try {
       // ✅ Validate image type
-      // :white_check_mark: Only allow images
-      const ALLOWED_TYPES = [
-        "image/jpeg",
-        "image/jpg",
-        "image/png",
-        "image/webp",
-        "image/heic",
-        "image/heif",
-        "image/avif",
-      ];
-      if (
-        ALLOWED_TYPES.includes(file.type) ||
-        isHeic(file) ||
-        file.type === "application/pdf"
-      ) {
-        handleUpload({ target: { files: [file] } }, type);
-      } else {
-        toast.error(
-          "Only JPEG, PNG, WEBP, HEIC, HEIF, AVIF, or PDF files are allowed.",
-        );
-      }
-      const isPdf = file.type === "application/pdf";
-      const isImage = ALLOWED_TYPES.includes(file.type) || isHeic(file);
-
-      if (!isPdf && !isImage) {
-        toast.error(
-          "Only JPEG, PNG, WEBP, HEIC, HEIF, AVIF, or PDF files are allowed.",
-        );
-        e.target.value = "";
-        setValue(type, null);
-        return;
-      }
-
-      if (isPdf) {
-        if (file.size > MAX_SIZE_BYTES) {
-          toast.error(`PDF too large (max ${MAX_SIZE_MB} MB).`);
-          e.target.value = "";
-          return;
-        }
-        setValue(type, file);
+      if (!file.type.startsWith("image/") && !isHeic(file)) {
+        toast.error("Please upload a valid image (JPEG, PNG, or HEIC).");
+        e.target.value = ""; // reset input
         return;
       }
 
@@ -302,26 +265,13 @@ const PhotoUpload = () => {
     const handleDrop = (e) => {
       e.preventDefault();
       if (e.dataTransfer.files && e.dataTransfer.files[0]) {
-        const file = e.dataTransfer.files[0]; // :white_check_mark: Only allow images
+        const file = e.dataTransfer.files[0];
 
-        const ALLOWED_TYPES = [
-          "image/jpeg",
-          "image/jpg",
-          "image/png",
-          "image/webp",
-          "image/heic",
-          "image/heif",
-          "image/avif",
-        ];
-        const isPdf = file.type === "application/pdf";
-        const isAllowedImage = ALLOWED_TYPES.includes(file.type);
-
-        if (!isPdf && !isAllowedImage) {
-          toast.error(
-            "Only JPEG, PNG, WEBP, HEIC, HEIF, AVIF, or PDF files are allowed.",
-          );
+        // ✅ Only allow images
+        if (file.type.startsWith("image/")) {
+          setValue(type, file);
         } else {
-          handleUpload({ target: { files: [file] } }, type);
+          toast.error("Only image files are allowed.");
         }
       }
     };
@@ -343,7 +293,7 @@ const PhotoUpload = () => {
             >
               <input
                 type="file"
-                accept="image/jpeg,image/jpg,image/png,image/webp,image/heic,image/heif,image/avif,application/pdf"
+                accept="image/*"
                 onChange={(e) => handleUpload(e, type)}
                 className="hidden"
               />
