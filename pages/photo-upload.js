@@ -49,6 +49,7 @@ const UploadBox = ({
   onUpload,
   onSetValue,
   onRemove,
+  inputRef,
 }) => {
   // ✅ FIX: Memoize blob URL — only created once per photo, not on every render
   const photoUrl = useMemo(() => {
@@ -103,6 +104,7 @@ const UploadBox = ({
                    flex flex-col items-center justify-center text-center relative min-h-[140px] bg-white"
               >
                 <input
+                  ref={inputRef}
                   type="file"
                   accept="image/jpeg,image/jpg,image/png,image/webp,image/heic,image/heif,image/avif,application/pdf"
                   onChange={(e) => onUpload(e, type)}
@@ -179,6 +181,8 @@ const UploadBox = ({
 const PhotoUpload = () => {
   const MAX_SIZE_MB = 30;
   const MAX_SIZE_BYTES = MAX_SIZE_MB * 1024 * 1024;
+
+  const frontPhotoInputRef = React.useRef(null);
 
   // ✅ Compress image using <canvas>
   const compressImage = (file, quality = 0.8) => {
@@ -426,6 +430,7 @@ const PhotoUpload = () => {
 
       // ✅ Clear the file on any API error — forces user to re-select
       setValue("frontPhoto", null);
+      if (frontPhotoInputRef.current) frontPhotoInputRef.current.value = ""; // ✅ reset input so same file can be selected again
     } finally {
       setLoading(false); // ✅ loading hamesha false hoga
     }
@@ -575,6 +580,7 @@ const PhotoUpload = () => {
                   onUpload={handleUpload}
                   onSetValue={setValue}
                   onRemove={(type) => setValue(type, null)}
+                  inputRef={frontPhotoInputRef}
                 />
               )}
             />
