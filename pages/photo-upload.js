@@ -87,69 +87,80 @@ const UploadBox = ({
 
   return (
     <>
-      <div className="flex flex-col items-center w-full sm:w-1/3 px-3">
-        <label className="w-full cursor-pointer">
-          <div
-            onDrop={handleDrop}
-            onDragOver={handleDragOver}
-            className="border-2 border-dashed border-purple-400 rounded-2xl p-2R 
+      <div className="flex flex-col">
+        <div className="flex flex-col items-center w-full  px-3">
+          <label className="w-full cursor-pointer">
+            <div
+              onDrop={handleDrop}
+              onDragOver={handleDragOver}
+              className="border-2 border-dashed border-purple-400 rounded-2xl p-2R 
                  hover:border-purple-600 hover:shadow-md transition-all duration-300 ease-in-out
                  flex flex-col items-center justify-center text-center relative min-h-[140px] bg-white"
-          >
-            <input
-              type="file"
-              accept="image/jpeg,image/jpg,image/png,image/webp,image/heic,image/heif,image/avif,application/pdf"
-              onChange={(e) => onUpload(e, type)}
-              className="hidden"
-            />
+            >
+              <input
+                type="file"
+                accept="image/jpeg,image/jpg,image/png,image/webp,image/heic,image/heif,image/avif,application/pdf"
+                onChange={(e) => onUpload(e, type)}
+                className="hidden"
+              />
 
-            {/* ✅ No photo → Show upload UI */}
+              {/* ✅ No photo → Show upload UI */}
 
-            {loadingPhoto ? (
-              // 🔄 Show loading state
-              <div className="flex flex-col items-center justify-center">
-                <AiOutlineLoading3Quarters className="animate-spin text-purple-600 w-7 h-7 mb-3" />
-                <p className="text-gray-700 text-sm reg-font">Uploading...</p>
-              </div>
-            ) : !photo ? (
-              // 📤 Upload prompt
-              <div className="flex flex-col items-center justify-center">
-                <FiUpload className="text-purple-600 w-7 h-7 mb-3" />
-                <p className="text-gray-700 text-sm reg-font">
-                  Click here
-                  <br />
-                  <span className="text-gray-400 text-xs">
-                    or drag the image to upload
-                  </span>
-                </p>
-              </div>
-            ) : (
-              // 🖼️ Show uploaded photo
-              <div className="flex flex-col items-center relative">
-                <img
-                  src={photoUrl} // ✅ FIX: memoized URL, not URL.createObjectURL() on every render
-                  alt={`${label} preview`}
-                  className="w-28 h-40 object-contain rounded-lg mb-3"
-                />
-                <AiOutlineCheckCircle className="w-6 h-6 text-green-500 absolute top-3 right-3" />
-              </div>
-            )}
+              {loadingPhoto ? (
+                // 🔄 Show loading state
+                <div className="flex flex-col items-center justify-center">
+                  <AiOutlineLoading3Quarters className="animate-spin text-purple-600 w-7 h-7 mb-3" />
+                  <p className="text-gray-700 text-sm reg-font">Uploading...</p>
+                </div>
+              ) : !photo ? (
+                // 📤 Upload prompt
+                <div className="flex flex-col items-center justify-center">
+                  <FiUpload className="text-purple-600 w-7 h-7 mb-3" />
+                  <p className="text-gray-700 text-sm reg-font">
+                    Click here
+                    <br />
+                    <span className="text-gray-400 text-xs">
+                      or drag the image to upload
+                    </span>
+                  </p>
+                </div>
+              ) : (
+                // 🖼️ Show uploaded photo
+                <div className="flex flex-col items-center relative">
+                  <img
+                    src={photoUrl} // ✅ FIX: memoized URL, not URL.createObjectURL() on every render
+                    alt={`${label} preview`}
+                    className="w-28 h-40 object-contain rounded-lg mb-3"
+                  />
+                  <AiOutlineCheckCircle className="w-6 h-6 text-green-500 absolute top-3 right-3" />
+                </div>
+              )}
 
-            {/* Label */}
-            {/* <p className="mt-2 text-gray-800 font-medium">{label}</p> */}
-          </div>
-        </label>
+              {/* Label */}
+              {/* <p className="mt-2 text-gray-800 font-medium">{label}</p> */}
+            </div>
+          </label>
 
-        {/* Suggestion / Helper text */}
-        <p className="text-xs text-gray-500 mt-2 text-center italic">
-          {suggestion}
-        </p>
+          {/* Suggestion / Helper text */}
+          <p className="text-xs text-gray-500 mt-2 text-center italic">
+            {suggestion}
+          </p>
 
-        {/* {photo && (
+          {/* {photo && (
                   <p className="text-green-600 mt-1 text-sm italic">
                       {label} uploaded successfully
                   </p>
               )} */}
+        </div>
+
+        <div className="flex flex-col items-center w-full">
+          <p className="text-gray-800 text-[12px] mt-2 text-center medium-font">
+            Supported formats:{" "}
+            <span className="text-gray-700 thin-font">
+              Jpeg, Png, Webp, Heic, Heif, Avif, Pdf
+            </span>
+          </p>
+        </div>
       </div>
     </>
   );
