@@ -26,9 +26,7 @@ import { GetIdVerification } from "@/api/IdVerificationApi";
 import { heicTo, isHeic } from "heic-to"; // ✅ import heic converter
 
 const PhotoUpload = () => {
-
-
-  const MAX_SIZE_MB = 5;
+  const MAX_SIZE_MB = 30;
   const MAX_SIZE_BYTES = MAX_SIZE_MB * 1024 * 1024;
 
   // ✅ Compress image using <canvas>
@@ -51,7 +49,7 @@ const PhotoUpload = () => {
             else reject(new Error("Image compression failed."));
           },
           "image/jpeg",
-          quality
+          quality,
         );
       };
       img.onerror = () => {
@@ -68,8 +66,6 @@ const PhotoUpload = () => {
       reader.onload = () => resolve(reader.result.split(",")[1]); // remove `data:image/...;base64,`
       reader.onerror = reject;
     });
-
-
 
   const GO = useRouter();
   const [open, setOpen] = useState(false);
@@ -148,9 +144,33 @@ const PhotoUpload = () => {
 
     try {
       // ✅ Validate image type
-      if (!file.type.startsWith("image/") && !isHeic(file)) {
-        toast.error("Please upload a valid image (JPEG, PNG, or HEIC).");
-        e.target.value = ""; // reset input
+      const ALLOWED_TYPES = [
+        "image/jpeg",
+        "image/jpg",
+        "image/png",
+        "image/webp",
+        "image/heic",
+        "image/heif",
+        "image/avif",
+      ];
+      const isPdf = file.type === "application/pdf";
+      const isImage = ALLOWED_TYPES.includes(file.type) || isHeic(file);
+
+      if (!isPdf && !isImage) {
+        toast.error(
+          "Only JPEG, PNG, WEBP, HEIC, HEIF, AVIF, or PDF files are allowed.",
+        );
+        e.target.value = "";
+        return;
+      }
+
+      if (isPdf) {
+        if (file.size > MAX_SIZE_BYTES) {
+          toast.error(`PDF too large (max ${MAX_SIZE_MB} MB).`);
+          e.target.value = "";
+          return;
+        }
+        setValue(type, file);
         return;
       }
 
@@ -169,7 +189,9 @@ const PhotoUpload = () => {
 
           // 🚫 Block completely if file seems corrupted
           if (file.size === 0 || !file.type || file.name === "") {
-            toast.error("This file appears to be corrupted. Please try another image.");
+            toast.error(
+              "This file appears to be corrupted. Please try another image.",
+            );
             e.target.value = ""; // reset input
             return;
           }
@@ -184,12 +206,16 @@ const PhotoUpload = () => {
         const compressedBlob = await compressImage(processedFile, 0.8);
 
         if (compressedBlob.size > MAX_SIZE_BYTES) {
-          toast.error(`Image too large even after compression (max ${MAX_SIZE_MB} MB).`);
+          toast.error(
+            `Image too large even after compression (max ${MAX_SIZE_MB} MB).`,
+          );
           e.target.value = ""; // reset input
           return;
         }
 
-        processedFile = new File([compressedBlob], file.name, { type: "image/jpeg" });
+        processedFile = new File([compressedBlob], file.name, {
+          type: "image/jpeg",
+        });
       }
 
       // ✅ All checks passed
@@ -203,11 +229,6 @@ const PhotoUpload = () => {
       setLoadingPhoto(false);
     }
   };
-
-
-
-
-
 
   const onSubmit = async (data) => {
     try {
@@ -238,7 +259,7 @@ const PhotoUpload = () => {
       }
     } catch (error) {
       // console.log(error?.response?.data?.errors?.front, "skdsksdljsdskdl");
-      toast.error(error?.response?.data?.errors?.front)
+      toast.error(error?.response?.data?.errors?.front);
       if (error?.response?.data?.message === "Unauthenticated.") {
         toast.error("Failed to upload images. Please Login again.");
         GO.push("/login");
@@ -271,10 +292,25 @@ const PhotoUpload = () => {
         const file = e.dataTransfer.files[0];
 
         // ✅ Only allow images
-        if (file.type.startsWith("image/")) {
-          setValue(type, file);
+        const ALLOWED_TYPES = [
+          "image/jpeg",
+          "image/jpg",
+          "image/png",
+          "image/webp",
+          "image/heic",
+          "image/heif",
+          "image/avif",
+        ];
+        if (
+          ALLOWED_TYPES.includes(file.type) ||
+          isHeic(file) ||
+          file.type === "application/pdf"
+        ) {
+          handleUpload({ target: { files: [file] } }, type);
         } else {
-          toast.error("Only image files are allowed.");
+          toast.error(
+            "Only JPEG, PNG, WEBP, HEIC, HEIF, AVIF, or PDF files are allowed.",
+          );
         }
       }
     };
@@ -296,13 +332,12 @@ const PhotoUpload = () => {
             >
               <input
                 type="file"
-                accept="image/*"
+                accept="image/jpeg,image/jpg,image/png,image/webp,image/heic,image/heif,image/avif,application/pdf"
                 onChange={(e) => handleUpload(e, type)}
                 className="hidden"
               />
 
               {/* ✅ No photo → Show upload UI */}
-
 
               {loadingPhoto ? (
                 // 🔄 Show loading state
@@ -405,8 +440,8 @@ const PhotoUpload = () => {
                   label={buttonLabel}
                   onClick={handleRedirect}
                   className="w-full"
-                // disabled={loading || !frontPhoto || !sidePhoto}
-                // loading={loading}
+                  // disabled={loading || !frontPhoto || !sidePhoto}
+                  // loading={loading}
                 />
               </motion.div>
             </motion.div>
@@ -481,7 +516,7 @@ const PhotoUpload = () => {
                   "Front Photo",
                   frontPhoto,
                   "frontPhoto",
-                  "/images/front_image.png"
+                  "/images/front_image.png",
                 )
               }
             />
@@ -508,10 +543,11 @@ const PhotoUpload = () => {
               disabled={loading || !frontPhoto}
               className={`reg-font px-6 py-3 rounded-full text-white font-semibold text-sm transition-all duration-150 ease-in-out
       flex items-center justify-center 
-      ${loading || !frontPhoto
-                  ? "bg-gray-300 cursor-not-allowed"
-                  : "bg-[#47317c] hover:bg-[#3a2766] border-2 border-[#47317c] cursor-pointer"
-                }
+      ${
+        loading || !frontPhoto
+          ? "bg-gray-300 cursor-not-allowed"
+          : "bg-[#47317c] hover:bg-[#3a2766] border-2 border-[#47317c] cursor-pointer"
+      }
     `}
             >
               {loading ? "Uploading..." : "Upload"}
