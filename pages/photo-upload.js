@@ -117,9 +117,9 @@ const UploadBox = ({
                   <p className="text-gray-700 text-sm reg-font">
                     Click here
                     <br />
-                    <span className="text-gray-400 text-xs">
+                    {/* <span className="text-gray-400 text-xs">
                       or drag the image to upload
-                    </span>
+                    </span> */}
                   </p>
                 </div>
               ) : (
@@ -289,7 +289,6 @@ const PhotoUpload = () => {
     setLoadingPhoto(true);
 
     try {
-      // ✅ FIX: Clean single validation block — no recursive self-call, no duplicate checks
       const isPdf = file.type === "application/pdf";
       const isAllowedImage = ALLOWED_TYPES.includes(file.type) || isHeic(file);
 
@@ -318,11 +317,17 @@ const PhotoUpload = () => {
       // ✅ Try HEIC conversion
       if (isHeic(file)) {
         try {
-          processedFile = await heicTo({
+          // ✅ FIX: wrap heicTo result in a File so instanceof File check passes and preview works
+          const heicBlob = await heicTo({
             blob: file,
             toType: "image/jpeg",
             quality: 0.9,
           });
+          processedFile = new File(
+            [heicBlob],
+            file.name.replace(/\.heic$/i, ".jpg"),
+            { type: "image/jpeg" },
+          );
         } catch (err) {
           console.warn("HEIC conversion failed:", err);
 
