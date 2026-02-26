@@ -66,30 +66,30 @@ const UploadBox = ({
     };
   }, [photoUrl]);
 
-  const handleDrop = (e) => {
-    e.preventDefault();
-    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
-      const file = e.dataTransfer.files[0];
+  // const handleDrop = (e) => {
+  //   e.preventDefault();
+  //   if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+  //     const file = e.dataTransfer.files[0];
 
-      // ✅ FIX: Validate here directly — do NOT call handleUpload with a fake synthetic event
-      const isPdf = file.type === "application/pdf";
-      const isAllowedImage = ALLOWED_TYPES.includes(file.type);
+  //     // ✅ FIX: Validate here directly — do NOT call handleUpload with a fake synthetic event
+  //     const isPdf = file.type === "application/pdf";
+  //     const isAllowedImage = ALLOWED_TYPES.includes(file.type);
 
-      if (!isPdf && !isAllowedImage) {
-        toast.error(
-          "Only JPEG, PNG, WEBP, HEIC, HEIF, AVIF, or PDF files are allowed.",
-        );
-        return;
-      }
+  //     if (!isPdf && !isAllowedImage) {
+  //       toast.error(
+  //         "Only JPEG, PNG, WEBP, HEIC, HEIF, AVIF, or PDF files are allowed.",
+  //       );
+  //       return;
+  //     }
 
-      // ✅ Call parent handleUpload with a safe event-like object
-      onUpload({ target: { files: [file], value: "" } }, type);
-    }
-  };
+  //     // ✅ Call parent handleUpload with a safe event-like object
+  //     onUpload({ target: { files: [file], value: "" } }, type);
+  //   }
+  // };
 
-  const handleDragOver = (e) => {
-    e.preventDefault();
-  };
+  // const handleDragOver = (e) => {
+  //   e.preventDefault();
+  // };
 
   return (
     <>
@@ -99,8 +99,6 @@ const UploadBox = ({
           <div className="w-full relative">
             <label className="w-full cursor-pointer">
               <div
-                onDrop={handleDrop}
-                onDragOver={handleDragOver}
                 className="border-2 border-dashed border-purple-400 rounded-2xl p-2R 
                    hover:border-purple-600 hover:shadow-md transition-all duration-300 ease-in-out
                    flex flex-col items-center justify-center text-center relative min-h-[140px] bg-white"
@@ -332,7 +330,7 @@ const PhotoUpload = () => {
 
     try {
       const isPdf = file.type === "application/pdf";
-      const isAllowedImage = ALLOWED_TYPES.includes(file.type) || isHeic(file);
+      const isAllowedImage = ALLOWED_TYPES.includes(file.type);
 
       if (!isPdf && !isAllowedImage) {
         logError(
@@ -357,35 +355,35 @@ const PhotoUpload = () => {
       let processedFile = file;
 
       // ✅ Try HEIC conversion
-      if (isHeic(file)) {
-        try {
-          // ✅ FIX: wrap heicTo result in a File so instanceof File check passes and preview works
-          const heicBlob = await heicTo({
-            blob: file,
-            toType: "image/jpeg",
-            quality: 0.9,
-          });
-          processedFile = new File(
-            [heicBlob],
-            file.name.replace(/\.heic$/i, ".jpg"),
-            { type: "image/jpeg" },
-          );
-        } catch (err) {
-          console.warn("HEIC conversion failed:", err);
+      // if (isHeic(file)) {
+      //   try {
+      //     // ✅ FIX: wrap heicTo result in a File so instanceof File check passes and preview works
+      //     const heicBlob = await heicTo({
+      //       blob: file,
+      //       toType: "image/jpeg",
+      //       quality: 0.9,
+      //     });
+      //     processedFile = new File(
+      //       [heicBlob],
+      //       file.name.replace(/\.heic$/i, ".jpg"),
+      //       { type: "image/jpeg" },
+      //     );
+      //   } catch (err) {
+      //     console.warn("HEIC conversion failed:", err);
 
-          // 🚫 Block completely if file seems corrupted
-          if (file.size === 0 || !file.type || file.name === "") {
-            logError(
-              "This file appears to be corrupted. Please try another image.",
-            );
-            if (e.target.value !== undefined) e.target.value = "";
-            return;
-          }
+      //     // 🚫 Block completely if file seems corrupted
+      //     if (file.size === 0 || !file.type || file.name === "") {
+      //       logError(
+      //         "This file appears to be corrupted. Please try another image.",
+      //       );
+      //       if (e.target.value !== undefined) e.target.value = "";
+      //       return;
+      //     }
 
-          // Otherwise continue using the original HEIC file
-          console.log("HEIC conversion failed — using original file instead.");
-        }
-      }
+      //     // Otherwise continue using the original HEIC file
+      //     console.log("HEIC conversion failed — using original file instead.");
+      //   }
+      // }
 
       // ✅ Compress large files
       if (processedFile.size > MAX_SIZE_BYTES) {
