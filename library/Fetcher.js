@@ -12,7 +12,7 @@ class Fetcher {
   setup = async () => {
     this.axiosSetup = axios.create({
       baseURL: app_url,
-      timeout: 20000,
+      timeout: 90000,
       headers: {
         Accept: "application/json",
         "Content-type": "application/json",
@@ -29,7 +29,7 @@ class Fetcher {
         }
         return config;
       },
-      (error) => Promise.reject(error)
+      (error) => Promise.reject(error),
     );
 
     // ✅ Error Handling
@@ -51,7 +51,7 @@ class Fetcher {
         }
 
         return Promise.reject(error);
-      }
+      },
     );
   };
 

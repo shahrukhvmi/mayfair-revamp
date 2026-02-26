@@ -326,8 +326,6 @@ const PhotoUpload = () => {
       return;
     }
 
-    setLoadingPhoto(true);
-
     try {
       const isPdf = file.type === "application/pdf";
       const isAllowedImage = ALLOWED_TYPES.includes(file.type) || isHeic(file);
@@ -340,6 +338,8 @@ const PhotoUpload = () => {
         setValue(type, null);
         return;
       }
+
+      setLoadingPhoto(true);
 
       // ✅ Handle PDF — no compression or HEIC conversion needed
       if (isPdf) {
