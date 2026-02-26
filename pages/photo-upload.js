@@ -491,9 +491,13 @@ const PhotoUpload = () => {
     <>
       <StepsHeader />
       <MetaLayout canonical={`${meta_url}photo-upload/`} />
-      {showLoader && (
-        <div className="absolute inset-0 flex items-center justify-center bg-white/70 rounded">
-          <PageLoader />
+      {loading && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex justify-center items-center z-[9999]">
+          <div className="flex flex-col items-center">
+            <p className="text-white text-lg reg-font">
+              <PageLoader />
+            </p>
+          </div>
         </div>
       )}
       <div className="my-14">
