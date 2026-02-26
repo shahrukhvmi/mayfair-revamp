@@ -26,6 +26,7 @@ import { GetIdVerification } from "@/api/IdVerificationApi";
 import { heicTo, isHeic } from "heic-to"; // ✅ import heic converter
 import { MdDelete } from "react-icons/md";
 import { RxCross2 } from "react-icons/rx";
+import UploadPhotoLogs from "@/api/UploadLogsApi";
 
 // ✅ Allowed file types
 const ALLOWED_TYPES = [
@@ -182,6 +183,13 @@ const PhotoUpload = () => {
   const MAX_SIZE_MB = 30;
   const MAX_SIZE_BYTES = MAX_SIZE_MB * 1024 * 1024;
 
+  const logError = (message) => {
+    toast.error(message);
+    UploadPhotoLogs({ message }).catch((err) =>
+      console.error("Failed to log error:", err),
+    );
+  };
+
   const frontPhotoInputRef = React.useRef(null);
 
   // ✅ Compress image using <canvas>
@@ -297,7 +305,7 @@ const PhotoUpload = () => {
     if (!file) return;
 
     if (file.size > MAX_SIZE_BYTES) {
-      toast.error(`File too large. Maximum allowed size is ${MAX_SIZE_MB} MB.`);
+      logError(`File too large. Maximum allowed size is ${MAX_SIZE_MB} MB.`);
       if (e.target.value !== undefined) e.target.value = "";
       return;
     }
@@ -309,7 +317,7 @@ const PhotoUpload = () => {
       const isAllowedImage = ALLOWED_TYPES.includes(file.type) || isHeic(file);
 
       if (!isPdf && !isAllowedImage) {
-        toast.error(
+        logError(
           "Only JPEG, PNG, WEBP, HEIC, HEIF, AVIF, or PDF files are allowed.",
         );
         if (e.target.value !== undefined) e.target.value = "";
@@ -320,7 +328,7 @@ const PhotoUpload = () => {
       // ✅ Handle PDF — no compression or HEIC conversion needed
       if (isPdf) {
         if (file.size > MAX_SIZE_BYTES) {
-          toast.error(`PDF too large (max ${MAX_SIZE_MB} MB).`);
+          logError(`PDF too large (max ${MAX_SIZE_MB} MB).`);
           if (e.target.value !== undefined) e.target.value = "";
           return;
         }
@@ -349,7 +357,7 @@ const PhotoUpload = () => {
 
           // 🚫 Block completely if file seems corrupted
           if (file.size === 0 || !file.type || file.name === "") {
-            toast.error(
+            logError(
               "This file appears to be corrupted. Please try another image.",
             );
             if (e.target.value !== undefined) e.target.value = "";
@@ -366,7 +374,7 @@ const PhotoUpload = () => {
         const compressedBlob = await compressImage(processedFile, 0.8);
 
         if (compressedBlob.size > MAX_SIZE_BYTES) {
-          toast.error(
+          logError(
             `Image too large even after compression (max ${MAX_SIZE_MB} MB).`,
           );
           if (e.target.value !== undefined) e.target.value = "";
@@ -383,7 +391,7 @@ const PhotoUpload = () => {
       console.log("✅ Final processed file:", processedFile);
     } catch (err) {
       console.error("Error processing image:", err);
-      toast.error("Something went wrong while processing this image.");
+      logError("Something went wrong while processing this image.");
       if (e.target.value !== undefined) e.target.value = "";
     } finally {
       setLoadingPhoto(false);
@@ -393,7 +401,7 @@ const PhotoUpload = () => {
   const onSubmit = async (data) => {
     try {
       if (!data.frontPhoto) {
-        toast.error("Please upload Front images.");
+        logError("Please upload Front images.");
         return;
       }
       setLoading(true); // Start loading
@@ -418,14 +426,15 @@ const PhotoUpload = () => {
         // GO.push("/dashboard/");
       }
     } catch (error) {
+      console.log(error, "error");
       toast.error(error?.response?.data?.errors?.front);
       if (error?.response?.data?.message === "Unauthenticated.") {
-        toast.error("Failed to upload images. Please Login again.");
+        logError("Failed to upload images. Please Login again.");
         GO.push("/login");
       }
 
-      if (error?.response?.data?.errors?.Order === "Order not found") {
-        toast.error(error?.response?.data?.errors?.Order);
+      if (error?.response?.data?.errors?.Order) {
+        logError(error?.response?.data?.errors?.Order);
       }
 
       // ✅ Clear the file on any API error — forces user to re-select
