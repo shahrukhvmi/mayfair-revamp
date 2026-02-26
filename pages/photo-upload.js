@@ -456,7 +456,11 @@ const PhotoUpload = () => {
     } catch (error) {
       setShowLoader(false);
       console.log(error, "error");
-      toast.error(error?.response?.data?.errors?.front);
+      logError(
+        error?.response?.data?.errors?.front ||
+          "Something went wrong. Please try again.",
+      );
+
       if (error?.response?.data?.message === "Unauthenticated.") {
         logError("Failed to upload images. Please Login again.");
         GO.push("/login");
