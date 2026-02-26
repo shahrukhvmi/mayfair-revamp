@@ -445,8 +445,7 @@ const PhotoUpload = () => {
       if (res?.status === 200) {
         // toast.success("Photos uploaded successfully!");
         setOpen(true);
-        setShowLoader(false);
-
+        if (frontPhotoInputRef.current) frontPhotoInputRef.current.value = "";
         if (!idVerificationUpload) {
           setButtonLabel("Upload ID verification photo");
         } else {
