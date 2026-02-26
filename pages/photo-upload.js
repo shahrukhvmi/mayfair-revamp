@@ -409,7 +409,7 @@ const PhotoUpload = () => {
       if (res?.status === 200) {
         // toast.success("Photos uploaded successfully!");
         setOpen(true);
-
+        if (frontPhotoInputRef.current) frontPhotoInputRef.current.value = "";
         if (!idVerificationUpload) {
           setButtonLabel("Upload ID verification photo");
         } else {
@@ -579,7 +579,11 @@ const PhotoUpload = () => {
                   loadingPhoto={loadingPhoto}
                   onUpload={handleUpload}
                   onSetValue={setValue}
-                  onRemove={(type) => setValue(type, null)}
+                  onRemove={(type) => {
+                    setValue(type, null);
+                    if (frontPhotoInputRef.current)
+                      frontPhotoInputRef.current.value = "";
+                  }}
                   inputRef={frontPhotoInputRef}
                 />
               )}
