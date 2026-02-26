@@ -330,7 +330,7 @@ const PhotoUpload = () => {
 
     try {
       const isPdf = file.type === "application/pdf";
-      const isAllowedImage = ALLOWED_TYPES.includes(file.type);
+      const isAllowedImage = ALLOWED_TYPES.includes(file.type) || isHeic(file);
 
       if (!isPdf && !isAllowedImage) {
         logError(
@@ -355,35 +355,35 @@ const PhotoUpload = () => {
       let processedFile = file;
 
       // ✅ Try HEIC conversion
-      // if (isHeic(file)) {
-      //   try {
-      //     // ✅ FIX: wrap heicTo result in a File so instanceof File check passes and preview works
-      //     const heicBlob = await heicTo({
-      //       blob: file,
-      //       toType: "image/jpeg",
-      //       quality: 0.9,
-      //     });
-      //     processedFile = new File(
-      //       [heicBlob],
-      //       file.name.replace(/\.heic$/i, ".jpg"),
-      //       { type: "image/jpeg" },
-      //     );
-      //   } catch (err) {
-      //     console.warn("HEIC conversion failed:", err);
+      if (isHeic(file)) {
+        try {
+          // ✅ FIX: wrap heicTo result in a File so instanceof File check passes and preview works
+          const heicBlob = await heicTo({
+            blob: file,
+            toType: "image/jpeg",
+            quality: 0.9,
+          });
+          processedFile = new File(
+            [heicBlob],
+            file.name.replace(/\.heic$/i, ".jpg"),
+            { type: "image/jpeg" },
+          );
+        } catch (err) {
+          console.warn("HEIC conversion failed:", err);
 
-      //     // 🚫 Block completely if file seems corrupted
-      //     if (file.size === 0 || !file.type || file.name === "") {
-      //       logError(
-      //         "This file appears to be corrupted. Please try another image.",
-      //       );
-      //       if (e.target.value !== undefined) e.target.value = "";
-      //       return;
-      //     }
+          // 🚫 Block completely if file seems corrupted
+          if (file.size === 0 || !file.type || file.name === "") {
+            logError(
+              "This file appears to be corrupted. Please try another image.",
+            );
+            if (e.target.value !== undefined) e.target.value = "";
+            return;
+          }
 
-      //     // Otherwise continue using the original HEIC file
-      //     console.log("HEIC conversion failed — using original file instead.");
-      //   }
-      // }
+          // Otherwise continue using the original HEIC file
+          console.log("HEIC conversion failed — using original file instead.");
+        }
+      }
 
       // ✅ Compress large files
       if (processedFile.size > MAX_SIZE_BYTES) {
