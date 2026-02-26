@@ -12,7 +12,7 @@ class Fetcher {
   setup = async () => {
     this.axiosSetup = axios.create({
       baseURL: app_url,
-      timeout: 90000,
+      timeout: 120000,
       headers: {
         Accept: "application/json",
         "Content-type": "application/json",
