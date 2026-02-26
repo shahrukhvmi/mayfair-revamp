@@ -456,18 +456,21 @@ const PhotoUpload = () => {
     } catch (error) {
       setShowLoader(false);
       console.log(error, "error");
-      logError(
-        error?.response?.data?.errors?.front ||
-          "Something went wrong. Please try again.",
-      );
+
+      const frontError = error?.response?.data?.errors?.front;
+      const orderError = error?.response?.data?.errors?.Order;
+
+      if (frontError) {
+        logError(frontError);
+      } else if (orderError) {
+        logError(orderError);
+      } else {
+        logError("Something went wrong. Please try again.");
+      }
 
       if (error?.response?.data?.message === "Unauthenticated.") {
         logError("Failed to upload images. Please Login again.");
         GO.push("/login");
-      }
-
-      if (error?.response?.data?.errors?.Order) {
-        logError(error?.response?.data?.errors?.Order);
       }
 
       // ✅ Clear the file on any API error — forces user to re-select
