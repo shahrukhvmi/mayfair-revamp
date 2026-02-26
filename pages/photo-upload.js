@@ -579,7 +579,11 @@ const PhotoUpload = () => {
                   loadingPhoto={loadingPhoto}
                   onUpload={handleUpload}
                   onSetValue={setValue}
-                  onRemove={(type) => setValue(type, null)}
+                  onRemove={(type) => {
+                    setValue(type, null);
+                    if (frontPhotoInputRef.current)
+                      frontPhotoInputRef.current.value = "";
+                  }}
                   inputRef={frontPhotoInputRef}
                 />
               )}
