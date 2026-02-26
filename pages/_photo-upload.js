@@ -27,7 +27,6 @@ import { heicTo, isHeic } from "heic-to"; // ✅ import heic converter
 import { MdDelete } from "react-icons/md";
 import { RxCross2 } from "react-icons/rx";
 import UploadPhotoLogs from "@/api/UploadLogsApi";
-import PageLoader from "@/Components/PageLoader/PageLoader";
 
 // ✅ Allowed file types
 const ALLOWED_TYPES = [
@@ -133,27 +132,11 @@ const UploadBox = ({
                   </div>
                 ) : (
                   <div className="flex flex-col items-center relative">
-                    {photo?.type === "application/pdf" ? (
-                      <div className="flex flex-col items-center justify-center w-[200px] h-40 my-3 bg-gray-50 rounded-lg border border-gray-200">
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          className="w-10 h-10 text-red-500 mb-2"
-                          viewBox="0 0 24 24"
-                          fill="currentColor"
-                        >
-                          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm-1 1.5L18.5 9H13V3.5zM6 20V4h5v7h7v9H6z" />
-                        </svg>
-                        <p className="text-xs text-gray-600 reg-font text-center px-2 truncate w-full text-center">
-                          {photo?.name}
-                        </p>
-                      </div>
-                    ) : (
-                      <img
-                        src={photoUrl}
-                        alt={`${label} preview`}
-                        className="w-[200px] h-40 object-contain rounded-lg my-3"
-                      />
-                    )}
+                    <img
+                      src={photoUrl}
+                      alt={`${label} preview`}
+                      className="w-[200px] h-40 object-contain rounded-lg my-3"
+                    />
                   </div>
                 )}
               </div>
@@ -240,17 +223,16 @@ const PhotoUpload = () => {
     });
   };
 
-  // const toBase64 = (file) =>
-  //   new Promise((resolve, reject) => {
-  //     const reader = new FileReader();
-  //     reader.readAsDataURL(file);
-  //     reader.onload = () => resolve(reader.result.split(",")[1]); // remove `data:image/...;base64,`
-  //     reader.onerror = reject;
-  //   });
+  const toBase64 = (file) =>
+    new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result.split(",")[1]); // remove `data:image/...;base64,`
+      reader.onerror = reject;
+    });
 
   const GO = useRouter();
   const [open, setOpen] = useState(false);
-  const [showLoader, setShowLoader] = useState(false);
   // get Order id url to send photo uplaod api
   const searchParams = useSearchParams();
   const [orderIdGetUrl, setOrderIdGetUrl] = useState(null);
@@ -422,30 +404,19 @@ const PhotoUpload = () => {
         logError("Please upload Front images.");
         return;
       }
-      // setLoading(true); // Start loading
-      // const frontBase64 = await toBase64(data.frontPhoto);
+      setLoading(true); // Start loading
+      const frontBase64 = await toBase64(data.frontPhoto);
 
-      // const payload = {
-      //   front: frontBase64,
-      //   order_id: orderIdGetUrl ? orderIdGetUrl : orderId,
-      // };
+      const payload = {
+        front: frontBase64,
+        order_id: orderIdGetUrl ? orderIdGetUrl : orderId,
+      };
 
-      // const res = await ImageUplaodApi(payload);
-
-      setLoading(true);
-
-      const formData = new FormData();
-      formData.append("front", data.frontPhoto);
-      formData.append("order_id", orderIdGetUrl ? orderIdGetUrl : orderId);
-
-      const res = await ImageUplaodApi(formData);
-
-      setShowLoader(true);
+      const res = await ImageUplaodApi(payload);
 
       if (res?.status === 200) {
         // toast.success("Photos uploaded successfully!");
         setOpen(true);
-        setShowLoader(false);
 
         if (!idVerificationUpload) {
           setButtonLabel("Upload ID verification photo");
@@ -455,7 +426,6 @@ const PhotoUpload = () => {
         // GO.push("/dashboard/");
       }
     } catch (error) {
-      setShowLoader(false);
       console.log(error, "error");
       toast.error(error?.response?.data?.errors?.front);
       if (error?.response?.data?.message === "Unauthenticated.") {
@@ -471,7 +441,6 @@ const PhotoUpload = () => {
       setValue("frontPhoto", null);
       if (frontPhotoInputRef.current) frontPhotoInputRef.current.value = ""; // ✅ reset input so same file can be selected again
     } finally {
-      setShowLoader(false);
       setLoading(false); // ✅ loading hamesha false hoga
     }
   };
@@ -492,11 +461,6 @@ const PhotoUpload = () => {
     <>
       <StepsHeader />
       <MetaLayout canonical={`${meta_url}photo-upload/`} />
-      {showLoader && (
-        <div className="absolute inset-0 flex items-center justify-center bg-white/70 rounded">
-          <PageLoader />
-        </div>
-      )}
       <div className="my-14">
         <AnimatePresence>
           {open && (
