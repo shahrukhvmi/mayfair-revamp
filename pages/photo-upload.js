@@ -360,7 +360,7 @@ const PhotoUpload = () => {
 
     try {
       const isPdf = file.type === "application/pdf";
-      const isAllowedImage = ALLOWED_TYPES.includes(file.type);
+      const isAllowedImage = ALLOWED_TYPES.includes(file.type) || isHeic(file);
 
       if (!isPdf && !isAllowedImage) {
         logError(
