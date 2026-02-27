@@ -346,7 +346,8 @@ const PhotoUpload = () => {
 
     if (hasBlockedExtension) {
       logError(
-        "Only JPEG, PNG, WEBP, HEIC, HEIF, AVIF, or PDF files are allowed.",
+        // "Only JPEG, PNG, WEBP, HEIC, HEIF, AVIF, or PDF files are allowed.",
+        "The file must be an image (jpeg, png, webp, heic, heif, avif) or a pdf.",
       );
       if (e.target.value !== undefined) e.target.value = "";
       return;
@@ -533,6 +534,13 @@ const PhotoUpload = () => {
           <div className="flex flex-col items-center">
             <p className="text-white text-lg reg-font">
               <PageLoader />
+            </p>
+            <br />
+            <br />
+            <br />
+            <br />
+            <p className="reg-font text-gray-200 px-2 text-center">
+              Please wait while your image is being uploaded...
             </p>
           </div>
         </div>
