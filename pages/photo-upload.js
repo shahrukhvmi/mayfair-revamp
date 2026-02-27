@@ -320,6 +320,38 @@ const PhotoUpload = () => {
     const file = e.target.files[0];
     if (!file) return;
 
+    const fileName = file.name.toLowerCase();
+    const blockedExtensions = [
+      ".exe",
+      ".bat",
+      ".sh",
+      ".cmd",
+      ".msi",
+      ".dll",
+      ".js",
+      ".ts",
+      ".php",
+      ".py",
+      ".rb",
+      ".zip",
+      ".rar",
+      ".tar",
+      ".gz",
+      ".mp4",
+      ".mp3",
+    ];
+    const hasBlockedExtension = blockedExtensions.some((ext) =>
+      fileName.endsWith(ext),
+    );
+
+    if (hasBlockedExtension) {
+      logError(
+        "Only JPEG, PNG, WEBP, HEIC, HEIF, AVIF, or PDF files are allowed.",
+      );
+      if (e.target.value !== undefined) e.target.value = "";
+      return;
+    }
+
     if (file.size > MAX_SIZE_BYTES) {
       logError(`File too large. Maximum allowed size is ${MAX_SIZE_MB} MB.`);
       if (e.target.value !== undefined) e.target.value = "";
@@ -328,7 +360,7 @@ const PhotoUpload = () => {
 
     try {
       const isPdf = file.type === "application/pdf";
-      const isAllowedImage = ALLOWED_TYPES.includes(file.type) || isHeic(file);
+      const isAllowedImage = ALLOWED_TYPES.includes(file.type);
 
       if (!isPdf && !isAllowedImage) {
         logError(
