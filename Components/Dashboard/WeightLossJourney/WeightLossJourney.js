@@ -235,7 +235,7 @@ export default function WeightJourneyPage() {
           tone={changeMeta.color}
         />
         <JourneyStatCard
-          title="Total Orders (Approved)"
+          title="Total Orders"
           value={bmi_journey.length}
           description="Orders placed & approved"
           badge="Approved"
