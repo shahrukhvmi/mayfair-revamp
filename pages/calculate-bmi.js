@@ -28,6 +28,7 @@ const validateRange = (value, min, max, wholeOnly, message) => {
 };
 
 export default function CalculateBmi() {
+  
   const { isReturningPatient } = useReturning();
   const [localStep, setLocalStep] = useState(1);
   const [heightUnit, setHeightUnit] = useState("metrics");

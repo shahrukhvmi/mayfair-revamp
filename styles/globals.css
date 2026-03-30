@@ -158,7 +158,7 @@ body {
 
 @media (min-width: 1024px) and (max-width: 1366px) {
   .journey-grid {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 
   .journey-card {
@@ -178,7 +178,7 @@ body {
 
 @media (min-width: 1367px) and (max-width: 2800px) {
   .journey-grid {
-    grid-template-columns: repeat(6, minmax(0, 1fr));
+    grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 
   .journey-card {
