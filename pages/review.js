@@ -187,7 +187,7 @@ export default function ReviewScreen() {
                         onClick={() => {
                           sendReview({ review_type: "happy" }); // 🔹 API
                           transition(
-                            "Had a good experience? We’d really appreciate a 5-star review",
+                            "Had a good experience? We’d really appreciate a 5-star review.",
                             "happy",
                           );
                         }}

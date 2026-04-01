@@ -117,6 +117,7 @@ export default function LoginScreen() {
       console.log(user, "user");
       if (user) {
         setUserData(user);
+        setAuthUserDetail(user);
         setToken(user?.token);
         setFirstName(user?.fname);
         setLastName(user?.lname);
