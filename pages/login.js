@@ -26,6 +26,7 @@ import { meta_url } from "@/config/constants";
 import useReturning from "@/store/useReturningPatient";
 import useCartStore from "@/store/useCartStore";
 import { useParams, useSearchParams } from "next/navigation";
+import useAbandonCardStore from "@/store/abandonCardStore";
 
 export default function LoginScreen() {
   const { setIsReturningPatient } = useReturning();
@@ -39,6 +40,7 @@ export default function LoginScreen() {
   const { setImpersonate } = useImpersonate();
   const { setAuthUserDetail } = useAuthUserDetailStore();
   const router = useRouter();
+  const { abandonCard } = useAbandonCardStore();
 
   const {
     register,
@@ -186,14 +188,24 @@ export default function LoginScreen() {
   console.log(review, "review");
   useEffect(() => {
     if (!token) return;
+
+    // 🔥 FIRST PRIORITY: abandoned cart
+    if (abandonCard?.type === "abandoned-cart") {
+      console.log("check1");
+      router.replace("/gathering-data");
+      return;
+    }
+
+    // ⏳ wait until review is known
     if (review === null) return;
 
+    // ✅ NORMAL FLOW
     if (review) {
       router.replace("/review");
     } else {
       router.replace("/dashboard");
     }
-  }, [token, review]);
+  }, [token, review, abandonCard?.type]);
 
   return (
     <>
@@ -307,7 +319,12 @@ export default function LoginScreen() {
             closeLoginModal();
             setShowLoader(false);
 
-            router.push("/dashboard");
+            if (abandonCard?.type) {
+              console.log("check2");
+              router.push("/gathering-data");
+            } else {
+              router.push("/dashboard");
+            }
           } catch (error) {
             const errorMsg = error?.response?.data?.errors;
             const firstMsg =

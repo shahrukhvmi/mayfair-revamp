@@ -31,6 +31,7 @@ import useLastBmi from "@/store/useLastBmiStore";
 import useUserDataStore from "@/store/userDataStore";
 import OrderSummaryHeader from "./OrderSummaryHeader";
 import lastOrderStore from "@/store/lastOrderStore";
+import useAbandonCardStore from "@/store/abandonCardStore";
 
 const OrderSummary = ({
   isConcentCheck,
@@ -74,7 +75,7 @@ const OrderSummary = ({
   const { clearLastBmi } = useLastBmi();
   const { clearUserData } = useUserDataStore();
   const { clearLastOrder } = lastOrderStore();
-
+  const { abandonCard, clearAbandonCard } = useAbandonCardStore();
   const { clearFirstName, clearLastName, clearEmail, clearConfirmationEmail } =
     useSignupStore();
 
@@ -174,6 +175,7 @@ const OrderSummary = ({
         clearConfirmationEmail();
         setIsButtonLoading(false);
         clearLastOrder();
+        clearAbandonCard();
         router.push("/login");
       } else if (errors && typeof errors === "object") {
         setIsButtonLoading(false);
@@ -236,6 +238,7 @@ const OrderSummary = ({
         type: Coupon?.Data?.type ? Coupon?.Data?.type : null,
         discount_value: discountAmount ? discountAmount : null,
       },
+      type: abandonCard?.type ? abandonCard?.type : null,
       subTotal: parseFloat(totalAmount),
       total: parseFloat(finalTotal),
       shipment: {
@@ -261,7 +264,7 @@ const OrderSummary = ({
         ...a,
         quantity: a.quantity || a.qty || 1,
       })),
-      pid: productId,
+      pid: productId || abandonCard?.productId,
       medicalInfo,
       gpdetails,
       bmi,

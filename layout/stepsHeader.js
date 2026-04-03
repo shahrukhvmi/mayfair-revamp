@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { FiMenu, FiX } from "react-icons/fi";
 import ApplicationLogo from "@/config/ApplicationLogo";
 import ApplicationUser from "@/config/ApplicationUser";
@@ -42,6 +42,8 @@ import TopToastExplainenation from "@/Components/UploadTopPrompt/TopToastExplain
 import { GetPrescriptionEvidence } from "@/api/PrescriptionEvidenceApi";
 import useExplanationEvidenceStore from "@/store/useExplanationEvidenceStore";
 import lastOrderStore from "@/store/lastOrderStore";
+import { useSearchParams } from "next/navigation";
+import useAbandonCardStore from "@/store/abandonCardStore";
 
 const StepsHeader = ({ isOpen, toggleSidebar }) => {
   const { clearLastOrder } = lastOrderStore();
@@ -65,7 +67,7 @@ const StepsHeader = ({ isOpen, toggleSidebar }) => {
     useAuthStore();
   const { clearShipping, clearBilling, setBillingSameAsShipping } =
     useShippingOrBillingStore();
-  const { clearProductId } = useProductId();
+  const { clearProductId, setProductId } = useProductId();
   const { clearLastBmi } = useLastBmi();
   const { clearUserData } = useUserDataStore();
   const { setIsReturningPatient } = useReturning();
@@ -94,6 +96,9 @@ const StepsHeader = ({ isOpen, toggleSidebar }) => {
 
   const router = useRouter();
   const { setIsPasswordReset, setShowResetPassword } = usePasswordReset();
+  const { abandonCard, setAbandonCard, clearAbandonCard, hasHydrated } =
+    useAbandonCardStore();
+  const hasRedirected = useRef(false);
 
   const handleLogout = () => {
     setAnchorEl(null);
@@ -122,6 +127,8 @@ const StepsHeader = ({ isOpen, toggleSidebar }) => {
     setBillingSameAsShipping(false);
     setIsReturningPatient(false);
     clearLastOrder();
+    clearAbandonCard();
+
     router.push("/login");
   };
 
@@ -146,7 +153,12 @@ const StepsHeader = ({ isOpen, toggleSidebar }) => {
       setFirstName(data?.data?.data?.fname);
       setLastName(data?.data?.data?.lname);
       setEmail(data?.data?.data?.email);
-      router.push("/dashboard");
+
+      if (abandonCard?.type === "abandoned-cart") {
+        router.push("/gathering-data");
+      } else {
+        router.push("/dashboard");
+      }
       setIsPasswordReset(false);
       setShowResetPassword(data?.data?.data?.show_password_reset);
       setIsReturningPatient(user?.isReturning);
@@ -251,6 +263,47 @@ const StepsHeader = ({ isOpen, toggleSidebar }) => {
   useEffect(() => {
     GetEvidence();
   }, []);
+
+  // abandonCard get Url; ⚠️⚠️////////////////////////////////////////////////////////
+  const searchParams = useSearchParams();
+
+  useEffect(() => {
+    const params = Object.fromEntries(searchParams.entries());
+
+    const productId = params.product_id ? Number(params.product_id) : null;
+    const fromEmail = params.fromemail;
+    const type = params.type;
+    const eid = params.eid ? Number(params.eid) : null;
+    setProductId(productId);
+    if (type === "abandoned-cart" && productId && !abandonCard) {
+      setAbandonCard({
+        productId,
+        fromEmail,
+        type,
+        eid,
+      });
+    } else {
+      console.log("⛔ SKIPPED STORE UPDATE");
+    }
+  }, [searchParams, abandonCard]);
+
+  // herer i used ussEffect for if login or check abandonCard url direct
+
+  const typeFromUrl = searchParams.get("type");
+
+  useEffect(() => {
+    if (!hasHydrated || hasRedirected.current) return;
+
+    const isAbandoned =
+      abandonCard?.type === "abandoned-cart" ||
+      typeFromUrl === "abandoned-cart";
+
+    if (token && isAbandoned) {
+      hasRedirected.current = true;
+
+      router.replace("/gathering-data"); // 👈 better than push
+    }
+  }, [hasHydrated, token, abandonCard?.type, typeFromUrl]);
   return (
     <>
       {/* {specialRoutes.includes(pathname) && (
