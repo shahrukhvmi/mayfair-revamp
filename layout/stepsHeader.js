@@ -67,7 +67,7 @@ const StepsHeader = ({ isOpen, toggleSidebar }) => {
     useAuthStore();
   const { clearShipping, clearBilling, setBillingSameAsShipping } =
     useShippingOrBillingStore();
-  const { clearProductId, setProductId } = useProductId();
+  const { clearProductId } = useProductId();
   const { clearLastBmi } = useLastBmi();
   const { clearUserData } = useUserDataStore();
   const { setIsReturningPatient } = useReturning();
@@ -264,46 +264,6 @@ const StepsHeader = ({ isOpen, toggleSidebar }) => {
     GetEvidence();
   }, []);
 
-  // abandonCard get Url; ⚠️⚠️////////////////////////////////////////////////////////
-  const searchParams = useSearchParams();
-
-  useEffect(() => {
-    const params = Object.fromEntries(searchParams.entries());
-
-    const productId = params.product_id ? Number(params.product_id) : null;
-    const fromEmail = params.fromemail;
-    const type = params.type;
-    const eid = params.eid ? Number(params.eid) : null;
-    setProductId(productId);
-    if (type === "abandoned-cart" && productId && !abandonCard) {
-      setAbandonCard({
-        productId,
-        fromEmail,
-        type,
-        eid,
-      });
-    } else {
-      console.log("⛔ SKIPPED STORE UPDATE");
-    }
-  }, [searchParams, abandonCard]);
-
-  // herer i used ussEffect for if login or check abandonCard url direct
-
-  const typeFromUrl = searchParams.get("type");
-
-  useEffect(() => {
-    if (!hasHydrated || hasRedirected.current) return;
-
-    const isAbandoned =
-      abandonCard?.type === "abandoned-cart" ||
-      typeFromUrl === "abandoned-cart";
-
-    if (token && isAbandoned) {
-      hasRedirected.current = true;
-
-      router.replace("/gathering-data"); // 👈 better than push
-    }
-  }, [hasHydrated, token, abandonCard?.type, typeFromUrl]);
   return (
     <>
       {/* {specialRoutes.includes(pathname) && (

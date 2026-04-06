@@ -142,6 +142,7 @@ const OrderSummary = ({
         setPaymentData(data?.data?.paymentData);
         setOrderId(data?.data?.paymentData?.order_id);
         clearCoupon();
+        clearAbandonCard();
       }
     },
     onError: (error) => {
