@@ -143,7 +143,7 @@ export default function GpDetail() {
             "subscription-key": apiKey,
             "Content-Type": "application/json",
           },
-        }
+        },
       );
 
       if (response.status === 200 && response.data) {
@@ -295,10 +295,9 @@ export default function GpDetail() {
               {gpDetails === "yes" && gepTreatMent === "yes" && (
                 <>
                   <TextField
-                    label="Email"
+                    label="GP Email"
                     name="email"
                     type="email"
-                  
                     register={register}
                     errors={errors}
                   />
@@ -307,7 +306,6 @@ export default function GpDetail() {
                     <TextField
                       label="Post code"
                       name="postalCode"
-                      
                       register={register}
                       required
                       errors={errors}
@@ -389,7 +387,6 @@ export default function GpDetail() {
                       <TextField
                         label="GP Name"
                         name="gpName"
-                        
                         register={register}
                         required
                         errors={errors}
@@ -397,7 +394,6 @@ export default function GpDetail() {
                       <TextField
                         label="Address"
                         name="addressLine1"
-                       
                         register={register}
                         required
                         errors={errors}
@@ -405,14 +401,12 @@ export default function GpDetail() {
                       <TextField
                         label="Address 2"
                         name="addressLine2"
-                       
                         register={register}
                         errors={errors}
                       />
                       <TextField
                         label="Town / City"
                         name="city"
-                        
                         register={register}
                         required
                         errors={errors}
