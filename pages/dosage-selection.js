@@ -20,6 +20,8 @@ import MetaLayout from "@/Meta/MetaLayout";
 import { meta_url } from "@/config/constants";
 import { Checkbox, FormControlLabel } from "@mui/material";
 import useAbandonCardStore from "@/store/abandonCardStore";
+import useExplanationEvidenceStore from "@/store/useExplanationEvidenceStore";
+import lastOrderStore from "@/store/lastOrderStore";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 
@@ -28,7 +30,6 @@ export default function DosageSelection() {
   const [isButtonLoading, setIsButtonLoading] = useState(false);
   const [abandonData, setAbandonData] = useState([]);
   const router = useRouter();
-  // const {  } = useCartStore();
   const { addToCart, increaseQuantity, decreaseQuantity, items, totalAmount } =
     useCartStore();
   const { productId } = useProductId();
@@ -36,6 +37,9 @@ export default function DosageSelection() {
   const { reorder } = useReorder();
 
   console.log(items, "items");
+
+  // ✅ Evidence store
+  const { setExplainenationEvidence } = useExplanationEvidenceStore();
 
   const {
     register,
@@ -48,10 +52,8 @@ export default function DosageSelection() {
   });
 
   const [isExpiryRequired, setIsExpiryRequired] = useState(false);
-  // Variation From zustand
   const { variation } = useVariationStore();
 
-  // ✅ useEffect to check if `product?.show_expiry` is `0` or `1`
   useEffect(() => {
     if (variation?.show_expiry === 1) {
       setIsExpiryRequired(true);
@@ -66,6 +68,8 @@ export default function DosageSelection() {
   const [showDoseModal, setShowDoseModal] = useState(false);
   const [selectedDose, setSelectedDose] = useState(null);
   const { abandonCard, extra } = useAbandonCardStore();
+  const { lastOrder } = lastOrderStore();
+  console.log(lastOrder, "lastOrder");
   const abandonCartMutation = useMutation(abandonCart, {
     onSuccess: (data) => {
       if (data) {
@@ -85,32 +89,18 @@ export default function DosageSelection() {
   const onSubmit = () => {
     setIsButtonLoading(true);
     router.push("/checkout");
-
-    //⚠️ commit krdia h yaha sy q k ab har dose k click k api direct chaly gi⚠️
-    // abandonCartMutation.mutate(abandonData);
   };
 
   //Allowed checking here 🔥
   const totalSelectedQty = () =>
     items?.doses.reduce((total, v) => total + v.qty, 0);
 
-  // ✅ Put here → outside your component or at the top inside your component file
-  const generateProductConcent = (variations, selectedDoseName) => {
-    const sortedVariations = [...variations].sort((a, b) => {
-      console.log(a, b, "sfkjefjfsj");
-      const aMg = parseFloat(a.name);
-      const bMg = parseFloat(b.name);
-      return aMg - bMg;
-    });
-
-    const lowestDose = sortedVariations[0]?.name;
-    const selectedIndex = sortedVariations.findIndex(
-      (v) => v.name === selectedDoseName,
-    );
-    const previousDose =
-      selectedIndex > 0 ? sortedVariations[selectedIndex - 1]?.name : null;
-
-    return `If you are taking for the first time, you will need to start the treatment on the ${lowestDose} dose. If you start on the higher doses, the risk of side effects (e.g., nausea) will be very high. Please confirm that you are currently taking either the ${previousDose} or ${selectedDoseName} dose from a different provider.`;
+  const generateProductConcent = (
+    variations,
+    selectedDoseName,
+    productName,
+  ) => {
+    return `You have selected ${productName} ${selectedDoseName}. As a new patient ordering a higher dose, we require confirmation that you have completed prior dose progression with another healthcare provider, or clinical justification for starting at this level. Following payment, you will be required to provide your treatment history and upload any supporting documentation from your previous provider. Our clinical team reviews each order to ensure safe and appropriate prescribing.`;
   };
 
   const handleAddDose = (dose) => {
@@ -134,7 +124,26 @@ export default function DosageSelection() {
     const firstTwoDoses = variation?.variations?.slice(0, 1).map((v) => v.name);
     const isFirstTwoDose = firstTwoDoses?.includes(dose?.name);
 
-    if ((isFirstTwoDose && !isFiveMg) || reorder == true) {
+    if (reorder == true) {
+      // ── RETURNING PATIENT ──────────────────────────────────
+      const sortedVariations = [...(variation?.variations || [])].sort(
+        (a, b) => parseFloat(a.name) - parseFloat(b.name),
+      );
+
+      const lastDoseName = lastOrder?.last_order_items?.[0]?.item_name;
+      console.log(lastDoseName, "lastDoseName");
+      const lastDoseIndex = sortedVariations.findIndex(
+        (v) => v.name === lastDoseName,
+      );
+      const selectedDoseIndex = sortedVariations.findIndex(
+        (v) => v.name === dose?.name,
+      );
+      const nextValidDose = sortedVariations[lastDoseIndex + 1]?.name;
+
+      // Skipping a dose = selected is more than one step ahead of last order
+      const isSkippingDose =
+        lastDoseIndex !== -1 && selectedDoseIndex > lastDoseIndex + 1;
+
       addToCart({
         id: dose.id,
         type: "dose",
@@ -148,20 +157,23 @@ export default function DosageSelection() {
         expiry: dose.expiry,
         isSelected: true,
       });
-      // setAbandonData([
-      //   ...abandonData,
-      //   {
-      //     eid: dose.id,
-      //     pid: productId,
-      //   },
-      // ]);
 
-      // ✅ Run abandonCartMutation right after adding
       abandonCartMutation.mutate({
         eid: dose.id,
         pid: productId || abandonCard?.productId,
       });
-    } else {
+
+      // Show skipping warning if applicable — no evidence for returning patients
+      if (isSkippingDose && !shownDoseIds.includes(dose.id)) {
+        setSelectedDose({
+          ...dose,
+          productConcent: `Your last order was for ${lastDoseName}. You have selected ${dose?.name}, but the recommended next dose is ${nextValidDose}. Please ensure you are selecting the correct dose for safe treatment progression.`,
+        });
+        setShowDoseModal(true);
+        setShownDoseIds((prev) => [...prev, dose.id]);
+      }
+    } else if (isFirstTwoDose && !isFiveMg) {
+      // ── NEW PATIENT — lowest dose, no warning needed ────────
       addToCart({
         id: dose.id,
         type: "dose",
@@ -170,40 +182,68 @@ export default function DosageSelection() {
         allowed: parseInt(dose.allowed),
         item_id: dose.id,
         product: dose?.product_name || "Dose Product",
-        product_concent:
-          isFirstTwoDose && !isFiveMg
-            ? null
-            : generateProductConcent(variation?.variations, dose?.name),
+        product_concent: null,
         label: `${dose?.product_name} ${dose?.name}`,
         expiry: dose.expiry,
         isSelected: true,
       });
 
-      // setAbandonData([
-      //   ...abandonData,
-      //   {
-      //     eid: dose.id,
-      //     pid: productId,
-      //   },
-      // ]);
       abandonCartMutation.mutate({
         eid: dose.id,
         pid: productId || abandonCard?.productId,
       });
-      // ✅ ✅ ✅ Check if modal was already shown for this dose
+    } else {
+      // ── NEW PATIENT — high dose, evidence required ──────────
+      addToCart({
+        id: dose.id,
+        type: "dose",
+        name: dose.name,
+        price: parseFloat(dose.price),
+        allowed: parseInt(dose.allowed),
+        item_id: dose.id,
+        product: dose?.product_name || "Dose Product",
+        product_concent: generateProductConcent(
+          variation?.variations,
+          dose?.name,
+          dose?.product_name,
+        ),
+        label: `${dose?.product_name} ${dose?.name}`,
+        expiry: dose.expiry,
+        isSelected: true,
+      });
+
+      abandonCartMutation.mutate({
+        eid: dose.id,
+        pid: productId || abandonCard?.productId,
+      });
+
+      // Flag evidence required so header banner shows after order
+      setExplainenationEvidence(true);
+
+      // Show modal only once per dose
       if (!shownDoseIds.includes(dose.id)) {
         setSelectedDose({
           ...dose,
           productConcent: generateProductConcent(
             variation?.variations,
             dose?.name,
+            dose?.product_name,
           ),
         });
         setShowDoseModal(true);
-
-        // ✅ ✅ ✅ Mark this dose as shown
         setShownDoseIds((prev) => [...prev, dose.id]);
       }
+    }
+  };
+
+  // ✅ If user removes the high dose, clear the evidence flag
+  const handleDoseRemoved = (doseId) => {
+    setShownDoseIds((prev) => prev.filter((id) => id !== doseId));
+    const remainingHighDoses = items?.doses?.filter(
+      (d) => d.id !== doseId && d.product_concent !== null,
+    );
+    if (!remainingHighDoses || remainingHighDoses.length === 0) {
+      setExplainenationEvidence(false);
     }
   };
 
@@ -224,7 +264,7 @@ export default function DosageSelection() {
     });
   };
 
-  // 🔥⚠️⚠️⚠️⚠️⚠️Abandone card selected dose auto add krne k liye useEffect ⚠️⚠️⚠️⚠️⚠️
+  // 🔥 Abandoned cart — auto add dose when user arrives from abandon cart link
   useEffect(() => {
     if (!abandonCard || !extra) return;
     if (!variation?.variations) return;
@@ -237,11 +277,11 @@ export default function DosageSelection() {
   const back = () => {
     router.push("/confirmation-summary");
   };
+
   return (
     <>
       <MetaLayout canonical={`${meta_url}dosage-selection/`} />
       <div className="bottom-[100px] fixed left-10 cursor-pointer py-2 rounded-full border-2 border-violet-700 sm:block hidden">
-        {/* <BackButton label="Back" onClick={back} className="mt-2 sm:block hidden " /> */}
         <button
           label="Back"
           onClick={back}
@@ -250,6 +290,7 @@ export default function DosageSelection() {
           <span>Back</span>
         </button>
       </div>
+
       <AnimatePresence>
         {showDoseModal && selectedDose && (
           <motion.div
@@ -279,13 +320,6 @@ export default function DosageSelection() {
                   setShowDoseModal(false);
                 }}
               />
-
-              {/* <button
-                onClick={() => setShowDoseModal(false)}
-                className="w-full mt-2 border border-gray-300 py-2 px-4 rounded text-gray-600 hover:bg-gray-100"
-              >
-                Cancel
-              </button> */}
             </motion.div>
           </motion.div>
         )}
@@ -300,7 +334,7 @@ export default function DosageSelection() {
           <div className="w-full mx-auto sm:px-8 my-6 rounded-md">
             <div className="flex justify-center">
               <h1 className="niba-reg-font heading text-center my-3">
-                You’re ready to start your personal weight loss journey
+                You're ready to start your personal weight loss journey
               </h1>
             </div>
             <form onSubmit={handleSubmit(onSubmit)}>
@@ -323,20 +357,14 @@ export default function DosageSelection() {
                           Pack of 5 Needles is included with every dose
                         </p>
                       )}
-
                       <br />
-
                       <span className="bold-font text-black">
                         From £{variation?.price}
                       </span>
-                      {/* <div
-                        className="reg-font text-gray-600 bg-red-50  p-3 rounded-md text-sm"
-                        dangerouslySetInnerHTML={{ __html: variation?.description }}
-                      ></div> */}
                     </div>
                   </div>
 
-                  <div className="bg-white rounded-lg shadow-lg  px-4 py-6">
+                  <div className="bg-white rounded-lg shadow-lg px-4 py-6">
                     <h1 className="my-4 niba-bold-font text-2xl text-black text-start">
                       <span className="niba-reg-font">Choose your </span> Dosage
                     </h1>
@@ -347,8 +375,6 @@ export default function DosageSelection() {
                         const bOutOfStock = b?.stock?.status === 0;
                         const qOutOfStock = b?.stock?.quantity === 0;
                         const qaOutOfStock = a?.stock?.quantity === 0;
-
-                        // Out of stock ko neeche le jao
                         if (qaOutOfStock && !qOutOfStock) return 1;
                         if (!qaOutOfStock && qOutOfStock) return -1;
                         if (aOutOfStock && !bOutOfStock) return 1;
@@ -376,6 +402,7 @@ export default function DosageSelection() {
                             onDecrement={() =>
                               decreaseQuantity(dose.id, "dose")
                             }
+                            onDoseRemoved={handleDoseRemoved}
                           />
                         );
                       })}
@@ -399,11 +426,7 @@ export default function DosageSelection() {
                                 <span className="w-2.5 h-2.5 bg-[#4565BF] rounded-full" />
                               </span>
                             }
-                            sx={{
-                              "& .MuiSvgIcon-root": {
-                                display: "none",
-                              },
-                            }}
+                            sx={{ "& .MuiSvgIcon-root": { display: "none" } }}
                           />
                         }
                         label={
@@ -421,7 +444,7 @@ export default function DosageSelection() {
                     </div>
                   )}
 
-                  <div className="bg-white rounded-lg shadow-lg  px-4 py-6 my-4">
+                  <div className="bg-white rounded-lg shadow-lg px-4 py-6 my-4">
                     {Array.isArray(variation?.addons) &&
                       variation?.addons.length > 0 && (
                         <>
@@ -429,7 +452,6 @@ export default function DosageSelection() {
                             Select{" "}
                             <span className="font-bold text-2xl">Add-ons</span>
                           </h1>
-
                           {variation?.addons
                             .slice()
                             .sort((a, b) => {
@@ -443,7 +465,6 @@ export default function DosageSelection() {
                                 b?.stock?.quantity === 0
                                   ? 1
                                   : 0;
-
                               return aOutOfStock - bOutOfStock;
                             })
                             .map((addon) => {
@@ -451,7 +472,6 @@ export default function DosageSelection() {
                                 (item) => item.id === addon.id,
                               );
                               const cartQty = cartAddon?.qty || 0;
-
                               return (
                                 <AddOn
                                   key={addon.id}
@@ -480,7 +500,6 @@ export default function DosageSelection() {
 
       <div className="fixed bottom-0 left-0 right-0 z-50 bg-[#ffffff] px-4 py-3 shadow-[0_-2px_10px_rgba(0,0,0,0.1)]">
         <div className="max-w-xl mx-auto flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          {/* Product Info */}
           <div className="flex items-start sm:items-center space-x-3 me-5">
             <img
               src={variation?.img}
@@ -498,17 +517,12 @@ export default function DosageSelection() {
             </div>
           </div>
 
-          {/* Button */}
           <div className="w-full sm:w-auto">
             {isButtonLoading === true ? (
               <div className="w-full px-28 py-3 rounded-full text-white bg-primary flex justify-center">
                 <motion.div
                   animate={{ rotate: 360 }}
-                  transition={{
-                    repeat: Infinity,
-                    duration: 1,
-                    ease: "linear",
-                  }}
+                  transition={{ repeat: Infinity, duration: 1, ease: "linear" }}
                   className="w-5 h-5 border-4 border-t-transparent rounded-full text-white"
                 />
               </div>
@@ -520,7 +534,6 @@ export default function DosageSelection() {
                 className="w-full sm:w-auto"
               />
             )}
-
             <BackButton
               label="Back"
               className="mt-2 sm:hidden block"

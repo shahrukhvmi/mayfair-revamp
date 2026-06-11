@@ -266,7 +266,7 @@ const StepsHeader = ({ isOpen, toggleSidebar }) => {
 
   return (
     <>
-      {/* {specialRoutes.includes(pathname) && (
+      {specialRoutes.includes(pathname) && (
         <>
           {explainenationEvidence ? (
             <TopToastExplainenation />
@@ -274,10 +274,10 @@ const StepsHeader = ({ isOpen, toggleSidebar }) => {
             (!imageUploaded || !idVerificationUpload) && <UploadTopPrompt />
           )}
         </>
-      )} */}
-
+      )}
+      {/* 
       {(!imageUploaded || !idVerificationUpload) &&
-        specialRoutes.includes(pathname) && <UploadTopPrompt />}
+        specialRoutes.includes(pathname) && <UploadTopPrompt />} */}
 
       {impersonate && (
         <div className="bg-gray-100">
