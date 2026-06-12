@@ -100,7 +100,16 @@ export default function DosageSelection() {
     selectedDoseName,
     productName,
   ) => {
-    return `You have selected ${productName} ${selectedDoseName}. As a new patient ordering a higher dose, we require confirmation that you have completed prior dose progression with another healthcare provider, or clinical justification for starting at this level. Following payment, you will be required to provide your treatment history and upload any supporting documentation from your previous provider. Our clinical team reviews each order to ensure safe and appropriate prescribing.`;
+    // Get the starting dose (first dose in variations)
+    const startingDose = variations?.[0]?.name || "lowest";
+    
+    // Get the second highest dose for reference
+    const alternativeDoses = variations
+      ?.slice(0, 2)
+      .map((v) => v.name)
+      .join(" or ");
+
+    return `You have selected ${productName} ${selectedDoseName}. If you are taking ${productName} for the first time, you will need to start the treatment on the ${startingDose} dose. As a new patient ordering a higher dose, please confirm that you have previously taken either the ${alternativeDoses} dose from a different provider. Following payment, you will be required to provide this evidence and upload any supporting documentation of this. Our clinical team reviews each order to ensure safe and appropriate prescribing.`;
   };
 
   const handleAddDose = (dose) => {
