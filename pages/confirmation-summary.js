@@ -28,6 +28,7 @@ import useCheckoutStore from "@/store/checkoutStore";
 import MetaLayout from "@/Meta/MetaLayout";
 import { meta_url } from "@/config/constants";
 import useReorderBackProcessStore from "@/store/useReorderBackProcess";
+import { trackCustomerLabsLead } from "@/config/CustomerLabs";
 
 const ConfirmationSummary = () => {
   const router = useRouter();
@@ -55,8 +56,8 @@ const ConfirmationSummary = () => {
   const { setIsPasswordReset } = usePasswordReset();
   const { productId, clearProductId } = useProductId();
   const { setLastBmi, clearLastBmi } = useLastBmi();
-  const { clearUserData } = useUserDataStore();
-
+  const { clearUserData, userData } = useUserDataStore();
+  console.log(userData, "userdata in confirmation summary");
   //To get firstname and lastName from signup store
   const {
     clearFirstName,
@@ -69,6 +70,8 @@ const ConfirmationSummary = () => {
 
   console.log(bmi);
 
+  // Customer lab data mutation
+
   const stepsDataMutation = useMutation(sendStepData, {
     onSuccess: (data) => {
       console.log(data, "dataaaaaaaaaaaaaa");
@@ -77,13 +80,41 @@ const ConfirmationSummary = () => {
         console.log(data?.data?.lastConsultation?.fields, "data?.data?.data");
         setBmi(data?.data?.lastConsultation?.fields?.bmi);
         setConfirmationInfo(
-          data?.data?.lastConsultation?.fields?.confirmationInfo
+          data?.data?.lastConsultation?.fields?.confirmationInfo,
         );
         setGpDetails(data?.data?.lastConsultation?.fields?.gpdetails);
         setMedicalInfo(data?.data?.lastConsultation?.fields?.medicalInfo);
         setPatientInfo(data?.data?.lastConsultation?.fields?.patientInfo);
         setLastBmi(data?.data?.lastConsultation?.fields?.bmi);
       }
+
+      // CustomerLabs Lead/Form Submit trigger
+      trackCustomerLabsLead({
+        formName: "Consultation Form",
+        formId: "mayfair_consultation_form",
+        dedupeKey: data?.data?.lastConsultation?.id
+          ? `customerlabs_lead_${data.data.lastConsultation.id}`
+          : null,
+        identity: {
+          firstName: userData?.fname || firstName || patientInfo?.firstName,
+          lastName: userData?.lname || lastName || patientInfo?.lastName,
+          email: userData?.email,
+          phone: userData?.phone || patientInfo?.phoneNo,
+          userId: userData?.id,
+        },
+        properties: {
+          consultation_id: data?.data?.lastConsultation?.id || "",
+          product_id: productId || "",
+          product_name:
+            { 1: "Wegovy", 4: "Mounjaro" }[productId] ||
+            "Weight Loss Treatment",
+          treatment_name:
+            { 1: "Wegovy", 4: "Mounjaro" }[productId] ||
+            "Weight Loss Treatment",
+          event_source: "confirmation_summary_success",
+        },
+      });
+
       router.push("/gathering-data");
       return;
     },
