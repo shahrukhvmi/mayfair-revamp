@@ -57,10 +57,10 @@ export function trackCustomerLabsLead({
     userId = "",
   } = identity;
 
-  // Need at least one identifier for CustomerLabs to tie the lead to a profile.
   if (!email && !phone) {
-    console.warn("CustomerLabs: no email or phone — event skipped");
-    return;
+    console.warn(
+      "CustomerLabs: no email or phone — continuing without identity",
+    );
   }
 
   // --- Build user_traits -------------------------------------------------
