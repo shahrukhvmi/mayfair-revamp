@@ -102,7 +102,7 @@ export default function DosageSelection() {
   ) => {
     // Get the starting dose (first dose in variations)
     const startingDose = variations?.[0]?.name || "lowest";
-    
+
     // Get the second highest dose for reference
     const alternativeDoses = variations
       ?.slice(0, 2)
@@ -324,7 +324,8 @@ export default function DosageSelection() {
                 </p>
               )}
               <NextButton
-                label=" I Confirm"
+                label="I agree"
+                className="normal-case"
                 onClick={() => {
                   setShowDoseModal(false);
                 }}
