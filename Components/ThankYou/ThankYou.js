@@ -10,15 +10,19 @@ import GetUserOrderApi from "@/api/GetUserOrderApi";
 import useAuthStore from "@/store/authStore";
 import Fetcher from "@/library/Fetcher";
 import toast from "react-hot-toast";
+import useUserDataStore from "@/store/userDataStore";
+import usePatientInfoStore from "@/store/patientInfoStore";
+import useProductId from "@/store/useProductIdStore";
+import { trackCustomerLabsLead } from "@/config/CustomerLabs";
 
 const ThankYou = () => {
-
   const { orderId, checkOut, setOrderId, setCheckOut } = useCartStore();
   const { token } = useAuthStore();
   const router = useRouter();
   const [items, setItems] = useState(null);
-
-
+  const { userData } = useUserDataStore();
+  const { patientInfo } = usePatientInfoStore();
+  const { productId } = useProductId();
 
   // useEffect(() => {
 
@@ -38,10 +42,10 @@ const ThankYou = () => {
         const res = await GetImageIsUplaod({ order_id: orderId });
 
         setImageUploaded(res?.data?.status);
-
-
       } catch (error) {
-        console.error("Failed to fetch image status:", error?.response?.data?.errors?.Order
+        console.error(
+          "Failed to fetch image status:",
+          error?.response?.data?.errors?.Order,
         );
       }
     };
@@ -49,12 +53,9 @@ const ThankYou = () => {
     if (orderId) fetchImageStatus();
   }, [orderId]);
 
-
-
   useEffect(() => {
     const fetchUserOrder = async () => {
       try {
-
         if (!token) {
           toast.error("User not authenticated");
           router.replace("/login");
@@ -62,28 +63,69 @@ const ThankYou = () => {
         }
         Fetcher.axiosSetup.defaults.headers.common.Authorization = `Bearer ${token}`;
 
-
         const res = await GetUserOrderApi();
         setOrderId(res?.data?.id);
         setItems(res?.data?.items);
-        setCheckOut(res?.data?.consultation?.fields?.checkout)
+        setCheckOut(res?.data?.consultation?.fields?.checkout);
 
+        // CustomerLabs — fire Lead event on successful order
+        const clOrderId = res?.data?.id;
+        const clItems = res?.data?.items || [];
+        const clCheckout = res?.data?.consultation?.fields?.checkout;
 
+        // Main product = item where product and name are different (dose item)
+        // Addon = item where product and name are the same
+        const mainItem = clItems.find((item) => item?.product !== item?.name);
+        const addonItems = clItems.filter(
+          (item) => item?.product === item?.name,
+        );
+
+        const productName = mainItem?.product || "Weight Loss Treatment";
+        const doseName = mainItem?.name || "";
+        const doseQuantity = mainItem?.quantity || 1;
+
+        const addonsString =
+          addonItems.length > 0
+            ? addonItems
+                .map((item) => `${item?.name} x${item?.quantity || 1}`)
+                .join(", ")
+            : "None";
+
+        trackCustomerLabsLead({
+          formName: "Thank You - Order Placed",
+          formId: "mayfair_thankyou_order",
+          dedupeKey: clOrderId
+            ? `customerlabs_lead_thankyou_${clOrderId}`
+            : null,
+          identity: {
+            firstName: userData?.fname || patientInfo?.firstName || "",
+            lastName: userData?.lname || patientInfo?.lastName || "",
+            email: userData?.email || "",
+            phone: userData?.phone || patientInfo?.phoneNo || "",
+            userId: userData?.id || "",
+          },
+          properties: {
+            event_source: "thank_you_page",
+            order_id: String(clOrderId || ""),
+            product_id: String(productId || ""),
+            product_name: productName,
+            treatment_name: productName,
+            dose: `${doseName} x${doseQuantity}`,
+            addons: addonsString,
+            order_total: String(clCheckout?.total || ""),
+          },
+        });
       } catch (error) {
-        toast.error(error?.response?.data?.errors?.Order || "An error occurred");
+        toast.error(
+          error?.response?.data?.errors?.Order || "An error occurred",
+        );
         router.replace("/dashboard");
         console.error("Failed to fetch user order:", error);
       }
     };
 
-
-      fetchUserOrder();
-    
-
+    fetchUserOrder();
   }, [token]);
-
-
-
 
   const handleGoBack = () => {
     // if ( !imageUploaded) {
@@ -123,9 +165,7 @@ const ThankYou = () => {
                 <thead className="bg-gray-100 text-gray-700 font-semibold">
                   <tr>
                     <th className="px-6 py-4 text-left bold-font">Items</th>
-                    <th className="px-6 py-4 text-right bold-font">
-                      Quantity
-                    </th>
+                    <th className="px-6 py-4 text-right bold-font">Quantity</th>
                     <th className="px-6 py-4 text-right bold-font">Amount</th>
                     <th className="px-6 py-4 text-right"></th>
                   </tr>
@@ -183,12 +223,12 @@ const ThankYou = () => {
                       <td></td>
                       <td className="px-6 py-3 text-right reg-font text-primary">
                         {checkOut?.discount?.type === "percentage"
-                          ? `${parseFloat(
-                            checkOut?.discount?.discount
-                          ).toFixed(2)}%`
+                          ? `${parseFloat(checkOut?.discount?.discount).toFixed(
+                              2,
+                            )}%`
                           : `-£${parseFloat(
-                            checkOut?.discount?.discount
-                          ).toFixed(2)}`}
+                              checkOut?.discount?.discount,
+                            ).toFixed(2)}`}
                       </td>
                     </tr>
                   )}
@@ -203,19 +243,13 @@ const ThankYou = () => {
                       </td>
                       <td></td>
                       <td className="px-6 py-3 text-right reg-font ">
-
-                        £{parseFloat(checkOut?.shipment?.price).toFixed(
-                          2)}
-
+                        £{parseFloat(checkOut?.shipment?.price).toFixed(2)}
                       </td>
                     </tr>
                   )}
 
                   <tr className="bg-gray-100 font-bold text-gray-900">
-                    <td
-                      colSpan={2}
-                      className="px-6 py-3 text-right bold-font"
-                    >
+                    <td colSpan={2} className="px-6 py-3 text-right bold-font">
                       Total
                     </td>
                     <td className="px-6 py-3 text-right bold-font">
@@ -228,9 +262,7 @@ const ThankYou = () => {
             </div>
           </div>
           {!imageUploaded && (
-
             <>
-
               <blockquote
                 style={{
                   padding: "10px",
@@ -247,24 +279,23 @@ const ThankYou = () => {
                 </h2>{" "}
                 <p className="thin-font text-gray-700">
                   {" "}
-                  To complete your order, please upload a clear, recent full-body
-                  photo as part of our prescription approval process. This helps our
-                  prescribers verify your BMI and ensure the safe and appropriate
-                  supply of your treatment.
+                  To complete your order, please upload a clear, recent
+                  full-body photo as part of our prescription approval process.
+                  This helps our prescribers verify your BMI and ensure the safe
+                  and appropriate supply of your treatment.
                 </p>
                 <p className="thin-font text-gray-700 my-3">
                   {" "}
-                  Once your photo has been reviewed and approved, your order will be
-                  processed and dispensed by our pharmacy.
+                  Once your photo has been reviewed and approved, your order
+                  will be processed and dispensed by our pharmacy.
                 </p>
                 <p className="thin-font text-gray-700 my-3 ">
                   {" "}
-                  Your privacy is important to us — all photos are stored securely,
-                  encrypted, and handled in strict confidence in line with data
-                  protection regulations.
+                  Your privacy is important to us — all photos are stored
+                  securely, encrypted, and handled in strict confidence in line
+                  with data protection regulations.
                 </p>
               </blockquote>
-
 
               <div className="my-6 flex justify-center ">
                 <button
@@ -272,13 +303,16 @@ const ThankYou = () => {
                 w-full  text-start sm:text-center"
                   onClick={handleGoUpload}
                 >
-                  <RiErrorWarningLine className="text-black sm:mr-0 mr-2  sm:w-14 w-14 " size={20} />
-                  Click here to upload your full-body image to complete your order
+                  <RiErrorWarningLine
+                    className="text-black sm:mr-0 mr-2  sm:w-14 w-14 "
+                    size={20}
+                  />
+                  Click here to upload your full-body image to complete your
+                  order
                 </button>
               </div>
-            </>)}
-
-
+            </>
+          )}
 
           <div className="text-left space-y-4 text-gray-700 text-sm leading-relaxed thin-font">
             {/* <p>
@@ -322,7 +356,7 @@ const ThankYou = () => {
                   className=""
                   onClick={handleGoBack}
                   label="Continue to view order details"
-                // disabled={!imageUploaded}
+                  // disabled={!imageUploaded}
                 />
               </div>
             </>
