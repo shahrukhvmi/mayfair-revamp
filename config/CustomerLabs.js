@@ -35,6 +35,7 @@ export function trackCustomerLabsLead({
   identity = {},
   properties = {},
   dedupeKey = null,
+  productProperties = [],
   eventName = "Lead",
 } = {}) {
   // Guard: server-side render or script not ready.
@@ -96,10 +97,13 @@ export function trackCustomerLabsLead({
     };
   }
 
-  const payload = { customProperties };
+  const payload = {
+    customProperties,
+    ...(productProperties.length > 0 && { productProperties }),
+  };
 
   // --- Fire --------------------------------------------------------------
-  window._cl.identify(payload);
+  window._cl.identify({ customProperties });
   window._cl.trackClick(eventName, payload);
 
   if (dedupeKey) {

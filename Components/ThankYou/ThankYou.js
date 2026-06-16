@@ -91,6 +91,23 @@ const ThankYou = () => {
                 .join(", ")
             : "None";
 
+        // Build productProperties array for CL
+        const clProductProperties = clItems.map((item) => {
+          const isMainProduct = item?.product !== item?.name;
+          return {
+            product_id: {
+              t: "string",
+              v: String(item?.extra_id || item?.id || ""),
+            },
+            product_name: { t: "string", v: item?.product || item?.name || "" },
+            product_quantity: { t: "number", v: item?.quantity || 1 },
+            product_price: { t: "number", v: parseFloat(item?.price) || 0 },
+            ...(isMainProduct && {
+              product_variant: { t: "string", v: item?.name || "" },
+            }),
+          };
+        });
+
         trackCustomerLabsLead({
           formName: "Thank You - Order Placed",
           formId: "mayfair_thankyou_order",
@@ -114,6 +131,7 @@ const ThankYou = () => {
             addons: addonsString,
             order_total: String(clCheckout?.total || ""),
           },
+          productProperties: clProductProperties,
         });
       } catch (error) {
         toast.error(
