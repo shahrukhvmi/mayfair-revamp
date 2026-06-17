@@ -5,25 +5,8 @@ import queryClient from "@/utils/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "react-hot-toast"; // <-- ✅ YEH IMPORT KARO
 import RouteGuard from "@/utils/RouteGuard";
-import { useRouter } from "next/router";
-import { useEffect } from "react";
 
 export default function App({ Component, pageProps }) {
-  const router = useRouter();
-
-  useEffect(() => {
-    const handleRouteChange = () => {
-      if (window._cl) {
-        window._cl.pageview();
-      }
-    };
-
-    router.events.on("routeChangeComplete", handleRouteChange);
-    return () => {
-      router.events.off("routeChangeComplete", handleRouteChange);
-    };
-  }, [router.events]);
-
   return (
     <QueryClientProvider client={queryClient}>
       <RouteGuard>

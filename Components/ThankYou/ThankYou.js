@@ -13,7 +13,7 @@ import toast from "react-hot-toast";
 import useUserDataStore from "@/store/userDataStore";
 import usePatientInfoStore from "@/store/patientInfoStore";
 import useProductId from "@/store/useProductIdStore";
-import { trackCustomerLabsLead } from "@/config/CustomerLabs";
+import { trackCustomerLabsPurchased } from "@/config/CustomerLabs";
 
 const ThankYou = () => {
   const { orderId, checkOut, setOrderId, setCheckOut } = useCartStore();
@@ -68,7 +68,7 @@ const ThankYou = () => {
         setItems(res?.data?.items);
         setCheckOut(res?.data?.consultation?.fields?.checkout);
 
-        // CustomerLabs — fire Lead event on successful order
+        // CustomerLabs — fire Purchased event on successful order
         const clOrderId = res?.data?.id;
         const clItems = res?.data?.items || [];
         const clCheckout = res?.data?.consultation?.fields?.checkout;
@@ -91,11 +91,28 @@ const ThankYou = () => {
                 .join(", ")
             : "None";
 
-        trackCustomerLabsLead({
+        // Build productProperties array for CL
+        const productProperties = clItems.map((item) => {
+          const isMainProduct = item?.product !== item?.name;
+          return {
+            product_id: {
+              t: "string",
+              v: String(item?.extra_id || item?.id || ""),
+            },
+            product_name: { t: "string", v: item?.product || item?.name || "" },
+            product_quantity: { t: "number", v: item?.quantity || 1 },
+            product_price: { t: "number", v: parseFloat(item?.price) || 0 },
+            ...(isMainProduct && {
+              product_variant: { t: "string", v: item?.name || "" },
+            }),
+          };
+        });
+
+        trackCustomerLabsPurchased({
           formName: "Thank You - Order Placed",
           formId: "mayfair_thankyou_order",
           dedupeKey: clOrderId
-            ? `customerlabs_lead_thankyou_${clOrderId}`
+            ? `customerlabs_purchased_thankyou_${clOrderId}`
             : null,
           identity: {
             firstName: userData?.fname || patientInfo?.firstName || "",
@@ -106,14 +123,16 @@ const ThankYou = () => {
           },
           properties: {
             event_source: "thank_you_page",
+            currency: "GBP",
+            value: clCheckout?.total || 0,
+            transaction_id: String(clOrderId || ""),
             order_id: String(clOrderId || ""),
-            product_id: String(productId || ""),
             product_name: productName,
             treatment_name: productName,
             dose: `${doseName} x${doseQuantity}`,
             addons: addonsString,
-            order_total: String(clCheckout?.total || ""),
           },
+          productProperties,
         });
       } catch (error) {
         toast.error(
