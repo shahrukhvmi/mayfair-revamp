@@ -32,7 +32,7 @@ export default function Document() {
             fbq('track', 'PageView');`,
           }}
         /> */}
-        <script
+        {/* <script
           dangerouslySetInnerHTML={{
             __html: `!function(f,b,e,v,n,t,s)
             {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
@@ -45,7 +45,7 @@ export default function Document() {
             fbq('init', '1349927563784841');
             fbq('track', 'PageView');`,
           }}
-        />
+        /> */}
 
         {/* CustomerLabs Tag sceipt */}
         <script
@@ -90,14 +90,14 @@ export default function Document() {
           />
         </noscript>
 
-        <noscript>
+        {/* <noscript>
           <img
             height="1"
             width="1"
             style={{ display: "none" }}
             src="https://www.facebook.com/tr?id=1349927563784841&ev=PageView&noscript=1"
           />
-        </noscript>
+        </noscript> */}
 
         <Main />
         <NextScript />
