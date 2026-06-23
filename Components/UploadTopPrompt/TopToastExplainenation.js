@@ -317,8 +317,8 @@ All orders are reviewed by our clinical team to ensure safe and appropriate pres
                         Clinical step
                       </div>
 
-                      <h2 className="text-2xl leading-tight text-white mont-bold-font sm:text-[28px]">
-                        Dose Verification
+                      <h2 className="text-2xl leading-tight text-white mont-bold-font sm:text-[26px] mt-2">
+                        Evidence of Previous Treatment Required
                       </h2>
 
                       <p className="mt-2 max-w-[430px] text-sm leading-5 text-white/75 mont-reg-font">
