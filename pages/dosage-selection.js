@@ -1,5 +1,5 @@
 import StepsHeader from "@/layout/stepsHeader";
-import React, { useEffect, useState } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import { Inter } from "next/font/google";
 import { useForm } from "react-hook-form";
 import NextButton from "@/Components/NextButton/NextButton";
@@ -19,6 +19,10 @@ import useProductId from "@/store/useProductIdStore";
 import MetaLayout from "@/Meta/MetaLayout";
 import { meta_url } from "@/config/constants";
 import { Checkbox, FormControlLabel } from "@mui/material";
+import {
+  HiOutlineExclamationCircle,
+  HiOutlineInformationCircle,
+} from "react-icons/hi";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 
@@ -340,22 +344,53 @@ export default function DosageSelection() {
                         );
                         const cartQty = cartDose?.qty || 0;
 
+                        const is72mgWegovy =
+                          dose?.name === "7.2mg" && productId == 1;
+                        const is72mgSelected = is72mgWegovy && cartQty > 0;
+
                         return (
-                          <Dose
-                            key={index}
-                            doseData={dose}
-                            allow={allowed}
-                            qty={cartQty}
-                            totalSelectedQty={totalSelectedQty}
-                            isSelected={cartQty > 0}
-                            onAdd={() => handleAddDose(dose)}
-                            onIncrement={() =>
-                              increaseQuantity(dose.id, "dose")
-                            }
-                            onDecrement={() =>
-                              decreaseQuantity(dose.id, "dose")
-                            }
-                          />
+                          <React.Fragment key={index}>
+                            <Dose
+                              doseData={dose}
+                              allow={allowed}
+                              qty={cartQty}
+                              totalSelectedQty={totalSelectedQty}
+                              isSelected={cartQty > 0}
+                              onAdd={() => handleAddDose(dose)}
+                              onIncrement={() =>
+                                increaseQuantity(dose.id, "dose")
+                              }
+                              onDecrement={() =>
+                                decreaseQuantity(dose.id, "dose")
+                              }
+                            />
+
+                            {is72mgSelected && (
+                              <motion.div
+                                initial={{ opacity: 0, y: -5 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                className="mt-3"
+                              >
+                                <div className="rounded-xl bg-gradient-to-r from-amber-50 to-orange-50 p-3">
+                                  <div className="flex gap-3">
+                                    <HiOutlineInformationCircle className="mt-0.5 h-5 w-5 text-amber-600" />
+
+                                    <div>
+                                      <p className="text-sm font-semibold text-gray-900">
+                                        7.2mg Pack Information
+                                      </p>
+
+                                      <p className="mt-1 text-sm text-gray-600">
+                                        Includes 4 single-dose pens. Other
+                                        strengths are supplied as 1 pen
+                                        containing 4 doses.
+                                      </p>
+                                    </div>
+                                  </div>
+                                </div>
+                              </motion.div>
+                            )}
+                          </React.Fragment>
                         );
                       })}
                   </div>
@@ -400,9 +435,10 @@ export default function DosageSelection() {
                     </div>
                   )}
 
-                  <div className="bg-white rounded-lg shadow-lg  px-4 py-6 my-4">
-                    {Array.isArray(variation?.addons) &&
-                      variation?.addons.length > 0 && (
+                  {Array.isArray(variation?.addons) &&
+                    variation?.addons.length > 0 &&
+                    productId != 7 && (
+                      <div className="bg-white rounded-lg shadow-lg  px-4 py-6 my-4">
                         <>
                           <h1 className="my-4 niba-reg-font text-2xl text-gray-800">
                             Select{" "}
@@ -448,8 +484,8 @@ export default function DosageSelection() {
                               );
                             })}
                         </>
-                      )}
-                  </div>
+                      </div>
+                    )}
                 </div>
               </div>
             </form>
