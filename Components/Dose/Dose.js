@@ -15,6 +15,7 @@ import useCartStore from "@/store/useCartStore";
 import { getNotified } from "@/api/GetNotified";
 import RemoveAbandonCartApi from "@/api/RemoveAbandonCartApi";
 import { useMutation } from "@tanstack/react-query";
+import useProductId from "@/store/useProductIdStore";
 
 const Dose = ({
   doseData,
@@ -42,7 +43,7 @@ const Dose = ({
       console.log(error, "This is error");
     },
   });
-
+  const { productId } = useProductId();
   const allowed = parseInt(allow || 100);
   const doseStatus = doseData?.stock?.status;
   const isOutOfStock = doseStatus === 0 || doseData?.stock?.quantity === 0;
@@ -134,7 +135,7 @@ const Dose = ({
   return (
     <>
       <div className="relative">
-        {doseStatus === 0 && (
+        {doseStatus === 0 && Number(productId) !== 11 && (
           <div className="absolute group inline-block z-50  right-[0px] top-[-26px]">
             <button
               type="button"
@@ -204,7 +205,7 @@ const Dose = ({
 
               {/* Out of stock badge */}
               <div className="absolute left-[14px] top-[-10px] bg-primary text-white px-3 py-0.5 text-xs font-semibold rounded z-20">
-                Out of stock
+                {Number(productId) === 11 ? "Coming Soon" : "Out of stock"}
               </div>
             </>
           )}
