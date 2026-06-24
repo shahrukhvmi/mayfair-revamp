@@ -135,7 +135,7 @@ const Dose = ({
   return (
     <>
       <div className="relative">
-        {doseStatus === 0 && Number(productId) !== 11 && (
+        {doseStatus === 0 && Number(productId) !== 7 && (
           <div className="absolute group inline-block z-50  right-[0px] top-[-26px]">
             <button
               type="button"
@@ -205,7 +205,7 @@ const Dose = ({
 
               {/* Out of stock badge */}
               <div className="absolute left-[14px] top-[-10px] bg-primary text-white px-3 py-0.5 text-xs font-semibold rounded z-20">
-                {Number(productId) === 11 ? "Coming Soon" : "Out of stock"}
+                {Number(productId) === 7 ? "Coming Soon" : "Out of stock"}
               </div>
             </>
           )}

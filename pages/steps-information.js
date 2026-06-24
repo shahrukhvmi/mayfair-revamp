@@ -176,7 +176,7 @@ export default function StepsInformation() {
     setShowLoader(true);
     if (productId != null) {
       consultationMutation.mutate(formData);
-      if (productId == 11) {
+      if (productId == 7) {
         medicalQuestionsMutation.mutate(formData);
       } else {
         medicalQuestionsMutation.mutate();
