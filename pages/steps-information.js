@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { Inter } from "next/font/google";
 import { useMutation } from "@tanstack/react-query";
 import { userConsultationApi } from "@/api/consultationApi";
-import { getMedicalQuestions } from "@/api/getQuestions";
+import { postMedicalQuestions } from "@/api/getQuestions";
 import useBmiStore from "@/store/bmiStore";
 import useCheckoutStore from "@/store/checkoutStore";
 import useConfirmationInfoStore from "@/store/confirmationInfoStore";
@@ -150,7 +150,7 @@ export default function StepsInformation() {
   console.log(showProductSelection, "showProductSelection");
 
   /* ───────────────  medical questions mutation ────────────── */
-  const medicalQuestionsMutation = useMutation(getMedicalQuestions, {
+  const medicalQuestionsMutation = useMutation(postMedicalQuestions, {
     onSuccess: (data) => {
       console.log(data, "Medical Questions");
 
@@ -176,7 +176,11 @@ export default function StepsInformation() {
     setShowLoader(true);
     if (productId != null) {
       consultationMutation.mutate(formData);
-      medicalQuestionsMutation.mutate();
+      if (productId == 11) {
+        medicalQuestionsMutation.mutate(formData);
+      } else {
+        medicalQuestionsMutation.mutate();
+      }
     }
   }, [productId]);
 

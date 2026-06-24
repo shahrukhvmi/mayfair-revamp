@@ -23,6 +23,7 @@ import {
   HiOutlineExclamationCircle,
   HiOutlineInformationCircle,
 } from "react-icons/hi";
+import useAbandonCardStore from "@/store/abandonCardStore";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 
