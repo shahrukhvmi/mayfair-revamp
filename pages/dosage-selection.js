@@ -35,7 +35,7 @@ export default function DosageSelection() {
   const { addToCart, increaseQuantity, decreaseQuantity, items, totalAmount } =
     useCartStore();
   const { productId } = useProductId();
-
+  console.log(productId, "productId in dosage selection");
   const { reorder } = useReorder();
 
   console.log(items, "items");
@@ -68,17 +68,17 @@ export default function DosageSelection() {
   const allowed = variation?.allowed;
   const [showDoseModal, setShowDoseModal] = useState(false);
   const [selectedDose, setSelectedDose] = useState(null);
-
+  const { abandonCard, extra } = useAbandonCardStore();
   const abandonCartMutation = useMutation(abandonCart, {
     onSuccess: (data) => {
       if (data) {
-        router.push("/checkout");
+        // router.push("/checkout");
         console.log(data, "This is Abandon Cart Data");
       }
     },
     onError: (error) => {
       if (error) {
-        router.push("/checkout");
+        // router.push("/checkout");
         console.log(error, "This is error");
       }
     },
@@ -87,10 +87,10 @@ export default function DosageSelection() {
   //Handle Submit Button
   const onSubmit = () => {
     setIsButtonLoading(true);
-    // router.push("/checkout");
+    router.push("/checkout");
 
-    abandonCartMutation.mutate(abandonData);
-    // console.log(abandonData, "Abbandon Cart Data");
+    //⚠️ commit krdia h yaha sy q k ab har dose k click k api direct chaly gi⚠️
+    // abandonCartMutation.mutate(abandonData);
   };
 
   //Allowed checking here 🔥
@@ -135,7 +135,7 @@ export default function DosageSelection() {
 
     const isFiveMg = dose?.name === "5 mg";
     const firstTwoDoses = variation?.variations?.slice(0, 1).map((v) => v.name);
-    const isFirstTwoDose = firstTwoDoses.includes(dose?.name);
+    const isFirstTwoDose = firstTwoDoses?.includes(dose?.name);
 
     if ((isFirstTwoDose && !isFiveMg) || reorder == true) {
       addToCart({
@@ -151,13 +151,19 @@ export default function DosageSelection() {
         expiry: dose.expiry,
         isSelected: true,
       });
-      setAbandonData([
-        ...abandonData,
-        {
-          eid: dose.id,
-          pid: productId,
-        },
-      ]);
+      // setAbandonData([
+      //   ...abandonData,
+      //   {
+      //     eid: dose.id,
+      //     pid: productId,
+      //   },
+      // ]);
+
+      // ✅ Run abandonCartMutation right after adding
+      abandonCartMutation.mutate({
+        eid: dose.id,
+        pid: productId || abandonCard?.productId,
+      });
     } else {
       addToCart({
         id: dose.id,
@@ -176,14 +182,17 @@ export default function DosageSelection() {
         isSelected: true,
       });
 
-      setAbandonData([
-        ...abandonData,
-        {
-          eid: dose.id,
-          pid: productId,
-        },
-      ]);
-
+      // setAbandonData([
+      //   ...abandonData,
+      //   {
+      //     eid: dose.id,
+      //     pid: productId,
+      //   },
+      // ]);
+      abandonCartMutation.mutate({
+        eid: dose.id,
+        pid: productId || abandonCard?.productId,
+      });
       // ✅ ✅ ✅ Check if modal was already shown for this dose
       if (!shownDoseIds.includes(dose.id)) {
         setSelectedDose({
@@ -217,6 +226,17 @@ export default function DosageSelection() {
       isSelected: true,
     });
   };
+
+  // 🔥⚠️⚠️⚠️⚠️⚠️Abandone card selected dose auto add krne k liye useEffect ⚠️⚠️⚠️⚠️⚠️
+  useEffect(() => {
+    if (!abandonCard || !extra) return;
+    if (!variation?.variations) return;
+
+    if (abandonCard?.type === "abandoned-cart") {
+      handleAddDose(extra);
+    }
+  }, [abandonCard, extra]);
+
   const back = () => {
     router.push("/confirmation-summary");
   };

@@ -55,8 +55,8 @@ const ConfirmationSummary = () => {
   const { setIsPasswordReset } = usePasswordReset();
   const { productId, clearProductId } = useProductId();
   const { setLastBmi, clearLastBmi } = useLastBmi();
-  const { clearUserData } = useUserDataStore();
-
+  const { clearUserData, userData } = useUserDataStore();
+  console.log(userData, "userdata in confirmation summary");
   //To get firstname and lastName from signup store
   const {
     clearFirstName,
@@ -69,6 +69,8 @@ const ConfirmationSummary = () => {
 
   console.log(bmi);
 
+  // Customer lab data mutation
+
   const stepsDataMutation = useMutation(sendStepData, {
     onSuccess: (data) => {
       console.log(data, "dataaaaaaaaaaaaaa");
@@ -77,13 +79,16 @@ const ConfirmationSummary = () => {
         console.log(data?.data?.lastConsultation?.fields, "data?.data?.data");
         setBmi(data?.data?.lastConsultation?.fields?.bmi);
         setConfirmationInfo(
-          data?.data?.lastConsultation?.fields?.confirmationInfo
+          data?.data?.lastConsultation?.fields?.confirmationInfo,
         );
         setGpDetails(data?.data?.lastConsultation?.fields?.gpdetails);
         setMedicalInfo(data?.data?.lastConsultation?.fields?.medicalInfo);
         setPatientInfo(data?.data?.lastConsultation?.fields?.patientInfo);
         setLastBmi(data?.data?.lastConsultation?.fields?.bmi);
       }
+
+      // CustomerLabs Lead/Form Submit trigger
+
       router.push("/gathering-data");
       return;
     },

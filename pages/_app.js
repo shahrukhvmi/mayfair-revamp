@@ -10,7 +10,6 @@ export default function App({ Component, pageProps }) {
   return (
     <QueryClientProvider client={queryClient}>
       <RouteGuard>
-
         <Component {...pageProps} />
       </RouteGuard>
 

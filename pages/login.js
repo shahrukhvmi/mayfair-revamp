@@ -26,6 +26,8 @@ import { meta_url } from "@/config/constants";
 import useReturning from "@/store/useReturningPatient";
 import useCartStore from "@/store/useCartStore";
 import { useParams, useSearchParams } from "next/navigation";
+import useAbandonCardStore from "@/store/abandonCardStore";
+import useProductId from "@/store/useProductIdStore";
 
 export default function LoginScreen() {
   const { setIsReturningPatient } = useReturning();
@@ -39,7 +41,8 @@ export default function LoginScreen() {
   const { setImpersonate } = useImpersonate();
   const { setAuthUserDetail } = useAuthUserDetailStore();
   const router = useRouter();
-
+  const { abandonCard, setAbandonCard, hasHydrated } = useAbandonCardStore();
+  const { setProductId } = useProductId();
   const {
     register,
     handleSubmit,
@@ -186,15 +189,63 @@ export default function LoginScreen() {
   console.log(review, "review");
   useEffect(() => {
     if (!token) return;
+
+    // 🔥 FIRST PRIORITY: abandoned cart
+    if (abandonCard?.type === "abandoned-cart") {
+      console.log("check1");
+      router.replace("/gathering-data");
+      return;
+    }
+
+    // ⏳ wait until review is known
     if (review === null) return;
 
+    // ✅ NORMAL FLOW
     if (review) {
       router.replace("/review");
     } else {
       router.replace("/dashboard");
     }
-  }, [token, review]);
+  }, [token, review, abandonCard?.type]);
 
+  // abandonCard get Url; ⚠️⚠️////////////////////////////////////////////////////////
+
+  useEffect(() => {
+    const params = Object.fromEntries(searchParams.entries());
+
+    const productId = params.product_id ? Number(params.product_id) : null;
+    const fromEmail = params.fromemail;
+    const type = params.type;
+    const eid = params.eid ? Number(params.eid) : null;
+    setProductId(productId);
+    if (type == "abandoned-cart" && productId && !abandonCard) {
+      setAbandonCard({
+        productId,
+        fromEmail,
+        type,
+        eid,
+      });
+    } else {
+      console.log("⛔ SKIPPED STORE UPDATE");
+    }
+  }, [searchParams, abandonCard]);
+
+  // herer i used ussEffect for if login or check abandonCard url direct
+
+  const typeFromUrl = searchParams.get("type");
+
+  useEffect(() => {
+    if (!hasHydrated || hasRedirected.current) return;
+
+    const isAbandoned =
+      abandonCard?.type == "abandoned-cart" || typeFromUrl == "abandoned-cart";
+
+    if (token && isAbandoned) {
+      hasRedirected.current = true;
+
+      router.replace("/gathering-data"); // 👈 better than push
+    }
+  }, [hasHydrated, token, abandonCard?.type, typeFromUrl]);
   return (
     <>
       <MetaLayout canonical={`${meta_url}login/`} />
@@ -307,7 +358,12 @@ export default function LoginScreen() {
             closeLoginModal();
             setShowLoader(false);
 
-            router.push("/dashboard");
+            if (abandonCard?.type) {
+              console.log("check2");
+              router.push("/gathering-data");
+            } else {
+              router.push("/dashboard");
+            }
           } catch (error) {
             const errorMsg = error?.response?.data?.errors;
             const firstMsg =
