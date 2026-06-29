@@ -132,58 +132,94 @@ const Dose = ({
     }
   };
 
+  const isWegovyPill =
+    doseData?.product_name?.toLowerCase().trim() === "wegovy pill" ||
+    doseData?.name?.toLowerCase().trim() === "wegovy pill";
+
+  const price = Number(doseData?.price || 0);
+  const preLaunchPrice = Number(doseData?.pre_launch_price || 0);
+
+  const hasPreLaunchPrice =
+    isWegovyPill &&
+    doseData?.pre_launch_price !== null &&
+    doseData?.pre_launch_price !== undefined &&
+    String(doseData?.pre_launch_price).trim() !== "" &&
+    preLaunchPrice > 0;
+
+  const isPriceComingSoon =
+    isWegovyPill &&
+    price === 0 &&
+    (doseData?.pre_launch_price === null ||
+      doseData?.pre_launch_price === undefined ||
+      String(doseData?.pre_launch_price).trim() === "" ||
+      preLaunchPrice === 0);
+
   return (
     <>
       <div className="relative">
+        {/* <div className="absolute right-2 top-0 z-[60] flex items-center gap-2 flex-wrap justify-end"> */}
+        {doseData?.pre_launch_price != null &&
+          Number(productId) === 11 &&
+          !isOutOfStock && (
+            <div className="absolute right-[20px] top-[-10px] bg-green-100 border border-green-300 text-green-700 px-3 py-0.5 text-xs font-semibold rounded z-30 inline-flex items-center gap-1">
+              <FaInfoCircle className="text-[10px]" />
+              <span>Pre Launch Price</span>
+            </div>
+          )}
+
         {doseStatus === 0 && Number(productId) !== 7 && (
-          <div className="absolute group inline-block z-50  right-[0px] top-[-26px]">
+          <div className="absolute right-4 top-[-10px] group inline-block z-50">
             <button
               type="button"
               onClick={(e) => {
                 e.stopPropagation();
                 handleNotifiedClick(doseData);
               }}
-              className="mt-2 px-2 py-2"
+              disabled={isLoading}
+              className="inline-flex items-end justify-end gap-1 px-3 py-1 text-xs text-green-700 cursor-pointer shadow-sm bg-green-100 hover:bg-green-200 border border-green-300 rounded"
             >
-              <span className="inline-flex items-center justify-center px-3 py-0.5 text-xs text-green-600 cursor-pointer shadow-sm bg-green-200 hover:bg-green-200 rounded">
-                {isLoading ? (
-                  <>
-                    <svg
-                      className="animate-spin h-4 w-4 text-green-600"
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                    >
-                      <circle
-                        className="opacity-25"
-                        cx="12"
-                        cy="12"
-                        r="10"
-                        stroke="currentColor"
-                        strokeWidth="4"
-                      />
-                      <path
-                        className="opacity-75"
-                        fill="currentColor"
-                        d="M4 12a8 8 0 018-8v8H4z"
-                      />
-                    </svg>
-                    <span className="font-semibold px-2">Loading...</span>
-                  </>
-                ) : (
-                  <>
-                    <FaInfoCircle />
-                    <span className="font-semibold px-1">Get Notified</span>
-                  </>
-                )}
-              </span>
+              {isLoading ? (
+                <>
+                  <svg
+                    className="animate-spin h-4 w-4 text-green-600"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                  >
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                    />
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8v8H4z"
+                    />
+                  </svg>
+                  <span className="font-semibold whitespace-nowrap">
+                    Loading...
+                  </span>
+                </>
+              ) : (
+                <>
+                  <FaInfoCircle />
+                  <span className="font-semibold whitespace-nowrap">
+                    Get Notified
+                  </span>
+                </>
+              )}
             </button>
 
-            <div className="absolute left-1/2 transform -translate-x-1/2 px-2 py-1 text-xs text-white bg-gray-800 rounded opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap z-10">
+            <div className="absolute left-0 top-12 mt-1 px-2 py-1 text-xs text-white bg-gray-800 rounded opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap z-[70]">
               You'll be notified when this item is back in stock.
             </div>
           </div>
         )}
+        {/* </div> */}
         <div
           onClick={isOutOfStock || isAllowExceeded ? undefined : handleAdd}
           className={`flex flex-col sm:flex-row items-start sm:items-center justify-between w-full p-4 border-2 mt-3 transition-all duration-300 ease-in-out relative rounded-md border-primary gap-4 sm:gap-0
@@ -205,7 +241,7 @@ const Dose = ({
 
               {/* Out of stock badge */}
               <div className="absolute left-[14px] top-[-10px] bg-primary text-white px-3 py-0.5 text-xs font-semibold rounded z-20">
-                {Number(productId) === 7 ? "Coming Soon" : "Out of stock"}
+                {Number(productId) == 7 ? "Coming Soon" : "Out of stock"}
               </div>
             </>
           )}
@@ -243,10 +279,36 @@ const Dose = ({
 
           {/* Right Side - Price and Quantity */}
           <div className="flex items-center justify-end gap-3 w-full sm:w-auto">
-            <span
+            {/* <span
               className={`font-semibold text-md sm:text-lg ${isSelected ? "text-primary" : "text-gray-700"}`}
             >
               £{parseFloat(doseData?.price).toFixed(2)}
+            </span> */}
+
+            <span
+              className={`font-semibold text-md sm:text-lg ${
+                isSelected ? "text-primary" : "text-gray-700"
+              }`}
+            >
+              {isPriceComingSoon ? (
+                <span className="text-primary text-sm font-semibold">
+                  Price coming soon
+                </span>
+              ) : hasPreLaunchPrice ? (
+                <div className="flex items-center gap-1">
+                  <span className="line-through text-gray-500 mont-medium-font text-sm">
+                    £{price.toFixed(2)}
+                  </span>
+
+                  <span className="text-primary mont-bold-font">
+                    £{preLaunchPrice.toFixed(2)}
+                  </span>
+                </div>
+              ) : (
+                <span className="text-primary font-bold">
+                  £{price.toFixed(2)}
+                </span>
+              )}
             </span>
 
             {isSelected && (

@@ -133,6 +133,22 @@ export default function DosageSelection() {
       toast.error(`Only ${stockQuantity} units available in stock.`);
       return;
     }
+    //Start  :::::: new weegovy pill pre launch price added price ⚠️⚠️⚠️⚠️⚠️
+
+    const isWegovyPill =
+      dose?.product_name?.toLowerCase().trim() === "wegovy pill";
+
+    const hasPreLaunchPrice =
+      dose?.pre_launch_price !== null &&
+      dose?.pre_launch_price !== undefined &&
+      dose?.pre_launch_price !== "";
+
+    const finalPrice =
+      isWegovyPill && hasPreLaunchPrice
+        ? parseFloat(dose.pre_launch_price)
+        : parseFloat(dose.price);
+
+    // new weegovy pill pre launch price added price End⚠️⚠️⚠️⚠️⚠️
 
     const isFiveMg = dose?.name === "5 mg";
     const firstTwoDoses = variation?.variations?.slice(0, 1).map((v) => v.name);
@@ -143,7 +159,7 @@ export default function DosageSelection() {
         id: dose.id,
         type: "dose",
         name: dose.name,
-        price: parseFloat(dose.price),
+        price: finalPrice,
         allowed: parseInt(dose.allowed),
         item_id: dose.id,
         product: dose?.product_name || "Dose Product",
@@ -170,7 +186,7 @@ export default function DosageSelection() {
         id: dose.id,
         type: "dose",
         name: dose.name,
-        price: parseFloat(dose.price),
+        price: finalPrice,
         allowed: parseInt(dose.allowed),
         item_id: dose.id,
         product: dose?.product_name || "Dose Product",
@@ -331,7 +347,26 @@ export default function DosageSelection() {
                       <br />
 
                       <span className="bold-font text-black">
-                        From £{variation?.price}
+                        From{" "}
+                        <span className="">
+                          £
+                          {(() => {
+                            const preLaunchDose = variation?.variations?.find(
+                              (dose) =>
+                                dose?.product_name?.toLowerCase().trim() ===
+                                  "wegovy pill" &&
+                                dose?.pre_launch_price !== null &&
+                                dose?.pre_launch_price !== undefined &&
+                                dose?.pre_launch_price !== "",
+                            );
+
+                            return preLaunchDose?.pre_launch_price
+                              ? parseFloat(
+                                  preLaunchDose.pre_launch_price,
+                                ).toFixed(2)
+                              : parseFloat(variation?.price || 0).toFixed(2);
+                          })()}
+                        </span>
                       </span>
                       {/* <div
                         className="reg-font text-gray-600 bg-red-50  p-3 rounded-md text-sm"
