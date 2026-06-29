@@ -77,6 +77,7 @@ const MyAccount = () => {
                   key={item?.id || index}
                   id={item?.id}
                   title={item?.name}
+                  pre_launch_price={item?.pre_launch_price || null}
                   image={item?.img}
                   price={item?.price || "N/A"}
                   status={item?.inventories?.[0]?.status}
@@ -89,6 +90,7 @@ const MyAccount = () => {
               <ProductCard
                 id={productData.reorder?.id}
                 title={productData.reorder?.name}
+                pre_launch_price={productData.reorder?.pre_launch_price}
                 image={productData.reorder?.img}
                 price={productData.reorder?.price || "N/A"}
                 status={productData.reorder?.inventories?.[0]?.status}
@@ -124,6 +126,7 @@ const MyAccount = () => {
                   key={product?.id || product?.sequence}
                   id={product?.id}
                   title={product?.name}
+                  pre_launch_price={product?.pre_launch_price}
                   image={product?.img}
                   price={product?.price || "N/A"}
                   status={product?.inventories?.[0]?.status}

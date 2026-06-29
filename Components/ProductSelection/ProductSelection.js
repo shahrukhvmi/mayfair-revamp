@@ -73,6 +73,7 @@ const ProductSelection = ({ showProductSelection }) => {
   const getProducts = useMutation(GetProductsApi, {
     onSuccess: (res) => {
       const resData = res?.data?.data || {};
+      console.log(resData, "resData");
       setProductData(resData);
       setIsLoading(false);
     },
@@ -157,7 +158,7 @@ const ProductSelection = ({ showProductSelection }) => {
                 <div
                   className={`flex flex-wrap gap-6 w-full ${
                     productData.products.filter(
-                      (p) => p?.inventories?.[0]?.status === 1
+                      (p) => p?.inventories?.[0]?.status === 1,
                     ).length === 1
                       ? "justify-center"
                       : "justify-center"
@@ -216,7 +217,7 @@ const ProductSelection = ({ showProductSelection }) => {
                 onClick={hanlePrevData}
                 label="Continue"
                 loading={isButtonLoading}
-                className={'px-5'}
+                className={"px-5"}
               />
             </div>
           </div>
