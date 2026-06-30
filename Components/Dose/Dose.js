@@ -159,7 +159,7 @@ const Dose = ({
       <div className="relative">
         {/* <div className="absolute right-2 top-0 z-[60] flex items-center gap-2 flex-wrap justify-end"> */}
         {doseData?.pre_launch_price != null &&
-          Number(productId) === 11 &&
+          Number(productId) === 7 &&
           !isOutOfStock && (
             <div className="absolute right-[20px] top-[-10px] bg-green-100 border border-green-300 text-green-700 px-3 py-0.5 text-xs font-semibold rounded z-30 inline-flex items-center gap-1">
               <FaInfoCircle className="text-[10px]" />
