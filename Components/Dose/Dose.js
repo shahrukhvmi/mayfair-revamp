@@ -214,7 +214,7 @@ const Dose = ({
               )}
             </button>
 
-            <div className="absolute left-0 top-12 mt-1 px-2 py-1 text-xs text-white bg-gray-800 rounded opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap z-[70]">
+            <div className="absolute right-20 bottom-5 mt-1 px-2 py-1 text-xs text-white bg-gray-800 rounded opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap z-[70]">
               You'll be notified when this item is back in stock.
             </div>
           </div>

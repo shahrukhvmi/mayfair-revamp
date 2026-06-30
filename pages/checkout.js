@@ -115,7 +115,7 @@ const Checkout = () => {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.4 }}
-            className="fixed inset-0 flex items-center justify-center bg-opacity-40 backdrop-blur-sm z-50"
+            className="fixed inset-0 flex items-center justify-center bg-opacity-40 backdrop-blur-sm z-60"
             onClick={() => setShowThankYouModal(false)}
           >
             <motion.div
