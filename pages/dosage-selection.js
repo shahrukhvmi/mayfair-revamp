@@ -324,7 +324,7 @@ export default function DosageSelection() {
               </h1>
             </div>
             <form onSubmit={handleSubmit(onSubmit)}>
-              <div className="grid gap-4 px-4">
+              <div className="">
                 <div className="col-span-12 sm:col-span-6 md:px-4 py-10">
                   <div className="bg-white rounded-lg shadow-lg overflow-hidden mb-6">
                     <div className="bg-primary p-6">
