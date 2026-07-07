@@ -153,19 +153,27 @@ const ProductCard = ({
         )}
 
         {/* Price Ribbon */}
-        {/* {price && (
-          <div className="absolute -right-8 top-7 bg-blue-500 text-white text-xs px-[30px] py-1 rounded-tr rotate-45 z-20 thin-font">
-            From £{pre_launch_price}
-          </div>
-        )} */}
-
         {price && (
+          // <div className="absolute -right-8 top-7 bg-blue-500 text-white text-xs px-[30px] py-1 rounded-tr rotate-45 z-20 thin-font">
+          //   From £{price}
+          // </div>
+          <div className="absolute top-5 -right-10 z-20 w-40 rotate-45 rounded-sm bg-[#47317c]  py-1.5 text-center">
+            <div className="flex items-center justify-center gap-1">
+              <span className="text-[9px] uppercase tracking-wider text-white mont-medium-font">
+                From
+              </span>
+              <span className="text-xs mont-bold-font  tracking-wide text-white">
+                £{price}
+              </span>
+            </div>
+          </div>
+        )}
+
+        {/* {price && (
           <div className="absolute top-5 -right-10 z-20 w-40 rotate-45 rounded-sm bg-[#47317c]  py-1.5 text-center">
             {pre_launch_price ? (
               <div className="flex items-center justify-center gap-1">
-                {/* <span className="text-[11px] mont-reg-font  text-white line-through">
-                  £{price}
-                </span> */}
+              
                 <span className="text-[9px] uppercase tracking-wider text-white mont-medium-font">
                   From
                 </span>
@@ -184,7 +192,7 @@ const ProductCard = ({
               </div>
             )}
           </div>
-        )}
+        )} */}
         {/* Product Image */}
         <div className="h-52 overflow-hidden bg-white">
           <img

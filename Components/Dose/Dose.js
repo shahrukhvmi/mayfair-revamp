@@ -137,35 +137,29 @@ const Dose = ({
     doseData?.name?.toLowerCase().trim() === "wegovy pill";
 
   const price = Number(doseData?.price || 0);
-  const preLaunchPrice = Number(doseData?.pre_launch_price || 0);
+  // const preLaunchPrice = Number(doseData?.pre_launch_price || 0);
 
-  const hasPreLaunchPrice =
-    isWegovyPill &&
-    doseData?.pre_launch_price !== null &&
-    doseData?.pre_launch_price !== undefined &&
-    String(doseData?.pre_launch_price).trim() !== "" &&
-    preLaunchPrice > 0;
+  // const hasPreLaunchPrice =
+  //   isWegovyPill &&
+  //   doseData?.pre_launch_price !== null &&
+  //   doseData?.pre_launch_price !== undefined &&
+  //   String(doseData?.pre_launch_price).trim() !== "" &&
+  //   preLaunchPrice > 0;
 
-  const isPriceComingSoon =
-    isWegovyPill &&
-    price === 0 &&
-    (doseData?.pre_launch_price === null ||
-      doseData?.pre_launch_price === undefined ||
-      String(doseData?.pre_launch_price).trim() === "" ||
-      preLaunchPrice === 0);
+  const isPriceComingSoon = isWegovyPill && price === 0;
 
   return (
     <>
       <div className="relative">
         {/* <div className="absolute right-2 top-0 z-[60] flex items-center gap-2 flex-wrap justify-end"> */}
-        {doseData?.pre_launch_price != null &&
+        {/* {doseData?.pre_launch_price != null &&
           Number(productId) === 7 &&
           !isOutOfStock && (
             <div className="absolute right-[20px] top-[-10px] bg-green-100 border border-green-300 text-green-700 px-3 py-0.5 text-xs font-semibold rounded z-30 inline-flex items-center gap-1">
               <FaInfoCircle className="text-[10px]" />
               <span>Pre Launch Price</span>
             </div>
-          )}
+          )} */}
 
         {doseStatus === 0 && Number(productId) !== 7 && (
           <div className="absolute right-4 top-[-10px] group inline-block z-50">
@@ -294,16 +288,6 @@ const Dose = ({
                 <span className="text-primary text-sm font-semibold">
                   Price coming soon
                 </span>
-              ) : hasPreLaunchPrice ? (
-                <div className="flex items-center gap-1">
-                  <span className="line-through text-gray-500 mont-medium-font text-sm">
-                    £{price.toFixed(2)}
-                  </span>
-
-                  <span className="text-primary mont-bold-font">
-                    £{preLaunchPrice.toFixed(2)}
-                  </span>
-                </div>
               ) : (
                 <span className="text-primary font-bold">
                   £{price.toFixed(2)}

@@ -100,6 +100,10 @@ export default function DosageSelection() {
 
   // ✅ Put here → outside your component or at the top inside your component file
   const generateProductConcent = (variations, selectedDoseName) => {
+    if (productId == 7) {
+      return `If this is your first time taking Wegovy Tablets, you should start with the 1.5mg dose. Starting on a higher dose may increase the risk of side effects.\n\nPlease confirm that you are currently taking Wegovy Tablets from another provider, or have previously used, or currently use, a GLP-1 treatment such as Wegovy or Mounjaro.`;
+    }
+
     const sortedVariations = [...variations].sort((a, b) => {
       console.log(a, b, "sfkjefjfsj");
       const aMg = parseFloat(a.name);
@@ -135,18 +139,18 @@ export default function DosageSelection() {
     }
     //Start  :::::: new weegovy pill pre launch price added price ⚠️⚠️⚠️⚠️⚠️
 
-    const isWegovyPill =
-      dose?.product_name?.toLowerCase().trim() === "wegovy pill";
+    // const isWegovyPill =
+    //   dose?.product_name?.toLowerCase().trim() === "wegovy pill";
 
-    const hasPreLaunchPrice =
-      dose?.pre_launch_price !== null &&
-      dose?.pre_launch_price !== undefined &&
-      dose?.pre_launch_price !== "";
+    // const hasPreLaunchPrice =
+    //   dose?.pre_launch_price !== null &&
+    //   dose?.pre_launch_price !== undefined &&
+    //   dose?.pre_launch_price !== "";
 
-    const finalPrice =
-      isWegovyPill && hasPreLaunchPrice
-        ? parseFloat(dose.pre_launch_price)
-        : parseFloat(dose.price);
+    // const finalPrice =
+    //   isWegovyPill && hasPreLaunchPrice
+    //     ? parseFloat(dose.pre_launch_price)
+    //     : parseFloat(dose.price);
 
     // new weegovy pill pre launch price added price End⚠️⚠️⚠️⚠️⚠️
 
@@ -154,12 +158,12 @@ export default function DosageSelection() {
     const firstTwoDoses = variation?.variations?.slice(0, 1).map((v) => v.name);
     const isFirstTwoDose = firstTwoDoses?.includes(dose?.name);
 
-    if ((isFirstTwoDose && !isFiveMg) || reorder == true || productId == 7) {
+    if ((isFirstTwoDose && !isFiveMg) || reorder == true) {
       addToCart({
         id: dose.id,
         type: "dose",
         name: dose.name,
-        price: finalPrice,
+        price: parseFloat(dose?.price),
         allowed: parseInt(dose.allowed),
         item_id: dose.id,
         product: dose?.product_name || "Dose Product",
@@ -186,7 +190,7 @@ export default function DosageSelection() {
         id: dose.id,
         type: "dose",
         name: dose.name,
-        price: finalPrice,
+        price: parseFloat(dose?.price),
         allowed: parseInt(dose.allowed),
         item_id: dose.id,
         product: dose?.product_name || "Dose Product",
@@ -294,7 +298,7 @@ export default function DosageSelection() {
                 </p>
               )}
               <NextButton
-                label=" I Confirm"
+                label={productId == 7 ? "I confirm this dose" : " I Confirm"}
                 onClick={() => {
                   setShowDoseModal(false);
                 }}
@@ -349,23 +353,7 @@ export default function DosageSelection() {
                       <span className="bold-font text-black">
                         From{" "}
                         <span className="">
-                          £
-                          {(() => {
-                            const preLaunchDose = variation?.variations?.find(
-                              (dose) =>
-                                dose?.product_name?.toLowerCase().trim() ===
-                                  "wegovy pill" &&
-                                dose?.pre_launch_price !== null &&
-                                dose?.pre_launch_price !== undefined &&
-                                dose?.pre_launch_price !== "",
-                            );
-
-                            return preLaunchDose?.pre_launch_price
-                              ? parseFloat(
-                                  preLaunchDose.pre_launch_price,
-                                ).toFixed(2)
-                              : parseFloat(variation?.price || 0).toFixed(2);
-                          })()}
+                          £{parseFloat(variation?.price || 0).toFixed(2)}
                         </span>
                       </span>
                       {/* <div
