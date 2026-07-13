@@ -16,12 +16,71 @@ const useCartStore = create(
       orderId: 0,
 
       // Add to cart
+      // addToCart: (product) => {
+      //   const state = get();
+      //   const type = getCartType(product.type); // 'doses' or 'addons'
+      //   const currentItems = state.items[type] || [];
+
+      //   const existingItem = currentItems.find((item) => item.id === product.id);
+
+      //   const newItems = [...currentItems];
+      //   let updatedItem;
+      //   let quantityIncrement = 1;
+      //   let priceIncrement = product.price;
+
+      //   if (existingItem) {
+      //     if (existingItem.qty < product.allowed) {
+      //       existingItem.qty++;
+      //       existingItem.totalPrice += product.price;
+      //     } else {
+      //       return;
+      //     }
+      //   } else {
+      //     updatedItem = {
+      //       ...product,
+      //       qty: 1,
+      //       totalPrice: product.price,
+      //       isSelected: true,
+      //     };
+      //     newItems.push(updatedItem);
+      //   }
+
+      //   set({
+      //     items: {
+      //       ...state.items,
+      //       [type]: newItems,
+      //     },
+      //     totalDoses: type === "doses" ? state.totalDoses + quantityIncrement : state.totalDoses,
+      //     totalAddons: type === "addons" ? state.totalAddons + quantityIncrement : state.totalAddons,
+      //     totalAmount: state.totalAmount + priceIncrement,
+      //   });
+      // },
+
+      // Add to cart
       addToCart: (product) => {
         const state = get();
         const type = getCartType(product.type); // 'doses' or 'addons'
-        const currentItems = state.items[type] || [];
+        const currentItems = state.items[type] || []; // :white_check_mark: Single-product cart guard:
+        // agar naya dose kisi DOOSRE product ka hai toh purana cart wipe karo
 
-        const existingItem = currentItems.find((item) => item.id === product.id);
+        if (type === "doses") {
+          const hasDifferentProduct = currentItems.some(
+            (item) => item.product !== product.product,
+          );
+          if (hasDifferentProduct) {
+            set({
+              items: { doses: [], addons: [] },
+              totalDoses: 0,
+              totalAddons: 0,
+              totalAmount: 0,
+            });
+            return get().addToCart(product);
+          }
+        }
+
+        const existingItem = currentItems.find(
+          (item) => item.id === product.id,
+        );
 
         const newItems = [...currentItems];
         let updatedItem;
@@ -50,12 +109,17 @@ const useCartStore = create(
             ...state.items,
             [type]: newItems,
           },
-          totalDoses: type === "doses" ? state.totalDoses + quantityIncrement : state.totalDoses,
-          totalAddons: type === "addons" ? state.totalAddons + quantityIncrement : state.totalAddons,
+          totalDoses:
+            type === "doses"
+              ? state.totalDoses + quantityIncrement
+              : state.totalDoses,
+          totalAddons:
+            type === "addons"
+              ? state.totalAddons + quantityIncrement
+              : state.totalAddons,
           totalAmount: state.totalAmount + priceIncrement,
         });
       },
-
       setCheckOut: (checkOut) => set({ checkOut }),
       setOrderId: (orderId) => set({ orderId }),
 
@@ -77,8 +141,14 @@ const useCartStore = create(
             ...state.items,
             [type]: updatedItems,
           },
-          totalDoses: type === "doses" ? state.totalDoses - quantityToRemove : state.totalDoses,
-          totalAddons: type === "addons" ? state.totalAddons - quantityToRemove : state.totalAddons,
+          totalDoses:
+            type === "doses"
+              ? state.totalDoses - quantityToRemove
+              : state.totalDoses,
+          totalAddons:
+            type === "addons"
+              ? state.totalAddons - quantityToRemove
+              : state.totalAddons,
           totalAmount: state.totalAmount - amountToRemove,
         });
       },
@@ -108,8 +178,10 @@ const useCartStore = create(
             ...state.items,
             [type]: updatedItems,
           },
-          totalDoses: type === "doses" ? state.totalDoses - 1 : state.totalDoses,
-          totalAddons: type === "addons" ? state.totalAddons - 1 : state.totalAddons,
+          totalDoses:
+            type === "doses" ? state.totalDoses - 1 : state.totalDoses,
+          totalAddons:
+            type === "addons" ? state.totalAddons - 1 : state.totalAddons,
           totalAmount: state.totalAmount - existingItem.price,
         });
       },
@@ -186,8 +258,8 @@ const useCartStore = create(
     }),
     {
       name: "cart-storage",
-    }
-  )
+    },
+  ),
 );
 
 export default useCartStore;

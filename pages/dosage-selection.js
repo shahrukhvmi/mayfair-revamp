@@ -137,7 +137,26 @@ export default function DosageSelection() {
       toast.error(`Only ${stockQuantity} units available in stock.`);
       return;
     }
+
     //Start  :::::: new weegovy pill pre launch price added price ⚠️⚠️⚠️⚠️⚠️
+
+    const isWegovyPill =
+      dose?.product_name?.trim().toLowerCase() === "wegovy pill";
+
+    const isNineMg =
+      dose?.name?.replace(/\s+/g, "").trim().toLowerCase() === "9mg";
+
+    const regularPrice = Number(dose?.price || 0);
+    const preLaunchPrice = Number(dose?.pre_launch_price || 0);
+
+    const shouldUsePreLaunchPrice =
+      isWegovyPill &&
+      isNineMg &&
+      dose?.pre_launch_price != null &&
+      Number.isFinite(preLaunchPrice) &&
+      preLaunchPrice > 0;
+
+    const finalPrice = shouldUsePreLaunchPrice ? preLaunchPrice : regularPrice;
 
     // const isWegovyPill =
     //   dose?.product_name?.toLowerCase().trim() === "wegovy pill";
@@ -163,7 +182,7 @@ export default function DosageSelection() {
         id: dose.id,
         type: "dose",
         name: dose.name,
-        price: parseFloat(dose?.price),
+        price: finalPrice,
         allowed: parseInt(dose.allowed),
         item_id: dose.id,
         product: dose?.product_name || "Dose Product",
@@ -190,7 +209,7 @@ export default function DosageSelection() {
         id: dose.id,
         type: "dose",
         name: dose.name,
-        price: parseFloat(dose?.price),
+        price: finalPrice,
         allowed: parseInt(dose.allowed),
         item_id: dose.id,
         product: dose?.product_name || "Dose Product",
