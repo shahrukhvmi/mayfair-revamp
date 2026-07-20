@@ -25,7 +25,7 @@ import useBmiStore from "@/store/bmiStore";
 import usePasswordReset from "@/store/usePasswordReset";
 import { usePathname } from "next/navigation";
 import useProductId from "@/store/useProductIdStore";
-import { Menu, MenuItem } from "@mui/material";
+import { ListItem, ListItemIcon, Menu, MenuItem } from "@mui/material";
 import { IoIosArrowDown } from "react-icons/io";
 import useLastBmi from "@/store/useLastBmiStore";
 import useUserDataStore from "@/store/userDataStore";
@@ -44,6 +44,7 @@ import useExplanationEvidenceStore from "@/store/useExplanationEvidenceStore";
 import lastOrderStore from "@/store/lastOrderStore";
 import { useSearchParams } from "next/navigation";
 import useAbandonCardStore from "@/store/abandonCardStore";
+import { User2 } from "lucide-react";
 
 const StepsHeader = ({ isOpen, toggleSidebar }) => {
   const { clearLastOrder } = lastOrderStore();
@@ -87,6 +88,7 @@ const StepsHeader = ({ isOpen, toggleSidebar }) => {
     setFirstName,
     setLastName,
     setEmail,
+    email,
     clearFirstName,
     clearLastName,
     clearEmail,
@@ -343,53 +345,150 @@ const StepsHeader = ({ isOpen, toggleSidebar }) => {
           <div className="relative">
             {!pathname?.startsWith("/login") && token && (
               <>
-                <div
-                  className="flex items-center space-x-2 cursor-pointer"
-                  onClick={(e) => setAnchorEl(e.currentTarget)}
-                >
-                  <ApplicationUser className="w-10 h-10 rounded-full" />
-                  <span className="reg-font text-[#1C1C29] truncate">
-                    {authUserDetail?.fname?.trim()
-                      ? authUserDetail.fname
-                      : firstName}
-                  </span>
-                  <IoIosArrowDown
-                    className={`text-gray-700 transform transition-transform duration-200 ${
-                      Boolean(anchorEl) ? "rotate-180" : ""
-                    }`}
-                    size={20}
-                  />
-                </div>
+                <div className="flex items-center space-x-4">
+                  {specialRoutes.includes(pathname) && (
+                    <div className="hidden items-center gap-3 sm:flex">
+                      <User2 className="h-5 w-5 shrink-0 text-primary" />
 
+                      <div className="flex flex-col">
+                        <span className="thin-font text-[10px] font-semibold uppercase leading-none text-gray-400">
+                          Logged in as
+                        </span>
+
+                        <a
+                          href={`mailto:${email}`}
+                          className="reg-font mt-1 text-sm leading-none text-gray-700 transition-colors hover:text-primary"
+                        >
+                          {email}
+                        </a>
+                      </div>
+                    </div>
+                  )}
+
+                  <div
+                    className="flex items-center space-x-2 cursor-pointer"
+                    onClick={(e) => setAnchorEl(e.currentTarget)}
+                  >
+                    <ApplicationUser className="w-10 h-10 rounded-full" />
+
+                    <span className="reg-font text-[#1C1C29] truncate">
+                      {authUserDetail?.fname?.trim()
+                        ? authUserDetail.fname
+                        : firstName}
+                    </span>
+                    <IoIosArrowDown
+                      className={`text-gray-700 transform transition-transform duration-200 ${
+                        Boolean(anchorEl) ? "rotate-180" : ""
+                      }`}
+                      size={20}
+                    />
+                  </div>
+                </div>
                 <Menu
                   anchorEl={anchorEl}
                   open={Boolean(anchorEl)}
                   onClose={() => setAnchorEl(null)}
-                  anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-                  transformOrigin={{ vertical: "top", horizontal: "right" }}
-                  PaperProps={{ style: { width: 200 } }}
+                  anchorOrigin={{
+                    vertical: "bottom",
+                    horizontal: "right",
+                  }}
+                  transformOrigin={{
+                    vertical: "top",
+                    horizontal: "right",
+                  }}
+                  PaperProps={{
+                    sx: {
+                      width: 260,
+                      mt: 1,
+                      borderRadius: "14px",
+                      overflow: "hidden",
+                      border: "1px solid #e5e7eb",
+                      boxShadow: "0 12px 35px rgba(15, 23, 42, 0.12)",
+                    },
+                  }}
+                  MenuListProps={{
+                    sx: {
+                      py: 0,
+                    },
+                  }}
                 >
-                  <MenuItem
-                    onClick={() => {
-                      router.push("/dashboard");
-                      setAnchorEl(null);
-                    }}
-                    className="reg-font"
-                  >
-                    My Account
-                  </MenuItem>
-                  <MenuItem
-                    onClick={() => {
-                      router.push("/orders");
-                      setAnchorEl(null);
-                    }}
-                    className="reg-font"
-                  >
-                    My Orders
-                  </MenuItem>
-                  <MenuItem onClick={handleLogout} className="reg-font">
-                    Logout
-                  </MenuItem>
+                  {/* User email header */}
+                  <div className="flex items-center gap-3 bg-gray-50 px-4 py-4">
+                    <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
+                      <User2 className="h-5 w-5" />
+                    </div>
+
+                    <div className="min-w-0 flex-1">
+                      <p className="reg-font mb-1 text-[10px] font-semibold uppercase tracking-[0.08em] text-gray-400">
+                        Logged in as
+                      </p>
+
+                      <a
+                        href={`mailto:${email}`}
+                        onClick={(event) => event.stopPropagation()}
+                        className="reg-font block truncate text-sm font-medium text-gray-800 transition-colors hover:text-primary"
+                        title={email}
+                      >
+                        {email}
+                      </a>
+                    </div>
+                  </div>
+
+                  {/* Bottom separator */}
+                  <div className="h-px bg-gray-200" />
+
+                  <div className="py-2">
+                    <MenuItem
+                      onClick={() => {
+                        router.push("/dashboard");
+                        setAnchorEl(null);
+                      }}
+                      className="reg-font"
+                      sx={{
+                        mx: 1,
+                        minHeight: 42,
+                        borderRadius: "8px",
+                        fontSize: "14px",
+                      }}
+                    >
+                      My Account
+                    </MenuItem>
+
+                    <MenuItem
+                      onClick={() => {
+                        router.push("/orders");
+                        setAnchorEl(null);
+                      }}
+                      className="reg-font"
+                      sx={{
+                        mx: 1,
+                        minHeight: 42,
+                        borderRadius: "8px",
+                        fontSize: "14px",
+                      }}
+                    >
+                      My Orders
+                    </MenuItem>
+
+                    <div className="mx-3 my-2 h-px bg-gray-100" />
+
+                    <MenuItem
+                      onClick={handleLogout}
+                      className="reg-font"
+                      sx={{
+                        mx: 1,
+                        minHeight: 42,
+                        borderRadius: "8px",
+                        fontSize: "14px",
+                        color: "#dc2626",
+                        "&:hover": {
+                          backgroundColor: "#fef2f2",
+                        },
+                      }}
+                    >
+                      Logout
+                    </MenuItem>
+                  </div>
                 </Menu>
               </>
             )}
