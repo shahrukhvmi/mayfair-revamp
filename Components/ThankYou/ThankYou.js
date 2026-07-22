@@ -68,6 +68,9 @@ const ThankYou = () => {
         setItems(res?.data?.items);
         setCheckOut(res?.data?.consultation?.fields?.checkout);
 
+        const consultationCheckout = res?.data?.consultation?.fields?.checkout;
+        const patientData = res?.data?.consultation?.fields?.patientInfo;
+
         // CustomerLabs — fire Purchased event on successful order
         const clOrderId = res?.data?.id;
         const clItems = res?.data?.items || [];
@@ -115,12 +118,13 @@ const ThankYou = () => {
             ? `customerlabs_purchased_thankyou_${clOrderId}`
             : null,
           identity: {
-            firstName: userData?.fname || patientInfo?.firstName || "",
-            lastName: userData?.lname || patientInfo?.lastName || "",
-            email: userData?.email || "",
-            phone: userData?.phone || patientInfo?.phoneNo || "",
-            userId: userData?.id || "",
+            firstName: patientData?.firstName || userData?.fname || "",
+            lastName: patientData?.lastName || userData?.lname || "",
+            email: consultationCheckout?.email || userData?.email || "",
+            phone: patientData?.phoneNo || userData?.phone || "",
+            userId: res?.data?.userid || userData?.id || "",
           },
+
           properties: {
             event_source: "thank_you_page",
             currency: "GBP",
