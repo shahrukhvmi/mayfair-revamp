@@ -132,43 +132,40 @@ const Dose = ({
     }
   };
 
-  const isWegovyPill =
-    doseData?.product_name?.toLowerCase().trim() === "wegovy pill" ||
-    doseData?.name?.toLowerCase().trim() === "wegovy pill";
+  // const price = Number(doseData?.price || 0);
+  // const preLaunchPrice = Number(doseData?.pre_launch_price || 0);
+  const productName = String(doseData?.product_name || "")
+    .trim()
+    .toLowerCase();
+
+  const doseName = String(doseData?.name || "")
+    .trim()
+    .toLowerCase()
+    .replace(/\s+/g, "");
+
+  const isWegovyPill = productName === "wegovy pill";
+  const isTwentyFiveMg = doseName === "25mg";
 
   const price = Number(doseData?.price || 0);
   const preLaunchPrice = Number(doseData?.pre_launch_price || 0);
 
-  // const hasPreLaunchPrice =
-  //   isWegovyPill &&
-  //   doseData?.pre_launch_price !== null &&
-  //   doseData?.pre_launch_price !== undefined &&
-  //   String(doseData?.pre_launch_price).trim() !== "" &&
-  //   preLaunchPrice > 0;
-  // const price = Number(doseData?.price || 0);
-  // const preLaunchPrice = Number(doseData?.pre_launch_price || 0);
+  const shouldUsePreLaunchPrice =
+    isWegovyPill && isTwentyFiveMg && preLaunchPrice > 0;
 
-  const isNineMg = doseData?.name?.trim().toLowerCase() === "9mg";
-
-  // const shouldUsePreLaunchPrice =
-  //   isWegovyPill &&
-  //   isNineMg &&
-  //   doseData?.pre_launch_price != null &&
-  //   preLaunchPrice > 0;
-
-  const isPriceComingSoon = isWegovyPill && price === 0;
+  const isPriceComingSoon =
+    isWegovyPill && price <= 0 && !shouldUsePreLaunchPrice;
 
   return (
     <>
       <div className="relative">
         {/* <div className="absolute right-2 top-0 z-[60] flex items-center gap-2 flex-wrap justify-end"> */}
 
-        {/* {shouldUsePreLaunchPrice && !isOutOfStock && (
+        {shouldUsePreLaunchPrice && !isOutOfStock && (
           <div className="absolute right-[20px] top-[-10px] z-30 inline-flex items-center gap-1 rounded border border-green-300 bg-green-100 px-3 py-0.5 text-xs font-semibold text-green-700">
             <FaInfoCircle className="text-[10px]" />
             <span>Pre Launch Price</span>
           </div>
-        )} */}
+        )}
 
         {doseStatus === 0 && Number(productId) !== 7 && (
           <div className="absolute right-4 top-[-10px] group inline-block z-50">
@@ -297,24 +294,22 @@ const Dose = ({
                 <span className="text-primary text-sm font-semibold">
                   Price is coming soon
                 </span>
-              ) : (
-                <span className="font-bold text-primary">
-                  £{price.toFixed(2)}
-                </span>
-              )}
-            </span>
-
-            {/* shouldUsePreLaunchPrice ? (
+              ) : shouldUsePreLaunchPrice ? (
                 <span className="flex items-center gap-2">
                   <span className="text-sm font-medium text-gray-500 line-through">
                     £{price.toFixed(2)}
                   </span>
 
                   <span className="font-bold text-primary">
-                    £{price.toFixed(2)}
+                    £{preLaunchPrice.toFixed(2)}
                   </span>
                 </span>
-              ) :  */}
+              ) : (
+                <span className="font-bold text-primary">
+                  £{price.toFixed(2)}
+                </span>
+              )}
+            </span>
 
             {isSelected && (
               <>

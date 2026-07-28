@@ -355,12 +355,9 @@ const StepsHeader = ({ isOpen, toggleSidebar }) => {
                           Logged in as
                         </span>
 
-                        <a
-                          href={`mailto:${email}`}
-                          className="reg-font mt-1 text-sm leading-none text-gray-700 transition-colors hover:text-primary"
-                        >
+                        <span className="reg-font mt-1 text-sm leading-none text-gray-700 transition-colors hover:text-primary">
                           {email}
-                        </a>
+                        </span>
                       </div>
                     </div>
                   )}
@@ -423,14 +420,12 @@ const StepsHeader = ({ isOpen, toggleSidebar }) => {
                         Logged in as
                       </p>
 
-                      <a
-                        href={`mailto:${email}`}
-                        onClick={(event) => event.stopPropagation()}
+                      <span
                         className="reg-font block truncate text-sm font-medium text-gray-800 transition-colors hover:text-primary"
                         title={email}
                       >
                         {email}
-                      </a>
+                      </span>
                     </div>
                   </div>
 
