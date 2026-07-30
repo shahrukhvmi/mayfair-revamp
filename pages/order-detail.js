@@ -1,1067 +1,797 @@
-import React, { useState, useEffect } from "react";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableRow,
-  Paper,
-  TableHead,
-} from "@mui/material";
-import moment from "moment";
-import getOrderByIdApi from "@/api/getOrderByIdApi";
-import { motion } from "framer-motion";
-import StepsHeader from "@/layout/stepsHeader";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
+import moment from "moment";
+import { motion } from "framer-motion";
+import {
+  ArrowLeft,
+  CalendarDays,
+  CheckCircle2,
+  CircleDollarSign,
+  Clock3,
+  CreditCard,
+  Package,
+  ReceiptText,
+  ShoppingBag,
+  UserRound,
+} from "lucide-react";
+
+import getOrderByIdApi from "@/api/getOrderByIdApi";
 import useOrderId from "@/store/useOrderIdStore";
-import OrdersTabs from "@/Components/Tabs/OrdersTabs";
 import MetaLayout from "@/Meta/MetaLayout";
 import { meta_url } from "@/config/constants";
 import DashBoardLayout from "@/Components/Dashboard/DashboardLayout/DashBoardLayout";
 import ProtectedPage from "@/Components/ProtectedPage/ProtectedPage";
 
+/* =========================================================
+   Helpers
+========================================================= */
+
+const getStatusClasses = (status = "") => {
+  switch (status?.toLowerCase()) {
+    case "processing":
+      return "border-amber-200 bg-amber-50 text-amber-700";
+
+    case "incomplete":
+      return "border-orange-200 bg-orange-50 text-orange-700";
+
+    case "approved":
+      return "border-emerald-200 bg-emerald-50 text-emerald-700";
+
+    case "cancelled":
+      return "border-red-200 bg-red-50 text-red-700";
+
+    case "paid":
+      return "border-emerald-200 bg-emerald-50 text-emerald-700";
+
+    case "pending":
+      return "border-amber-200 bg-amber-50 text-amber-700";
+
+    case "failed":
+      return "border-red-200 bg-red-50 text-red-700";
+
+    default:
+      return "border-slate-200 bg-slate-50 text-slate-600";
+  }
+};
+
+const formatCurrency = (value) => {
+  const parsedValue = Number(value);
+
+  if (Number.isNaN(parsedValue)) {
+    return value || "0.00";
+  }
+
+  return parsedValue.toFixed(2);
+};
+
+const formatDate = (value) => {
+  if (!value) {
+    return "N/A";
+  }
+
+  if (moment(value, "DD-MM-YYYY", true).isValid()) {
+    return moment(value, "DD-MM-YYYY").format("DD MMM YYYY");
+  }
+
+  return value;
+};
+
+const StatusBadge = ({ status }) => (
+  <span
+    className={`
+      mont-medium-font inline-flex items-center rounded-full border
+      px-3 py-1.5 text-[11px] leading-none
+      ${getStatusClasses(status)}
+    `}
+  >
+    {status || "N/A"}
+  </span>
+);
+
+/* =========================================================
+   Summary Card
+========================================================= */
+
+const SummaryCard = ({ icon: Icon, label, children }) => (
+  <div className="flex min-w-0 items-center gap-3.5 rounded-[18px] border border-[#47317c]/10 bg-[#faf8fd] px-4 py-3.5">
+    <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-[14px] bg-[#47317c]/[0.08] text-[#47317c]">
+      <Icon size={19} strokeWidth={2} />
+    </span>
+
+    <div className="min-w-0 flex-1">
+      <p className="mont-medium-font text-[10px] uppercase tracking-[0.11em] text-slate-400">
+        {label}
+      </p>
+
+      <div className="mt-1.5">{children}</div>
+    </div>
+  </div>
+);
+
+/* =========================================================
+   Patient Detail Field
+========================================================= */
+
+const DetailField = ({ label, value, capitalize = false }) => (
+  <div className="rounded-[16px] border border-[#47317c]/[0.08] bg-[#faf9fc] px-4 py-4">
+    <p className="mont-medium-font text-[10px] uppercase tracking-[0.11em] text-slate-400">
+      {label}
+    </p>
+
+    <p
+      className={`
+        mont-medium-font mt-2 text-[13px] leading-5 text-slate-900
+        ${capitalize ? "capitalize" : ""}
+      `}
+    >
+      {value || "N/A"}
+    </p>
+  </div>
+);
+
+/* =========================================================
+   Loading
+========================================================= */
+
+const OrderDetailLoader = () => (
+  <main className="min-w-0 flex-1 bg-[#f4f5fb] p-3 sm:p-4 lg:p-5 xl:p-6">
+    <div className="mx-auto flex w-full max-w-[1560px] flex-col gap-4">
+      <div className="animate-pulse rounded-[26px] border border-[#47317c]/10 bg-white p-6">
+        <div className="h-4 w-32 rounded-full bg-[#47317c]/[0.07]" />
+
+        <div className="mt-4 h-8 w-72 max-w-full rounded-full bg-[#47317c]/[0.07]" />
+
+        <div className="mt-3 h-4 w-96 max-w-full rounded-full bg-[#47317c]/[0.07]" />
+
+        <div className="mt-6 grid grid-cols-1 gap-3 md:grid-cols-3">
+          {[0, 1, 2].map((item) => (
+            <div
+              key={item}
+              className="h-[76px] rounded-[18px] bg-[#47317c]/[0.06]"
+            />
+          ))}
+        </div>
+      </div>
+
+      <div className="animate-pulse rounded-[26px] border border-[#47317c]/10 bg-white p-6">
+        <div className="h-12 w-full rounded-[15px] bg-[#47317c]/[0.06]" />
+
+        <div className="mt-5 h-[320px] w-full rounded-[20px] bg-[#47317c]/[0.05]" />
+      </div>
+    </div>
+  </main>
+);
+
+/* =========================================================
+   Order Not Found
+========================================================= */
+
+const OrderNotFound = () => (
+  <main className="min-w-0 flex-1 bg-[#f4f5fb] p-3 sm:p-4 lg:p-5 xl:p-6">
+    <div className="mx-auto w-full max-w-[1560px]">
+      <div className="flex min-h-[380px] flex-col items-center justify-center rounded-[26px] border border-[#47317c]/10 bg-white px-5 text-center shadow-[0_16px_42px_rgba(71,49,124,0.07)]">
+        <span className="flex h-16 w-16 items-center justify-center rounded-[20px] bg-[#47317c]/[0.07] text-[#47317c]">
+          <Package size={28} strokeWidth={1.8} />
+        </span>
+
+        <h1 className="mont-bold-font mt-5 text-[22px] text-slate-950">
+          Order not available
+        </h1>
+
+        <p className="mont-reg-font mt-2 max-w-md text-[13px] leading-6 text-slate-500">
+          The selected order could not be loaded. Return to your orders and
+          select an order again.
+        </p>
+
+        <Link
+          href="/orders"
+          className="mont-medium-font mt-5 inline-flex min-h-[44px] items-center justify-center gap-2 rounded-[12px] bg-[#47317c] px-5 py-2.5 text-[12px] text-white no-underline transition-colors hover:bg-[#392765]"
+        >
+          <ArrowLeft size={16} strokeWidth={2.2} />
+          Back to orders
+        </Link>
+      </div>
+    </div>
+  </main>
+);
+
+/* =========================================================
+   Order Detail
+========================================================= */
+
 const OrderDetail = () => {
   const [order, setOrder] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [activeTab, setActiveTab] = useState(0); // State for active tab
-  const { orderId } = useOrderId();
-  const [isOpen, setIsOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState(0);
 
-  const toggleSidebar = () => {
-    setIsOpen((prev) => !prev);
-  };
+  const { orderId } = useOrderId();
+
   useEffect(() => {
-    if (orderId) {
-      setLoading(true);
-      getOrderByIdApi(orderId)
-        .then((res) => {
-          setOrder(res?.data);
-          setLoading(false);
-        })
-        .catch((err) => {
-          setLoading(false);
-        });
+    if (!orderId) {
+      return;
     }
+
+    setLoading(true);
+
+    getOrderByIdApi(orderId)
+      .then((response) => {
+        setOrder(response?.data);
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.error("Failed to load order:", error);
+        setLoading(false);
+      });
   }, [orderId]);
 
-  // Destructure data properly
-  const shippingData = order?.data?.order?.shipping;
-  const bmiData = order?.data?.order?.consultation?.fields?.bmi;
-  const medicalInfo =
-    order?.data?.order?.consultation?.fields?.medicalInfo?.length > 0
-      ? order.data.order.consultation.fields.medicalInfo
-      : order?.data?.order?.consultation?.fields?.legacy_medicalInfo;
+  const currentOrder = order?.data?.order;
 
-  const BillingData = order?.data?.order?.billing;
-  const patientData = order?.data?.order?.consultation?.fields?.patientInfo;
-  const gpDetails = order?.data?.order?.consultation?.fields?.gpdetails;
-  const date = order?.data?.order?.created_at;
-  const time = order?.data?.order?.created_at_time;
-  const products = order?.data?.order?.items;
-  const shipmentFee = order?.data?.order?.shippment_weight;
-  const total = order?.data?.order?.total_price;
-  const orders = order?.data?.order?.consultation?.fields?.checkout?.discount;
-  const startConcent = order?.data?.order?.consultation?.start_concent;
-  // const confirmationInfo = order?.consultation?.fields?.confirmationInfo;
-  const confirmationInfo =
-    order?.data?.order?.consultation?.fields?.confirmationInfo?.length > 0
-      ? order?.data?.order?.consultation?.fields?.confirmationInfo
-      : order?.data?.order?.consultation?.fields?.legacy_confirmationInfo;
-  const product_terms_conditions = order?.data?.order?.product_terms_conditions;
+  const patientData = currentOrder?.consultation?.fields?.patientInfo;
 
-  console.log(order?.consultation?.fields, "confirmationInfo");
-  // Tab Transition Animation Variants
+  const products = Array.isArray(currentOrder?.items) ? currentOrder.items : [];
+
+  const date = currentOrder?.created_at;
+  const time = currentOrder?.created_at_time;
+  const shipmentFee = currentOrder?.shippment_weight;
+  const total = currentOrder?.total_price;
+
+  const discountData = currentOrder?.consultation?.fields?.checkout?.discount;
+
+  const formattedDate = formatDate(date);
+
+  const formattedDob = formatDate(patientData?.dob);
+
   const tabContentVariants = {
-    initial: { opacity: 0, y: 20 }, // Start below and hidden
-    animate: { opacity: 1, y: 0 }, // Animate to visible position
-    exit: { opacity: 0, y: 20 }, // Fade out and move below
+    initial: {
+      opacity: 0,
+      y: 12,
+    },
+    animate: {
+      opacity: 1,
+      y: 0,
+    },
+    exit: {
+      opacity: 0,
+      y: 12,
+    },
   };
 
   if (loading) {
-    return <div>Loading...</div>;
-  }
-  const formatHeight = (data) => {
-    console.log(data, "Dattaaaaaa");
-    if (data?.height_unit == "imperial") return `${data.ft} ft ${data.inch} in`;
-    if (data?.height_unit == "metrics") return `${data.cm} cm`;
-    return "N/A";
-  };
+    return (
+      <>
+        <MetaLayout canonical={`${meta_url}order-detail/`} />
 
-  const formatWeight = (data) => {
-    if (data?.weight_unit == "metrics") return `${data.kg} kg`;
-    if (data?.weight_unit == "imperial")
-      return `${data.stones} st ${data.pound} lbs`;
-    return "N/A";
-  };
+        <ProtectedPage>
+          <DashBoardLayout>
+            <OrderDetailLoader />
+          </DashBoardLayout>
+        </ProtectedPage>
+      </>
+    );
+  }
+
+  if (!orderId || !currentOrder) {
+    return (
+      <>
+        <MetaLayout canonical={`${meta_url}order-detail/`} />
+
+        <ProtectedPage>
+          <DashBoardLayout>
+            <OrderNotFound />
+          </DashBoardLayout>
+        </ProtectedPage>
+      </>
+    );
+  }
+
   return (
     <>
       <MetaLayout canonical={`${meta_url}order-detail/`} />
-      {/* <StepsHeader isOpen={isOpen} toggleSidebar={toggleSidebar} /> */}
+
       <ProtectedPage>
         <DashBoardLayout>
-          <div className="p-3 sm:p-6 sm:bg-[#F9FAFB] sm:min-h-screen sm:rounded-md sm:shadow-md my-5 sm:m-5">
-            <div className="relative flex flex-row">
-              <p className="h-fit whitespace-nowrap inline-flex items-center px-6 py-2 bg-primary border border-transparent rounded-tr-full rounded-br-full font-semibold text-xs cursor-text text-white uppercase tracking-widest hover:bg-primary focus:bg-primary active:bg-primary focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 transition ease-in-out duration-150  absolute -left-4 -top-4 lg:relative lg:top-0 lg:left-0">
-                {moment(date, "DD-MM-YYYY", true).isValid()
-                  ? moment(date, "DD-MM-YYYY").format("DD-MM-YYYY")
-                  : "N/A"}{" "}
-                {time}
-              </p>
-            </div>
-            <div className="flex flex-col md:flex-row justify-between items-center my-6">
-              <h1 className="text-2xl bold-font text-[#1C1C29] my-4 sm:mb-4 md:mb-0">
-                Details of Order #{" "}
-                <span className="niba-bold-font">{order?.data?.order?.id}</span>
-              </h1>
-              {/* Tabs */}
+          <main className="mont-reg-font min-w-0 flex-1 bg-[#f4f5fb] p-3 sm:p-4 lg:p-5 xl:p-6">
+            <div className="mx-auto flex w-full max-w-[1560px] flex-col gap-4">
+              {/* Page header */}
+              <section className="relative overflow-hidden rounded-[26px] border border-[#47317c]/[0.09] bg-white px-5 py-6 shadow-[0_16px_42px_rgba(71,49,124,0.075)] sm:px-6 lg:px-7">
+                <div className="pointer-events-none absolute -right-24 -top-28 h-64 w-64 rounded-full bg-[#47317c]/[0.06] blur-3xl" />
 
-              {/* Buttons for Order Details */}
-              <div className="flex flex-col md:flex-row md:space-x-2 space-y-2 md:space-y-0">
-                <button className="reg-font px-5 py-3 text-black rounded-full transition duration-300 ease-in-out w-full md:w-auto">
-                  <span className="mx-1 my-1">Order Status</span>
-                  <span className="reg-font bg-violet-900 text-xs p-2 rounded-lg text-white">
-                    {order?.data?.order?.status}
-                  </span>
-                </button>
+                <div className="relative">
+                  <Link
+                    href="/orders"
+                    className="mont-medium-font inline-flex items-center gap-2 text-[12px] text-[#47317c] no-underline transition-colors hover:text-[#392765]"
+                  >
+                    <ArrowLeft size={16} strokeWidth={2.2} />
+                    Back to orders
+                  </Link>
 
-                <button className="reg-font px-5 py-3 text-black rounded-full transition duration-300 ease-in-out w-full md:w-auto">
-                  <span className="mx-1 my-1">Payment Status</span>
-                  <span className="reg-font bg-violet-900 text-xs p-2 rounded-lg text-white">
-                    {order?.data?.order?.payments?.status}
-                  </span>
-                </button>
+                  <div className="mt-5">
+                    <div className="mb-2 flex flex-wrap items-center gap-3">
+                      <p className="mont-bold-font m-0 text-[11px] uppercase tracking-[0.16em] text-[#47317c]">
+                        Order details
+                      </p>
 
-                <button className="reg-font px-5 py-3 text-black rounded-full transition duration-300 ease-in-out w-full md:w-auto">
-                  <span className="mx-1 my-1">Order Total</span>
-                  <span className="reg-font bg-violet-900 text-xs p-2 rounded-lg text-white">
-                    £{order?.data?.order?.total_price}
-                  </span>
-                </button>
-              </div>
-            </div>
+                      <span className="mont-medium-font inline-flex flex-wrap items-center gap-1.5 rounded-full border border-[#47317c]/10 bg-[#47317c]/[0.04] px-3 py-1.5 text-[10.5px] text-[#47317c]">
+                        <CalendarDays size={13} strokeWidth={2} />
 
-            <OrdersTabs
-              activeTab={activeTab}
-              onTabChange={setActiveTab}
-              tabs={["Order Details", "Patient Details"]}
-            />
+                        {formattedDate}
 
-            {/* Tab Content with Animation */}
-            <motion.div
-              className="tab-content mt-6"
-              variants={tabContentVariants}
-              initial="initial"
-              animate="animate"
-              exit="exit"
-              transition={{ duration: 0.5 }} // Adjust transition duration
-            >
-              {activeTab === 0 && (
-                <>
-                  <div>
-                    {/* Product Detail */}
+                        {time && (
+                          <>
+                            <span className="text-[#47317c]/25">•</span>
 
-                    <div className="rounded-lg">
-                      <h2 className="text-xl font-bold text-[#1C1C29] mb-4">
-                        Order Details
-                      </h2>
+                            <Clock3 size={12} strokeWidth={2} />
 
-                      <TableContainer
-                        component={Paper}
-                        className="rounded-lg shadow"
-                      >
-                        <Table>
-                          {/* Table Head */}
-                          <TableHead className="bg-gray-100">
-                            <TableRow>
-                              <TableCell className="text-black font-semibold uppercase py-3">
-                                <span className="font-bold ">Items</span>
-                              </TableCell>
-                              <TableCell className="text-black font-semibold uppercase py-3">
-                                <span className="font-bold ">Qty</span>
-                              </TableCell>
-                              <TableCell className="text-black font-semibold uppercase py-3">
-                                <span className="font-bold ">Amount</span>
-                              </TableCell>
-                            </TableRow>
-                          </TableHead>
+                            {time}
+                          </>
+                        )}
+                      </span>
+                    </div>
 
-                          {/* Table Body */}
-                          <TableBody>
-                            {/* // ?.filter((product) => product.name.includes("mg")) */}
-                            {products?.map((product) => (
-                              <TableRow
-                                key={product.id}
-                                className="hover:bg-gray-50"
+                    <h1 className="mont-bold-font text-[27px] leading-tight tracking-[-0.04em] text-slate-950 sm:text-[32px]">
+                      Order #{currentOrder?.id}
+                    </h1>
+
+                    <p className="mont-reg-font mt-2.5 max-w-2xl text-[13px] leading-[1.7] text-slate-500 sm:text-[14px]">
+                      Review the treatment items, order status, payment details
+                      and patient information.
+                    </p>
+                  </div>
+
+                  {/* Order summary cards */}
+                  <div className="mt-6 grid grid-cols-1 gap-3 md:grid-cols-3">
+                    <SummaryCard icon={CheckCircle2} label="Order status">
+                      <StatusBadge status={currentOrder?.status} />
+                    </SummaryCard>
+
+                    <SummaryCard icon={CreditCard} label="Payment status">
+                      <StatusBadge status={currentOrder?.payments?.status} />
+                    </SummaryCard>
+
+                    <SummaryCard icon={CircleDollarSign} label="Order total">
+                      <p className="mont-bold-font text-[17px] leading-5 text-[#47317c]">
+                        £{formatCurrency(currentOrder?.total_price)}
+                      </p>
+                    </SummaryCard>
+                  </div>
+                </div>
+              </section>
+
+              {/* Detail content */}
+              <section className="relative overflow-hidden rounded-[26px] border border-[#47317c]/[0.09] bg-white p-4 shadow-[0_16px_42px_rgba(71,49,124,0.075)] sm:p-5 lg:p-6">
+                {/* Tabs */}
+                <div className="inline-flex w-full rounded-[15px] border border-[#47317c]/10 bg-[#f7f5fa] p-1 sm:w-auto">
+                  <button
+                    type="button"
+                    onClick={() => setActiveTab(0)}
+                    className={`
+                      mont-medium-font inline-flex min-h-[42px]
+                      flex-1 cursor-pointer items-center justify-center
+                      gap-2 rounded-[11px] px-4 py-2.5
+                      text-[12px] transition-all duration-200
+                      sm:flex-none
+
+                      ${
+                        activeTab === 0
+                          ? `
+                            bg-[#47317c] text-white
+                            shadow-[0_7px_18px_rgba(71,49,124,0.2)]
+                          `
+                          : `
+                            text-slate-500
+                            hover:bg-white
+                            hover:text-[#47317c]
+                          `
+                      }
+                    `}
+                  >
+                    <ReceiptText size={16} strokeWidth={2} />
+                    Order details
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => setActiveTab(1)}
+                    className={`
+                      mont-medium-font inline-flex min-h-[42px]
+                      flex-1 cursor-pointer items-center justify-center
+                      gap-2 rounded-[11px] px-4 py-2.5
+                      text-[12px] transition-all duration-200
+                      sm:flex-none
+
+                      ${
+                        activeTab === 1
+                          ? `
+                            bg-[#47317c] text-white
+                            shadow-[0_7px_18px_rgba(71,49,124,0.2)]
+                          `
+                          : `
+                            text-slate-500
+                            hover:bg-white
+                            hover:text-[#47317c]
+                          `
+                      }
+                    `}
+                  >
+                    <UserRound size={16} strokeWidth={2} />
+                    Patient details
+                  </button>
+                </div>
+
+                <motion.div
+                  key={activeTab}
+                  variants={tabContentVariants}
+                  initial="initial"
+                  animate="animate"
+                  exit="exit"
+                  transition={{
+                    duration: 0.25,
+                  }}
+                  className="mt-6"
+                >
+                  {/* =====================================================
+                      Order Details Tab
+                  ===================================================== */}
+
+                  {activeTab === 0 && (
+                    <div className="overflow-hidden rounded-[22px] border border-[#47317c]/10 bg-white">
+                      {/* Unified header */}
+                      <div className="flex items-center gap-3 border-b border-[#47317c]/[0.07] bg-[#faf9fc] px-5 py-4">
+                        <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-[13px] bg-[#47317c]/[0.08] text-[#47317c]">
+                          <ShoppingBag size={19} strokeWidth={2} />
+                        </span>
+
+                        <div className="min-w-0">
+                          <h2 className="mont-bold-font text-[18px] leading-6 text-slate-950">
+                            Order details
+                          </h2>
+
+                          {/* <p className="mont-reg-font mt-0.5 text-[12px] leading-5 text-slate-500">
+                            Treatment items and complete payment breakdown.
+                          </p> */}
+                        </div>
+                      </div>
+
+                      {/* Desktop single table */}
+                      <div className="hidden overflow-x-auto md:block">
+                        <table className="w-full min-w-[700px] border-collapse text-left">
+                          <thead className="bg-white">
+                            <tr className="border-b border-[#47317c]/[0.07]">
+                              <th className="mont-medium-font px-5 py-4 text-[11px] uppercase tracking-[0.11em] text-slate-400">
+                                Item
+                              </th>
+
+                              <th className="mont-medium-font w-[150px] px-5 py-4 text-center text-[11px] uppercase tracking-[0.11em] text-slate-400">
+                                Quantity
+                              </th>
+
+                              <th className="mont-medium-font w-[180px] px-5 py-4 text-right text-[11px] uppercase tracking-[0.11em] text-slate-400">
+                                Amount
+                              </th>
+                            </tr>
+                          </thead>
+
+                          <tbody>
+                            {/* Product rows */}
+                            {products.map((product, index) => (
+                              <tr
+                                key={
+                                  product?.id || `${product?.label}-${index}`
+                                }
+                                className="border-b border-[#47317c]/[0.06] transition-colors duration-200 hover:bg-[#47317c]/[0.018]"
                               >
-                                <TableCell className="text-gray-800 capitalize py-3">
-                                  {product.label}
-                                </TableCell>
-                                <TableCell className="text-gray-800 py-3">
-                                  {product.quantity}
-                                </TableCell>
-                                <TableCell className="text-gray-800 py-3">
-                                  £
-                                  {(
-                                    parseFloat(product.price) * product.quantity
-                                  ).toFixed(2)}
-                                </TableCell>
-                              </TableRow>
+                                <td className="px-5 py-5">
+                                  <p className="mont-medium-font text-[13px] capitalize leading-5 text-slate-900">
+                                    {product?.label ||
+                                      product?.name ||
+                                      product?.product ||
+                                      "Item"}
+                                  </p>
+                                </td>
+
+                                <td className="px-5 py-5 text-center">
+                                  <span className="mont-medium-font inline-flex min-w-[38px] items-center justify-center rounded-[10px] bg-[#47317c]/[0.06] px-3 py-2 text-[12px] text-[#47317c]">
+                                    {product?.quantity}
+                                  </span>
+                                </td>
+
+                                <td className="px-5 py-5 text-right">
+                                  <span className="mont-bold-font text-[14px] text-slate-950">
+                                    £
+                                    {formatCurrency(
+                                      parseFloat(product?.price) *
+                                        Number(product?.quantity),
+                                    )}
+                                  </span>
+                                </td>
+                              </tr>
                             ))}
 
-                            {/* Shipping Fee (Optional) */}
-                            {orders?.discount > 0 && (
+                            {/* Discount */}
+                            {discountData?.discount > 0 && (
                               <>
-                                <TableRow className="hover:bg-gray-50">
-                                  <TableCell className="text-gray-800 py-3 font-medium">
-                                    Discount Amount
-                                  </TableCell>
-                                  <TableCell></TableCell>
-                                  <TableCell className="text-gray-800 py-3">
-                                    {orders?.type === "Fixed"
-                                      ? `-£${orders?.discount_value}`
-                                      : `-${parseFloat(
-                                          orders?.discount_value
-                                        ).toFixed(1)}%`}
-                                  </TableCell>
-                                </TableRow>
+                                <tr className="border-b border-[#47317c]/[0.06] bg-[#faf9fc]/60">
+                                  <td className="px-5 py-4">
+                                    <span className="mont-medium-font text-[12px] text-slate-600">
+                                      Discount
+                                    </span>
+                                  </td>
 
-                                <TableRow className="hover:bg-gray-50">
-                                  <TableCell className="text-gray-800 py-3 font-medium">
-                                    Coupon Code
-                                  </TableCell>
-                                  <TableCell></TableCell>
-                                  <TableCell className="text-gray-800 py-3">
-                                    {orders?.code || "N/A"}
-                                  </TableCell>
-                                </TableRow>
+                                  <td />
 
-                                <TableRow className="hover:bg-gray-50">
-                                  <TableCell className="text-gray-800 py-3 font-medium">
-                                    Discount Type
-                                  </TableCell>
-                                  <TableCell></TableCell>
-                                  <TableCell className="text-gray-800 py-3">{`${
-                                    orders?.type === "Fixed"
-                                      ? "Fixed"
-                                      : "Percentage"
-                                  }`}</TableCell>
-                                </TableRow>
+                                  <td className="px-5 py-4 text-right">
+                                    <span className="mont-medium-font text-[12px] text-emerald-600">
+                                      {discountData?.type === "Fixed"
+                                        ? `-£${formatCurrency(
+                                            discountData?.discount_value,
+                                          )}`
+                                        : `-${parseFloat(
+                                            discountData?.discount_value,
+                                          ).toFixed(1)}%`}
+                                    </span>
+                                  </td>
+                                </tr>
+
+                                <tr className="border-b border-[#47317c]/[0.06] bg-[#faf9fc]/60">
+                                  <td className="px-5 py-4">
+                                    <span className="mont-medium-font text-[12px] text-slate-600">
+                                      Coupon code
+                                    </span>
+                                  </td>
+
+                                  <td />
+
+                                  <td className="px-5 py-4 text-right">
+                                    <span className="mont-medium-font text-[12px] text-slate-900">
+                                      {discountData?.code || "N/A"}
+                                    </span>
+                                  </td>
+                                </tr>
+
+                                <tr className="border-b border-[#47317c]/[0.06] bg-[#faf9fc]/60">
+                                  <td className="px-5 py-4">
+                                    <span className="mont-medium-font text-[12px] text-slate-600">
+                                      Discount type
+                                    </span>
+                                  </td>
+
+                                  <td />
+
+                                  <td className="px-5 py-4 text-right">
+                                    <span className="mont-medium-font text-[12px] text-slate-900">
+                                      {discountData?.type === "Fixed"
+                                        ? "Fixed"
+                                        : "Percentage"}
+                                    </span>
+                                  </td>
+                                </tr>
                               </>
                             )}
 
-                            <TableRow className="hover:bg-gray-50">
-                              <TableCell className="text-gray-800 py-3">
-                                Shipping Fee
-                              </TableCell>
-                              <TableCell></TableCell>
-                              <TableCell className="text-gray-800 py-3">
-                                £{shipmentFee}
-                              </TableCell>
-                            </TableRow>
-                            {/* Total Row */}
-                            <TableRow className="font-bold ">
-                              <TableCell className="py-3 font-serif">
-                                <span className="bold-font ">Total</span>
-                              </TableCell>
-                              <TableCell></TableCell>
-                              <TableCell className="py-3">
-                                <span className="font-bold ">£{total}</span>
-                              </TableCell>
-                            </TableRow>
-                          </TableBody>
-                        </Table>
-                      </TableContainer>
-                    </div>
-                  </div>
-                </>
-              )}
-              {activeTab === 1 && (
-                <>
-                  <div className="grid grid-cols-1 sm:grid-cols-1 gap-4">
-                    {/* Patient Information Section */}
-                    <div className="sm:bg-gray-50 rounded-lg">
-                      <h2 className="text-xl font-bold text-[#1C1C29] mb-4">
-                        Patient Information
-                      </h2>
-                      <TableContainer component={Paper}>
-                        <Table>
-                          <TableBody>
-                            <TableRow>
-                              <TableCell
-                                style={{ width: "50%" }}
-                                className="font-medium"
-                              >
-                                First Name
-                              </TableCell>
-                              <TableCell
-                                style={{ width: "50%" }}
-                                className="text-[#1C1C29] capitalize"
-                              >
-                                {patientData?.firstName || "N/A"}
-                              </TableCell>
-                            </TableRow>
-                            <TableRow>
-                              <TableCell className="font-medium">
-                                Last Name
-                              </TableCell>
-                              <TableCell className="text-[#1C1C29] capitalize">
-                                {patientData?.lastName || "N/A"}
-                              </TableCell>
-                            </TableRow>
-                            <TableRow>
-                              <TableCell className="font-medium">
-                                Pregnancy
-                              </TableCell>
-                              <TableCell className="text-[#1C1C29] capitalize">
-                                {patientData?.pregnancy || "N/A"}
-                              </TableCell>
-                            </TableRow>
-                            <TableRow>
-                              <TableCell className="font-medium">
-                                Gender
-                              </TableCell>
-                              <TableCell className="text-[#1C1C29] capitalize">
-                                {patientData?.gender || "N/A"}
-                              </TableCell>
-                            </TableRow>
-                            <TableRow>
-                              <TableCell className="font-medium">
-                                Date of birth
-                              </TableCell>
-                              <TableCell className="text-[#1C1C29] capitalize">
-                                {moment(
-                                  patientData?.dob,
-                                  "DD-MM-YYYY",
-                                  true
-                                ).isValid()
-                                  ? moment(
-                                      patientData.dob,
-                                      "DD-MM-YYYY"
-                                    ).format("DD-MM-YYYY")
-                                  : "N/A"}
-                              </TableCell>
-                            </TableRow>
-                            <TableRow>
-                              <TableCell className="font-medium">
-                                Phone
-                              </TableCell>
-                              <TableCell className="text-[#1C1C29] capitalize">
-                                {patientData?.phoneNo || "N/A"}
-                              </TableCell>
-                            </TableRow>
-                          </TableBody>
-                        </Table>
-                      </TableContainer>
-                    </div>
+                            {/* Shipping fee */}
+                            <tr className="border-b border-[#47317c]/[0.07] bg-[#faf9fc]/60">
+                              <td className="px-5 py-4">
+                                <span className="mont-medium-font text-[12px] text-slate-600">
+                                  Shipping fee
+                                </span>
+                              </td>
 
-                    {/* GP Details Section */}
-                    {/* <div className="sm:bg-gray-50 rounded-lg p-4">
-                      <h2 className="text-xl font-bold text-[#1C1C29] mb-4">
-                        GP Details
-                      </h2>
-                      <TableContainer component={Paper}>
-                        <Table>
-                          <TableBody>
-                            <TableRow>
-                              <TableCell
-                                style={{ width: "50%" }}
-                                className="font-medium"
-                              >
-                                Are you registered with a GP in the UK?
-                              </TableCell>
-                              <TableCell
-                                style={{ width: "50%" }}
-                                className="text-[#1C1C29] capitalize"
-                              >
-                                {gpDetails?.gpConsent || "N/A"}
-                              </TableCell>
-                            </TableRow>
-                            <TableRow>
-                              <TableCell className="font-medium">
-                                Address
-                              </TableCell>
-                              <TableCell className="text-[#1C1C29] capitalize">
-                                {gpDetails?.addressLine1 || "N/A"}
-                              </TableCell>
-                            </TableRow>
-                            <TableRow>
-                              <TableCell className="font-medium">
-                                City
-                              </TableCell>
-                              <TableCell className="text-[#1C1C29] capitalize">
-                                {gpDetails?.city || "N/A"}
-                              </TableCell>
-                            </TableRow>
-                            <TableRow>
-                              <TableCell className="font-medium">
-                                Email
-                              </TableCell>
-                              <TableCell className="text-[#1C1C29] capitalize">
-                                {gpDetails?.email || "N/A"}
-                              </TableCell>
-                            </TableRow>
-                            <TableRow>
-                              <TableCell className="font-medium">
-                                County
-                              </TableCell>
-                              <TableCell className="text-[#1C1C29] capitalize">
-                                {gpDetails?.state || "N/A"}
-                              </TableCell>
-                            </TableRow>
-                          </TableBody>
-                        </Table>
-                      </TableContainer>
-                    </div> */}
+                              <td />
 
-                    {/* BMI Information Section */}
-                    {/* <div className="sm:bg-gray-50 rounded-lg p-4">
-                      <h2 className="text-xl font-bold text-[#1C1C29] mb-4">
-                        BMI Information
-                      </h2>
-                      <TableContainer
-                        component={Paper}
-                        sx={{ borderRadius: 2 }}
-                      >
-                        <Table>
-                          <TableBody>
-                            <TableRow>
-                              <TableCell>BMI</TableCell>
-                              <TableCell>{bmiData?.bmi ?? "N/A"}</TableCell>
-                            </TableRow>
-                            <TableRow>
-                              <TableCell>Height Unit</TableCell>
-                              <TableCell>
-                                {bmiData?.height_unit?.toUpperCase() ?? "N/A"}
-                              </TableCell>
-                            </TableRow>
-                            <TableRow>
-                              <TableCell>Height</TableCell>
-                              <TableCell>{formatHeight(bmiData)}</TableCell>
-                            </TableRow>
-                            <TableRow>
-                              <TableCell>Weight Unit</TableCell>
-                              <TableCell>
-                                {bmiData?.weight_unit?.toUpperCase() ?? "N/A"}
-                              </TableCell>
-                            </TableRow>
-                            <TableRow>
-                              <TableCell>Weight</TableCell>
-                              <TableCell>{formatWeight(bmiData)}</TableCell>
-                            </TableRow>
-                          </TableBody>
-                        </Table>
-                      </TableContainer>
-                    </div> */}
-                  </div>
-                </>
-              )}
-
-              {activeTab === 8 && (
-                <>
-                  {/* Medical info */}
-
-                  <div className="sm:bg-gray-50 rounded-lg mb-6">
-                    {medicalInfo && medicalInfo.length > 0 ? (
-                      <h2 className="text-xl niba-bold-font text-[#1C1C29] mb-4 p-4">
-                        Medical Information
-                      </h2>
-                    ) : (
-                      ""
-                    )}
-                    {medicalInfo && medicalInfo.length > 0 ? (
-                      <TableContainer component={Paper} className="mb-6">
-                        <Table>
-                          <TableHead>
-                            <TableRow>
-                              <TableCell className="font-semibold text-[#1C1C29]">
-                                SNO#
-                              </TableCell>
-                              <TableCell className="font-semibold text-[#1C1C29]">
-                                Question
-                              </TableCell>
-                              <TableCell className="font-semibold text-[#1C1C29]">
-                                Answer
-                              </TableCell>
-                            </TableRow>
-                          </TableHead>
-                          <TableBody>
-                            {medicalInfo.map((item, index) => (
-                              <TableRow key={item.id || index}>
-                                <TableCell className="reg-font text-[#1C1C29]">
-                                  {index + 1}
-                                </TableCell>
-
-                                <TableCell className="reg-font text-[#1C1C29]">
-                                  <div
-                                    dangerouslySetInnerHTML={{
-                                      __html: item.question,
-                                    }}
-                                  />
-
-                                  {item.answer === "yes" &&
-                                    item.has_sub_field &&
-                                    item.subfield_response && (
-                                      <ul className="list-disc pl-4 text-[#f59e0b] mt-1">
-                                        <li>{item.subfield_response}</li>
-                                      </ul>
-                                    )}
-                                </TableCell>
-
-                                <TableCell className="reg-font text-[#1C1C29] capitalize">
-                                  {item.answer}
-                                </TableCell>
-                              </TableRow>
-                            ))}
-                          </TableBody>
-                        </Table>
-                      </TableContainer>
-                    ) : (
-                      <p className="text-center text-gray-500 px-4 pb-4">
-                        Medical information not found.
-                      </p>
-                    )}
-                  </div>
-                </>
-              )}
-
-              {activeTab === 5 && (
-                <>
-                  <h1 className="text-2xl font-light my-4">
-                    <span className="niba-bold-font text-black">
-                      User Consent
-                    </span>
-                  </h1>
-                  <div className="relative overflow-x-auto border rounded-lg">
-                    {startConcent ? (
-                      <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-                        <thead className="border-b text-md text-gray-700 bg-white  [&>tr:not(:last-child)]:border-b [&>tr]:border-gray-200">
-                          <tr className="uppercase">
-                            {/* <th scope="col" className="px-6 py-3">SNo#</th> */}
-
-                            {/* <th scope="col" className="px-6 py-3">Answer</th> */}
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {/* Confirmation Details */}
-                          <tr className="border-b border-gray-200 bg-white  [&>tr:not(:last-child)]:border-b [&>tr]:border-gray-200">
-                            {/* <td className="px-6 py-3 text-gray-700">2</td> */}
-                            <td className="px-6 py-3 text-gray-700 reg-font">
-                              <div
-                                dangerouslySetInnerHTML={{
-                                  __html:
-                                    startConcent.PatientAcknowledgment
-                                      ?.question,
-                                }}
-                              ></div>
-                            </td>
-                            {/* <td className="px-16 py-3 capitalize text-end text-gray-700">
-                                    {startConcent.PatientAcknowledgment?.response === "YES" ? "Yes" : "No"}
-                                </td> */}
-                          </tr>
-                          {startConcent.PatientAcknowledgment?.confirmation && (
-                            <tr className="border-b border-gray-200 bg-white">
-                              <td className="px-6 py-3 text-gray-700 mt-1 reg-font">
-                                <div
-                                  dangerouslySetInnerHTML={{
-                                    __html:
-                                      startConcent.PatientAcknowledgment
-                                        .confirmation.confirmation_details,
-                                  }}
-                                />
+                              <td className="px-5 py-4 text-right">
+                                <span className="mont-medium-font text-[12px] text-slate-900">
+                                  £{formatCurrency(shipmentFee)}
+                                </span>
                               </td>
                             </tr>
-                          )}
 
-                          {/* Main Question */}
-                        </tbody>
-                      </table>
-                    ) : (
-                      <div className="p-6 text-center text-gray-500">
-                        No Consent here
-                      </div>
-                    )}
+                            {/* Total */}
+                            <tr className="bg-[#47317c]/[0.035]">
+                              <td className="px-5 py-5">
+                                <div className="flex items-center gap-2">
+                                  <ReceiptText
+                                    size={17}
+                                    strokeWidth={2}
+                                    className="text-[#47317c]"
+                                  />
 
-                    {/* Additional styling for confirmation details */}
-                    <style jsx>{`
-                      .mt-1 ul {
-                        list-style-type: disc;
-                        padding-left: 1.5rem;
-                      }
-                      .mt-1 li {
-                        margin-bottom: 0.5rem;
-                        color: #4a5568;
-                      }
-                    `}</style>
-                  </div>
-                  {order?.items?.some(
-                    (item) => item.product_concent !== null
-                  ) && (
-                    <>
-                      <h1 className="text-2xl font-light my-4">
-                        <span className="niba-bold-font">
-                          Product Related Consent
-                        </span>
-                      </h1>
+                                  <span className="mont-bold-font text-[15px] text-slate-950">
+                                    Order total
+                                  </span>
+                                </div>
+                              </td>
 
-                      <div className="relative overflow-x-auto border rounded-lg">
-                        <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-                          <thead className="border-b text-md text-gray-700 bg-gray-50  [&>tr:not(:last-child)]:border-b [&>tr]:border-gray-200">
-                            <tr className="uppercase">
-                              {/* <th scope="col" className="px-6 py-3">SNo#</th> */}
+                              <td />
 
-                              {/* <th scope="col" className="px-6 py-3">Answer</th> */}
+                              <td className="px-5 py-5 text-right">
+                                <span className="mont-bold-font text-[21px] leading-none text-[#47317c]">
+                                  £{formatCurrency(total)}
+                                </span>
+                              </td>
                             </tr>
-                          </thead>
-                          <tbody>
-                            {order?.items?.map((item, index) => {
-                              return (
-                                item.product_concent != null && (
-                                  <tr className="border-b border-gray-200 bg-gray-50  [&>tr:not(:last-child)]:border-b [&>tr]:border-gray-200">
-                                    <td className="px-6 py-3 text-gray-700 mt-1">
-                                      <div
-                                        dangerouslySetInnerHTML={{
-                                          __html: item.product_concent,
-                                        }}
-                                      />
-                                    </td>
-                                  </tr>
-                                )
-                              );
-                            })}
                           </tbody>
                         </table>
-
-                        {/* Additional styling for confirmation details */}
-                        <style jsx>{`
-                          .mt-1 ul {
-                            list-style-type: disc;
-                            padding-left: 1.5rem;
-                          }
-                          .mt-1 li {
-                            margin-bottom: 0.5rem;
-                            color: #4a5568;
-                          }
-                        `}</style>
                       </div>
-                    </>
+
+                      {/* Mobile layout */}
+                      <div className="md:hidden">
+                        <div className="grid grid-cols-1 gap-3 p-4">
+                          {products.map((product, index) => (
+                            <div
+                              key={product?.id || `${product?.label}-${index}`}
+                              className="rounded-[17px] border border-[#47317c]/[0.08] bg-[#faf9fc] p-4"
+                            >
+                              <p className="mont-medium-font text-[13px] capitalize leading-5 text-slate-900">
+                                {product?.label ||
+                                  product?.name ||
+                                  product?.product ||
+                                  "Item"}
+                              </p>
+
+                              <div className="mt-4 flex items-end justify-between gap-3">
+                                <div>
+                                  <p className="mont-medium-font text-[10px] uppercase tracking-[0.1em] text-slate-400">
+                                    Quantity
+                                  </p>
+
+                                  <p className="mont-medium-font mt-1.5 text-[12px] text-slate-700">
+                                    {product?.quantity}
+                                  </p>
+                                </div>
+
+                                <div className="text-right">
+                                  <p className="mont-medium-font text-[10px] uppercase tracking-[0.1em] text-slate-400">
+                                    Amount
+                                  </p>
+
+                                  <p className="mont-bold-font mt-1.5 text-[15px] text-[#47317c]">
+                                    £
+                                    {formatCurrency(
+                                      parseFloat(product?.price) *
+                                        Number(product?.quantity),
+                                    )}
+                                  </p>
+                                </div>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+
+                        {/* Mobile summary */}
+                        <div className="border-t border-[#47317c]/[0.07] bg-[#faf9fc] p-4">
+                          <div className="space-y-3.5">
+                            {discountData?.discount > 0 && (
+                              <>
+                                <div className="flex items-center justify-between gap-4">
+                                  <span className="mont-reg-font text-[12px] text-slate-500">
+                                    Discount
+                                  </span>
+
+                                  <span className="mont-medium-font text-[12px] text-emerald-600">
+                                    {discountData?.type === "Fixed"
+                                      ? `-£${formatCurrency(
+                                          discountData?.discount_value,
+                                        )}`
+                                      : `-${parseFloat(
+                                          discountData?.discount_value,
+                                        ).toFixed(1)}%`}
+                                  </span>
+                                </div>
+
+                                <div className="flex items-center justify-between gap-4">
+                                  <span className="mont-reg-font text-[12px] text-slate-500">
+                                    Coupon code
+                                  </span>
+
+                                  <span className="mont-medium-font text-[12px] text-slate-900">
+                                    {discountData?.code || "N/A"}
+                                  </span>
+                                </div>
+
+                                <div className="flex items-center justify-between gap-4">
+                                  <span className="mont-reg-font text-[12px] text-slate-500">
+                                    Discount type
+                                  </span>
+
+                                  <span className="mont-medium-font text-[12px] text-slate-900">
+                                    {discountData?.type === "Fixed"
+                                      ? "Fixed"
+                                      : "Percentage"}
+                                  </span>
+                                </div>
+                              </>
+                            )}
+
+                            <div className="flex items-center justify-between gap-4">
+                              <span className="mont-reg-font text-[12px] text-slate-500">
+                                Shipping fee
+                              </span>
+
+                              <span className="mont-medium-font text-[12px] text-slate-900">
+                                £{formatCurrency(shipmentFee)}
+                              </span>
+                            </div>
+
+                            <div className="h-px bg-[#47317c]/10" />
+
+                            <div className="flex items-end justify-between gap-4">
+                              <span className="mont-bold-font text-[14px] text-slate-950">
+                                Total
+                              </span>
+
+                              <span className="mont-bold-font text-[20px] text-[#47317c]">
+                                £{formatCurrency(total)}
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                   )}
 
-                  {confirmationInfo?.length > 0 && (
-                    <>
-                      <h1 className="text-2xl font-light mt-8 mb-4">
-                        <span className="niba-bold-font text-black">
-                          Confirmation
+                  {/* =====================================================
+                      Patient Details Tab
+                  ===================================================== */}
+
+                  {activeTab === 1 && (
+                    <div className="overflow-hidden rounded-[22px] border border-[#47317c]/10 bg-white">
+                      <div className="flex items-center gap-3 border-b border-[#47317c]/[0.07] bg-[#faf9fc] px-5 py-4">
+                        <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-[13px] bg-[#47317c]/[0.08] text-[#47317c]">
+                          <UserRound size={19} strokeWidth={2} />
                         </span>
-                      </h1>
 
-                      <TableContainer
-                        component={Paper}
-                        className="rounded-lg overflow-x-auto"
-                      >
-                        <Table aria-label="confirmation table">
-                          <TableBody>
-                            {confirmationInfo.map((item, index) => (
-                              <TableRow key={index}>
-                                <TableCell>
-                                  <div
-                                    className="prose"
-                                    dangerouslySetInnerHTML={{
-                                      __html: `
-                      <style>
-                        .prose ol {
-                          list-style-type: decimal;
-                          padding-left: 20px;
-                          margin-top: 0;
-                          margin-bottom: 1em;
-                        }
-                        .prose ul {
-                          list-style-type: disc;
-                          padding-left: 20px;
-                          margin-top: 0;
-                          margin-bottom: 1em;
-                        }
-                        .prose li {
-                          line-height: 2.5;
-                        }
-                        .prose p {
-                          margin-top: 0;
-                          margin-bottom: 1em;
-                          line-height: 1.8;
-                        }
-                        .prose a {
-                          color: blue;
-                          text-decoration: none;
-                        }
-                        .prose a:hover {
-                          text-decoration: underline;
-                        }
-                      </style>
-                      ${item.question}
-                    `,
-                                    }}
-                                  />
+                        <div className="min-w-0">
+                          <h2 className="mont-bold-font text-[18px] leading-6 text-slate-950">
+                            Patient information
+                          </h2>
 
-                                  {item.has_checklist && (
-                                    <div
-                                      className="prose"
-                                      dangerouslySetInnerHTML={{
-                                        __html: `
-                        <style>
-                          .prose ol {
-                            list-style-type: decimal;
-                            padding-left: 20px;
-                            margin-top: 0;
-                            margin-bottom: 1em;
-                          }
-                          .prose ul {
-                            list-style-type: disc;
-                            padding-left: 20px;
-                            margin-top: 0;
-                            margin-bottom: 1em;
-                          }
-                          .prose li {
-                            line-height: 2.5;
-                          }
-                          .prose p {
-                            margin-top: 0;
-                            margin-bottom: 1em;
-                            line-height: 1.8;
-                          }
-                          .prose a {
-                            color: blue;
-                            text-decoration: none;
-                          }
-                          .prose a:hover {
-                            text-decoration: underline;
-                          }
-                        </style>
-                        ${item.checklist}
-                      `,
-                                      }}
-                                    />
-                                  )}
-                                </TableCell>
-                              </TableRow>
-                            ))}
-                          </TableBody>
-                        </Table>
-                      </TableContainer>
-                    </>
+                          {/* <p className="mont-reg-font mt-0.5 text-[12px] leading-5 text-slate-500">
+                            Personal details associated with this order.
+                          </p> */}
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-1 gap-3 p-4 sm:grid-cols-2 sm:p-5 lg:grid-cols-3">
+                        <DetailField
+                          label="First name"
+                          value={patientData?.firstName}
+                          capitalize
+                        />
+
+                        <DetailField
+                          label="Last name"
+                          value={patientData?.lastName}
+                          capitalize
+                        />
+
+                        <DetailField
+                          label="Gender"
+                          value={patientData?.gender}
+                          capitalize
+                        />
+
+                        <DetailField
+                          label="Pregnancy"
+                          value={patientData?.pregnancy}
+                          capitalize
+                        />
+
+                        <DetailField
+                          label="Date of birth"
+                          value={formattedDob}
+                        />
+
+                        <DetailField
+                          label="Phone number"
+                          value={patientData?.phoneNo}
+                        />
+                      </div>
+                    </div>
                   )}
-
-                  {product_terms_conditions &&
-                    product_terms_conditions !== null &&
-                    product_terms_conditions !== "" && (
-                      <>
-                        <h1 className="text-2xl font-light mt-8 mb-4">
-                          <span className="niba-bold-font text-black">
-                            Medication Terms & Conditions
-                          </span>
-                        </h1>
-
-                        <TableContainer
-                          component={Paper}
-                          sx={{ borderRadius: 2 }}
-                        >
-                          <Table>
-                            <TableHead>
-                              <TableRow>
-                                <TableCell
-                                  sx={{
-                                    minWidth: 400,
-                                    textTransform: "uppercase",
-                                  }}
-                                >
-                                  Response
-                                </TableCell>
-                              </TableRow>
-                            </TableHead>
-                            <TableBody>
-                              <TableRow>
-                                <TableCell>
-                                  <div
-                                    className="prose"
-                                    dangerouslySetInnerHTML={{
-                                      __html: `
-                    <style>
-                      .prose ol {
-                          list-style-type: decimal;
-                          padding-left: 20px;
-                          margin-top: 0;
-                          margin-bottom: 1em;
-                      }
-                      .prose ul {
-                          list-style-type: disc;
-                          padding-left: 20px;
-                          margin-top: 0;
-                          margin-bottom: 1em;
-                      }
-                      .prose li {
-                          line-height: 2.5;
-                      }
-                      .prose p {
-                          margin-top: 0;
-                          margin-bottom: 1em;
-                          line-height: 1.8;
-                      }
-                      .prose a {
-                          color: blue;
-                          text-decoration: none;
-                      }
-                      .prose a:hover {
-                          text-decoration: underline;
-                      }
-                    </style>
-                    ${product_terms_conditions}
-                  `,
-                                    }}
-                                  />
-                                </TableCell>
-                              </TableRow>
-                            </TableBody>
-                          </Table>
-                        </TableContainer>
-                      </>
-                    )}
-                </>
-              )}
-
-              {activeTab === 9 && (
-                <>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    {/* Patient Information Section */}
-
-                    <div className="sm:bg-gray-50 rounded-lg mb-6">
-                      <h2 className="text-xl niba-bold-font text-[#1C1C29] mb-4">
-                        Shipping Information
-                      </h2>
-                      <TableContainer component={Paper}>
-                        <Table>
-                          <TableBody>
-                            <TableRow>
-                              <TableCell
-                                style={{ width: "50%" }}
-                                className="reg-font  paragraph"
-                              >
-                                First Name
-                              </TableCell>
-                              <TableCell
-                                style={{ width: "50%" }}
-                                className="reg-font  text-[#1C1C29] capitalize"
-                              >
-                                {shippingData?.first_name
-                                  ? shippingData?.first_name
-                                  : patientData?.firstName
-                                  ? patientData?.firstName
-                                  : "N/A"}
-                              </TableCell>
-                            </TableRow>
-
-                            <TableRow>
-                              <TableCell
-                                style={{ width: "50%" }}
-                                className="reg-font  paragraph"
-                              >
-                                Last Name
-                              </TableCell>
-                              <TableCell
-                                style={{ width: "50%" }}
-                                className="reg-font  text-[#1C1C29] capitalize"
-                              >
-                                {shippingData?.last_name
-                                  ? shippingData?.last_name
-                                  : patientData?.lastName
-                                  ? patientData?.lastName
-                                  : "N/A"}
-                              </TableCell>
-                            </TableRow>
-
-                            <TableRow>
-                              <TableCell
-                                style={{ width: "50%" }}
-                                className="reg-font  paragraph"
-                              >
-                                Address1
-                              </TableCell>
-                              <TableCell
-                                style={{ width: "50%" }}
-                                className="reg-font  text-[#1C1C29] capitalize"
-                              >
-                                {shippingData?.addressone
-                                  ? shippingData?.addressone
-                                  : "N/A"}
-                              </TableCell>
-                            </TableRow>
-                            <TableRow>
-                              <TableCell
-                                style={{ width: "50%" }}
-                                className="reg-font  paragraph"
-                              >
-                                Address2
-                              </TableCell>
-                              <TableCell
-                                style={{ width: "50%" }}
-                                className="reg-font  text-[#1C1C29] capitalize"
-                              >
-                                {shippingData?.addresstwo
-                                  ? shippingData?.addresstwo
-                                  : "N/A"}
-                                {/* {shippingData.addresstwo ? shippingData?.addresstwo : "N/A"} */}
-                              </TableCell>
-                            </TableRow>
-                            <TableRow>
-                              <TableCell className="reg-font  paragraph">
-                                City
-                              </TableCell>
-                              <TableCell className="reg-font  text-[#1C1C29] capitalize">
-                                {shippingData?.city
-                                  ? shippingData?.city
-                                  : "N/A"}
-                              </TableCell>
-                            </TableRow>
-                            <TableRow>
-                              <TableCell className="reg-font  paragraph">
-                                County / Province / Region:
-                              </TableCell>
-                              <TableCell className="reg-font  text-[#1C1C29] capitalize">
-                                {shippingData?.state
-                                  ? shippingData?.state
-                                  : "N/A"}
-                              </TableCell>
-                            </TableRow>
-                            <TableRow>
-                              <TableCell className="reg-font  paragraph">
-                                Postalcode
-                              </TableCell>
-                              <TableCell className="reg-font  text-[#1C1C29] capitalize">
-                                {shippingData?.postalcode
-                                  ? shippingData?.postalcode
-                                  : "N/A"}
-                              </TableCell>
-                            </TableRow>
-
-                            <TableRow>
-                              <TableCell className="reg-font  paragraph">
-                                Country
-                              </TableCell>
-                              <TableCell className="reg-font  text-[#1C1C29] capitalize">
-                                {shippingData?.country
-                                  ? shippingData?.country
-                                  : "N/A"}
-                              </TableCell>
-                            </TableRow>
-
-                            <TableRow>
-                              <TableCell className="reg-font  paragraph">
-                                Phone Number
-                              </TableCell>
-                              <TableCell className="reg-font  text-[#1C1C29] capitalize">
-                                {patientData?.phoneNo
-                                  ? patientData?.phoneNo
-                                  : "N/A"}
-                              </TableCell>
-                            </TableRow>
-                          </TableBody>
-                        </Table>
-                      </TableContainer>
-                    </div>
-
-                    <div className="sm:bg-gray-50 rounded-lg mb-6">
-                      <h2 className="text-xl niba-bold-font text-[#1C1C29] mb-4">
-                        Billing Information
-                      </h2>
-                      <TableContainer component={Paper}>
-                        <Table>
-                          <TableBody>
-                            <TableRow>
-                              <TableCell
-                                style={{ width: "50%" }}
-                                className="reg-font  paragraph"
-                              >
-                                Address1
-                              </TableCell>
-                              <TableCell
-                                style={{ width: "50%" }}
-                                className="reg-font  text-[#1C1C29] capitalize"
-                              >
-                                {BillingData?.addressone
-                                  ? BillingData?.addressone
-                                  : "N/A"}
-                              </TableCell>
-                            </TableRow>
-                            <TableRow>
-                              <TableCell
-                                style={{ width: "50%" }}
-                                className="reg-font  paragraph"
-                              >
-                                Address2
-                              </TableCell>
-                              <TableCell
-                                style={{ width: "50%" }}
-                                className="reg-font  text-[#1C1C29] capitalize"
-                              >
-                                {BillingData?.addresstwo
-                                  ? BillingData?.addresstwo
-                                  : "N/A"}
-                                {/* {shippingData.addresstwo ? shippingData?.addresstwo : "N/A"} */}
-                              </TableCell>
-                            </TableRow>
-                            <TableRow>
-                              <TableCell className="reg-font  paragraph">
-                                City
-                              </TableCell>
-                              <TableCell className="reg-font  text-[#1C1C29] capitalize">
-                                {BillingData?.city ? BillingData?.city : "N/A"}
-                              </TableCell>
-                            </TableRow>
-                            <TableRow>
-                              <TableCell className="reg-font  paragraph">
-                                County / Province / Region:
-                              </TableCell>
-                              <TableCell className="reg-font  text-[#1C1C29] capitalize">
-                                {BillingData?.state
-                                  ? BillingData?.state
-                                  : "N/A"}
-                              </TableCell>
-                            </TableRow>
-                            <TableRow>
-                              <TableCell className="reg-font  paragraph">
-                                Postalcode
-                              </TableCell>
-                              <TableCell className="reg-font  text-[#1C1C29] capitalize">
-                                {BillingData?.postalcode
-                                  ? BillingData?.postalcode
-                                  : "N/A"}
-                              </TableCell>
-                            </TableRow>
-
-                            <TableRow>
-                              <TableCell className="reg-font  paragraph">
-                                Country
-                              </TableCell>
-                              <TableCell className="reg-font  text-[#1C1C29] capitalize">
-                                {BillingData?.country
-                                  ? BillingData?.country
-                                  : "N/A"}
-                              </TableCell>
-                            </TableRow>
-                          </TableBody>
-                        </Table>
-                      </TableContainer>
-                    </div>
-                  </div>
-                </>
-              )}
-            </motion.div>
-
-            <div className="flex justify-start my-3">
-              <Link href="/orders/">
-                <button className="reg-font px-6 py-2 bg-primary cursor-pointer text-white rounded-full hover:bg-primary transition">
-                  Back
-                </button>
-              </Link>
+                </motion.div>
+              </section>
             </div>
-          </div>
+          </main>
         </DashBoardLayout>
       </ProtectedPage>
     </>

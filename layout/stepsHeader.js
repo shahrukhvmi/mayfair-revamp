@@ -1,59 +1,92 @@
-import React, { useEffect, useRef, useState } from "react";
-import { FiMenu, FiX } from "react-icons/fi";
+import React, { useEffect, useState } from "react";
+import Link from "next/link";
+import { useRouter } from "next/router";
+import { usePathname } from "next/navigation";
+import { useMutation } from "@tanstack/react-query";
+import { Menu as MuiMenu, MenuItem } from "@mui/material";
+import toast from "react-hot-toast";
+import {
+  ChevronDown,
+  Copy,
+  LayoutDashboard,
+  LogOut,
+  Menu as MenuIcon,
+  ShoppingBag,
+  User2,
+  UserCheck,
+  X,
+} from "lucide-react";
+
 import ApplicationLogo from "@/config/ApplicationLogo";
 import ApplicationUser from "@/config/ApplicationUser";
-import Link from "next/link";
-import useSignupStore from "@/store/signupStore";
-import useAuthStore from "@/store/authStore";
 import LoginModal from "@/Components/LoginModal/LoginModal";
-import useLoginModalStore from "@/store/useLoginModalStore";
-import { Login } from "@/api/loginApi";
-import { useMutation } from "@tanstack/react-query";
-import toast from "react-hot-toast";
-import Fetcher from "@/library/Fetcher";
-import { useRouter } from "next/router";
-import useShippingOrBillingStore from "@/store/shipingOrbilling";
-import useAuthUserDetailStore from "@/store/useAuthUserDetailStore";
-import useConfirmationQuestionsStore from "@/store/confirmationQuestionStore";
-import useMedicalQuestionsStore from "@/store/medicalQuestionStore";
-import usePatientInfoStore from "@/store/patientInfoStore";
-import useMedicalInfoStore from "@/store/medicalInfoStore";
-import useGpDetailsStore from "@/store/gpDetailStore";
-import useConfirmationInfoStore from "@/store/confirmationInfoStore";
-import useCheckoutStore from "@/store/checkoutStore";
-import useBmiStore from "@/store/bmiStore";
-import usePasswordReset from "@/store/usePasswordReset";
-import { usePathname } from "next/navigation";
-import useProductId from "@/store/useProductIdStore";
-import { ListItem, ListItemIcon, Menu, MenuItem } from "@mui/material";
-import { IoIosArrowDown } from "react-icons/io";
-import useLastBmi from "@/store/useLastBmiStore";
-import useUserDataStore from "@/store/userDataStore";
-import useImpersonate from "@/store/useImpersonateStore";
-import useReturning from "@/store/useReturningPatient";
 import UploadTopPrompt from "@/Components/UploadTopPrompt/UploadTopPrompt";
-import useReorder from "@/store/useReorderStore";
-import useCartStore from "@/store/useCartStore";
-import useImageUploadStore from "@/store/useImageUploadStore ";
+import { Login } from "@/api/loginApi";
 import GetImageIsUplaod from "@/api/GetImageIsUplaod";
 import { GetIdVerification } from "@/api/IdVerificationApi";
-import useIdVerificationUploadStore from "@/store/useIdVerificationUploadStore";
-import TopToastExplainenation from "@/Components/UploadTopPrompt/TopToastExplainenation";
 import { GetPrescriptionEvidence } from "@/api/PrescriptionEvidenceApi";
-import useExplanationEvidenceStore from "@/store/useExplanationEvidenceStore";
-import lastOrderStore from "@/store/lastOrderStore";
-import { useSearchParams } from "next/navigation";
+import Fetcher from "@/library/Fetcher";
 import useAbandonCardStore from "@/store/abandonCardStore";
-import { User2 } from "lucide-react";
+import useAuthStore from "@/store/authStore";
+import useAuthUserDetailStore from "@/store/useAuthUserDetailStore";
+import useBmiStore from "@/store/bmiStore";
+import useCartStore from "@/store/useCartStore";
+import useCheckoutStore from "@/store/checkoutStore";
+import useConfirmationInfoStore from "@/store/confirmationInfoStore";
+import useConfirmationQuestionsStore from "@/store/confirmationQuestionStore";
+import useExplanationEvidenceStore from "@/store/useExplanationEvidenceStore";
+import useGpDetailsStore from "@/store/gpDetailStore";
+import useIdVerificationUploadStore from "@/store/useIdVerificationUploadStore";
+import useImageUploadStore from "@/store/useImageUploadStore ";
+import useImpersonate from "@/store/useImpersonateStore";
+import useLastBmi from "@/store/useLastBmiStore";
+import lastOrderStore from "@/store/lastOrderStore";
+import useLoginModalStore from "@/store/useLoginModalStore";
+import useMedicalInfoStore from "@/store/medicalInfoStore";
+import useMedicalQuestionsStore from "@/store/medicalQuestionStore";
+import usePasswordReset from "@/store/usePasswordReset";
+import usePatientInfoStore from "@/store/patientInfoStore";
+import useProductId from "@/store/useProductIdStore";
+import useReorder from "@/store/useReorderStore";
+import useReturning from "@/store/useReturningPatient";
+import useShippingOrBillingStore from "@/store/shipingOrbilling";
+import useSignupStore from "@/store/signupStore";
+import useUserDataStore from "@/store/userDataStore";
+
+const dashboardRoutes = [
+  "/dashboard/",
+  "/orders/",
+  "/address/",
+  "/change-password/",
+  "/order-detail/",
+  "/profile/",
+  "/weight-loss-journey/",
+];
+
+const menuItemSx = {
+  borderRadius: "12px",
+  fontFamily: "var(--mont-medium)",
+  fontSize: "12px",
+  color: "#1e293b",
+  gap: "11px",
+  minHeight: "44px",
+  px: 1.5,
+  "&:hover": {
+    backgroundColor: "rgba(71,49,124,0.06)",
+    color: "#47317c",
+  },
+};
 
 const StepsHeader = ({ isOpen, toggleSidebar }) => {
   const { clearLastOrder } = lastOrderStore();
   const [anchorEl, setAnchorEl] = useState(null);
+  const [showLoader, setShowLoader] = useState(false);
+
   const { showLoginModal, closeLoginModal, openLoginModal } =
     useLoginModalStore();
 
-  const [showLoader, setShowLoader] = useState(false);
-  const { orderId } = useCartStore();
+  useCartStore();
+
   const { clearBmi } = useBmiStore();
   const { clearCheckout } = useCheckoutStore();
   const { clearConfirmationInfo } = useConfirmationInfoStore();
@@ -62,12 +95,16 @@ const StepsHeader = ({ isOpen, toggleSidebar }) => {
   const { clearPatientInfo } = usePatientInfoStore();
   const { clearMedicalQuestions } = useMedicalQuestionsStore();
   const { clearConfirmationQuestions } = useConfirmationQuestionsStore();
+
   const { authUserDetail, clearAuthUserDetail, setAuthUserDetail } =
     useAuthUserDetailStore();
+
   const { token, clearToken, setToken, setIsImpersonationLogout } =
     useAuthStore();
+
   const { clearShipping, clearBilling, setBillingSameAsShipping } =
     useShippingOrBillingStore();
+
   const { clearProductId } = useProductId();
   const { clearLastBmi } = useLastBmi();
   const { clearUserData } = useUserDataStore();
@@ -75,13 +112,12 @@ const StepsHeader = ({ isOpen, toggleSidebar }) => {
   const { impersonate, setImpersonate } = useImpersonate();
   const { reorder } = useReorder();
   const { imageUploaded, setImageUploaded } = useImageUploadStore();
+
   const { idVerificationUpload, setIdVerificationUpload } =
     useIdVerificationUploadStore();
-  const {
-    explainenationEvidence,
-    setExplainenationEvidence,
-    setExplainenationEvidenceDetails,
-  } = useExplanationEvidenceStore();
+
+  const { setExplainenationEvidence, setExplainenationEvidenceDetails } =
+    useExplanationEvidenceStore();
 
   const {
     firstName,
@@ -94,16 +130,19 @@ const StepsHeader = ({ isOpen, toggleSidebar }) => {
     clearEmail,
     clearConfirmationEmail,
   } = useSignupStore();
+
   const pathname = usePathname();
+  const normalizedPathname = pathname?.endsWith("/")
+    ? pathname
+    : `${pathname || "/"}/`;
 
   const router = useRouter();
   const { setIsPasswordReset, setShowResetPassword } = usePasswordReset();
-  const { abandonCard, setAbandonCard, clearAbandonCard, hasHydrated } =
-    useAbandonCardStore();
-  const hasRedirected = useRef(false);
+  const { abandonCard, clearAbandonCard } = useAbandonCardStore();
 
-  const handleLogout = () => {
-    setAnchorEl(null);
+  const isDashboardRoute = dashboardRoutes.includes(normalizedPathname);
+
+  const clearUserSession = () => {
     clearBmi();
     clearCheckout();
     clearConfirmationInfo();
@@ -115,8 +154,6 @@ const StepsHeader = ({ isOpen, toggleSidebar }) => {
     clearAuthUserDetail();
     clearMedicalQuestions();
     clearConfirmationQuestions();
-    clearToken();
-    setIsPasswordReset(true);
     clearProductId();
     clearLastBmi();
     clearUserData();
@@ -124,111 +161,81 @@ const StepsHeader = ({ isOpen, toggleSidebar }) => {
     clearLastName();
     clearEmail();
     clearConfirmationEmail();
-    setShowResetPassword(true);
-    setImpersonate(false);
     setBillingSameAsShipping(false);
     setIsReturningPatient(false);
     clearLastOrder();
     clearAbandonCard();
-
-    router.push("/login");
   };
 
-  const validPathDashboard =
-    pathname === "/dashboard/" ||
-    pathname === "/profile/" ||
-    pathname === "/orders/" ||
-    pathname === "/address/" ||
-    pathname === "/change-password/" ||
-    pathname === "/weight-loss-journey/";
+  const handleLogout = () => {
+    setAnchorEl(null);
+    clearUserSession();
+    clearToken();
+    setIsPasswordReset(true);
+    setShowResetPassword(true);
+    setImpersonate(false);
+    router.push("/login");
+  };
 
   const loginMutation = useMutation(Login, {
     onSuccess: (data) => {
       const user = data?.data?.data;
+
       setAuthUserDetail(user);
-      console.log(data?.data?.data, "data?.data?.data");
       setToken(user.token);
       toast.success("Login Successfully");
       Fetcher.axiosSetup.defaults.headers.common.Authorization = `Bearer ${user.token}`;
       setShowLoader(false);
       closeLoginModal();
-      setFirstName(data?.data?.data?.fname);
-      setLastName(data?.data?.data?.lname);
-      setEmail(data?.data?.data?.email);
+      setFirstName(user?.fname);
+      setLastName(user?.lname);
+      setEmail(user?.email);
 
       if (abandonCard?.type === "abandoned-cart") {
         router.push("/gathering-data");
       } else {
         router.push("/dashboard");
       }
+
       setIsPasswordReset(false);
-      setShowResetPassword(data?.data?.data?.show_password_reset);
+      setShowResetPassword(user?.show_password_reset);
       setIsReturningPatient(user?.isReturning);
     },
     onError: (error) => {
       const errors = error?.response?.data?.errors;
+
       if (errors && typeof errors === "object") {
         Object.values(errors).forEach((err) => {
           if (Array.isArray(err)) {
-            err.forEach((msg) => toast.error(msg));
+            err.forEach((message) => toast.error(message));
           } else {
             toast.error(err);
           }
         });
       }
+
       setShowLoader(false);
     },
   });
 
   const handleRemovedImpersonate = () => {
     setAnchorEl(null);
-    clearBmi();
-    clearCheckout();
-    clearConfirmationInfo();
-    clearGpDetails();
-    clearMedicalInfo();
-    clearPatientInfo();
-    clearBilling();
-    clearShipping();
-    clearAuthUserDetail();
-    clearMedicalQuestions();
-    clearConfirmationQuestions();
+    clearUserSession();
     setIsPasswordReset(true);
-    clearProductId();
-    clearLastBmi();
-    clearUserData();
-    clearFirstName();
-    clearLastName();
-    clearEmail();
-    clearConfirmationEmail();
     setShowResetPassword(true);
     clearToken();
     setIsImpersonationLogout(true);
     setImpersonate(false);
-    setBillingSameAsShipping(false);
-    setIsReturningPatient(false);
     window.location.href =
       "https://app.mayfairweightlossclinic.co.uk/dashboard";
   };
 
-  const specialRoutes = [
-    "/dashboard/",
-    "/orders/",
-    "/address/",
-    "/change-password/",
-    "/order-detail/",
-    "/profile/",
-    "/weight-loss-journey/",
-  ];
-
-  const redirectTo = specialRoutes.includes(pathname) ? "/dashboard" : "/";
-  console.log(reorder, "reorderreorder");
+  const redirectTo = isDashboardRoute ? "/dashboard" : "/";
 
   useEffect(() => {
     const fetchImageStatus = async () => {
       try {
         const res = await GetImageIsUplaod({ reorder });
-        console.log("Image Upload Response", res);
         setImageUploaded(res?.data?.status);
       } catch (error) {
         console.error("Failed to fetch image status:", error);
@@ -238,150 +245,144 @@ const StepsHeader = ({ isOpen, toggleSidebar }) => {
     fetchImageStatus();
   }, [reorder]);
 
-  // here isExplanationEvidence store
   useEffect(() => {
-    const fetchImageStatus = async () => {
+    const fetchIdStatus = async () => {
       try {
         const res = await GetIdVerification({ reorder });
-        console.log("Verification Image Status", res);
         setIdVerificationUpload(res?.data?.status);
       } catch (error) {
-        console.error("Failed to fetch image status:", error);
+        console.error("Failed to fetch ID status:", error);
       }
     };
 
-    fetchImageStatus();
+    fetchIdStatus();
   }, [reorder]);
-  const GetEvidence = async () => {
-    try {
-      const res = await GetPrescriptionEvidence({ token });
-      console.log("Prescription Evidence Status", res);
-      setExplainenationEvidence(res?.data?.require_evidence);
-      setExplainenationEvidenceDetails(res?.data);
-    } catch (error) {
-      console.error("Failed to fetch prescription evidence status:", error);
-    }
-  };
+
   useEffect(() => {
-    GetEvidence();
+    const getEvidence = async () => {
+      try {
+        const res = await GetPrescriptionEvidence({ token });
+        setExplainenationEvidence(res?.data?.require_evidence);
+        setExplainenationEvidenceDetails(res?.data);
+      } catch (error) {
+        console.error("Failed to fetch prescription evidence status:", error);
+      }
+    };
+
+    getEvidence();
   }, []);
+
+  const displayName = authUserDetail?.fname?.trim()
+    ? authUserDetail.fname
+    : firstName;
 
   return (
     <>
-      {/* {specialRoutes.includes(pathname) && (
-        <>
-          {explainenationEvidence ? (
-            <TopToastExplainenation />
-          ) : (
-            (!imageUploaded || !idVerificationUpload) && <UploadTopPrompt />
-          )}
-        </>
+      {/* {(!imageUploaded || !idVerificationUpload) && isDashboardRoute && (
+        <UploadTopPrompt />
       )} */}
 
-      {(!imageUploaded || !idVerificationUpload) &&
-        specialRoutes.includes(pathname) && <UploadTopPrompt />}
-
       {impersonate && (
-        <div className="bg-gray-100">
-          <div className="bg-red-500 text-white text-center p-2 flex flex-col sm:flex-row justify-center items-center gap-2 text-sm sm:text-base reg-font">
-            <div className="flex items-center gap-2">
-              <svg
-                stroke="currentColor"
-                fill="currentColor"
-                strokeWidth="0"
-                viewBox="0 0 24 24"
-                className="text-xl"
-                height="1em"
-                width="1em"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path fill="none" d="M0 0h24v24H0z"></path>
-                <path d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-6 2c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm6 12H8v-1.5c0-1.99 4-3 6-3s6 1.01 6 3V16z"></path>
-              </svg>
-              <span>You are impersonating another user.</span>
-            </div>
-            <button
-              className="ml-0 sm:ml-2 underline flex items-center gap-1 text-xs sm:text-sm reg-font cursor-pointer"
-              onClick={handleRemovedImpersonate}
-            >
-              <svg
-                stroke="currentColor"
-                fill="currentColor"
-                strokeWidth="0"
-                viewBox="0 0 24 24"
-                className="text-xl"
-                height="1em"
-                width="1em"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path fill="none" d="M0 0h24v24H0z"></path>
-                <path d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-6 2c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm6 12H8v-1.5c0-1.99 4-3 6-3s6 1.01 6 3V16z"></path>
-              </svg>
-              <span>Stop Impersonation</span>
-            </button>
+        <div className="mont-medium-font flex flex-col items-center justify-center gap-2 bg-red-500 px-4 py-2.5 text-center text-[12px] text-white sm:flex-row">
+          <div className="flex items-center gap-2">
+            <Copy size={15} strokeWidth={2} />
+            <span>You are impersonating another user.</span>
           </div>
+
+          <button
+            type="button"
+            className="mont-semibold-font flex cursor-pointer items-center gap-1.5 text-[11px] underline transition-colors hover:text-red-100"
+            onClick={handleRemovedImpersonate}
+          >
+            <UserCheck size={14} strokeWidth={2} />
+            Stop impersonation
+          </button>
         </div>
       )}
-      <header className="bg-white w-full py-2 sm:px-14 px-4 relative">
-        <div className="sm:px-6 lg:px-6 flex items-center justify-between py-2">
-          {/* Hamburger (Mobile) */}
-          {validPathDashboard && (
-            <button
-              onClick={toggleSidebar}
-              className="text-2xl text-violet-700 sm:hidden"
-            >
-              {isOpen ? <FiX /> : <FiMenu />}
-            </button>
-          )}
 
-          {/* Logo */}
-          <div className="w-32 sm:w-40">
-            <Link href={redirectTo}>
-              <ApplicationLogo width={140} height={80} />
+      <header className="sticky top-0 z-40 w-full border-b border-[#47317c]/[0.07] bg-white/95 backdrop-blur-xl">
+        <div className="mx-auto flex h-[66px] w-full max-w-[1920px] items-center justify-between gap-3 px-3 sm:px-5 lg:px-7">
+          {/* Left side */}
+          <div className="flex min-w-0 items-center gap-3">
+            {isDashboardRoute && (
+              <button
+                type="button"
+                onClick={toggleSidebar}
+                aria-label={isOpen ? "Close menu" : "Open menu"}
+                className="
+            flex h-9 w-9 shrink-0 items-center justify-center
+            rounded-[11px] border border-[#47317c]/10
+            bg-[#47317c]/[0.045] text-[#47317c]
+            transition-all duration-200
+            hover:border-[#47317c]/20
+            hover:bg-[#47317c]/[0.08]
+            active:scale-[0.96]
+            lg:hidden
+          "
+              >
+                {isOpen ? (
+                  <X size={17} strokeWidth={2.2} />
+                ) : (
+                  <MenuIcon size={17} strokeWidth={2.2} />
+                )}
+              </button>
+            )}
+
+            <Link href={redirectTo} className="flex shrink-0 items-center">
+              <ApplicationLogo width={148} height={56} />
             </Link>
           </div>
 
-          {/* User Info or Login CTA */}
-          <div className="relative">
+          {/* Right side */}
+          <div className="ml-auto flex items-center gap-2">
             {!pathname?.startsWith("/login") && token && (
               <>
-                <div className="flex items-center space-x-4">
-                  {specialRoutes.includes(pathname) && (
-                    <div className="hidden items-center gap-3 sm:flex">
-                      <User2 className="h-5 w-5 shrink-0 text-primary" />
+                <button
+                  type="button"
+                  onClick={(event) => setAnchorEl(event.currentTarget)}
+                  aria-haspopup="menu"
+                  aria-expanded={Boolean(anchorEl)}
+                  className={`
+              group flex min-h-[44px] items-center gap-2
+              rounded-[13px] border bg-white
+              py-1.5 pl-1.5 pr-2
+              transition-all duration-200
 
-                      <div className="flex flex-col">
-                        <span className="thin-font text-[10px] font-semibold uppercase leading-none text-gray-400">
-                          Logged in as
-                        </span>
+              ${
+                Boolean(anchorEl)
+                  ? `
+                    border-[#47317c]/20
+                    bg-[#47317c]/[0.025]
+                  `
+                  : `
+                    border-[#47317c]/10
+                    hover:border-[#47317c]/20
+                    hover:bg-[#47317c]/[0.02]
+                  `
+              }
+            `}
+                >
+                  <ApplicationUser className="h-8 w-8 rounded-[10px] object-cover ring-1 ring-[#47317c]/10" />
 
-                        <span className="reg-font mt-1 text-sm leading-none text-gray-700 transition-colors hover:text-primary">
-                          {email}
-                        </span>
-                      </div>
-                    </div>
-                  )}
-
-                  <div
-                    className="flex items-center space-x-2 cursor-pointer"
-                    onClick={(e) => setAnchorEl(e.currentTarget)}
-                  >
-                    <ApplicationUser className="w-10 h-10 rounded-full" />
-
-                    <span className="reg-font text-[#1C1C29] truncate">
-                      {authUserDetail?.fname?.trim()
-                        ? authUserDetail.fname
-                        : firstName}
+                  <span className="hidden min-w-0 text-left sm:block">
+                    <span className="mont-medium-font block max-w-[130px] truncate text-[13px] leading-4 text-slate-900">
+                      {displayName}
                     </span>
-                    <IoIosArrowDown
-                      className={`text-gray-700 transform transition-transform duration-200 ${
-                        Boolean(anchorEl) ? "rotate-180" : ""
-                      }`}
-                      size={20}
-                    />
-                  </div>
-                </div>
-                <Menu
+                  </span>
+
+                  <ChevronDown
+                    size={13}
+                    strokeWidth={2.2}
+                    className={`
+                ml-0.5 text-[#47317c]/70
+                transition-transform duration-200 cursor-pointer
+
+                ${Boolean(anchorEl) ? "rotate-180" : ""}
+              `}
+                  />
+                </button>
+
+                <MuiMenu
                   anchorEl={anchorEl}
                   open={Boolean(anchorEl)}
                   onClose={() => setAnchorEl(null)}
@@ -395,57 +396,66 @@ const StepsHeader = ({ isOpen, toggleSidebar }) => {
                   }}
                   PaperProps={{
                     sx: {
-                      width: 260,
+                      width: 250,
                       mt: 1,
-                      borderRadius: "14px",
+                      borderRadius: "16px",
                       overflow: "hidden",
-                      border: "1px solid #e5e7eb",
-                      boxShadow: "0 12px 35px rgba(15, 23, 42, 0.12)",
+                      border: "1px solid rgba(71,49,124,0.1)",
+                      boxShadow: "0 16px 40px rgba(71,49,124,0.12)",
+                      backgroundImage: "none",
                     },
                   }}
                   MenuListProps={{
                     sx: {
-                      py: 0,
+                      p: 0,
                     },
                   }}
                 >
-                  {/* User email header */}
-                  <div className="flex items-center gap-3 bg-gray-50 px-4 py-4">
-                    <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
-                      <User2 className="h-5 w-5" />
-                    </div>
+                  {/* Account summary */}
+                  <div className="border-b border-[#47317c]/[0.07] bg-[#faf9fc] px-4 py-3.5">
+                    <p className="mont-medium-font m-0 text-[8px] uppercase tracking-[0.11em] text-slate-800">
+                      Logged in as
+                    </p>
 
-                    <div className="min-w-0 flex-1">
-                      <p className="reg-font mb-1 text-[10px] font-semibold uppercase tracking-[0.08em] text-gray-400">
-                        Logged in as
-                      </p>
+                    <p className="mont-medium-font mt-1 truncate text-[13px] text-slate-900">
+                      {displayName}
+                    </p>
 
-                      <span
-                        className="reg-font block truncate text-sm font-medium text-gray-800 transition-colors hover:text-primary"
-                        title={email}
-                      >
-                        {email}
-                      </span>
-                    </div>
+                    <p
+                      title={email}
+                      className="mont-reg-font mt-0.5 truncate text-[12px] text-slate-500"
+                    >
+                      {email}
+                    </p>
                   </div>
 
-                  {/* Bottom separator */}
-                  <div className="h-px bg-gray-200" />
-
-                  <div className="py-2">
+                  {/* Menu items */}
+                  <div className="p-1.5">
                     <MenuItem
                       onClick={() => {
                         router.push("/dashboard");
                         setAnchorEl(null);
                       }}
-                      className="reg-font"
                       sx={{
-                        mx: 1,
                         minHeight: 42,
-                        borderRadius: "8px",
-                        fontSize: "14px",
+                        borderRadius: "10px",
+                        gap: "10px",
+                        px: "10px",
+                        fontFamily: "var(--mont-medium)",
+                        fontSize: "10.5px",
+                        color: "#334155",
+
+                        "&:hover": {
+                          backgroundColor: "rgba(71,49,124,0.05)",
+                          color: "#47317c",
+                        },
                       }}
                     >
+                      <LayoutDashboard
+                        size={15}
+                        strokeWidth={2}
+                        color="#47317c"
+                      />
                       My Account
                     </MenuItem>
 
@@ -454,51 +464,74 @@ const StepsHeader = ({ isOpen, toggleSidebar }) => {
                         router.push("/orders");
                         setAnchorEl(null);
                       }}
-                      className="reg-font"
                       sx={{
-                        mx: 1,
                         minHeight: 42,
-                        borderRadius: "8px",
-                        fontSize: "14px",
-                      }}
-                    >
-                      My Orders
-                    </MenuItem>
+                        borderRadius: "10px",
+                        gap: "10px",
+                        px: "10px",
+                        fontFamily: "var(--mont-medium)",
+                        fontSize: "10.5px",
+                        color: "#334155",
 
-                    <div className="mx-3 my-2 h-px bg-gray-100" />
-
-                    <MenuItem
-                      onClick={handleLogout}
-                      className="reg-font"
-                      sx={{
-                        mx: 1,
-                        minHeight: 42,
-                        borderRadius: "8px",
-                        fontSize: "14px",
-                        color: "#dc2626",
                         "&:hover": {
-                          backgroundColor: "#fef2f2",
+                          backgroundColor: "rgba(71,49,124,0.05)",
+                          color: "#47317c",
                         },
                       }}
                     >
+                      <ShoppingBag size={15} strokeWidth={2} color="#47317c" />
+                      My Orders
+                    </MenuItem>
+
+                    <div className="mx-2 my-1 h-px bg-[#47317c]/[0.07]" />
+
+                    <MenuItem
+                      onClick={handleLogout}
+                      sx={{
+                        minHeight: 42,
+                        borderRadius: "10px",
+                        gap: "10px",
+                        px: "10px",
+                        fontFamily: "var(--mont-medium)",
+                        fontSize: "10.5px",
+                        color: "#dc2626",
+
+                        "&:hover": {
+                          backgroundColor: "#fef2f2",
+                          color: "#dc2626",
+                        },
+                      }}
+                    >
+                      <LogOut size={15} strokeWidth={2} color="#ef4444" />
                       Logout
                     </MenuItem>
                   </div>
-                </Menu>
+                </MuiMenu>
               </>
             )}
 
             {!pathname?.startsWith("/login") && !token && (
-              <div className="w-1/2 items-center justify-end lg:w-[100%] sm:flex">
-                <p className="md:block text-black reg-font lg:w-[100%] sm:flex hidden">
+              <div className="flex items-center gap-3">
+                <span className="mont-reg-font hidden text-[10.5px] text-slate-500 sm:block">
                   Already have an account?
-                </p>
-                <span
-                  className="cursor-pointer inline-flex items-center px-6 py-2 bg-primary border border-transparent rounded-full font-semibold text-xs text-white uppercase tracking-widest hover:bg-violet-700 focus:bg-bg-violet-700 active:bg-primary focus:outline-none focus:ring-2 focus:ring-violet-500 focus:ring-offset-2 transition ease-in-out duration-150 ml-4"
-                  onClick={openLoginModal}
-                >
-                  Login
                 </span>
+
+                <button
+                  type="button"
+                  onClick={openLoginModal}
+                  className="
+              mont-medium-font inline-flex min-h-[40px]
+              items-center gap-2 rounded-[11px]
+              bg-[#47317c] px-4 py-2
+              text-[10.5px] text-white
+              transition-all duration-200
+              hover:bg-[#392765]
+              active:scale-[0.98]
+            "
+                >
+                  <User2 size={14} strokeWidth={2.2} />
+                  Login
+                </button>
               </div>
             )}
           </div>
