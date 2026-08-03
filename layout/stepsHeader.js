@@ -20,7 +20,6 @@ import {
 import ApplicationLogo from "@/config/ApplicationLogo";
 import ApplicationUser from "@/config/ApplicationUser";
 import LoginModal from "@/Components/LoginModal/LoginModal";
-import UploadTopPrompt from "@/Components/UploadTopPrompt/UploadTopPrompt";
 import { Login } from "@/api/loginApi";
 import GetImageIsUplaod from "@/api/GetImageIsUplaod";
 import { GetIdVerification } from "@/api/IdVerificationApi";

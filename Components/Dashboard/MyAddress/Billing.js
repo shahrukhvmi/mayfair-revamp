@@ -245,7 +245,7 @@ export default function Billing({ billingCountries = [] }) {
         <div
           className={
             isSearchAllowed
-              ? "grid grid-cols-1 gap-3 sm:grid-cols-[minmax(0,1fr)_150px] sm:items-end"
+              ? "grid grid-cols-1 gap-3 sm:grid-cols-[minmax(0,1fr)_150px] sm:items-center"
               : "grid grid-cols-1 gap-3"
           }
         >

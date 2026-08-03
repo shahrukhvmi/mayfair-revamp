@@ -29,7 +29,6 @@ const TextField = ({
   const isPassword = type === "password";
   const inputType = isPassword ? (showPassword ? "text" : "password") : type;
 
-
   // 🔥 Build validation rules (for RHF)
   const baseRules = {
     ...(required ? { required: "This field is required" } : {}),
@@ -59,13 +58,17 @@ const TextField = ({
         <label htmlFor={name} className="bold-font paragraph mb-2">
           {label}
           {required ? (
-            <span className="text-red-500 absolute top-1 ms-1 niba-semibold-font"> *</span>
+            <span className="text-red-500 absolute top-1 ms-1 niba-semibold-font">
+              {" "}
+              *
+            </span>
           ) : (
-            <span className="text-gray-500 text-sm font-normal ml-1">(optional)</span>
+            <span className="text-gray-500 text-sm font-normal ml-1">
+              (optional)
+            </span>
           )}
         </label>
       )}
-
 
       {multiline ? (
         <textarea
@@ -93,13 +96,13 @@ const TextField = ({
             onPaste={handlePaste}
             {...(register
               ? register(name, {
-                ...baseRules,
-                // ...registerOptions,
-              })
+                  ...baseRules,
+                  // ...registerOptions,
+                })
               : { value, onChange })}
             className={`reg-font w-full text-black px-3 py-4 border rounded-sm placeholder-gray-400 
               focus:outline-none focus:ring-violet-300 focus:border-primary
-              ${errors[name] ? "border-red-500" : "border-black"}
+              ${errors[name] ? "border-red-500" : "border-gray-300"}
               ${isPassword ? "pr-12" : ""}
                ${readOnly ? "bg-gray-100 text-gray-800 cursor-not-allowed select-none" : "text-black"}
             `}
@@ -110,13 +113,21 @@ const TextField = ({
               onClick={() => setShowPassword((prev) => !prev)}
               className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 cursor-pointer"
             >
-              {showPassword ? <AiOutlineEye size={20} /> : <AiOutlineEyeInvisible size={20} />}
+              {showPassword ? (
+                <AiOutlineEye size={20} />
+              ) : (
+                <AiOutlineEyeInvisible size={20} />
+              )}
             </span>
           )}
         </div>
       )}
 
-      {errors[name] && <p className="text-red-500 text-sm mt-1">{errors[name]?.message || "This field is required"}</p>}
+      {errors[name] && (
+        <p className="text-red-500 text-sm mt-1">
+          {errors[name]?.message || "This field is required"}
+        </p>
+      )}
     </div>
   );
 };

@@ -376,7 +376,7 @@ const MyOrders = () => {
 
             <div className="min-w-0 pt-0.5">
               <p className="mont-medium-font text-[12px] leading-5 text-sky-900">
-                Address changes
+                Note
               </p>
 
               <p className="mont-reg-font mt-0.5 text-[11.5px] leading-[1.6] text-sky-700">

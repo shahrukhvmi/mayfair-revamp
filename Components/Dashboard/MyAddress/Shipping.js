@@ -233,7 +233,7 @@ export default function Shipping({ shipmentCountries = [] }) {
         />
 
         {/* Postcode and search */}
-        <div className="grid grid-cols-1 gap-3 sm:grid-cols-[minmax(0,1fr)_150px] sm:items-end">
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-[minmax(0,1fr)_150px] sm:items-center">
           <TextField
             label="Post code"
             name="postalcode"
