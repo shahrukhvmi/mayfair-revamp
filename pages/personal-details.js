@@ -61,6 +61,10 @@ export default function PersonalDetails() {
       return "Wegovy (Semaglutide) is not recommended for individuals above 85 years of age";
     }
 
+    if (productId === 7 && age > 85) {
+      return "Wegovy Pill is not recommended for individuals above 85 years of age";
+    }
+
     if (productId === 4 && age > 85) {
       return "Mounjaro (Tirzepatide) is not recommended for individuals above 85 years of age";
     }
