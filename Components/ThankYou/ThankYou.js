@@ -14,6 +14,7 @@ import useUserDataStore from "@/store/userDataStore";
 import usePatientInfoStore from "@/store/patientInfoStore";
 import useProductId from "@/store/useProductIdStore";
 import { trackCustomerLabsPurchased } from "@/config/CustomerLabs";
+import patientSource from "@/api/patientSource";
 
 const ThankYou = () => {
   const { orderId, checkOut, setOrderId, setCheckOut } = useCartStore();
@@ -110,6 +111,40 @@ const ThankYou = () => {
             }),
           };
         });
+
+        const stored = JSON.parse(
+          localStorage.getItem("mayfair_attribution") || "null",
+        );
+
+        if (stored) {
+          try {
+            await patientSource({
+              user_id: userData?.id || null,
+              order_id: clOrderId,
+              first_touch: {
+                channel: stored.first_touch?.channel || "Direct",
+                source: stored.first_touch?.source || "direct",
+                medium: stored.first_touch?.medium || "none",
+                paid_status: stored.first_touch?.paid_status || "unknown",
+              },
+              last_touch: {
+                channel: stored.last_touch?.channel || "Direct",
+                source: stored.last_touch?.source || "direct",
+                medium: stored.last_touch?.medium || "none",
+                paid_status: stored.last_touch?.paid_status || "unknown",
+              },
+            });
+
+            localStorage.removeItem("mayfair_attribution");
+            localStorage.removeItem("utm_source");
+            localStorage.removeItem("utm_medium");
+            localStorage.removeItem("utm_campaign");
+
+            console.log("✅ Mayfair attribution sent");
+          } catch (attributionError) {
+            console.error("Attribution API failed:", attributionError);
+          }
+        }
 
         trackCustomerLabsPurchased({
           formName: "Thank You - Order Placed",
