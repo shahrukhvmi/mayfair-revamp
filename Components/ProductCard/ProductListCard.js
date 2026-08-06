@@ -66,13 +66,13 @@ const ProductListCard = ({
 
         {/* Price and action */}
         {/* Price and action */}
-        <div className="flex w-full shrink-0 flex-col items-stretch gap-3 pt-2 sm:w-[185px] sm:pl-4 sm:pt-0">
+        <div className="flex w-full shrink-0 flex-col items-stretch gap-3 pt-2 sm:w-[185px]  sm:pt-0">
           <div className="text-left sm:text-right">
-            <p className="mont-medium-font text-[9px] uppercase tracking-[0.12em] text-slate-700">
+            <p className="mont-medium-font text-[10px] lg:text-[12px] 2xl:text-[14px] uppercase tracking-[0.12em] text-slate-700">
               From
             </p>
 
-            <span className="mont-bold-font text-[18px] leading-none text-[#47317c]">
+            <span className="mont-bold-font text-[10px] lg:text-[18px] 2xl:text-[20px] leading-none text-[#47317c]">
               £{originalPrice}
             </span>
           </div>
@@ -85,7 +85,7 @@ const ProductListCard = ({
             className={`
       mont-medium-font inline-flex min-h-[38px] w-full shrink-0
       cursor-pointer items-center justify-center gap-2 rounded-[11px]
-      px-3.5 py-2 text-[14px] transition-all duration-200
+      px-3.5 py-2 text-[12px] lg:text-[14px] 2xl:text-[16px] transition-all duration-200
 
       ${
         isOutOfStock

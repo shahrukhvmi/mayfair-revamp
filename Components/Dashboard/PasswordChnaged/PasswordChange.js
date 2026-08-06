@@ -305,7 +305,7 @@ const PasswordChange = () => {
               />
 
               {/* Email */}
-              <div className="mt-4 rounded-[20px] border border-[#47317c]/10 bg-[#faf9fc] p-5">
+              {/* <div className="mt-4 rounded-[20px] border border-[#47317c]/10 bg-[#faf9fc] p-5">
                 <div className="flex items-center gap-3">
                   <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-[12px] bg-white text-[#47317c] shadow-sm">
                     <Mail size={18} strokeWidth={2} />
@@ -335,7 +335,7 @@ const PasswordChange = () => {
                   This email is linked to your account and cannot be changed
                   from this page.
                 </p>
-              </div>
+              </div> */}
             </aside>
           </div>
 

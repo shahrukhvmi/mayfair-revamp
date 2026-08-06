@@ -27,7 +27,7 @@ const MUISelectField = ({ label, name, value, onChange, options = [], error = ""
             backgroundColor: "#fff",
             "& .MuiOutlinedInput-notchedOutline": {
               borderColor: error ? "#f44336" : "#000",
-              borderWidth: "1px",
+              borderWidth: "1px",'borderRadius': '5px',
             },
             "&:hover .MuiOutlinedInput-notchedOutline": {
               borderColor: error ? "#f44336" : "#000",

@@ -70,7 +70,7 @@ const ProductGridCard = ({
         <div className="mt-auto pt-4">
           {/* Price */}
           <div className="mb-3 flex min-h-[34px] items-end justify-between gap-3 border-t border-[#47317c]/[0.07]">
-            <p className="mont-medium-font text-[13px]  tracking-[0.12em] text-slate-700">
+            <p className="mont-medium-font text-[14px] text-slate-700">
               Starting From
             </p>
 

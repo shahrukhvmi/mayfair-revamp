@@ -213,7 +213,7 @@ const SectionCard = ({ eyebrow, title, subtitle, action, children }) => (
         )}
 
         {subtitle && (
-          <p className="mont-reg-font mt-1.5 max-w-2xl text-[13px] leading-5 text-slate-800">
+          <p className="mont-reg-font mt-1.5 max-w-4xl text-[13px] lg:text-[15px] 2xl:text-[16px] leading-5 text-slate-800">
             {subtitle}
           </p>
         )}
@@ -471,9 +471,9 @@ const MyAccount = () => {
                 My Account
               </p>
 
-              <h1 className="mont-medium-font text-[25px] leading-tight tracking-[-0.04em] text-slate-950 sm:text-[29px]">
-                Welcome,{" "}
-                <span className="mont-medium-font text-[25px] leading-tight tracking-[-0.04em] text-slate-950 sm:text-[29px]">
+              <h1 className="mont-bold-font text-[25px] leading-tight tracking-[-0.04em] text-slate-950 sm:text-[29px]">
+                {/* Welcome,{" "} */}
+                <span className="mont-bold-font text-[25px] leading-tight tracking-[-0.04em] text-slate-950 sm:text-[29px] capitalize">
                   {" "}
                   {displayName}
                 </span>
@@ -486,11 +486,11 @@ const MyAccount = () => {
               </span>
 
               <div className="min-w-0">
-                <p className="mont-medium-font text-[10px] uppercase tracking-[0.11em] text-slate-400">
+                <p className="mont-medium-font text-[10px] lg:text-[11px] 2xl:text-[13px] uppercase tracking-[0.11em] text-slate-400">
                   Logged in as
                 </p>
 
-                <p className="mont-medium-font mt-1 truncate text-[13px] text-slate-900">
+                <p className="mont-medium-font mt-1 truncate text-[13px] lg:text-[15px] 2xl:text-[16px] text-slate-900">
                   {displayEmail}
                 </p>
               </div>
@@ -541,20 +541,20 @@ const MyAccount = () => {
                   <div className="min-w-0">
                     {/* Desktop last order date */}
                     <div className="mb-1 hidden items-center gap-1 sm:flex">
-                      <p className="mont-medium-font text-[9px] uppercase tracking-[0.1em] text-slate-800">
+                      <p className="mont-medium-font text-[10px] lg:text-[12px] 2xl:text-[14px] uppercase tracking-[0.1em] text-slate-800">
                         Last ordered:
                       </p>
 
-                      <p className="mont-semibold-font text-[11px] text-slate-800">
+                      <p className="mont-semibold-font text-[10px] lg:text-[12px] 2xl:text-[14px] text-slate-800">
                         {lastOrderDate}
                       </p>
                     </div>
 
-                    <h3 className="mont-bold-font text-[16px] leading-6 tracking-[-0.02em] text-slate-950 sm:text-[18px]">
+                    <h3 className="mont-bold-font text-[14px] lg:text-[18px] 2xl:text-[20px] lg:text-[15px] 2xl:text-[16px] leading-6 tracking-[-0.02em] text-slate-950 sm:text-[18px]">
                       {currentTreatment?.name}
                     </h3>
 
-                    <p className="mont-reg-font mt-1 text-[11px] leading-5 text-slate-500">
+                    <p className="mont-reg-font mt-1 text-[14px] lg:text-[15px] 2xl:text-[16px] leading-5 text-slate-500">
                       Your latest clinician-approved treatment.
                     </p>
 
@@ -566,11 +566,11 @@ const MyAccount = () => {
                         className="text-[#47317c]"
                       />
 
-                      <span className="mont-medium-font text-[11px] text-slate-500">
+                      <span className="mont-medium-font text-[14px] text-slate-500">
                         Last ordered:
                       </span>
 
-                      <span className="mont-semibold-font text-[10px] text-slate-800">
+                      <span className="mont-semibold-font text-[16px] text-slate-800">
                         {lastOrderDate}
                       </span>
                     </div>
@@ -582,12 +582,12 @@ const MyAccount = () => {
                   {/* Price */}
                   <div className="flex min-h-[44px] items-center justify-between gap-4 rounded-[13px] px-4 py-2.5 sm:min-w-[145px] sm:justify-end">
                     <div className="sm:text-right">
-                      <p className="mont-medium-font text-[9px] uppercase tracking-[0.12em] text-slate-400">
+                      <p className="mont-medium-font  text-[10px] lg:text-[12px] 2xl:text-[14px] uppercase tracking-[0.12em] text-slate-400">
                         From
                       </p>
 
                       <div className="mt-1 flex items-end gap-2 sm:justify-end">
-                        <span className="mont-bold-font text-[18px] leading-none text-[#47317c]">
+                        <span className="mont-bold-font  text-[10px] lg:text-[18px] 2xl:text-[20px] leading-none text-[#47317c]">
                           £{currentTreatmentDisplayPrice}
                         </span>
                       </div>
@@ -604,7 +604,7 @@ const MyAccount = () => {
                       mont-medium-font inline-flex min-h-[44px]
                       w-full shrink-0 items-center justify-center
                       gap-2 rounded-[13px] px-5 py-3
-                      text-[14px] text-white
+                       text-[12px] lg:text-[14px] 2xl:text-[16px] text-white
                       transition-all duration-200 sm:w-auto
 
                       ${

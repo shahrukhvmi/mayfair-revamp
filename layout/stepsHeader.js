@@ -343,28 +343,27 @@ const StepsHeader = ({ isOpen, toggleSidebar }) => {
                   aria-expanded={Boolean(anchorEl)}
                   className={`
               group flex min-h-[44px] items-center gap-2
-              rounded-[13px] border bg-white
+              bg-white
               py-1.5 pl-1.5 pr-2
-              transition-all duration-200
+              transition-all duration-200 cursor-pointer
 
-              ${
-                Boolean(anchorEl)
-                  ? `
+              ${Boolean(anchorEl)
+                      ? `
                     border-[#47317c]/20
                     bg-[#47317c]/[0.025]
                   `
-                  : `
+                      : `
                     border-[#47317c]/10
                     hover:border-[#47317c]/20
                     hover:bg-[#47317c]/[0.02]
                   `
-              }
+                    }
             `}
                 >
-                  <ApplicationUser className="h-8 w-8 rounded-[10px] object-cover ring-1 ring-[#47317c]/10" />
+                  <ApplicationUser className="h-13 w-13  object-contain" />
 
                   <span className="hidden min-w-0 text-left sm:block">
-                    <span className="mont-medium-font block max-w-[130px] truncate text-[13px] leading-4 text-slate-900">
+                    <span className="mont-medium-font block max-w-[150px] truncate text-[14px] leading-4 text-slate-900">
                       {displayName}
                     </span>
                   </span>
@@ -411,18 +410,18 @@ const StepsHeader = ({ isOpen, toggleSidebar }) => {
                   }}
                 >
                   {/* Account summary */}
-                  <div className="border-b border-[#47317c]/[0.07] bg-[#faf9fc] px-4 py-3.5">
-                    <p className="mont-medium-font m-0 text-[8px] uppercase tracking-[0.11em] text-slate-800">
+                  <div className="border-b border-[#47317c]/[0.07] bg-[#faf9fc] px-4 py-4">
+                    <p className="mont-medium-font m-0 text-[10px] uppercase tracking-[0.11em] text-slate-800 sm:text-[10.5px] md:text-[11px]">
                       Logged in as
                     </p>
 
-                    <p className="mont-medium-font mt-1 truncate text-[13px] text-slate-900">
+                    <p className="mont-medium-font mt-1.5 truncate text-[14px] text-slate-900 sm:text-[14.5px] md:text-[15px]">
                       {displayName}
                     </p>
 
                     <p
                       title={email}
-                      className="mont-reg-font mt-0.5 truncate text-[12px] text-slate-500"
+                      className="mont-reg-font mt-1 truncate text-[13px] text-slate-500 sm:text-[13.5px] md:text-[14px]"
                     >
                       {email}
                     </p>
@@ -436,12 +435,26 @@ const StepsHeader = ({ isOpen, toggleSidebar }) => {
                         setAnchorEl(null);
                       }}
                       sx={{
-                        minHeight: 42,
+                        minHeight: {
+                          xs: 46,
+                          md: 48,
+                        },
                         borderRadius: "10px",
-                        gap: "10px",
-                        px: "10px",
+                        gap: {
+                          xs: "10px",
+                          md: "12px",
+                        },
+                        px: {
+                          xs: "12px",
+                          md: "14px",
+                        },
                         fontFamily: "var(--mont-medium)",
-                        fontSize: "10.5px",
+                        fontSize: {
+                          xs: "13px",
+                          sm: "13.5px",
+                          md: "14px",
+                        },
+                        lineHeight: 1.5,
                         color: "#334155",
 
                         "&:hover": {
@@ -451,10 +464,11 @@ const StepsHeader = ({ isOpen, toggleSidebar }) => {
                       }}
                     >
                       <LayoutDashboard
-                        size={15}
+                        className="h-[17px] w-[17px] md:h-[18px] md:w-[18px]"
                         strokeWidth={2}
                         color="#47317c"
                       />
+
                       My Account
                     </MenuItem>
 
@@ -464,12 +478,26 @@ const StepsHeader = ({ isOpen, toggleSidebar }) => {
                         setAnchorEl(null);
                       }}
                       sx={{
-                        minHeight: 42,
+                        minHeight: {
+                          xs: 46,
+                          md: 48,
+                        },
                         borderRadius: "10px",
-                        gap: "10px",
-                        px: "10px",
+                        gap: {
+                          xs: "10px",
+                          md: "12px",
+                        },
+                        px: {
+                          xs: "12px",
+                          md: "14px",
+                        },
                         fontFamily: "var(--mont-medium)",
-                        fontSize: "10.5px",
+                        fontSize: {
+                          xs: "13px",
+                          sm: "13.5px",
+                          md: "14px",
+                        },
+                        lineHeight: 1.5,
                         color: "#334155",
 
                         "&:hover": {
@@ -478,7 +506,12 @@ const StepsHeader = ({ isOpen, toggleSidebar }) => {
                         },
                       }}
                     >
-                      <ShoppingBag size={15} strokeWidth={2} color="#47317c" />
+                      <ShoppingBag
+                        className="h-[17px] w-[17px] md:h-[18px] md:w-[18px]"
+                        strokeWidth={2}
+                        color="#47317c"
+                      />
+
                       My Orders
                     </MenuItem>
 
@@ -487,12 +520,26 @@ const StepsHeader = ({ isOpen, toggleSidebar }) => {
                     <MenuItem
                       onClick={handleLogout}
                       sx={{
-                        minHeight: 42,
+                        minHeight: {
+                          xs: 46,
+                          md: 48,
+                        },
                         borderRadius: "10px",
-                        gap: "10px",
-                        px: "10px",
+                        gap: {
+                          xs: "10px",
+                          md: "12px",
+                        },
+                        px: {
+                          xs: "12px",
+                          md: "14px",
+                        },
                         fontFamily: "var(--mont-medium)",
-                        fontSize: "10.5px",
+                        fontSize: {
+                          xs: "13px",
+                          sm: "13.5px",
+                          md: "14px",
+                        },
+                        lineHeight: 1.5,
                         color: "#dc2626",
 
                         "&:hover": {
@@ -501,7 +548,12 @@ const StepsHeader = ({ isOpen, toggleSidebar }) => {
                         },
                       }}
                     >
-                      <LogOut size={15} strokeWidth={2} color="#ef4444" />
+                      <LogOut
+                        className="h-[17px] w-[17px] md:h-[18px] md:w-[18px]"
+                        strokeWidth={2}
+                        color="#ef4444"
+                      />
+
                       Logout
                     </MenuItem>
                   </div>

@@ -190,7 +190,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
 
                       {/* Text */}
                       <span className="min-w-0 flex-1">
-                        <span className="mont-bold-font  block truncate text-[13px] leading-[17px]">
+                        <span className="mont-bold-font  block truncate text-[13px] lg:text-[15px] 2xl:text-[16px] leading-[17px]">
                           {label}
                         </span>
 
@@ -206,20 +206,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
                         </span> */}
                       </span>
 
-                      <ChevronRight
-                        size={13}
-                        strokeWidth={2.2}
-                        className={`
-                          shrink-0 transition-all duration-200
-                          group-hover:translate-x-0.5
-
-                          ${
-                            active
-                              ? "text-white/70"
-                              : "text-slate-300 group-hover:text-[#47317c]"
-                          }
-                        `}
-                      />
+                  
                     </a>
                   </Link>
                 );
@@ -249,11 +236,11 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
               </span>
 
               <span className="min-w-0 flex-1">
-                <span className="mont-medium-font block text-[12px] leading-4 text-slate-900">
+                <span className="mont-medium-font block text-[12px] lg:text-[14px] 2xl:text-[16px] leading-4 text-slate-900">
                   Need help?
                 </span>
 
-                <span className="mont-medium-font mt-0.5 flex items-center gap-1.5 truncate text-[11px] leading-4 text-[#47317c]">
+                <span className="mont-medium-font mt-0.5 flex items-center gap-1.5 truncate text-[11px] lg:text-[13px] 2xl:text-[14px] leading-4 text-[#47317c]">
                   <Phone size={10.5} strokeWidth={2.2} />
                   <a href="tel:+44 (0)20 7550 6515">+44 (0)20 7550 6515</a>
                 </span>
