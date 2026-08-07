@@ -99,7 +99,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
                     strokeWidth={active ? 2.2 : 1.8}
                     className={active ? "text-[#47317c]" : "text-slate-400 group-hover:text-slate-600"}
                   />
-                  <span className={`inter-medium-font text-[13px] 2xl:text-[14.5px] leading-none ${active ? "text-[#47317c]" : ""}`}>
+                  <span className={`inter-medium-font text-[13px] lg:text-[14px] 2xl:text-[16px] leading-none ${active ? "text-[#47317c]" : ""}`}>
                     {label}
                   </span>
                 </a>

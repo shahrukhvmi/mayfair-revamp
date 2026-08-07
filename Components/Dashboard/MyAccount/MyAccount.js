@@ -20,6 +20,7 @@ import useIdVerificationUploadStore from "@/store/useIdVerificationUploadStore";
 import useExplanationEvidenceStore from "@/store/useExplanationEvidenceStore";
 import { usePathname } from "next/navigation";
 import useAuthStore from "@/store/authStore";
+import useSignupStore from "@/store/signupStore";
 import UploadTopPrompt from "@/Components/UploadTopPrompt/UploadTopPrompt";
 
 /* ── Skeleton ── */
@@ -131,7 +132,8 @@ const MyAccount = () => {
       .sort((a, b) => (a?.sequence || 0) - (b?.sequence || 0));
   }, [productData?.products, reorderProductIds]);
 
-  const displayName = authUserDetail?.fname?.trim() || "Patient";
+  const { firstName } = useSignupStore();
+  const displayName = authUserDetail?.fname?.trim() || firstName?.trim() || "Patient";
   const displayEmail = authUserDetail?.email?.trim() || "Not available";
   const lastOrderDate = currentTreatment?.lastOrderDate || currentTreatment?.last_order_date || currentTreatment?.last_order?.created_at || "Not available";
   const currentTreatmentDisplayPrice = currentTreatment?.pre_launch_price || currentTreatment?.price || null;
@@ -174,7 +176,7 @@ const MyAccount = () => {
 
   return (
     <main className="inter-reg-font min-w-0 flex-1 bg-[#FBFBFD]">
-      <div className="flex w-full max-w-[1560px] flex-col gap-6 p-4 sm:p-5 lg:p-6 2xl:p-8 2xl:gap-8">
+      <div className="flex w-full flex-col gap-6 p-4 sm:p-5 lg:p-6 2xl:p-8 2xl:gap-8">
 
         {/* Header */}
         <PageHeader
@@ -183,9 +185,9 @@ const MyAccount = () => {
           subtitle="Here's an overview of your Mayfair account."
           right={
             <div className="flex items-center gap-3 rounded-xl border border-[#e8e2f5] bg-white/80 px-4 py-2.5">
-              <div className="flex h-8 w-8 2xl:h-10 2xl:w-10 shrink-0 items-center justify-center rounded-xl bg-[#47317c] text-white">
+              {/* <div className="flex h-8 w-8 2xl:h-10 2xl:w-10 shrink-0 items-center justify-center rounded-xl bg-[#47317c] text-white">
                 <User size={14} strokeWidth={2} className="2xl:w-4 2xl:h-4" />
-              </div>
+              </div> */}
               <div className="min-w-0">
                 <p className="inter-medium-font text-[9.5px] lg:text-[10px] uppercase tracking-[0.1em] text-slate-400 leading-none mb-1">Logged in as</p>
                 <p className="inter-semibold-font text-[12px] lg:text-[12px] 2xl:text-[13px] text-slate-800 truncate max-w-[160px]">{displayEmail}</p>

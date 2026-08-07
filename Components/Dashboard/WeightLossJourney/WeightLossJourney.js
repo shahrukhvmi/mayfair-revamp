@@ -24,6 +24,7 @@ import {
 
 import GetBmiJourney from "@/api/GetBmiJourney";
 import useAuthUserDetailStore from "@/store/useAuthUserDetailStore";
+import useSignupStore from "@/store/signupStore";
 import { PageHeader } from "@/Components/Dashboard/MyAccount/MyAccount";
 
 /* ── Helpers ── */
@@ -89,6 +90,7 @@ const getUserDisplayName = (user) => {
 /* ── Main ── */
 export default function WeightLossJourney() {
   const { authUserDetail } = useAuthUserDetailStore();
+  const { firstName } = useSignupStore();
   const [loading, setLoading] = useState(true);
   const [data, setData]       = useState(null);
   const [unit, setUnit]       = useState("kg");
@@ -110,7 +112,7 @@ export default function WeightLossJourney() {
   const changeMeta  = getChangeMeta(totalChange);
   const percentage  = stats.start ? Math.abs((totalChange / stats.start) * 100).toFixed(1) : 0;
   const chartData   = prepareChartData(bmiJourney, unit);
-  const displayName = getUserDisplayName(authUserDetail);
+  const displayName = getUserDisplayName(authUserDetail) || firstName?.trim() || "Patient";
 
   return (
     <main className="inter-reg-font min-w-0 flex-1 bg-[#FBFBFD]">

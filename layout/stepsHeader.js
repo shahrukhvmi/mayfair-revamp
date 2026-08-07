@@ -1,9 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { usePathname } from "next/navigation";
 import { useMutation } from "@tanstack/react-query";
-import { Menu as MuiMenu, MenuItem } from "@mui/material";
 import toast from "react-hot-toast";
 import {
   ChevronDown,
@@ -80,6 +79,19 @@ const StepsHeader = ({ isOpen, toggleSidebar }) => {
   const { clearLastOrder } = lastOrderStore();
   const [anchorEl, setAnchorEl] = useState(null);
   const [showLoader, setShowLoader] = useState(false);
+  const closeTimer = useRef(null);
+
+  const handleMenuEnter = (e) => {
+    clearTimeout(closeTimer.current);
+    setAnchorEl(e.currentTarget);
+  };
+  const handleMenuLeave = () => {
+    closeTimer.current = setTimeout(() => setAnchorEl(null), 200);
+  };
+  const handleMenuPaperEnter = () => clearTimeout(closeTimer.current);
+  const handleMenuPaperLeave = () => {
+    closeTimer.current = setTimeout(() => setAnchorEl(null), 200);
+  };
 
   const { showLoginModal, closeLoginModal, openLoginModal } =
     useLoginModalStore();
@@ -300,7 +312,7 @@ const StepsHeader = ({ isOpen, toggleSidebar }) => {
       )}
 
       <header className="sticky top-0 z-40 w-full border-b border-[#47317c]/[0.07] bg-white/95 backdrop-blur-xl">
-        <div className="mx-auto flex h-[66px] w-full max-w-[1920px] items-center justify-between gap-3 px-3 sm:px-5 lg:px-7">
+        <div className="mx-auto flex h-[66px] w-full items-center justify-between gap-3 px-3 sm:px-5 lg:px-7">
           {/* Left side */}
           <div className="flex min-w-0 items-center gap-3">
             {isDashboardRoute && (
@@ -335,232 +347,81 @@ const StepsHeader = ({ isOpen, toggleSidebar }) => {
           {/* Right side */}
           <div className="ml-auto flex items-center gap-2">
             {!pathname?.startsWith("/login") && token && (
-              <>
+              <div
+                className="relative"
+                onMouseEnter={() => { clearTimeout(closeTimer.current); setAnchorEl(true); }}
+                onMouseLeave={() => { closeTimer.current = setTimeout(() => setAnchorEl(null), 150); }}
+              >
+                {/* Trigger button */}
                 <button
                   type="button"
-                  onClick={(event) => setAnchorEl(event.currentTarget)}
-                  aria-haspopup="menu"
-                  aria-expanded={Boolean(anchorEl)}
-                  className={`
-              group flex min-h-[44px] items-center gap-2
-              bg-white
-              py-1.5 pl-1.5 pr-2
-              transition-all duration-200 cursor-pointer
-
-              ${Boolean(anchorEl)
-                      ? `
-                    border-[#47317c]/20
-                    bg-[#47317c]/[0.025]
-                  `
-                      : `
-                    border-[#47317c]/10
-                    hover:border-[#47317c]/20
-                    hover:bg-[#47317c]/[0.02]
-                  `
-                    }
-            `}
+                  className="group flex min-h-[44px] cursor-pointer items-center gap-2 rounded-xl py-1.5 pl-1.5 pr-3 transition-all duration-150 hover:bg-[#47317c]/[0.04]"
                 >
                   <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-[#47317c]">
                     <UserRound size={16} strokeWidth={2} className="text-white" />
                   </span>
-
                   <span className="hidden min-w-0 text-left sm:block">
-                    <span className="mont-medium-font block max-w-[150px] truncate text-[14px] leading-4 text-slate-900">
+                    <span className="inter-medium-font block max-w-[150px] truncate text-[14px] leading-4 text-slate-900">
                       {displayName}
                     </span>
                   </span>
-
                   <ChevronDown
                     size={13}
                     strokeWidth={2.2}
-                    className={`
-                ml-0.5 text-[#47317c]/70
-                transition-transform duration-200 cursor-pointer
-
-                ${Boolean(anchorEl) ? "rotate-180" : ""}
-              `}
+                    className={`ml-0.5 text-[#47317c]/70 transition-transform duration-200 ${Boolean(anchorEl) ? "rotate-180" : ""}`}
                   />
                 </button>
 
-                <MuiMenu
-                  anchorEl={anchorEl}
-                  open={Boolean(anchorEl)}
-                  onClose={() => setAnchorEl(null)}
-                  anchorOrigin={{
-                    vertical: "bottom",
-                    horizontal: "right",
-                  }}
-                  transformOrigin={{
-                    vertical: "top",
-                    horizontal: "right",
-                  }}
-                  PaperProps={{
-                    sx: {
-                      width: 250,
-                      mt: 1,
-                      borderRadius: "16px",
-                      overflow: "hidden",
-                      border: "1px solid rgba(71,49,124,0.1)",
-                      boxShadow: "0 16px 40px rgba(71,49,124,0.12)",
-                      backgroundImage: "none",
-                    },
-                  }}
-                  MenuListProps={{
-                    sx: {
-                      p: 0,
-                    },
-                  }}
-                >
-                  {/* Account summary */}
-                  <div className="border-b border-[#47317c]/[0.07] bg-[#faf9fc] px-4 py-4">
-                    <p className="mont-medium-font m-0 text-[10px] uppercase tracking-[0.11em] text-slate-800 sm:text-[10.5px] md:text-[11px]">
-                      Logged in as
-                    </p>
+                {/* Dropdown */}
+                {Boolean(anchorEl) && (
+                  <div className="absolute right-0 top-full z-50 w-[250px] overflow-hidden rounded-2xl border border-[#47317c]/10 bg-white shadow-[0_16px_40px_rgba(71,49,124,0.12)]">
+                    {/* Account summary */}
+                    <div className="border-b border-[#47317c]/[0.07] bg-[#faf9fc] px-4 py-4">
+                      <p className="inter-medium-font m-0 text-[10px] uppercase tracking-[0.11em] text-slate-500">
+                        Logged in as
+                      </p>
+                      <p className="inter-semibold-font mt-1.5 truncate text-[14px] text-slate-900">
+                        {displayName}
+                      </p>
+                      <p title={email} className="inter-reg-font mt-0.5 truncate text-[12px] text-slate-500">
+                        {email}
+                      </p>
+                    </div>
 
-                    <p className="mont-medium-font mt-1.5 truncate text-[14px] text-slate-900 sm:text-[14.5px] md:text-[15px]">
-                      {displayName}
-                    </p>
+                    {/* Menu items */}
+                    <div className="p-1.5">
+                      <button
+                        type="button"
+                        onClick={() => { router.push("/dashboard"); setAnchorEl(null); }}
+                        className="inter-medium-font flex w-full cursor-pointer items-center gap-3 rounded-[10px] px-3 py-3 text-[13px] text-slate-700 transition-colors hover:bg-[#47317c]/[0.05] hover:text-[#47317c]"
+                      >
+                        <LayoutDashboard size={16} strokeWidth={2} className="text-[#47317c]" />
+                        My Account
+                      </button>
 
-                    <p
-                      title={email}
-                      className="mont-reg-font mt-1 truncate text-[13px] text-slate-500 sm:text-[13.5px] md:text-[14px]"
-                    >
-                      {email}
-                    </p>
+                      <button
+                        type="button"
+                        onClick={() => { router.push("/orders"); setAnchorEl(null); }}
+                        className="inter-medium-font flex w-full cursor-pointer items-center gap-3 rounded-[10px] px-3 py-3 text-[13px] text-slate-700 transition-colors hover:bg-[#47317c]/[0.05] hover:text-[#47317c]"
+                      >
+                        <ShoppingBag size={16} strokeWidth={2} className="text-[#47317c]" />
+                        My Orders
+                      </button>
+
+                      <div className="mx-2 my-1 h-px bg-[#47317c]/[0.07]" />
+
+                      <button
+                        type="button"
+                        onClick={handleLogout}
+                        className="inter-medium-font flex w-full cursor-pointer items-center gap-3 rounded-[10px] px-3 py-3 text-[13px] text-red-600 transition-colors hover:bg-red-50"
+                      >
+                        <LogOut size={16} strokeWidth={2} className="text-red-500" />
+                        Logout
+                      </button>
+                    </div>
                   </div>
-
-                  {/* Menu items */}
-                  <div className="p-1.5">
-                    <MenuItem
-                      onClick={() => {
-                        router.push("/dashboard");
-                        setAnchorEl(null);
-                      }}
-                      sx={{
-                        minHeight: {
-                          xs: 46,
-                          md: 48,
-                        },
-                        borderRadius: "10px",
-                        gap: {
-                          xs: "10px",
-                          md: "12px",
-                        },
-                        px: {
-                          xs: "12px",
-                          md: "14px",
-                        },
-                        fontFamily: "var(--mont-medium)",
-                        fontSize: {
-                          xs: "13px",
-                          sm: "13.5px",
-                          md: "14px",
-                        },
-                        lineHeight: 1.5,
-                        color: "#334155",
-
-                        "&:hover": {
-                          backgroundColor: "rgba(71,49,124,0.05)",
-                          color: "#47317c",
-                        },
-                      }}
-                    >
-                      <LayoutDashboard
-                        className="h-[17px] w-[17px] md:h-[18px] md:w-[18px]"
-                        strokeWidth={2}
-                        color="#47317c"
-                      />
-
-                      My Account
-                    </MenuItem>
-
-                    <MenuItem
-                      onClick={() => {
-                        router.push("/orders");
-                        setAnchorEl(null);
-                      }}
-                      sx={{
-                        minHeight: {
-                          xs: 46,
-                          md: 48,
-                        },
-                        borderRadius: "10px",
-                        gap: {
-                          xs: "10px",
-                          md: "12px",
-                        },
-                        px: {
-                          xs: "12px",
-                          md: "14px",
-                        },
-                        fontFamily: "var(--mont-medium)",
-                        fontSize: {
-                          xs: "13px",
-                          sm: "13.5px",
-                          md: "14px",
-                        },
-                        lineHeight: 1.5,
-                        color: "#334155",
-
-                        "&:hover": {
-                          backgroundColor: "rgba(71,49,124,0.05)",
-                          color: "#47317c",
-                        },
-                      }}
-                    >
-                      <ShoppingBag
-                        className="h-[17px] w-[17px] md:h-[18px] md:w-[18px]"
-                        strokeWidth={2}
-                        color="#47317c"
-                      />
-
-                      My Orders
-                    </MenuItem>
-
-                    <div className="mx-2 my-1 h-px bg-[#47317c]/[0.07]" />
-
-                    <MenuItem
-                      onClick={handleLogout}
-                      sx={{
-                        minHeight: {
-                          xs: 46,
-                          md: 48,
-                        },
-                        borderRadius: "10px",
-                        gap: {
-                          xs: "10px",
-                          md: "12px",
-                        },
-                        px: {
-                          xs: "12px",
-                          md: "14px",
-                        },
-                        fontFamily: "var(--mont-medium)",
-                        fontSize: {
-                          xs: "13px",
-                          sm: "13.5px",
-                          md: "14px",
-                        },
-                        lineHeight: 1.5,
-                        color: "#dc2626",
-
-                        "&:hover": {
-                          backgroundColor: "#fef2f2",
-                          color: "#dc2626",
-                        },
-                      }}
-                    >
-                      <LogOut
-                        className="h-[17px] w-[17px] md:h-[18px] md:w-[18px]"
-                        strokeWidth={2}
-                        color="#ef4444"
-                      />
-
-                      Logout
-                    </MenuItem>
-                  </div>
-                </MuiMenu>
-              </>
+                )}
+              </div>
             )}
 
             {!pathname?.startsWith("/login") && !token && (
