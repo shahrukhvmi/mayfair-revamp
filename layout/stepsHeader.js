@@ -14,11 +14,11 @@ import {
   ShoppingBag,
   User2,
   UserCheck,
+  UserRound,
   X,
 } from "lucide-react";
 
 import ApplicationLogo from "@/config/ApplicationLogo";
-import ApplicationUser from "@/config/ApplicationUser";
 import LoginModal from "@/Components/LoginModal/LoginModal";
 import { Login } from "@/api/loginApi";
 import GetImageIsUplaod from "@/api/GetImageIsUplaod";
@@ -360,7 +360,9 @@ const StepsHeader = ({ isOpen, toggleSidebar }) => {
                     }
             `}
                 >
-                  <ApplicationUser className="h-13 w-13  object-contain" />
+                  <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-[#47317c]">
+                    <UserRound size={16} strokeWidth={2} className="text-white" />
+                  </span>
 
                   <span className="hidden min-w-0 text-left sm:block">
                     <span className="mont-medium-font block max-w-[150px] truncate text-[14px] leading-4 text-slate-900">

@@ -9,9 +9,9 @@ import {
   Phone,
   ShoppingBag,
   TrendingUp,
+  UserRound,
   X,
 } from "lucide-react";
-import ApplicationLogo from "@/config/ApplicationLogo";
 
 const navItems = [
   { href: "/dashboard", label: "My Account", icon: LayoutDashboard, key: "tab-home", match: ["/dashboard"] },
@@ -52,7 +52,12 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
       >
         {/* Mobile header */}
         <div className="flex items-center justify-between border-b border-slate-100 px-5 py-4 lg:hidden">
-          <ApplicationLogo width={120} height={44} />
+          <div className="flex items-center gap-2.5">
+              <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-[#47317c]">
+                <UserRound size={15} strokeWidth={2} className="text-white" />
+              </span>
+              <span className="inter-bold-font text-[15px] tracking-[-0.01em] text-slate-900">Mayfair</span>
+            </div>
           <button
             type="button"
             onClick={toggleSidebar}

@@ -194,7 +194,7 @@ const OrderDetail = () => {
               {/* Tab switcher */}
               <div className="flex flex-col gap-2">
                 <p className="inter-medium-font text-[10px] uppercase tracking-[0.12em] text-slate-400">
-                  Switch view
+                  Switch Details
                 </p>
                 <div className="flex items-center gap-1 rounded-xl border border-slate-200 bg-slate-50 p-1 w-fit">
                   {TABS.map(({ key, label, icon: Icon }) => (
