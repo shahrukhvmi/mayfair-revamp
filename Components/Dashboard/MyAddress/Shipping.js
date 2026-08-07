@@ -11,8 +11,8 @@ import MUISelectField from "@/Components/SelectField/SelectField";
 import { getProfileData, sendProfileData } from "@/api/myProfileApi";
 
 const SEARCH_BUTTON_CLASS = [
-  "inter-medium-font inline-flex min-h-[48px] w-full items-center justify-center gap-2",
-  "rounded-xl border border-[#47317c] bg-[#47317c] px-4 py-2.5",
+  "inter-medium-font inline-flex w-full cursor-pointer items-center justify-center gap-2",
+  "rounded-sm border border-[#47317c] bg-[#47317c] px-4 py-4 mt-2",
   "text-[12px] text-white",
   "transition-all duration-150 hover:bg-[#392765]",
   "disabled:cursor-not-allowed disabled:border-slate-300 disabled:bg-slate-300 disabled:shadow-none",

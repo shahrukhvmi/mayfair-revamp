@@ -117,14 +117,14 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
             className="group flex items-center gap-3 rounded-md px-3 py-2.5 no-underline transition-colors duration-150 hover:bg-slate-50"
           >
             <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-slate-100 text-slate-600">
-              <Headphones size={14} strokeWidth={2} />
+              <Phone size={14} strokeWidth={2} />
             </span>
             <span className="min-w-0">
               <span className="inter-medium-font block text-[12.5px] leading-4 text-slate-700">
-                Need help?
+               Call:
               </span>
               <span className="inter-reg-font mt-0.5 flex items-center gap-1 text-[11px] leading-4 text-slate-500">
-                <Phone size={10} strokeWidth={2} />
+                 {/* <Phone size={10} strokeWidth={2} /> */}
                 +44 (0)20 7550 6515
               </span>
             </span>

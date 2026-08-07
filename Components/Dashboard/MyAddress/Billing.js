@@ -262,7 +262,7 @@ export default function Billing({ billingCountries = [] }) {
               type="button"
               onClick={handleSearch}
               disabled={addressSearchLoading}
-              className="inter-medium-font inline-flex min-h-[48px] w-full cursor-pointer items-center justify-center gap-2 rounded-[13px] border border-[#47317c] bg-[#47317c] px-4 py-3 text-[12px] text-white shadow-[0_7px_18px_rgba(71,49,124,0.18)] transition-all duration-200 hover:bg-[#392765] disabled:cursor-not-allowed disabled:border-slate-300 disabled:bg-slate-300 disabled:shadow-none"
+              className="inter-medium-font inline-flex w-full cursor-pointer items-center justify-center gap-2 rounded-sm border border-[#47317c] bg-[#47317c] px-4 py-4 text-[12px] text-white transition-all mt-2 duration-150 hover:bg-[#392765] disabled:cursor-not-allowed disabled:border-slate-300 disabled:bg-slate-300 disabled:shadow-none"
             >
               {addressSearchLoading ? (
                 <>
