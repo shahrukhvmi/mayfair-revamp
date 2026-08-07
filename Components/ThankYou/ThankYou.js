@@ -273,6 +273,26 @@ const ThankYou = () => {
                     <tr className="hover:bg-gray-50">
                       <td className="px-6 py-3 reg-font text-black">
                         Discount
+                        {checkOut?.discount?.type === "Percent"
+                          ? ` (${parseInt(checkOut?.discount?.discount)}%)`
+                          : checkOut?.discount?.type &&
+                            ` (${checkOut?.discount?.type})`}
+                        {checkOut?.discount?.code &&
+                          ` - Code: ${checkOut?.discount?.code}`}
+                      </td>
+                      <td></td>
+                      <td className="px-6 py-3 text-right reg-font text-primary">
+                        {checkOut?.discount?.type === "Percent"
+                          ? `-£${parseFloat(checkOut?.discount?.discount_value || 0).toFixed(2)}`
+                          : `-£${parseFloat(checkOut?.discount?.discount).toFixed(2)}`}
+                      </td>
+                    </tr>
+                  )}
+
+                  {/* {checkOut?.discount?.discount !== null && (
+                    <tr className="hover:bg-gray-50">
+                      <td className="px-6 py-3 reg-font text-black">
+                        Discount
                         {checkOut?.discount?.type &&
                           ` (${checkOut?.discount?.type})`}
                         {checkOut?.discount?.code &&
@@ -289,9 +309,9 @@ const ThankYou = () => {
                             ).toFixed(2)}`}
                       </td>
                     </tr>
-                  )}
+                  )} */}
 
-                  {checkOut?.discount?.discount_value &&
+                  {/* {checkOut?.discount?.discount_value &&
                     checkOut?.discount?.type === "Percent" && (
                       <tr>
                         <td className="px-6 py-3 reg-font text-black">
@@ -305,7 +325,7 @@ const ThankYou = () => {
                           ).toFixed(2)}
                         </td>
                       </tr>
-                    )}
+                    )} */}
 
                   {checkOut?.shipment && (
                     <tr className="hover:bg-gray-50">
