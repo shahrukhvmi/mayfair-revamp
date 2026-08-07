@@ -231,7 +231,7 @@ const ThankYou = () => {
                 <tbody className="divide-y divide-gray-100 bg-white">
                   {items?.map((item, index) => (
                     <tr key={`addon-${index}`} className="hover:bg-gray-50">
-                      <td className="px-6 py-3 reg-font">
+                      <td className="px-6 py-3 reg-font text-black">
                         {item?.label || item?.product || "Add-on"}
                       </td>
                       <td className="px-6 py-3 text-center reg-font">
