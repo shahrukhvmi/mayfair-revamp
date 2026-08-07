@@ -19,63 +19,36 @@ const AlertBanner = ({
   href,
 }) => {
   return (
-    <section className="w-full overflow-hidden rounded-[18px] border border-amber-200 bg-amber-50/70 shadow-[0_8px_22px_rgba(180,83,9,0.07)]">
+    <section className="w-full overflow-hidden rounded-2xl border border-amber-200/70 bg-amber-50/40 shadow-[0_1px_4px_rgba(180,83,9,0.06)]">
       <div className="flex w-full flex-col gap-4 p-4 sm:p-5 lg:flex-row lg:items-center lg:justify-between">
-        {/* Warning content */}
-        <div className="flex min-w-0 flex-1 items-start gap-3.5">
-          <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-[13px] border border-amber-200 bg-white text-amber-600 shadow-sm sm:h-12 sm:w-12">
-            <Icon
-              size={21}
-              strokeWidth={2.2}
-              className="sm:h-[22px] sm:w-[22px]"
-            />
+        {/* Content */}
+        <div className="flex min-w-0 flex-1 items-center gap-3.5">
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-amber-50 text-amber-500">
+            <Icon size={18} strokeWidth={2} />
           </div>
-
           <div className="min-w-0 flex-1">
-            <span className="mont-semibold-font inline-flex items-center rounded-full border border-amber-200 bg-amber-100 px-2.5 py-1 text-[10px] uppercase tracking-[0.12em] text-amber-700 sm:text-[10.5px] md:text-[11px]">
-              Action required
-            </span>
-
-            <h3 className="mont-bold-font mt-2 text-[16px] leading-[1.45] tracking-[-0.02em] text-slate-950 sm:text-[17px] md:text-[18px]">
+            <div className="flex items-center gap-2 mb-0.5">
+              <span className="inter-medium-font inline-flex items-center rounded-full bg-amber-50 border border-amber-200 px-2 py-0.5 text-[10px] uppercase tracking-[0.1em] text-amber-600">
+                Action required
+              </span>
+            </div>
+            <h3 className="inter-semibold-font text-[14px] leading-snug text-slate-900">
               {title}
             </h3>
-
-            <p className="mont-reg-font mt-1 max-w-3xl text-[13px] leading-[1.65] text-slate-600 sm:text-[13.5px] md:text-[14px]">
+            <p className="inter-reg-font mt-0.5 text-[12.5px] text-slate-500">
               {description}
             </p>
           </div>
         </div>
 
-        {/* Warning action */}
+        {/* Action */}
         <Link
           href={href}
-          className="
-            mont-semibold-font group inline-flex min-h-[46px] w-full
-            shrink-0 items-center justify-center gap-2 rounded-[12px]
-            border border-amber-600 bg-amber-600 px-5 py-2.5
-            text-[13px] text-white no-underline
-            shadow-[0_6px_16px_rgba(217,119,6,0.2)]
-            transition-all duration-200
-            hover:border-amber-700 hover:bg-amber-700
-            active:scale-[0.98]
-            sm:text-[13.5px]
-            md:text-[14px]
-            lg:w-auto lg:min-w-[155px]
-          "
+          className="inter-medium-font group inline-flex min-h-[38px] w-full shrink-0 items-center justify-center gap-1.5 rounded-xl border bg-amber-50 border border-amber-200 px-5 py-2 text-[12.5px] text-amber-600 no-underline transition-all duration-150 hover:bg-amber-100 active:scale-[0.98] lg:w-auto lg:min-w-[140px]"
         >
-          <UploadCloud
-            size={17}
-            strokeWidth={2.3}
-            className="sm:h-[18px] sm:w-[18px]"
-          />
-
+          <UploadCloud size={14} strokeWidth={2.2} />
           <span>{buttonText}</span>
-
-          <ChevronRight
-            size={16}
-            strokeWidth={2.5}
-            className="transition-transform duration-200 group-hover:translate-x-0.5 sm:h-[17px] sm:w-[17px]"
-          />
+          <ChevronRight size={13} strokeWidth={2.5} className="transition-transform duration-150 group-hover:translate-x-0.5" />
         </Link>
       </div>
     </section>
@@ -105,7 +78,7 @@ const UploadTopPrompt = () => {
           icon={Camera}
           title="Upload your photo"
           description="Please upload your photo and ID verification to complete your order."
-          buttonText="Upload image"
+          buttonText="Upload photo"
           href="/photo-upload"
         />
       </div>

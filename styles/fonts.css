@@ -109,8 +109,66 @@
   font-style: normal;
   font-display: swap;
 }
+
+
+/*  Inter Fonts*/
+
+@font-face {
+  font-family: "Inter-Bold";
+  src: url("../public/fonts/Inter/InterBold.ttf") format("opentype");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Inter-Light";
+  src: url("../public/fonts/Inter/InterLight.ttf") format("opentype");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Inter-Medium";
+  src: url("../public/fonts/Inter/InterMedium.ttf") format("opentype");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Inter-Regular";
+  src: url("../public/fonts/Inter/InterRegular.ttf") format("opentype");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Inter-SemiBold";
+  src: url("../public/fonts/Inter/InterSemiBold.ttf") format("opentype");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Inter-Thin";
+  src: url("../public/fonts/Inter/InterThin.ttf") format("opentype");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
 /* Define a CSS variable for the font */
 :root {
+  --inter-reg: "Inter-Regular";
+  --inter-bold: "Inter-Bold";
+  --inter-light: "Inter-Light";
+  --inter-medium: "Inter-Medium";
+  --inter-semibold: "Inter-SemiBold";
+  --inter-thin: "Inter-Thin";
+
+
   --reg-font: "NibPro-Regular";
   --bold-font: "NibPro-bold";
   --light-font: "NibPro-light";
@@ -125,6 +183,24 @@
   --mont-bold: "Montserrat-Bold";
   --mont-medium: "Montserrat-Medium";
 }
+.inter-reg-font {
+  font-family: var(--inter-reg) !important;
+}
+.inter-bold-font {
+  font-family: var(--inter-bold) !important;
+}
+.inter-light-font {
+  font-family: var(--inter-light) !important;
+}
+.inter-medium-font {
+  font-family: var(--inter-medium) !important;
+}
+.inter-semibold-font {
+  font-family: var(--inter-semibold) !important;
+}
+.inter-thin-font {
+  font-family: var(--inter-thin) !important;
+} 
 
 .mont-reg-font {
   font-family: var(--mont-reg) !important;

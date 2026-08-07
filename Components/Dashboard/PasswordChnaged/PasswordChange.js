@@ -17,6 +17,7 @@ import NextButton from "@/Components/NextButton/NextButton";
 import { ChangePassword } from "@/api/ChangePassword";
 import useSignupStore from "@/store/signupStore";
 import useAuthUserDetailStore from "@/store/useAuthUserDetailStore";
+import { PageHeader } from "@/Components/Dashboard/MyAccount/MyAccount";
 
 const PasswordRequirement = ({ valid, label }) => {
   return (
@@ -42,7 +43,7 @@ const PasswordRequirement = ({ valid, label }) => {
       </span>
 
       <span
-        className={`mont-medium-font text-[12px] leading-5 ${
+        className={`inter-medium-font text-[12px] leading-5 ${
           valid ? "text-emerald-700" : "text-slate-500"
         }`}
       >
@@ -145,66 +146,31 @@ const PasswordChange = () => {
   };
 
   return (
-    <main className="mont-reg-font min-w-0 flex-1 bg-[#f4f5fb] p-3 sm:p-4 lg:p-5 xl:p-6">
-      <div className="mx-auto flex w-full max-w-[1560px] flex-col gap-4">
-        {/* Page header */}
-        <section className="relative overflow-hidden rounded-[26px] border border-[#47317c]/[0.09] bg-white px-5 py-6 shadow-[0_16px_42px_rgba(71,49,124,0.075)] sm:px-6 lg:px-7">
-          <div className="pointer-events-none absolute -right-24 -top-28 h-64 w-64 rounded-full bg-[#47317c]/[0.06] blur-3xl" />
+    <main className="inter-reg-font min-w-0 flex-1 bg-[#FBFBFD]">
+      <div className="mx-auto flex w-full max-w-[1560px] flex-col gap-6 p-4 sm:p-5 lg:p-6">
 
-          <div className="relative flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
-            <div className="min-w-0">
-              <p className="mont-bold-font mb-2 text-[11px] uppercase tracking-[0.16em] text-[#47317c]">
-                Account security
-              </p>
-
-              <h1 className="mont-bold-font text-[28px] leading-tight tracking-[-0.04em] text-slate-950 sm:text-[32px]">
-                Change Password
-              </h1>
-
-              <p className="mont-reg-font mt-2.5 max-w-2xl text-[13px] leading-[1.7] text-slate-500 sm:text-[14px]">
-                Create a strong and secure password to protect your account and
-                personal information.
-              </p>
-            </div>
-
-            {/* Account information */}
-            <div className="flex w-full min-w-0 items-center gap-3.5 rounded-[18px] border border-[#47317c]/10 bg-[#faf8fd] px-4 py-3.5 lg:w-[320px]">
-              <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-[14px] bg-[#47317c] text-white shadow-[0_8px_18px_rgba(71,49,124,0.2)]">
-                <ShieldCheck size={20} strokeWidth={2} />
-              </span>
-
-              <div className="min-w-0 flex-1">
-                <p className="mont-medium-font text-[10px] uppercase tracking-[0.12em] text-[#47317c]/55">
-                  Logged in as
-                </p>
-
-                <p
-                  title={displayEmail}
-                  className="mont-reg-font mt-0.5 truncate text-[11px] leading-4 text-slate-500"
-                >
-                  {displayEmail}
-                </p>
-              </div>
-            </div>
-          </div>
-        </section>
+        <PageHeader
+          label="Account"
+          title="Change Password"
+          subtitle="Create a strong, secure password to protect your account."
+        />
 
         {/* Password content */}
-        <section className="relative overflow-hidden rounded-[26px] border border-[#47317c]/[0.09] bg-white p-4 shadow-[0_16px_42px_rgba(71,49,124,0.075)] sm:p-5 lg:p-6">
+        <section className="rounded-lg border border-slate-100 bg-white p-4 sm:p-5 lg:p-6">
           <div className="grid grid-cols-1 gap-5 xl:grid-cols-[minmax(0,1fr)_380px]">
             {/* Password form */}
-            <div className="overflow-hidden rounded-[22px] border border-[#47317c]/10 bg-white">
-              <div className="flex items-start gap-3.5 border-b border-[#47317c]/[0.07] bg-[#faf9fc] px-5 py-5">
-                <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-[14px] bg-[#47317c]/[0.08] text-[#47317c]">
-                  <LockKeyhole size={20} strokeWidth={2} />
+            <div className="overflow-hidden rounded-lg border border-slate-100 bg-white">
+              <div className="flex items-start gap-3 border-b border-slate-100 bg-slate-50 px-5 py-4">
+                <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md bg-slate-100 text-slate-600">
+                  <LockKeyhole size={17} strokeWidth={2} />
                 </span>
 
                 <div className="min-w-0">
-                  <h2 className="mont-bold-font text-[20px] leading-7 text-slate-950 sm:text-[23px]">
+                  <h2 className="inter-semibold-font text-[16px] leading-6 text-slate-900">
                     Update your password
                   </h2>
 
-                  <p className="mont-reg-font mt-1 text-[12.5px] leading-[1.7] text-slate-500 sm:text-[13px]">
+                  <p className="inter-reg-font mt-1 text-[12.5px] leading-[1.7] text-slate-500 sm:text-[13px]">
                     Enter your current password and choose a new secure
                     password.
                   </p>
@@ -271,15 +237,15 @@ const PasswordChange = () => {
                   />
                 </div>
 
-                <div className="flex flex-col gap-4 border-t border-[#47317c]/[0.07] pt-5 sm:flex-row sm:items-center sm:justify-between">
+                <div className="flex flex-col gap-4 border-t border-slate-100 pt-5 sm:flex-row sm:items-center sm:justify-between">
                   <div className="flex items-start gap-2.5">
                     <Info
                       size={16}
                       strokeWidth={2}
-                      className="mt-0.5 shrink-0 text-[#47317c]"
+                      className="mt-0.5 shrink-0 text-slate-500"
                     />
 
-                    <p className="mont-reg-font max-w-md text-[11.5px] leading-[1.7] text-slate-500">
+                    <p className="inter-reg-font max-w-md text-[11.5px] leading-[1.7] text-slate-500">
                       After updating your password, use the new password the
                       next time you sign in.
                     </p>
@@ -305,18 +271,18 @@ const PasswordChange = () => {
               />
 
               {/* Email */}
-              {/* <div className="mt-4 rounded-[20px] border border-[#47317c]/10 bg-[#faf9fc] p-5">
+              {/* <div className="mt-4 rounded-lg border border-slate-100 bg-white p-5">
                 <div className="flex items-center gap-3">
                   <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-[12px] bg-white text-[#47317c] shadow-sm">
                     <Mail size={18} strokeWidth={2} />
                   </span>
 
                   <div className="min-w-0">
-                    <p className="mont-bold-font text-[14px] text-slate-950">
+                    <p className="inter-bold-font text-[14px] text-slate-950">
                       Account email
                     </p>
 
-                    <p className="mont-reg-font mt-0.5 text-[11px] text-slate-500">
+                    <p className="inter-reg-font mt-0.5 text-[11px] text-slate-500">
                       Associated with this account
                     </p>
                   </div>
@@ -325,13 +291,13 @@ const PasswordChange = () => {
                 <div className="mt-4 rounded-[13px] border border-[#47317c]/10 bg-white px-4 py-3">
                   <p
                     title={email}
-                    className="mont-medium-font truncate text-[12px] text-slate-700"
+                    className="inter-medium-font truncate text-[12px] text-slate-700"
                   >
                     {email || "Not available"}
                   </p>
                 </div>
 
-                <p className="mont-reg-font mt-3 text-[10.5px] leading-[1.7] text-slate-500">
+                <p className="inter-reg-font mt-3 text-[10.5px] leading-[1.7] text-slate-500">
                   This email is linked to your account and cannot be changed
                   from this page.
                 </p>
@@ -345,7 +311,7 @@ const PasswordChange = () => {
             }
 
             .password-form .MuiInputLabel-root {
-              font-family: var(--mont-medium) !important;
+              font-family: var(--inter-medium) !important;
               font-size: 13px !important;
               color: #64748b;
             }
@@ -354,7 +320,7 @@ const PasswordChange = () => {
               min-height: 52px;
               border-radius: 14px !important;
               background: #ffffff;
-              font-family: var(--mont-reg) !important;
+              font-family: var(--inter-reg) !important;
               font-size: 13px !important;
             }
 
@@ -365,7 +331,7 @@ const PasswordChange = () => {
             .password-form
               .MuiInputBase-root:hover
               .MuiOutlinedInput-notchedOutline {
-              border-color: rgba(71, 49, 124, 0.28) !important;
+              border-color: rgba(0,0,0,0.18) !important;
             }
 
             .password-form .Mui-focused .MuiOutlinedInput-notchedOutline {
@@ -374,26 +340,26 @@ const PasswordChange = () => {
             }
 
             .password-form input {
-              font-family: var(--mont-reg) !important;
+              font-family: var(--inter-reg) !important;
               font-size: 13px !important;
               color: #0f172a !important;
             }
 
             .password-form label {
-              font-family: var(--mont-medium) !important;
+              font-family: var(--inter-medium) !important;
             }
 
             .password-save-button button {
-              min-height: 46px !important;
+              min-height: 42px !important;
               width: 100% !important;
-              border-radius: 13px !important;
+              border-radius: 10px !important;
               border-color: #47317c !important;
               background: #47317c !important;
-              padding: 12px 22px !important;
-              font-family: var(--mont-medium) !important;
+              padding: 10px 22px !important;
+              font-family: var(--inter-medium) !important;
               font-size: 12px !important;
               color: #ffffff !important;
-              transition: all 0.2s ease !important;
+              transition: all 0.15s ease !important;
             }
 
             .password-save-button button:not(:disabled):hover {
@@ -415,18 +381,18 @@ const PasswordChange = () => {
 
 const PasswordRequirements = ({ validations, progress, completed }) => {
   return (
-    <div className="rounded-[20px] border border-[#47317c]/10 bg-[#faf9fc] p-4 sm:p-5">
+    <div className="rounded-lg border border-slate-100 bg-white p-4 sm:p-5">
       <div className="flex items-center gap-3">
-        <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-[12px] bg-[#47317c] text-white shadow-[0_7px_16px_rgba(71,49,124,0.18)]">
+        <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#47317c] text-white">
           <KeyRound size={18} strokeWidth={2} />
         </span>
 
         <div className="min-w-0 flex-1">
-          <h3 className="mont-bold-font text-[15px] text-slate-950">
+          <h3 className="inter-bold-font text-[15px] text-slate-950">
             Password requirements
           </h3>
 
-          <p className="mont-reg-font mt-0.5 text-[11px] text-slate-500">
+          <p className="inter-reg-font mt-0.5 text-[11px] text-slate-500">
             {completed} of 5 completed
           </p>
         </div>

@@ -10,7 +10,7 @@ const Dashboard = ({ children }) => {
   };
 
   return (
-    <div className="flex flex-col h-screen bg-[#f4f5fb]">
+    <div className="flex flex-col h-screen bg-[#FBFBFD]">
       {/* Header */}
       <StepsHeader isOpen={isOpen} toggleSidebar={toggleSidebar} />
 
@@ -19,8 +19,8 @@ const Dashboard = ({ children }) => {
         <Sidebar isOpen={isOpen} toggleSidebar={toggleSidebar} />
 
         {/* Main Content */}
-        <main className="flex-1 overflow-y-auto">
-          <div className="rounded-md">{children}</div>
+        <main className="flex-1 overflow-y-auto min-w-0">
+          {children}
         </main>
       </div>
     </div>

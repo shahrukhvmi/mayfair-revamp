@@ -181,7 +181,7 @@ export default function Billing({ billingCountries = [] }) {
   };
 
   return (
-    <section className="relative mt-5 overflow-hidden rounded-[22px] border border-[#47317c]/10 bg-[#fcfbfe] p-4 sm:p-5 lg:p-6">
+    <section className="relative mt-5 overflow-hidden rounded-[22px] border border-[#47317c]/10 bg-[#ffff] p-4 sm:p-5 lg:p-6">
       {/* Header */}
       <div className="flex items-start gap-3.5 border-b border-[#47317c]/[0.07] pb-5">
         <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-[14px] bg-[#47317c]/[0.08] text-[#47317c]">
@@ -189,11 +189,11 @@ export default function Billing({ billingCountries = [] }) {
         </span>
 
         <div className="min-w-0">
-          <h2 className="mont-bold-font text-[20px] leading-7 text-slate-950 sm:text-[23px]">
+          <h2 className="inter-bold-font text-[20px] leading-7 text-slate-950 sm:text-[23px]">
             Billing information
           </h2>
 
-          <p className="mont-reg-font mt-1.5 max-w-2xl text-[12.5px] leading-[1.7] text-slate-500 sm:text-[13px]">
+          <p className="inter-reg-font mt-1.5 max-w-2xl text-[12.5px] leading-[1.7] text-slate-500 sm:text-[13px]">
             Update the billing address associated with your future treatment
             orders.
           </p>
@@ -262,7 +262,7 @@ export default function Billing({ billingCountries = [] }) {
               type="button"
               onClick={handleSearch}
               disabled={addressSearchLoading}
-              className="mont-medium-font inline-flex min-h-[48px] w-full cursor-pointer items-center justify-center gap-2 rounded-[13px] border border-[#47317c] bg-[#47317c] px-4 py-3 text-[12px] text-white shadow-[0_7px_18px_rgba(71,49,124,0.18)] transition-all duration-200 hover:bg-[#392765] disabled:cursor-not-allowed disabled:border-slate-300 disabled:bg-slate-300 disabled:shadow-none"
+              className="inter-medium-font inline-flex min-h-[48px] w-full cursor-pointer items-center justify-center gap-2 rounded-[13px] border border-[#47317c] bg-[#47317c] px-4 py-3 text-[12px] text-white shadow-[0_7px_18px_rgba(71,49,124,0.18)] transition-all duration-200 hover:bg-[#392765] disabled:cursor-not-allowed disabled:border-slate-300 disabled:bg-slate-300 disabled:shadow-none"
             >
               {addressSearchLoading ? (
                 <>
@@ -374,7 +374,7 @@ export default function Billing({ billingCountries = [] }) {
             <NextButton
               label="Update billing"
               disabled={!isValid}
-              className="mont-medium-font !min-h-[46px] !rounded-[13px] !border-[#47317c] !bg-[#47317c] !px-6 !py-3 !text-[12px] hover:!bg-[#392765]"
+              className="inter-medium-font !min-h-[46px] !rounded-[13px] !border-[#47317c] !bg-[#47317c] !px-6 !py-3 !text-[12px] hover:!bg-[#392765]"
             />
           </div>
         </div>
@@ -393,7 +393,7 @@ export default function Billing({ billingCountries = [] }) {
         }
 
         .address-form .MuiInputLabel-root {
-          font-family: var(--mont-medium) !important;
+          font-family: var(--inter-medium) !important;
           font-size: 13px !important;
           color: #64748b;
         }
@@ -402,7 +402,7 @@ export default function Billing({ billingCountries = [] }) {
           min-height: 50px;
           border-radius: 14px !important;
           background: #ffffff;
-          font-family: var(--mont-reg) !important;
+          font-family: var(--inter-reg) !important;
           font-size: 13px !important;
         }
 
@@ -424,13 +424,13 @@ export default function Billing({ billingCountries = [] }) {
         .address-form input,
         .address-form select,
         .address-form textarea {
-          font-family: var(--mont-reg) !important;
+          font-family: var(--inter-reg) !important;
           font-size: 13px !important;
           color: #0f172a !important;
         }
 
         .address-form label {
-          font-family: var(--mont-medium) !important;
+          font-family: var(--inter-medium) !important;
         }
       `}</style>
     </section>
