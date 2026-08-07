@@ -174,18 +174,30 @@ const OrderDetail = () => {
                     : "Review your treatment items and patient information."
                 }
                 right={
-                  <div className="flex items-center gap-2.5">
-                    <div className="flex flex-col items-center gap-1 rounded-xl border border-[#e8e2f5] bg-white/80 px-4 py-2.5 min-w-[110px]">
-                      <span className="inter-medium-font text-[9.5px] uppercase tracking-[0.1em] text-slate-400">Order Status</span>
-                      <span className={`inter-semibold-font inline-flex items-center rounded-full border px-2.5 py-0.5 text-[11px] capitalize ${getStatusColor(currentOrder?.status || "")}`}>
-                        {currentOrder?.status || "N/A"}
+                  <div className="flex items-center gap-3">
+                    {/* Order Status card */}
+                    <div className="flex items-center gap-3.5 rounded-2xl border border-[#e8e2f5] bg-white px-5 py-4 min-w-[200px]">
+                      <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#47317c]/[0.07]">
+                        <ShoppingBag size={18} strokeWidth={1.8} className="text-[#47317c]" />
                       </span>
+                      <div className="flex flex-col gap-1.5">
+                        <span className="inter-medium-font whitespace-nowrap text-[10px] uppercase tracking-[0.12em] text-slate-400">Order Status</span>
+                        <span className={`inter-semibold-font self-start inline-flex items-center whitespace-nowrap rounded-full border px-3 py-1 text-[12px] capitalize ${getStatusColor(currentOrder?.status || "")}`}>
+                          {currentOrder?.status || "N/A"}
+                        </span>
+                      </div>
                     </div>
-                    <div className="flex flex-col items-center gap-1 rounded-xl border border-[#e8e2f5] bg-white/80 px-4 py-2.5 min-w-[110px]">
-                      <span className="inter-medium-font text-[9.5px] uppercase tracking-[0.1em] text-slate-400">Payment Status</span>
-                      <span className={`inter-semibold-font inline-flex items-center rounded-full border px-2.5 py-0.5 text-[11px] capitalize ${getStatusColor(currentOrder?.payments?.status || "")}`}>
-                        {currentOrder?.payments?.status || "N/A"}
+                    {/* Payment Status card */}
+                    <div className="flex items-center gap-3.5 rounded-2xl border border-[#e8e2f5] bg-white px-5 py-4 min-w-[210px]">
+                      <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#47317c]/[0.07]">
+                        <ReceiptText size={18} strokeWidth={1.8} className="text-[#47317c]" />
                       </span>
+                      <div className="flex flex-col gap-1.5">
+                        <span className="inter-medium-font whitespace-nowrap text-[10px] uppercase tracking-[0.12em] text-slate-400">Payment Status</span>
+                        <span className={`inter-semibold-font self-start inline-flex items-center whitespace-nowrap rounded-full border px-3 py-1 text-[12px] capitalize ${getStatusColor(currentOrder?.payments?.status || "")}`}>
+                          {currentOrder?.payments?.status || "N/A"}
+                        </span>
+                      </div>
                     </div>
                   </div>
                 }
@@ -240,9 +252,9 @@ const OrderDetail = () => {
                       <table className="w-full min-w-[700px] border-collapse text-left">
                         <thead className="bg-white">
                           <tr className="border-b border-[#47317c]/[0.07]">
-                            <th className="inter-medium-font px-5 py-4 text-[11px] uppercase tracking-[0.11em] text-slate-400">Item</th>
-                            <th className="inter-medium-font w-[150px] px-5 py-4 text-center text-[11px] uppercase tracking-[0.11em] text-slate-400">Quantity</th>
-                            <th className="inter-medium-font w-[180px] px-5 py-4 text-right text-[11px] uppercase tracking-[0.11em] text-slate-400">Amount</th>
+                            <th className="inter-medium-font px-5 py-4 text-[12px] lg:text-[13px] uppercase tracking-[0.11em] text-slate-400">Item</th>
+                            <th className="inter-medium-font w-[150px] px-5 py-4 text-center text-[12px] lg:text-[13px] uppercase tracking-[0.11em] text-slate-400">Quantity</th>
+                            <th className="inter-medium-font w-[180px] px-5 py-4 text-right text-[12px] lg:text-[13px] uppercase tracking-[0.11em] text-slate-400">Amount</th>
                           </tr>
                         </thead>
                         <tbody>
@@ -252,17 +264,17 @@ const OrderDetail = () => {
                               className="border-b border-[#47317c]/[0.06] transition-colors hover:bg-[#47317c]/[0.018]"
                             >
                               <td className="px-5 py-5">
-                                <p className="inter-medium-font text-[13px] capitalize leading-5 text-slate-900">
+                                <p className="inter-medium-font text-[14px] lg:text-[15px] capitalize leading-5 text-slate-900">
                                   {product?.label || product?.name || product?.product || "Item"}
                                 </p>
                               </td>
                               <td className="px-5 py-5 text-center">
-                                <span className="inter-medium-font inline-flex min-w-[38px] items-center justify-center rounded-[10px] bg-[#47317c]/[0.06] px-3 py-2 text-[12px] text-[#47317c]">
+                                <span className="inter-medium-font inline-flex min-w-[38px] items-center justify-center rounded-[10px] bg-[#47317c]/[0.06] px-3 py-2 text-[13px] lg:text-[14px] text-[#47317c]">
                                   {product?.quantity}
                                 </span>
                               </td>
                               <td className="px-5 py-5 text-right">
-                                <span className="inter-bold-font text-[14px] text-slate-950">
+                                <span className="inter-bold-font text-[15px] lg:text-[16px] text-slate-950">
                                   £{formatCurrency(parseFloat(product?.price) * Number(product?.quantity))}
                                 </span>
                               </td>
@@ -273,11 +285,11 @@ const OrderDetail = () => {
                             <>
                               <tr className="border-b border-[#47317c]/[0.06] bg-[#faf9fc]/60">
                                 <td className="px-5 py-4">
-                                  <span className="inter-medium-font text-[12px] text-slate-600">Discount</span>
+                                  <span className="inter-medium-font text-[13px] lg:text-[14px] text-slate-600">Discount</span>
                                 </td>
                                 <td />
                                 <td className="px-5 py-4 text-right">
-                                  <span className="inter-medium-font text-[12px] text-emerald-600">
+                                  <span className="inter-medium-font text-[13px] lg:text-[14px] text-emerald-600">
                                     {discountData?.type === "Fixed"
                                       ? `-£${formatCurrency(discountData?.discount_value)}`
                                       : `-${parseFloat(discountData?.discount_value).toFixed(1)}%`}
@@ -286,20 +298,20 @@ const OrderDetail = () => {
                               </tr>
                               <tr className="border-b border-[#47317c]/[0.06] bg-[#faf9fc]/60">
                                 <td className="px-5 py-4">
-                                  <span className="inter-medium-font text-[12px] text-slate-600">Coupon code</span>
+                                  <span className="inter-medium-font text-[13px] lg:text-[14px] text-slate-600">Coupon code</span>
                                 </td>
                                 <td />
                                 <td className="px-5 py-4 text-right">
-                                  <span className="inter-medium-font text-[12px] text-slate-900">{discountData?.code || "N/A"}</span>
+                                  <span className="inter-medium-font text-[13px] lg:text-[14px] text-slate-900">{discountData?.code || "N/A"}</span>
                                 </td>
                               </tr>
                               <tr className="border-b border-[#47317c]/[0.06] bg-[#faf9fc]/60">
                                 <td className="px-5 py-4">
-                                  <span className="inter-medium-font text-[12px] text-slate-600">Discount type</span>
+                                  <span className="inter-medium-font text-[13px] lg:text-[14px] text-slate-600">Discount type</span>
                                 </td>
                                 <td />
                                 <td className="px-5 py-4 text-right">
-                                  <span className="inter-medium-font text-[12px] text-slate-900">
+                                  <span className="inter-medium-font text-[13px] lg:text-[14px] text-slate-900">
                                     {discountData?.type === "Fixed" ? "Fixed" : "Percentage"}
                                   </span>
                                 </td>
@@ -309,21 +321,21 @@ const OrderDetail = () => {
 
                           <tr className="border-b border-[#47317c]/[0.07] bg-[#faf9fc]/60">
                             <td className="px-5 py-4">
-                              <span className="inter-medium-font text-[12px] text-slate-600">Shipping fee</span>
+                              <span className="inter-medium-font text-[13px] lg:text-[14px] text-slate-600">Shipping fee</span>
                             </td>
                             <td />
                             <td className="px-5 py-4 text-right">
-                              <span className="inter-medium-font text-[12px] text-slate-900">£{formatCurrency(shipmentFee)}</span>
+                              <span className="inter-medium-font text-[13px] lg:text-[14px] text-slate-900">£{formatCurrency(shipmentFee)}</span>
                             </td>
                           </tr>
 
                           <tr className="bg-[#47317c]/[0.035]">
                             <td className="px-5 py-5">
-                              <span className="inter-bold-font text-[15px] text-slate-950">Order total</span>
+                              <span className="inter-bold-font text-[16px] lg:text-[17px] text-slate-950">Order total</span>
                             </td>
                             <td />
                             <td className="px-5 py-5 text-right">
-                              <span className="inter-bold-font text-[21px] leading-none text-[#47317c]">
+                              <span className="inter-bold-font text-[23px] lg:text-[25px] leading-none text-[#47317c]">
                                 £{formatCurrency(total)}
                               </span>
                             </td>

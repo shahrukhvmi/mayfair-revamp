@@ -47,7 +47,7 @@ const getStatusClasses = (status = "") => {
 };
 
 const OrderStatus = ({ status }) => (
-  <span className={`inter-medium-font inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-[11px] leading-none ${getStatusClasses(status)}`}>
+  <span className={`inter-medium-font inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-[11px] lg:text-[12px] 2xl:text-[13px] leading-none ${getStatusClasses(status)}`}>
     <span className={`h-1.5 w-1.5 rounded-full ${statusDot[status?.toLowerCase()] || "bg-slate-400"}`} />
     {status}
   </span>
@@ -239,7 +239,7 @@ const MyOrders = () => {
                 <thead>
                   <tr className="border-b border-slate-100 bg-slate-50/60">
                     {["Order ID", "Order date", "Treatment", "Items", "Status", "Total", ""].map((h) => (
-                      <th key={h || "action"} scope="col" className="inter-medium-font whitespace-nowrap px-5 py-3.5 text-[10.5px] uppercase tracking-[0.11em] text-slate-400">
+                      <th key={h || "action"} scope="col" className="inter-medium-font whitespace-nowrap px-5 py-3.5 text-[10.5px] lg:text-[11.5px] 2xl:text-[12.5px] uppercase tracking-[0.11em] text-slate-400">
                         {h}
                       </th>
                     ))}
@@ -257,25 +257,25 @@ const MyOrders = () => {
                       return (
                         <tr key={order.order_id} className="group border-b border-slate-100 last:border-b-0 transition-colors duration-150 hover:bg-slate-50/60">
                           <td className="px-5 py-4">
-                            <span className="inter-bold-font text-[13px] text-slate-800">#{order.order_id}</span>
+                            <span className="inter-bold-font text-[13px] lg:text-[14px] 2xl:text-[15px] text-slate-800">#{order.order_id}</span>
                           </td>
                           <td className="px-5 py-4">
                             <div className="flex items-center gap-1.5">
                               <CalendarDays size={13} strokeWidth={2} className="shrink-0 text-slate-400" />
-                              <span className="inter-medium-font whitespace-nowrap text-[12.5px] text-slate-600">{order.created_at}</span>
+                              <span className="inter-medium-font whitespace-nowrap text-[12.5px] lg:text-[13.5px] 2xl:text-[14.5px] text-slate-600">{order.created_at}</span>
                             </div>
                           </td>
                           <td className="px-5 py-4">
                             <div className="flex max-w-[190px] flex-col gap-1">
                               {treatments.map((t, i) => (
-                                <span key={`${t}-${i}`} className="inter-medium-font text-[12.5px] leading-5 text-slate-800">{t}</span>
+                                <span key={`${t}-${i}`} className="inter-medium-font text-[12.5px] lg:text-[13.5px] 2xl:text-[14.5px] leading-5 text-slate-800">{t}</span>
                               ))}
                             </div>
                           </td>
                           <td className="px-5 py-4">
                             <div className="flex max-w-[225px] flex-col gap-1">
                               {groupedItems.map((item, i) => (
-                                <span key={`${item.name}-${i}`} className="inter-reg-font text-[12px] leading-5 text-slate-500">
+                                <span key={`${item.name}-${i}`} className="inter-reg-font text-[12px] lg:text-[13px] 2xl:text-[14px] leading-5 text-slate-500">
                                   {item.name}<span className="inter-medium-font ml-1 text-slate-700">× {item.quantity}</span>
                                 </span>
                               ))}
@@ -283,7 +283,7 @@ const MyOrders = () => {
                           </td>
                           <td className="px-5 py-4"><OrderStatus status={order.status} /></td>
                           <td className="px-5 py-4">
-                            <span className="inter-bold-font whitespace-nowrap text-[13px] text-slate-900">£{order.total_price}</span>
+                            <span className="inter-bold-font whitespace-nowrap text-[13px] lg:text-[14px] 2xl:text-[15px] text-slate-900">£{order.total_price}</span>
                           </td>
                           <td className="px-5 py-4 text-right">
                             <button
