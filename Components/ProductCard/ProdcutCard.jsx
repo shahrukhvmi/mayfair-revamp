@@ -1,75 +1,77 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useRouter } from "next/router";
-import useProductId from "@/store/useProductIdStore";
-import usePatientStatus from "@/store/useReorderStore";
-import { userConsultationApi } from "@/api/consultationApi";
 import { useMutation } from "@tanstack/react-query";
-import { motion } from "framer-motion";
-import useConfirmationInfoStore from "@/store/confirmationInfoStore";
-import useGpDetailsStore from "@/store/gpDetailStore";
-import useMedicalInfoStore from "@/store/medicalInfoStore";
-import usePatientInfoStore from "@/store/patientInfoStore";
-import useMedicalQuestionsStore from "@/store/medicalQuestionStore";
-import useConfirmationQuestionsStore from "@/store/confirmationQuestionStore";
+
+import { userConsultationApi } from "@/api/consultationApi";
 import useAuthUserDetailStore from "@/store/useAuthUserDetailStore";
 import useBmiStore from "@/store/bmiStore";
 import useCheckoutStore from "@/store/checkoutStore";
-import useShippingOrBillingStore from "@/store/shipingOrbilling";
-import useReorder from "@/store/useReorderStore";
-import useLastBmi from "@/store/useLastBmiStore";
+import useConfirmationInfoStore from "@/store/confirmationInfoStore";
 import useCouponStore from "@/store/couponStore";
-import useSignupStore from "@/store/signupStore";
-import useReturning from "@/store/useReturningPatient";
+import useGpDetailsStore from "@/store/gpDetailStore";
+import useLastBmi from "@/store/useLastBmiStore";
 import lastOrderStore from "@/store/lastOrderStore";
+import useMedicalInfoStore from "@/store/medicalInfoStore";
+import usePatientInfoStore from "@/store/patientInfoStore";
+import useProductId from "@/store/useProductIdStore";
+import useReorder from "@/store/useReorderStore";
+import useReturning from "@/store/useReturningPatient";
+import useShippingOrBillingStore from "@/store/shipingOrbilling";
+import useSignupStore from "@/store/signupStore";
+
+import ProductGridCard from "./ProductGridCard";
+import ProductListCard from "./ProductListCard";
 
 const ProductCard = ({
   id,
   title,
   image,
+  description,
   price,
   status,
   buttonText,
-  lastOrderDate,
-  reorder,
+  reorder = false,
   pre_launch_price,
+  viewMode = "list",
 }) => {
   const router = useRouter();
-  const { productId, setProductId } = useProductId();
+
+  const [isButtonLoading, setIsButtonLoading] = useState(false);
+
+  const { setProductId } = useProductId();
   const { setReorder } = useReorder();
   const { clearCoupon } = useCouponStore();
-  console.log(productId, "productId");
-  const [isButtonLoading, setIsButtonLoading] = useState(false);
 
   const { setBmi, clearBmi } = useBmiStore();
   const { setCheckout, clearCheckout } = useCheckoutStore();
+
   const { setConfirmationInfo, clearConfirmationInfo } =
     useConfirmationInfoStore();
+
   const { setGpDetails, clearGpDetails } = useGpDetailsStore();
   const { setMedicalInfo, clearMedicalInfo } = useMedicalInfoStore();
   const { setPatientInfo, clearPatientInfo } = usePatientInfoStore();
+
   const { setAuthUserDetail, clearAuthUserDetail } = useAuthUserDetailStore();
+
   const { setLastOrder, clearLastOrder } = lastOrderStore();
+
   const {
-    billing,
     setBilling,
-    shipping,
     setShipping,
     setCheckShippingForAccordion,
     clearShipping,
     clearBilling,
     setCheckBillingForAccordion,
   } = useShippingOrBillingStore();
+
   const { setLastBmi } = useLastBmi();
-  const { firstName, lastName, setFirstName, setLastName } = useSignupStore();
+  const { setFirstName, setLastName } = useSignupStore();
   const { setIsReturningPatient } = useReturning();
 
-  //Get Consultation Data
   const consultationMutation = useMutation(userConsultationApi, {
     onSuccess: (data) => {
-      console.log(data, "Dataaaaaaaaaa");
-
       if (data?.data?.data == null) {
-        console.log("true");
         clearBmi();
         clearCheckout();
         clearConfirmationInfo();
@@ -88,9 +90,13 @@ const ProductCard = ({
         setMedicalInfo(data?.data?.data?.medicalInfo);
         setPatientInfo(data?.data?.data?.patientInfo);
         setShipping(data?.data?.data?.shipping);
+
         setCheckShippingForAccordion(data?.data?.data?.shipping);
+
         setBilling(data?.data?.data?.billing);
+
         setCheckBillingForAccordion(data?.data?.data?.billing);
+
         setAuthUserDetail(data?.data?.data?.auth_user);
         setLastBmi(data?.data?.data?.bmi);
         setFirstName(data?.data?.data?.auth_user?.fname);
@@ -109,139 +115,50 @@ const ProductCard = ({
       }
 
       setIsButtonLoading(false);
-      return;
     },
+
     onError: (error) => {
-      // setLoading(false);
       console.log("error", error?.response?.data?.errors?.email);
-      if (error) {
-        setIsButtonLoading(false);
-      }
+
+      setIsButtonLoading(false);
     },
   });
 
   const handleClick = () => {
+    if (!id || isButtonLoading) {
+      return;
+    }
+
     setProductId(id);
     setIsButtonLoading(true);
-    const formData = {
+
+    consultationMutation.mutate({
       clinic_id: 1,
       product_id: id,
-    };
-    consultationMutation.mutate(formData);
+    });
   };
 
-  // No need for this effect if setReorderPatient() is already called in handleClick
-  // useEffect(() => {
-  //   if (reorder == true) {
-  //     setReorderPatient(true);
-  //   }
-  // }, [reorder]); // Make sure this only runs when `reorder` changes
+  const isOutOfStock = !status;
 
-  return (
-    <>
-      <div className="relative bg-white rounded-lg rounded-b-2xl overflow-hidden transition-transform shadow-md">
-        {/* Out of Stock Overlay */}
-        {!status && (
-          <div className="h-full w-full left-0 absolute bg-[rgba(119,136,153,0.4)] cursor-not-allowed z-10 thin-font"></div>
-        )}
+  const hasPrice =
+    price !== null && price !== undefined && price !== "" && price !== "N/A";
 
-        {/* Out of Stock Ribbon */}
-        {!status && (
-          <div className="absolute -left-8 top-7 bg-red-500 text-white px-[30px] text-xs py-1 rounded-tl -rotate-45 z-20 thin-font">
-            Out of stock
-          </div>
-        )}
+  const sharedProps = {
+    title,
+    image,
+    description,
+    originalPrice: hasPrice ? price : null,
+    isOutOfStock,
+    isLoading: isButtonLoading,
+    buttonText,
+    onClick: handleClick,
+  };
 
-        {/* Price Ribbon */}
-        {price && (
-          // <div className="absolute -right-8 top-7 bg-blue-500 text-white text-xs px-[30px] py-1 rounded-tr rotate-45 z-20 thin-font">
-          //   From £{price}
-          // </div>
-          <div className="absolute top-5 -right-10 z-20 w-40 rotate-45 rounded-sm bg-[#47317c]  py-1.5 text-center">
-            <div className="flex items-center justify-center gap-1">
-              <span className="text-[9px] uppercase tracking-wider text-white mont-medium-font">
-                From
-              </span>
-              <span className="text-xs mont-bold-font  tracking-wide text-white">
-                £{price}
-              </span>
-            </div>
-          </div>
-        )}
+  if (viewMode === "grid") {
+    return <ProductGridCard {...sharedProps} />;
+  }
 
-        {/* {price && (
-          <div className="absolute top-5 -right-10 z-20 w-40 rotate-45 rounded-sm bg-[#47317c]  py-1.5 text-center">
-            {pre_launch_price ? (
-              <div className="flex items-center justify-center gap-1">
-              
-                <span className="text-[9px] uppercase tracking-wider text-white mont-medium-font">
-                  From
-                </span>
-                <span className="text-xs mont-bold-font  tracking-wide text-white">
-                  £{pre_launch_price}
-                </span>
-              </div>
-            ) : (
-              <div className="flex items-center justify-center gap-1">
-                <span className="text-[9px] uppercase tracking-wider text-white mont-medium-font">
-                  From
-                </span>
-                <span className="text-xs mont-bold-font  tracking-wide text-white">
-                  £{price}
-                </span>
-              </div>
-            )}
-          </div>
-        )} */}
-        {/* Product Image */}
-        <div className="h-52 overflow-hidden bg-white">
-          <img
-            src={image}
-            alt={title}
-            className="w-full p-5 h-52 object-contain"
-            // onError={(e) => (e.target.src = "/images/default.png")}
-          />
-        </div>
-
-        {/* Product Details */}
-        <div className="bg-[#EDE9FE] p-5 text-center rounded-2xl">
-          <h2 className="text-lg bold-font mb-3 text-gray-900">{title}</h2>
-
-          <p className="mb-3 text-sm font-semibold text-gray-700">
-            {lastOrderDate && `Last Ordered: ${lastOrderDate}`}
-          </p>
-
-          <div className="w-full text-center">
-            <button
-              onClick={handleClick}
-              type="button"
-              className={
-                status === false
-                  ? "cursor-pointer reg-font bg-[#897bba] text-white py-2 px-6 rounded-full text-sm text-center"
-                  : "cursor-pointer reg-font bg-primary text-white font-medium py-2 px-6 rounded-full text-sm text-center hover:bg-violet-400  transition-colors duration-200"
-              }
-            >
-              {isButtonLoading == true ? (
-                <div className="px-12 w-full">
-                  <motion.div
-                    animate={{ rotate: 360 }}
-                    transition={{
-                      repeat: Infinity,
-                      duration: 1,
-                      ease: "linear",
-                    }}
-                    className="w-6 h-6 border-4 border-t-transparent rounded-full text-white"
-                  />
-                </div>
-              ) : (
-                <>{buttonText}</>
-              )}
-            </button>
-          </div>
-        </div>
-      </div>
-    </>
-  );
+  return <ProductListCard {...sharedProps} />;
 };
 
 export default ProductCard;

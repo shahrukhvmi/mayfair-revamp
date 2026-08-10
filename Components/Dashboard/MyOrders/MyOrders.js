@@ -1,291 +1,378 @@
-import React, { useEffect, useState } from "react";
-import { IoEye } from "react-icons/io5";
-import Link from "next/link";
+import React, { useEffect, useRef, useState } from "react";
+import { useRouter } from "next/router";
+import { useMutation } from "@tanstack/react-query";
+import toast from "react-hot-toast";
+import {
+  CalendarDays,
+  ChevronDown,
+  Eye,
+  Info,
+  Search,
+  ShoppingBag,
+  SlidersHorizontal,
+} from "lucide-react";
+
 import Pagination from "@/Components/Pagination/Pagination";
 import GetOrdersApi from "@/api/getOrders";
-import { useMutation } from "@tanstack/react-query";
 import useOrderId from "@/store/useOrderIdStore";
-import { useRouter } from "next/router";
 import usePaginationStore from "@/store/pagination";
 import { useStatusStore } from "@/store/useStatusStore";
+import useAuthUserDetailStore from "@/store/useAuthUserDetailStore";
+import { PageHeader } from "@/Components/Dashboard/MyAccount/MyAccount";
+
+const statusOptions = [
+  { value: "all",        label: "All orders",  color: "bg-slate-100 text-slate-700 border-slate-200" },
+  { value: "processing", label: "Processing",  color: "bg-amber-50 text-amber-700 border-amber-200" },
+  { value: "incomplete", label: "Incomplete",  color: "bg-orange-50 text-orange-700 border-orange-200" },
+  { value: "approved",   label: "Approved",    color: "bg-emerald-50 text-emerald-700 border-emerald-200" },
+  { value: "cancelled",  label: "Cancelled",   color: "bg-red-50 text-red-700 border-red-200" },
+];
+
+const statusDot = {
+  all:        "bg-slate-400",
+  processing: "bg-amber-500",
+  incomplete: "bg-orange-500",
+  approved:   "bg-emerald-500",
+  cancelled:  "bg-red-500",
+};
+
+const getStatusClasses = (status = "") => {
+  switch (status.toLowerCase()) {
+    case "processing": return "border-amber-200 bg-amber-50 text-amber-700";
+    case "incomplete":  return "border-orange-200 bg-orange-50 text-orange-700";
+    case "approved":    return "border-emerald-200 bg-emerald-50 text-emerald-700";
+    case "cancelled":   return "border-red-200 bg-red-50 text-red-700";
+    default:            return "border-slate-200 bg-slate-50 text-slate-600";
+  }
+};
+
+const OrderStatus = ({ status }) => (
+  <span className={`inter-medium-font inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-[11px] lg:text-[12px] 2xl:text-[13px] leading-none ${getStatusClasses(status)}`}>
+    <span className={`h-1.5 w-1.5 rounded-full ${statusDot[status?.toLowerCase()] || "bg-slate-400"}`} />
+    {status}
+  </span>
+);
+
+/* ── Custom Status Dropdown ── */
+const StatusFilter = ({ value, onChange }) => {
+  const [open, setOpen] = useState(false);
+  const ref = useRef(null);
+  const current = statusOptions.find((o) => o.value === value) || statusOptions[0];
+
+  useEffect(() => {
+    const handler = (e) => { if (ref.current && !ref.current.contains(e.target)) setOpen(false); };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, []);
+
+  return (
+    <div ref={ref} className="relative w-full sm:w-[200px]">
+      <button
+        type="button"
+        onClick={() => setOpen((p) => !p)}
+        className={`inter-medium-font flex min-h-[44px] w-full items-center justify-between gap-2 rounded-xl border px-4 py-2.5 text-[13px] transition-all duration-150 cursor-pointer ${current.color}`}
+      >
+        <span className="flex items-center gap-2">
+          <span className={`h-2 w-2 rounded-full ${statusDot[current.value]}`} />
+          {current.label}
+        </span>
+        <ChevronDown size={14} strokeWidth={2.2} className={`transition-transform duration-200 ${open ? "rotate-180" : ""}`} />
+      </button>
+
+      {open && (
+        <div className="absolute left-0 top-[calc(100%+6px)] z-50 w-full overflow-hidden rounded-xl border border-slate-200 bg-white shadow-[0_8px_24px_rgba(0,0,0,0.1)]">
+          {statusOptions.map((opt) => (
+            <button
+              key={opt.value}
+              type="button"
+              onClick={() => { onChange(opt.value); setOpen(false); }}
+              className={`inter-medium-font flex w-full items-center gap-2.5 px-4 py-2.5 text-[13px] text-left transition-colors duration-100 cursor-pointer
+                ${value === opt.value ? opt.color : "text-slate-700 hover:bg-slate-50"}`}
+            >
+              <span className={`h-2 w-2 rounded-full ${statusDot[opt.value]}`} />
+              {opt.label}
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+};
+
+const TableSkeletonRow = ({ index }) => (
+  <tr key={index} className="border-b border-slate-100 last:border-b-0">
+    {[80, 105, 155, 180, 92, 72, 42].map((w, i) => (
+      <td key={`${index}-${i}`} className="px-5 py-4">
+        <div className="h-4 animate-pulse rounded-full bg-slate-100" style={{ width: w }} />
+      </td>
+    ))}
+  </tr>
+);
+
+const MobileOrderSkeleton = () => (
+  <div className="rounded-2xl border border-slate-100 bg-white p-4">
+    <div className="flex items-center justify-between gap-3">
+      <div className="h-5 w-28 animate-pulse rounded-full bg-slate-100" />
+      <div className="h-7 w-24 animate-pulse rounded-full bg-slate-100" />
+    </div>
+    <div className="mt-4 h-5 w-2/3 animate-pulse rounded-full bg-slate-100" />
+    <div className="mt-2 h-4 w-1/2 animate-pulse rounded-full bg-slate-100" />
+    <div className="mt-5 h-10 w-full animate-pulse rounded-xl bg-slate-100" />
+  </div>
+);
+
+const EmptyOrders = () => (
+  <div className="flex flex-col items-center justify-center px-5 py-16 text-center">
+    <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-slate-100 text-slate-400">
+      <ShoppingBag size={24} strokeWidth={1.8} />
+    </div>
+    <h3 className="inter-bold-font mt-4 text-[16px] text-slate-900">No orders found</h3>
+    <p className="inter-reg-font mt-1.5 max-w-sm text-[13px] leading-[1.7] text-slate-500">
+      No orders match your search or filter.
+    </p>
+  </div>
+);
 
 const MyOrders = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [data, setOrderList] = useState(null);
-  // const [orderData] = useState(data?.myorders.allorders);
   const [searchValue, setSearchValue] = useState("");
-  // const [status, setStatus] = useState("all");
 
-  const { currentPage, setCurrentPage } = usePaginationStore(); // ✅ from Zustand
+  const { currentPage, setCurrentPage } = usePaginationStore();
   const { status, setStatus } = useStatusStore();
-
   const { setOrderId } = useOrderId();
-
+  const { authUserDetail } = useAuthUserDetailStore();
   const router = useRouter();
 
-  console.log(data, "data");
   const getOrderList = useMutation(GetOrdersApi, {
-    onSuccess: (res) => {
-      const paginationData = res?.data?.myorders || {};
-      setOrderList(paginationData); // ✅ Set the entire pagination object
-      setIsLoading(false);
-    },
-
-    onError: (error) => {
-      toast.error(error?.response?.data?.errors || "Something went wrong");
-      setIsLoading(false);
-    },
+    onSuccess: (response) => { setOrderList(response?.data?.myorders || {}); setIsLoading(false); },
+    onError: (error) => { toast.error(error?.response?.data?.errors || "Something went wrong"); setIsLoading(false); },
   });
 
-  useEffect(() => {
-    getOrderList.mutate({ data: {}, page: currentPage });
-  }, [currentPage]);
+  useEffect(() => { getOrderList.mutate({ data: {}, page: currentPage }); }, [currentPage]);
 
-  // Search handler
-  const handleSearchChange = (e) => {
-    setSearchValue(e.target.value.toLowerCase());
-  };
-
-  // Filter handler for status
-  const handleStatusChange = (selectedStatus) => {
-    setStatus(selectedStatus);
-  };
-  console.log(data, "dsdsdsdsdsdata");
-  // Filter data based on search input and status
-  // const APIORDER = data?.myorders?.allorders
   const filteredData = data?.allorders?.filter((order) => {
+    const orderItems = Array.isArray(order?.items) ? order.items : [];
     const matchesSearch =
-      order.order_id?.toString().includes(searchValue) ||
-      order.treatment?.toLowerCase().includes(searchValue) ||
-      // order.items.some((item) => item.name.toLowerCase().includes(searchValue));
-      order.items.some((item) => item.product.toLowerCase().includes(searchValue));
-
-    const matchesStatus = status === "all" || order.status.toLowerCase() === status.toLowerCase();
-
+      order?.order_id?.toString().includes(searchValue) ||
+      order?.treatment?.toLowerCase().includes(searchValue) ||
+      orderItems.some((item) => item?.product?.toLowerCase().includes(searchValue));
+    const matchesStatus = status === "all" || order?.status?.toLowerCase() === status?.toLowerCase();
     return matchesSearch && matchesStatus;
   });
 
-  const getStatusClasses = (status) => {
-    switch (status.toLowerCase()) {
-      case "processing":
-        return "bg-yellow-100 text-yellow-800";
-      case "incomplete":
-        return "bg-orange-100 text-orange-800";
-      case "approved":
-        return "bg-green-100 text-green-800";
-      case "cancelled":
-        return "bg-red-100 text-red-800";
-      default:
-        return "bg-gray-100 text-gray-800";
-    }
+  const handleSendId = (id) => { setOrderId(id); router.push("/order-detail"); };
+
+  const getUniqueTreatments = (order) => {
+    const items = Array.isArray(order?.items) ? order.items : [];
+    return Array.from(new Set(items.map((i) => i?.product).filter(Boolean)));
   };
 
-  const handleSendId = (id) => {
-    setOrderId(id);
-    router.push("/order-detail");
+  const getGroupedItems = (order) => {
+    const items = Array.isArray(order?.items) ? order.items : [];
+    return Object.values(items.reduce((acc, item) => {
+      const name = (item?.name === "" && item?.label === "Pack of 5 Needles") ? "Pack of 5 Needles" : (item?.name || item?.label || item?.product || "Item");
+      acc[name] = acc[name] || { name, quantity: 0 };
+      acc[name].quantity += Number(item?.quantity) || 0;
+      return acc;
+    }, {}));
   };
 
   return (
-    <div className="md:p-6 sm:px-2 sm:bg-[#F9FAFB] sm:min-h-screen sm:rounded-md sm:shadow-md my-5 md:me-5">
-      {/* Search and Filter Section */}
-      <header className="p-4">
-        <h1 className="md:text-3xl text-lg mb-2 headingDashBoard bold-font">My Orders</h1>
-        <p className="reg-font paragraph  text-left text-sm xl:w-3/4 mt-2">View your order history</p>
-      </header>
-      <div className="flex flex-col md:flex-row items-center justify-between space-y-3 md:space-y-0 md:space-x-4">
-        <div className="w-full md:w-1/2">
-          <form className="flex items-center" onSubmit={(e) => e.preventDefault()}>
-            <label htmlFor="simple-search" className="sr-only">
-              Search
-            </label>
-            <div className="relative w-full">
-              <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                <svg aria-hidden="true" className="w-5 h-5 text-gray-500" fill="currentColor" viewBox="0 0 20 20">
-                  <path
-                    fillRule="evenodd"
-                    d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
-                    clipRule="evenodd"
-                  />
-                </svg>
+    <main className="inter-reg-font min-w-0 flex-1 bg-[#FBFBFD]">
+      <div className="mx-auto flex w-full max-w-[1560px] flex-col gap-6 p-4 sm:p-5 lg:p-6 2xl:p-8 2xl:gap-8">
+
+        {/* Header */}
+        <PageHeader
+          label="Account"
+          title="My Orders"
+          subtitle="Review your previous orders and complete order details."
+          right={
+            data && (
+              <div className="flex items-center gap-2 rounded-xl border border-[#e8e2f5] bg-white/70 px-4 py-2.5">
+                <ShoppingBag size={14} strokeWidth={2} className="text-[#47317c]" />
+                <span className="inter-semibold-font text-[13px] text-slate-800">{data?.allorders?.length || 0} orders</span>
               </div>
-              <input
-                value={searchValue}
-                onChange={handleSearchChange}
-                type="text"
-                id="simple-search"
-                className="reg-font bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full pl-10 p-2"
-                placeholder="Search by Order ID"
-              />
-            </div>
-          </form>
-        </div>
+            )
+          }
+        />
 
-        <div className="w-full md:w-auto flex items-center justify-between">
-          <label htmlFor="status" className="text-sm reg-font text-gray-700 mr-2">
-            Sort by status
-          </label>
-          <div className="relative">
-            <select
-              value={status}
-              onChange={(e) => handleStatusChange(e.target.value)}
-              className={`thin-font text-sm rounded-lg border border-gray-300 focus:ring-primary-500 focus:border-primary-500 px-4 py-2 appearance-none pr-8 transition ease-in-out duration-200 ${getStatusClasses(
-                status
-              )}`}
-            >
-              <option value="all">All</option>
-              <option value="processing">Processing</option>
-              <option value="incomplete">Incomplete</option>
-              <option value="approved">Approved</option>
-              <option value="cancelled">Cancelled</option>
-            </select>
-            {/* Custom Arrow Icon */}
-            <div className="absolute right-2 top-1/2 transform -translate-y-1/2 pointer-events-none">
-              <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
-              </svg>
+        {/* Orders content */}
+        <section className="rounded-2xl border border-slate-200/70 bg-white shadow-[0_1px_4px_rgba(0,0,0,0.05)]">
+
+          {/* Search + Filter */}
+          <div className="flex flex-col gap-3 border-b border-slate-100 p-4 sm:p-5 lg:flex-row lg:items-center lg:justify-between">
+            <form className="w-full lg:max-w-[480px]" onSubmit={(e) => e.preventDefault()}>
+              <div className="relative">
+                <Search size={16} strokeWidth={2} className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
+                <input
+                  type="text"
+                  value={searchValue}
+                  onChange={(e) => setSearchValue(e.target.value.toLowerCase())}
+                  placeholder="Search by order ID or treatment…"
+                  className="inter-reg-font min-h-[44px] w-full rounded-xl border border-slate-200 bg-slate-50/60 py-2.5 pl-10 pr-4 text-[13px] text-slate-900 outline-none placeholder:text-slate-400 transition-all duration-150 focus:border-slate-300 focus:bg-white focus:ring-2 focus:ring-slate-100"
+                />
+              </div>
+            </form>
+
+            <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2">
+                <SlidersHorizontal size={14} strokeWidth={2} className="text-slate-400" />
+                <span className="inter-medium-font text-[12px] text-slate-500">Filter</span>
+              </div>
+              <StatusFilter value={status} onChange={setStatus} />
             </div>
           </div>
-        </div>
-      </div>
 
-      <div class="my-3 bg-blue-50 border-l-4 border-blue-500 text-blue-700 p-4 mb-6">
-        <div class="flex items-start">
-          <div class="flex">
-            <span>
-              <svg class="w-6 h-6 text-blue-500 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M13 16h-1v-4h-1m1 4v1m-1-1h1a1 1 0 001-1v-1h-1v1m-1-1v-4h1a1 1 0 011 1v1h1v-1a1 1 0 00-1-1h-1V9m0-1a1 1 0 10-2 0v1H9m4-1V7H9v1h1v1h1v-1h1V8z"
-                ></path>
-              </svg>
-            </span>
-            <span class="font-bold">Note</span>
-            <span class="mx-2 reg-font">Changes to your shipping address will only apply to future orders and will not affect previous ones</span>
+          {/* Info notice */}
+          <div className="mx-4 mt-4 sm:mx-5 flex items-start gap-3 rounded-xl border border-slate-100 bg-slate-50/60 px-4 py-3">
+            <Info size={15} strokeWidth={2} className="mt-0.5 shrink-0 text-slate-400" />
+            <p className="inter-reg-font text-[12px] leading-[1.65] text-slate-500">
+              Address changes apply only to future orders and do not affect previous orders.
+            </p>
           </div>
-        </div>
-      </div>
-      {/* Orders Table */}
-      <div className="reg-font relative overflow-x-scroll lg:overflow-x-auto sm:w-full w-96 mt-6 overflow-hidden px-3">
-        <table className="w-full text-sm text-left text-gray-500 table-auto">
-          <thead className="text-xs text-gray-700 uppercase bg-gray-50">
-            <tr className="[&>th]:px-3 [&>th]:py-3 [&>th]:whitespace-nowrap">
-              <th scope="col">Order ID</th>
-              <th scope="col">Order Date</th>
-              <th scope="col">Treatment</th>
-              <th scope="col">Items</th>
-              <th scope="col">Status</th>
-              <th scope="col">Total</th>
-              <th scope="col">
-                <span className="sr-only">Actions</span>
-              </th>
-            </tr>
-          </thead>
-          <tbody>
+
+          {/* Desktop table */}
+          <div className="mt-4 hidden overflow-hidden lg:block">
+            <div className="overflow-x-auto">
+              <table className="w-full min-w-[1080px] border-collapse text-left">
+                <thead>
+                  <tr className="border-b border-slate-100 bg-slate-50/60">
+                    {["Order ID", "Order date", "Treatment", "Items", "Status", "Total", ""].map((h) => (
+                      <th key={h || "action"} scope="col" className="inter-medium-font whitespace-nowrap px-5 py-3.5 text-[10.5px] lg:text-[11.5px] 2xl:text-[12.5px] uppercase tracking-[0.11em] text-slate-400">
+                        {h}
+                      </th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody className="bg-white">
+                  {isLoading ? (
+                    [...Array(5)].map((_, i) => <TableSkeletonRow key={i} index={i} />)
+                  ) : filteredData?.length === 0 ? (
+                    <tr><td colSpan={7}><EmptyOrders /></td></tr>
+                  ) : (
+                    filteredData?.map((order) => {
+                      const treatments = getUniqueTreatments(order);
+                      const groupedItems = getGroupedItems(order);
+                      return (
+                        <tr key={order.order_id} className="group border-b border-slate-100 last:border-b-0 transition-colors duration-150 hover:bg-slate-50/60">
+                          <td className="px-5 py-4">
+                            <span className="inter-bold-font text-[13px] lg:text-[14px] 2xl:text-[15px] text-slate-800">#{order.order_id}</span>
+                          </td>
+                          <td className="px-5 py-4">
+                            <div className="flex items-center gap-1.5">
+                              <CalendarDays size={13} strokeWidth={2} className="shrink-0 text-slate-400" />
+                              <span className="inter-medium-font whitespace-nowrap text-[12.5px] lg:text-[13.5px] 2xl:text-[14.5px] text-slate-600">{order.created_at}</span>
+                            </div>
+                          </td>
+                          <td className="px-5 py-4">
+                            <div className="flex max-w-[190px] flex-col gap-1">
+                              {treatments.map((t, i) => (
+                                <span key={`${t}-${i}`} className="inter-medium-font text-[12.5px] lg:text-[13.5px] 2xl:text-[14.5px] leading-5 text-slate-800">{t}</span>
+                              ))}
+                            </div>
+                          </td>
+                          <td className="px-5 py-4">
+                            <div className="flex max-w-[225px] flex-col gap-1">
+                              {groupedItems.map((item, i) => (
+                                <span key={`${item.name}-${i}`} className="inter-reg-font text-[12px] lg:text-[13px] 2xl:text-[14px] leading-5 text-slate-500">
+                                  {item.name}<span className="inter-medium-font ml-1 text-slate-700">× {item.quantity}</span>
+                                </span>
+                              ))}
+                            </div>
+                          </td>
+                          <td className="px-5 py-4"><OrderStatus status={order.status} /></td>
+                          <td className="px-5 py-4">
+                            <span className="inter-bold-font whitespace-nowrap text-[13px] lg:text-[14px] 2xl:text-[15px] text-slate-900">£{order.total_price}</span>
+                          </td>
+                          <td className="px-5 py-4 text-right">
+                            <button
+                              type="button"
+                              onClick={() => handleSendId(order?.id)}
+                              aria-label={`View order ${order.order_id}`}
+                              className="inline-flex h-9 w-9 cursor-pointer items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-500 transition-all duration-150 hover:bg-slate-900 hover:border-slate-900 hover:text-white"
+                            >
+                              <Eye size={15} strokeWidth={2} />
+                            </button>
+                          </td>
+                        </tr>
+                      );
+                    })
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          {/* Mobile cards */}
+          <div className="mt-4 grid grid-cols-1 gap-3 px-4 pb-4 sm:px-5 sm:pb-5 lg:hidden">
             {isLoading ? (
-              // Skeleton Loader
-              [...Array(5)].map((_, index) => (
-                <tr key={index} className="border-b animate-pulse">
-                  <td className="px-3 py-3">
-                    <div className="h-4 bg-gray-300 rounded w-20"></div>
-                  </td>
-                  <td className="px-3 py-3">
-                    <div className="h-4 bg-gray-300 rounded w-24"></div>
-                  </td>
-                  <td className="px-3 py-3">
-                    <div className="h-4 bg-gray-300 rounded w-32"></div>
-                  </td>
-                  <td className="px-3 py-3">
-                    <div className="h-4 bg-gray-300 rounded w-28"></div>
-                  </td>
-                  <td className="px-3 py-3">
-                    <div className="h-4 bg-gray-300 rounded w-20"></div>
-                  </td>
-                  <td className="px-3 py-3">
-                    <div className="h-4 bg-gray-300 rounded w-16"></div>
-                  </td>
-                  <td className="px-3 py-3">
-                    <div className="h-4 bg-gray-300 rounded w-10"></div>
-                  </td>
-                </tr>
-              ))
+              [...Array(4)].map((_, i) => <MobileOrderSkeleton key={i} />)
             ) : filteredData?.length === 0 ? (
-              <tr>
-                <td colSpan="7" className="text-center py-4">
-                  No orders found{" "}
-                </td>
-              </tr>
+              <div className="rounded-2xl border border-slate-100 bg-white"><EmptyOrders /></div>
             ) : (
-              filteredData?.map((order) => (
-                <tr key={order.order_id} className="border-b [&>td]:px-3 [&>td]:py-3 [&>td]:whitespace-nowrap">
-                  <td>{order.order_id}</td>
-                  <td>
-                    <span className="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded-full">{order.created_at}</span>
-                  </td>
-                  <td>
-                    {Array.from(new Set(order.items.map((item) => item.product))).map((uniqueProduct, index) => (
-                      <li className="list-none" key={index}>
-                        {uniqueProduct}
-                      </li>
-                    ))}
-                  </td>
-                  <td>
-                    {Object.values(
-                      order.items.reduce((acc, item) => {
-                        const key = item.name;
-                        acc[key] = acc[key] || {
-                          name: item.name === "" && item.label === "Pack of 5 Needles" ? "Pack of 5 Needles" : item.name,
-                          quantity: 0,
-                        };
-                        acc[key].quantity += item.quantity;
-                        return acc;
-                      }, {})
-                    ).map((groupedItem, index) => (
-                      <li key={index}>
-                        {groupedItem.name} x {groupedItem.quantity}
-                      </li>
-                    ))}
-                  </td>
-                  <td>
-                    <span
-                      className={`${
-                        order.status === "Processing"
-                          ? "bg-yellow-100 border-yellow-500 text-yellow-800"
-                          : order.status === "Incomplete"
-                          ? "bg-orange-100 border-orange-500 text-orange-800"
-                          : order.status === "Cancelled"
-                          ? "bg-red-100 text-red-800"
-                          : order.status === "Approved"
-                          ? "bg-green-100 border-green-500 text-green-800"
-                          : "bg-gray-100 text-gray-800"
-                      } text-xs font-medium px-2.5 py-0.5 rounded-full`}
-                    >
-                      {order.status}
-                    </span>
-                  </td>
-                  <td>£{order.total_price}</td>
-                  <td>
-                    <div className="flex items-center gap-6 justify-around">
-                      <div className="group relative">
-                        <button onClick={() => handleSendId(order?.id)} className="cursor-pointer">
-                          <IoEye size={20} color="#47317c" className="group-hover:opacity-75" />
-                        </button>
-                        <div className="-top-8 hidden group-hover:block absolute bg-gray-800 text-white p-2 rounded shadow-lg text-xs left-1/2 transform -translate-x-1/2">
-                          View
+              filteredData?.map((order) => {
+                const treatments = getUniqueTreatments(order);
+                const groupedItems = getGroupedItems(order);
+                return (
+                  <article key={order.order_id} className="overflow-hidden rounded-2xl border border-slate-200/70 bg-white shadow-[0_1px_4px_rgba(0,0,0,0.05)]">
+                    <div className="flex items-start justify-between gap-3 border-b border-slate-100 px-4 py-3.5">
+                      <div>
+                        <p className="inter-medium-font text-[10px] uppercase tracking-[0.12em] text-slate-400">Order</p>
+                        <p className="inter-bold-font mt-0.5 text-[15px] text-slate-900">#{order.order_id}</p>
+                      </div>
+                      <OrderStatus status={order.status} />
+                    </div>
+                    <div className="p-4">
+                      <div className="grid grid-cols-2 gap-4">
+                        <div>
+                          <p className="inter-medium-font text-[10px] uppercase tracking-[0.11em] text-slate-400">Date</p>
+                          <p className="inter-medium-font mt-1 text-[12.5px] text-slate-700">{order.created_at}</p>
+                        </div>
+                        <div className="text-right">
+                          <p className="inter-medium-font text-[10px] uppercase tracking-[0.11em] text-slate-400">Total</p>
+                          <p className="inter-bold-font mt-1 text-[16px] text-slate-900">£{order.total_price}</p>
                         </div>
                       </div>
+                      <div className="mt-3.5 border-t border-slate-100 pt-3.5">
+                        <p className="inter-medium-font text-[10px] uppercase tracking-[0.11em] text-slate-400">Treatment</p>
+                        <div className="mt-1.5 flex flex-col gap-1">
+                          {treatments.map((t, i) => <p key={`${t}-${i}`} className="inter-medium-font text-[13px] text-slate-900">{t}</p>)}
+                        </div>
+                      </div>
+                      <div className="mt-3">
+                        <p className="inter-medium-font text-[10px] uppercase tracking-[0.11em] text-slate-400">Items</p>
+                        <div className="mt-1.5 flex flex-col gap-1">
+                          {groupedItems.map((item, i) => (
+                            <p key={`${item.name}-${i}`} className="inter-reg-font text-[12px] text-slate-500">
+                              {item.name}<span className="inter-medium-font ml-1 text-slate-700">× {item.quantity}</span>
+                            </p>
+                          ))}
+                        </div>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => handleSendId(order?.id)}
+                        className="inter-medium-font mt-4 inline-flex min-h-[40px] w-full cursor-pointer items-center justify-center gap-2 rounded-xl bg-slate-900 px-4 text-[13px] text-white transition-all duration-150 hover:bg-slate-800 active:scale-[0.98]"
+                      >
+                        <Eye size={15} strokeWidth={2} />
+                        View order
+                      </button>
                     </div>
-                  </td>
-                </tr>
-              ))
+                  </article>
+                );
+              })
             )}
-          </tbody>
-        </table>
-      </div>
+          </div>
 
-      <Pagination pagination={data} setPage={setCurrentPage} />
-    </div>
+          {!isLoading && data && (
+            <div className="border-t border-slate-100 px-5 py-4">
+              <Pagination pagination={data} setPage={setCurrentPage} />
+            </div>
+          )}
+        </section>
+      </div>
+    </main>
   );
 };
 

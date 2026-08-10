@@ -1,37 +1,39 @@
 import React, { useEffect, useState } from "react";
-import { useForm, Controller } from "react-hook-form";
-import { Inter } from "next/font/google";
-import { FaSearch } from "react-icons/fa";
+import { Controller, useForm } from "react-hook-form";
+import { useMutation } from "@tanstack/react-query";
+import toast from "react-hot-toast";
+import { Info, Loader2, MapPin, Search } from "lucide-react";
+
 import TextField from "@/Components/TextField/TextField";
 import PageLoader from "@/Components/PageLoader/PageLoader";
-// import { Client } from "getaddress-api";
 import NextButton from "@/Components/NextButton/NextButton";
 import MUISelectField from "@/Components/SelectField/SelectField";
-import { useRouter } from "next/router";
-import useShipmentCountries from "@/store/useShipmentCountriesStore";
-import { RiRadioButtonFill } from "react-icons/ri";
-import { IoRadioButtonOff } from "react-icons/io5";
-import { motion } from "framer-motion";
-import SectionWrapper from "@/Components/checkout/SectionWrapper";
-import { useMutation } from "@tanstack/react-query";
 import { getProfileData, sendProfileData } from "@/api/myProfileApi";
-import toast from "react-hot-toast";
 
-// const api = new Client("aYssNMkdXEGsdfGVZjiY0Q26381");
+const SEARCH_BUTTON_CLASS = [
+  "inter-medium-font inline-flex w-full cursor-pointer items-center justify-center gap-2",
+  "rounded-sm border border-[#47317c] bg-[#47317c] px-4 py-4 mt-2",
+  "text-[12px] text-white",
+  "transition-all duration-150 hover:bg-[#392765]",
+  "disabled:cursor-not-allowed disabled:border-slate-300 disabled:bg-slate-300 disabled:shadow-none",
+].join(" ");
 
-export default function Shipping({ shipmentCountries }) {
+const UPDATE_BUTTON_CLASS = [
+  "inter-medium-font !min-h-[46px] !rounded-xl",
+  "!border-[#47317c] !bg-[#47317c] !px-6 !py-3",
+  "!text-[12px] hover:!bg-[#392765]",
+].join(" ");
+
+export default function Shipping({ shipmentCountries = [] }) {
   const [showLoader, setShowLoader] = useState(false);
-  const [manual, setManual] = useState(false);
+
   const [addressOptions, setAddressOptions] = useState([]);
+
   const [selectedIndex, setSelectedIndex] = useState("");
-  const [shipping, setShipping] = useState("");
-  const [addressSearchLoading, setAddressSearchLoading] = useState(false);
 
   const [shippingIndex, setShippingIndex] = useState("");
-  const [countryChangedManually, setCountryChangedManually] = useState(false);
 
-  console.log(shipmentCountries, "shipmentCountries");
-  console.log(shipping, "shipping");
+  const [addressSearchLoading, setAddressSearchLoading] = useState(false);
 
   const {
     register,
@@ -42,6 +44,7 @@ export default function Shipping({ shipmentCountries }) {
     formState: { errors, isValid },
   } = useForm({
     mode: "onChange",
+
     defaultValues: {
       postalcode: "",
       addressone: "",
@@ -51,239 +54,255 @@ export default function Shipping({ shipmentCountries }) {
     },
   });
 
-  // ✅ Watch all values and save in store
-
-  const router = useRouter();
+  const postalCodeValue = watch("postalcode");
 
   const getProfileDataMutation = useMutation(getProfileData, {
-    onSuccess: (res) => {
-      const shippingData = res?.data?.profile?.shipping;
-      if (!shippingData) return;
+    onSuccess: (response) => {
+      const shippingData = response?.data?.profile?.shipping;
 
-      // Prefill form values
-      setValue("postalcode", shippingData.postalcode || "");
-      setValue("addressone", shippingData.addressone || "");
-      setValue("addresstwo", shippingData.addresstwo || "");
-      setValue("city", shippingData.city || "");
+      if (!shippingData) {
+        return;
+      }
 
-      // Match country by name from static list
-      const country = shipmentCountries?.find(
-        (c) => c.name === shippingData.country,
+      setValue("postalcode", shippingData?.postalcode || "");
+
+      setValue("addressone", shippingData?.addressone || "");
+
+      setValue("addresstwo", shippingData?.addresstwo || "");
+
+      setValue("city", shippingData?.city || "");
+
+      const country = shipmentCountries.find(
+        (item) => item?.name === shippingData?.country,
       );
 
       if (country) {
-        setValue("shippingCountry", country.id.toString(), {
+        const countryId = country.id.toString();
+
+        setValue("shippingCountry", countryId, {
           shouldValidate: true,
         });
-        setShippingIndex(country.id.toString()); // OK to track here
+
+        setShippingIndex(countryId);
       }
+    },
+
+    onError: (error) => {
+      toast.error(
+        error?.response?.data?.message || "Failed to load profile data.",
+      );
     },
   });
 
   useEffect(() => {
-    if (shipmentCountries?.length) {
+    if (shipmentCountries.length > 0) {
       getProfileDataMutation.mutate();
     }
   }, [shipmentCountries]);
 
-  useEffect(() => {
-    if (countryChangedManually) {
-      // Clear all address fields
-      setValue("postalcode", "");
-      setValue("addressone", "");
-      setValue("addresstwo", "");
-      setValue("city", "");
-    }
-  }, [shippingIndex]);
-
   const handleSearch = async () => {
-    setAddressSearchLoading(true);
+    const postcode = postalCodeValue?.trim();
 
-    const postal = watch("postalcode");
-    if (!postal) {
-      alert("Please enter a postcode.");
-      setAddressSearchLoading(false);
+    if (!postcode) {
+      toast.error("Please enter a post code.");
+
       return;
     }
 
+    setAddressSearchLoading(true);
+
     try {
-      const res = await fetch(
+      const response = await fetch(
         `https://api.ideal-postcodes.co.uk/v1/postcodes/${encodeURIComponent(
-          postal,
+          postcode,
         )}?api_key=${process.env.NEXT_PUBLIC_IDEAL_POSTCODES_KEY}`,
       );
 
-      const data = await res.json();
+      const result = await response.json();
 
-      if (data && Array.isArray(data.result) && data.result.length) {
-        setAddressOptions(data.result);
-        setManual(true);
-        setAddressSearchLoading(false);
+      if (Array.isArray(result?.result) && result.result.length > 0) {
+        setAddressOptions(result.result);
+        setSelectedIndex("");
       } else {
-        setAddressSearchLoading(false);
-        toast.error("Invalid Post code");
+        setAddressOptions([]);
+
+        toast.error("Invalid post code.");
       }
     } catch (error) {
-      console.error("API error:", error);
-      alert("Something went wrong while fetching addresses.");
+      console.error("Postcode API error:", error);
+
+      toast.error("Something went wrong while fetching addresses.");
+    } finally {
       setAddressSearchLoading(false);
     }
   };
 
-  // Send User Data Mutation
   const sendProfileDataMutation = useMutation(sendProfileData, {
-    onSuccess: (data) => {
-      if (data) {
-        setShowLoader(false);
-        toast.success("Shipping updated successfully!");
-      }
+    onSuccess: () => {
+      setShowLoader(false);
+
+      toast.success("Shipping updated successfully!");
     },
+
     onError: (error) => {
+      setShowLoader(false);
+
       toast.error(error?.response?.data?.message || "Something went wrong.");
     },
   });
 
-  // On Submit Data
-  const onSubmit = async (data) => {
+  const onSubmit = (formValues) => {
     setShowLoader(true);
 
     const selectedCountry = shipmentCountries.find(
-      (c) => c.id.toString() === shippingIndex,
+      (country) => country?.id?.toString() === shippingIndex,
     );
 
-    // ✅ Save shipping info
     const formData = {
       shipping: true,
       country_name: selectedCountry?.name || "",
-      postalcode: data.postalcode,
-      addressone: data.addressone,
-      addresstwo: data.addresstwo,
-      city: data.city,
+      postalcode: formValues.postalcode,
+      addressone: formValues.addressone,
+      addresstwo: formValues.addresstwo,
+      city: formValues.city,
       state: "",
     };
 
     sendProfileDataMutation.mutate(formData);
-    // console.log(formData, "formData");
   };
 
   return (
-    <>
-      <SectionWrapper>
-        <header className="pb-4">
-          <h1 className="headingDashBoard bold-font md:text-3xl text-lg mb-2  text-black">
-            Shipping Information
-          </h1>
-          <p className="reg-font paragraph  text-left text-sm xl:w-3/4 mt-2">
-            Update your shipping details — changes will apply to future orders
-            only.
+    <section className="relative mt-5 overflow-hidden rounded-[22px] border border-[#47317c]/10 bg-[#ffff] p-4 sm:p-5 lg:p-6">
+      {/* Header */}
+      <div className="flex items-start gap-3.5 border-b border-[#47317c]/[0.07] pb-5">
+        <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-[14px] bg-[#47317c]/[0.08] text-[#47317c]">
+          <MapPin size={19} strokeWidth={2} />
+        </span>
+
+        <div className="min-w-0">
+          <h2 className="inter-bold-font text-[20px] leading-7 text-slate-950 sm:text-[23px]">
+            Shipping information
+          </h2>
+
+          <p className="inter-reg-font mt-1.5 max-w-2xl text-[12.5px] leading-[1.7] text-slate-500 sm:text-[13px]">
+            Update the delivery address used for your future treatment orders.
           </p>
-        </header>
+        </div>
+      </div>
 
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 mt-5">
-          <Controller
-            name="shippingCountry"
-            control={control}
-            rules={{ required: "Country is required" }}
-            render={({ field }) => (
-              <MUISelectField
-                label="Select Country"
-                name="shippingCountry"
-                value={field.value}
-                required
-                onChange={(e) => {
-                  const id = e.target.value;
-                  field.onChange(id);
-                  setShippingIndex(id);
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        className="address-form mt-6 space-y-5"
+      >
+        {/* Country */}
+        <Controller
+          name="shippingCountry"
+          control={control}
+          rules={{
+            required: "Country is required",
+          }}
+          render={({ field }) => (
+            <MUISelectField
+              label="Select Country"
+              name="shippingCountry"
+              value={field.value}
+              required
+              onChange={(event) => {
+                const id = event.target.value;
 
-                  // ✅ Clear fields ONLY when user changes country manually
-                  setValue("postalcode", "");
-                  setValue("addressone", "");
-                  setValue("addresstwo", "");
-                  setValue("city", "");
+                field.onChange(id);
+                setShippingIndex(id);
 
-                  const selectedCountry = shipmentCountries.find(
-                    (c) => c.id.toString() === id,
-                  );
-                  if (selectedCountry) {
-                    setShipping({
-                      id: selectedCountry.id,
-                      country_name: selectedCountry.name,
-                      country_price: selectedCountry.price,
-                    });
-                  }
-                }}
-                options={(shipmentCountries || []).map((addr) => ({
-                  value: addr.id.toString(), // ✅ Use country id as value
-                  label: addr.name,
-                }))}
-              />
-            )}
+                setValue("postalcode", "");
+
+                setValue("addressone", "");
+
+                setValue("addresstwo", "");
+
+                setValue("city", "");
+
+                setAddressOptions([]);
+                setSelectedIndex("");
+              }}
+              options={shipmentCountries.map((country) => ({
+                value: country.id.toString(),
+                label: country.name,
+              }))}
+            />
+          )}
+        />
+
+        {/* Postcode and search */}
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-[minmax(0,1fr)_150px] sm:items-center">
+          <TextField
+            label="Post code"
+            name="postalcode"
+            register={register}
+            required
+            errors={errors}
           />
 
-          <div className="relative">
-            <TextField
-              label="Post code"
-              name="postalcode"
-              register={register}
-              required
-              errors={errors}
-            />
-            <button
-              type="button"
-              onClick={handleSearch}
-              className={`absolute right-3 transform -translate-y-1/2 text-white bg-primary px-3 py-1 rounded cursor-pointer w-32 flex items-center justify-center ${
-                errors.postalcode ? "top-2/4" : "top-2/3"
-              }`}
-              disabled={addressSearchLoading}
-            >
-              {addressSearchLoading ? (
-                <motion.div
-                  animate={{ rotate: 360 }}
-                  transition={{
-                    repeat: Infinity,
-                    duration: 1,
-                    ease: "linear",
-                  }}
-                  className="w-6 h-6 border-4 border-t-transparent rounded-full text-white"
-                />
-              ) : (
-                <span className="flex items-center reg-font">
-                  <FaSearch className="inline-block me-2" />
-                  Search
-                </span>
-              )}
-            </button>
-          </div>
+          <button
+            type="button"
+            onClick={handleSearch}
+            disabled={addressSearchLoading}
+            className={SEARCH_BUTTON_CLASS}
+          >
+            {addressSearchLoading ? (
+              <>
+                <Loader2 size={16} strokeWidth={2.3} className="animate-spin" />
+                Searching
+              </>
+            ) : (
+              <>
+                <Search size={16} strokeWidth={2.3} />
+                Search
+              </>
+            )}
+          </button>
+        </div>
 
-          {!addressSearchLoading && addressOptions.length > 0 && (
+        {/* Search result */}
+        {postalCodeValue?.trim() &&
+          !addressSearchLoading &&
+          addressOptions.length > 0 && (
             <MUISelectField
               label="Select Your Address"
               name="addressSelect"
               value={selectedIndex}
               required
-              onChange={(e) => {
-                const idx = e.target.value;
-                const selected = addressOptions[idx];
-                setSelectedIndex(idx);
+              onChange={(event) => {
+                const index = event.target.value;
 
-                setValue("addressone", selected.line_1 || "", {
+                const selected = addressOptions[index];
+
+                setSelectedIndex(index);
+
+                if (!selected) {
+                  return;
+                }
+
+                setValue("addressone", selected?.line_1 || "", {
                   shouldValidate: true,
                 });
-                setValue("addresstwo", selected.line_2 || "", {
+
+                setValue("addresstwo", selected?.line_2 || "", {
                   shouldValidate: true,
                 });
-                setValue("city", selected.post_town || "", {
+
+                setValue("city", selected?.post_town || "", {
                   shouldValidate: true,
                 });
               }}
-              options={addressOptions.map((addr, idx) => ({
-                value: idx,
+              options={addressOptions.map((address, index) => ({
+                value: index,
+
                 label: [
-                  addr.line_1,
-                  addr.line_2,
-                  addr.line_3,
-                  addr.post_town,
-                  addr.postcode,
+                  address?.line_1,
+                  address?.line_2,
+                  address?.line_3,
+                  address?.post_town,
+                  address?.postcode,
                 ]
                   .filter(Boolean)
                   .join(", "),
@@ -291,6 +310,8 @@ export default function Shipping({ shipmentCountries }) {
             />
           )}
 
+        {/* Address fields */}
+        <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
           <TextField
             label="Address"
             name="addressone"
@@ -298,30 +319,88 @@ export default function Shipping({ shipmentCountries }) {
             required
             errors={errors}
           />
+
           <TextField
             label="Address 2"
             name="addresstwo"
             register={register}
             errors={errors}
           />
-          <TextField
-            label="Town / City"
-            name="city"
-            register={register}
-            required
-            errors={errors}
-          />
-          <div className="max-w-24">
-            <NextButton label="Update" disabled={!isValid} />
-          </div>
-        </form>
+        </div>
 
-        {showLoader && (
-          <div className="absolute inset-0 flex items-center justify-center bg-white/70 rounded ">
-            <PageLoader />
+        <TextField
+          label="Town / City"
+          name="city"
+          register={register}
+          required
+          errors={errors}
+        />
+
+        {/* Update */}
+        <div className="!mt-9 flex justify-start border-t border-[#47317c]/[0.07] pt-5">
+          <div className="w-full sm:w-auto sm:min-w-[180px]">
+            <NextButton
+              label="Update shipping"
+              disabled={!isValid}
+              className={UPDATE_BUTTON_CLASS}
+            />
           </div>
-        )}
-      </SectionWrapper>
-    </>
+        </div>
+      </form>
+
+      {/* Loader */}
+      {showLoader && (
+        <div className="absolute inset-0 z-20 flex items-center justify-center rounded-[22px] bg-white/75 backdrop-blur-[2px]">
+          <PageLoader />
+        </div>
+      )}
+
+      <style jsx global>{`
+        .address-form .MuiFormControl-root {
+          width: 100%;
+        }
+
+        .address-form .MuiInputLabel-root {
+          font-family: var(--inter-medium) !important;
+          font-size: 13px !important;
+          color: #64748b;
+        }
+
+        .address-form .MuiInputBase-root {
+          min-height: 50px;
+          border-radius: 14px !important;
+          background: #ffffff;
+          font-family: var(--inter-reg) !important;
+          font-size: 13px !important;
+        }
+
+        .address-form .MuiOutlinedInput-notchedOutline {
+          border-color: rgba(71, 49, 124, 0.12) !important;
+        }
+
+        .address-form
+          .MuiInputBase-root:hover
+          .MuiOutlinedInput-notchedOutline {
+          border-color: rgba(71, 49, 124, 0.24) !important;
+        }
+
+        .address-form .Mui-focused .MuiOutlinedInput-notchedOutline {
+          border-color: #47317c !important;
+          border-width: 1px !important;
+        }
+
+        .address-form input,
+        .address-form select,
+        .address-form textarea {
+          font-family: var(--inter-reg) !important;
+          font-size: 13px !important;
+          color: #0f172a !important;
+        }
+
+        .address-form label {
+          font-family: var(--inter-medium) !important;
+        }
+      `}</style>
+    </section>
   );
 }

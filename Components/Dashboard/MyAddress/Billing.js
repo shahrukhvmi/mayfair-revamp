@@ -1,28 +1,23 @@
 import React, { useEffect, useState } from "react";
-import { useForm, Controller } from "react-hook-form";
-import { FaSearch } from "react-icons/fa";
-import { motion } from "framer-motion";
-// import { Client } from "getaddress-api";
-import toast from "react-hot-toast";
+import { Controller, useForm } from "react-hook-form";
 import { useMutation } from "@tanstack/react-query";
+import toast from "react-hot-toast";
+import { CreditCard, Info, Loader2, Search } from "lucide-react";
 
 import TextField from "@/Components/TextField/TextField";
 import PageLoader from "@/Components/PageLoader/PageLoader";
 import NextButton from "@/Components/NextButton/NextButton";
 import MUISelectField from "@/Components/SelectField/SelectField";
-import SectionWrapper from "@/Components/checkout/SectionWrapper";
 import { getProfileData, sendProfileData } from "@/api/myProfileApi";
 
-// const api = new Client("aYssNMkdXEGsdfGVZjiY0Q26381");
-
-export default function Billing({ billingCountries }) {
+export default function Billing({ billingCountries = [] }) {
   const [showLoader, setShowLoader] = useState(false);
-  const [manual, setManual] = useState(false);
   const [addressOptions, setAddressOptions] = useState([]);
   const [selectedIndex, setSelectedIndex] = useState("");
   const [billingIndex, setBillingIndex] = useState("");
-  const [billing, setBilling] = useState("");
+  const [billing, setBilling] = useState(null);
   const [addressSearchLoading, setAddressSearchLoading] = useState(false);
+
   const [countryChangedManually, setCountryChangedManually] = useState(false);
 
   const {
@@ -34,6 +29,7 @@ export default function Billing({ billingCountries }) {
     formState: { errors, isValid },
   } = useForm({
     mode: "onChange",
+
     defaultValues: {
       postalcode: "",
       addressone: "",
@@ -46,24 +42,31 @@ export default function Billing({ billingCountries }) {
 
   const postalCodeValue = watch("postalcode");
   const selectedBillingCountry = watch("billingCountry");
-  const selectedCountryObj = (billingCountries || []).find(
-    (c) => c.id.toString() === selectedBillingCountry,
+
+  const selectedCountryObj = billingCountries.find(
+    (country) => country?.id?.toString() === selectedBillingCountry,
   );
+
   const allowedCountryNames = [
     "United Kingdom (Mainland)",
     "Channel Islands",
     "Northern Ireland",
   ];
+
   const isSearchAllowed =
     selectedCountryObj && allowedCountryNames.includes(selectedCountryObj.name);
 
-  // 🟢 Get billing data from profile
   const getProfileDataMutation = useMutation(getProfileData, {
-    onSuccess: (res) => {
-      const billingData = res?.data?.profile?.billing;
-      if (!billingData) return;
+    onSuccess: (response) => {
+      const billingData = response?.data?.profile?.billing;
+
+      if (!billingData) {
+        return;
+      }
+
       setBilling(billingData);
     },
+
     onError: (error) => {
       toast.error(
         error?.response?.data?.message || "Failed to load profile data.",
@@ -71,141 +74,181 @@ export default function Billing({ billingCountries }) {
     },
   });
 
-  // 🟢 Call API once countries are ready
   useEffect(() => {
-    if (billingCountries?.length) {
+    if (billingCountries.length > 0) {
       getProfileDataMutation.mutate();
     }
   }, [billingCountries]);
 
-  // 🟢 Prefill billing form if not manually changed
   useEffect(() => {
-    if (!billing || !billingCountries?.length || countryChangedManually) return;
-
-    setValue("postalcode", billing.postalcode || "");
-    setValue("addressone", billing.addressone || "");
-    setValue("addresstwo", billing.addresstwo || "");
-    setValue("city", billing.city || "");
-    setValue("state", billing.state || "");
-
-    const country = billingCountries.find(
-      (c) => c.name === billing.country_name || c.name === billing.country,
-    );
-    if (country) {
-      setValue("billingCountry", country.id.toString(), {
-        shouldValidate: true,
-      });
-      setBillingIndex(country.id.toString());
-    }
-  }, [billing, billingCountries]);
-
-  // 🟢 Handle postcode search
-  const handleSearch = async () => {
-    setAddressSearchLoading(true);
-
-    if (!postalCodeValue?.trim()) {
-      setAddressSearchLoading(false);
+    if (!billing || billingCountries.length === 0 || countryChangedManually) {
       return;
     }
 
+    setValue("postalcode", billing?.postalcode || "");
+
+    setValue("addressone", billing?.addressone || "");
+
+    setValue("addresstwo", billing?.addresstwo || "");
+
+    setValue("city", billing?.city || "");
+
+    setValue("state", billing?.state || "");
+
+    const country = billingCountries.find(
+      (item) =>
+        item?.name === billing?.country_name || item?.name === billing?.country,
+    );
+
+    if (country) {
+      const countryId = country.id.toString();
+
+      setValue("billingCountry", countryId, {
+        shouldValidate: true,
+      });
+
+      setBillingIndex(countryId);
+    }
+  }, [billing, billingCountries, countryChangedManually, setValue]);
+
+  const handleSearch = async () => {
+    const postcode = postalCodeValue?.trim();
+
+    if (!postcode) {
+      toast.error("Please enter a post code.");
+      return;
+    }
+
+    setAddressSearchLoading(true);
+
     try {
-      const res = await fetch(
+      const response = await fetch(
         `https://api.ideal-postcodes.co.uk/v1/postcodes/${encodeURIComponent(
-          postalCodeValue.trim(),
+          postcode,
         )}?api_key=${process.env.NEXT_PUBLIC_IDEAL_POSTCODES_KEY}`,
       );
 
-      const data = await res.json();
+      const result = await response.json();
 
-      if (data && Array.isArray(data.result) && data.result.length) {
-        setAddressOptions(data.result);
-        setManual(true);
+      if (Array.isArray(result?.result) && result.result.length > 0) {
+        setAddressOptions(result.result);
+        setSelectedIndex("");
       } else {
-        setAddressSearchLoading(false);
-        toast.error("Invalid Post code");
+        setAddressOptions([]);
+        toast.error("Invalid post code.");
       }
     } catch (error) {
-      console.error("API error:", error);
-      alert("Something went wrong while fetching addresses.");
+      console.error("Postcode API error:", error);
+
+      toast.error("Something went wrong while fetching addresses.");
     } finally {
       setAddressSearchLoading(false);
     }
   };
 
-  // 🟢 Submit billing info
   const sendProfileDataMutation = useMutation(sendProfileData, {
     onSuccess: () => {
       setShowLoader(false);
+
       toast.success("Billing updated successfully!");
     },
+
     onError: (error) => {
+      setShowLoader(false);
+
       toast.error(error?.response?.data?.message || "Something went wrong.");
     },
   });
 
-  const onSubmit = (data) => {
+  const onSubmit = (formValues) => {
     setShowLoader(true);
+
     const selectedCountry = billingCountries.find(
-      (c) => c.id.toString() === billingIndex,
+      (country) => country?.id?.toString() === billingIndex,
     );
 
     const formData = {
       billing: true,
       country_name: selectedCountry?.name || "",
-      postalcode: data.postalcode,
-      addressone: data.addressone,
-      addresstwo: data.addresstwo,
-      city: data.city,
-      state: data.state,
+      postalcode: formValues.postalcode,
+      addressone: formValues.addressone,
+      addresstwo: formValues.addresstwo,
+      city: formValues.city,
+      state: formValues.state,
     };
 
     sendProfileDataMutation.mutate(formData);
   };
 
   return (
-    <SectionWrapper>
-      <header className="pb-4">
-        <h1 className="md:text-3xl text-lg mb-2 headingDashBoard bold-font text-black">
-          Billing Information
-        </h1>
-        <p className="reg-font paragraph  text-left text-sm xl:w-3/4 mt-2">
-          Update your billing details — changes will apply to future orders
-          only.
-        </p>
-      </header>
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 mt-5">
+    <section className="relative mt-5 overflow-hidden rounded-[22px] border border-[#47317c]/10 bg-[#ffff] p-4 sm:p-5 lg:p-6">
+      {/* Header */}
+      <div className="flex items-start gap-3.5 border-b border-[#47317c]/[0.07] pb-5">
+        <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-[14px] bg-[#47317c]/[0.08] text-[#47317c]">
+          <CreditCard size={19} strokeWidth={2} />
+        </span>
+
+        <div className="min-w-0">
+          <h2 className="inter-bold-font text-[20px] leading-7 text-slate-950 sm:text-[23px]">
+            Billing information
+          </h2>
+
+          <p className="inter-reg-font mt-1.5 max-w-2xl text-[12.5px] leading-[1.7] text-slate-500 sm:text-[13px]">
+            Update the billing address associated with your future treatment
+            orders.
+          </p>
+        </div>
+      </div>
+
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        className="address-form mt-6 space-y-5"
+      >
+        {/* Country */}
         <Controller
           name="billingCountry"
           control={control}
-          rules={{ required: "Country is required" }}
+          rules={{
+            required: "Country is required",
+          }}
           render={({ field }) => (
             <MUISelectField
               label="Select Country"
               name="billingCountry"
               value={field.value}
               required
-              onChange={(e) => {
-                const id = e.target.value;
+              onChange={(event) => {
+                const id = event.target.value;
+
                 field.onChange(id);
                 setBillingIndex(id);
-                setCountryChangedManually(true); // ✅ user manually changed
+                setCountryChangedManually(true);
 
-                // ✅ Clear fields on manual country change
                 setValue("postalcode", "");
                 setValue("addressone", "");
                 setValue("addresstwo", "");
                 setValue("city", "");
                 setValue("state", "");
+
+                setAddressOptions([]);
+                setSelectedIndex("");
               }}
-              options={(billingCountries || []).map((addr) => ({
-                value: addr.id.toString(),
-                label: addr.name,
+              options={billingCountries.map((country) => ({
+                value: country.id.toString(),
+                label: country.name,
               }))}
             />
           )}
         />
 
-        <div className="relative">
+        {/* Postcode */}
+        <div
+          className={
+            isSearchAllowed
+              ? "grid grid-cols-1 gap-3 sm:grid-cols-[minmax(0,1fr)_150px] sm:items-center"
+              : "grid grid-cols-1 gap-3"
+          }
+        >
           <TextField
             label="Post code"
             name="postalcode"
@@ -213,35 +256,34 @@ export default function Billing({ billingCountries }) {
             required
             errors={errors}
           />
+
           {isSearchAllowed && (
             <button
               type="button"
               onClick={handleSearch}
-              className={`absolute right-3 transform -translate-y-1/2 text-white bg-primary px-3 py-1 rounded cursor-pointer w-32 flex items-center justify-center ${
-                errors.postalcode ? "top-2/4" : "top-2/3"
-              }`}
               disabled={addressSearchLoading}
+              className="inter-medium-font inline-flex w-full cursor-pointer items-center justify-center gap-2 rounded-sm border border-[#47317c] bg-[#47317c] px-4 py-4 text-[12px] text-white transition-all mt-2 duration-150 hover:bg-[#392765] disabled:cursor-not-allowed disabled:border-slate-300 disabled:bg-slate-300 disabled:shadow-none"
             >
               {addressSearchLoading ? (
-                <motion.div
-                  animate={{ rotate: 360 }}
-                  transition={{
-                    repeat: Infinity,
-                    duration: 1,
-                    ease: "linear",
-                  }}
-                  className="w-6 h-6 border-4 border-t-transparent rounded-full text-white"
-                />
+                <>
+                  <Loader2
+                    size={16}
+                    strokeWidth={2.3}
+                    className="animate-spin"
+                  />
+                  Searching
+                </>
               ) : (
-                <span className="flex items-center">
-                  <FaSearch className="inline-block me-2" />
+                <>
+                  <Search size={16} strokeWidth={2.3} />
                   Search
-                </span>
+                </>
               )}
             </button>
           )}
         </div>
 
+        {/* Address result */}
         {isSearchAllowed &&
           postalCodeValue?.trim() &&
           !addressSearchLoading &&
@@ -251,32 +293,41 @@ export default function Billing({ billingCountries }) {
               name="addressSelect"
               value={selectedIndex}
               required
-              onChange={(e) => {
-                const idx = e.target.value;
-                const selected = addressOptions[idx];
-                setSelectedIndex(idx);
+              onChange={(event) => {
+                const index = event.target.value;
+                const selected = addressOptions[index];
 
-                setValue("addressone", selected.line_1 || "", {
+                setSelectedIndex(index);
+
+                if (!selected) {
+                  return;
+                }
+
+                setValue("addressone", selected?.line_1 || "", {
                   shouldValidate: true,
                 });
-                setValue("addresstwo", selected.line_2 || "", {
+
+                setValue("addresstwo", selected?.line_2 || "", {
                   shouldValidate: true,
                 });
-                setValue("city", selected.post_town || "", {
+
+                setValue("city", selected?.post_town || "", {
                   shouldValidate: true,
                 });
-                setValue("state", selected.county || "", {
+
+                setValue("state", selected?.county || "", {
                   shouldValidate: true,
                 });
               }}
-              options={addressOptions.map((addr, idx) => ({
-                value: idx,
+              options={addressOptions.map((address, index) => ({
+                value: index,
+
                 label: [
-                  addr.line_1,
-                  addr.line_2,
-                  addr.line_3,
-                  addr.post_town,
-                  addr.postcode,
+                  address?.line_1,
+                  address?.line_2,
+                  address?.line_3,
+                  address?.post_town,
+                  address?.postcode,
                 ]
                   .filter(Boolean)
                   .join(", "),
@@ -284,42 +335,104 @@ export default function Billing({ billingCountries }) {
             />
           )}
 
-        <TextField
-          label="Address"
-          name="addressone"
-          register={register}
-          required
-          errors={errors}
-        />
-        <TextField
-          label="Address 2"
-          name="addresstwo"
-          register={register}
-          errors={errors}
-        />
-        <TextField
-          label="Town / City"
-          name="city"
-          register={register}
-          required
-          errors={errors}
-        />
-        <TextField
-          label="State / County"
-          name="state"
-          register={register}
-          errors={errors}
-        />
-        <div className="max-w-24">
-          <NextButton label="Update" disabled={!isValid} />
+        {/* Address fields */}
+        <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
+          <TextField
+            label="Address"
+            name="addressone"
+            register={register}
+            required
+            errors={errors}
+          />
+
+          <TextField
+            label="Address 2"
+            name="addresstwo"
+            register={register}
+            errors={errors}
+          />
+
+          <TextField
+            label="Town / City"
+            name="city"
+            register={register}
+            required
+            errors={errors}
+          />
+
+          <TextField
+            label="State / County"
+            name="state"
+            register={register}
+            errors={errors}
+          />
+        </div>
+
+        {/* Submit */}
+        <div className="flex justify-start border-t border-[#47317c]/[0.07] pt-5">
+          <div className="w-full sm:w-auto sm:min-w-[180px]">
+            <NextButton
+              label="Update billing"
+              disabled={!isValid}
+              className="inter-medium-font !min-h-[46px] !rounded-[13px] !border-[#47317c] !bg-[#47317c] !px-6 !py-3 !text-[12px] hover:!bg-[#392765]"
+            />
+          </div>
         </div>
       </form>
 
+      {/* Page loader */}
       {showLoader && (
-        <div className="absolute inset-0 flex items-center justify-center bg-white/70 rounded">
+        <div className="absolute inset-0 z-20 flex items-center justify-center rounded-[22px] bg-white/75 backdrop-blur-[2px]">
           <PageLoader />
         </div>
       )}
-    </SectionWrapper>
+
+      <style jsx global>{`
+        .address-form .MuiFormControl-root {
+          width: 100%;
+        }
+
+        .address-form .MuiInputLabel-root {
+          font-family: var(--inter-medium) !important;
+          font-size: 13px !important;
+          color: #64748b;
+        }
+
+        .address-form .MuiInputBase-root {
+          min-height: 50px;
+          border-radius: 14px !important;
+          background: #ffffff;
+          font-family: var(--inter-reg) !important;
+          font-size: 13px !important;
+        }
+
+        .address-form .MuiOutlinedInput-notchedOutline {
+          border-color: rgba(71, 49, 124, 0.12) !important;
+        }
+
+        .address-form
+          .MuiInputBase-root:hover
+          .MuiOutlinedInput-notchedOutline {
+          border-color: rgba(71, 49, 124, 0.24) !important;
+        }
+
+        .address-form .Mui-focused .MuiOutlinedInput-notchedOutline {
+          border-color: #47317c !important;
+          border-width: 1px !important;
+        }
+
+        .address-form input,
+        .address-form select,
+        .address-form textarea {
+          font-family: var(--inter-reg) !important;
+          font-size: 13px !important;
+          color: #0f172a !important;
+        }
+
+        .address-form label {
+          font-family: var(--inter-medium) !important;
+        }
+      `}</style>
+    </section>
   );
 }
