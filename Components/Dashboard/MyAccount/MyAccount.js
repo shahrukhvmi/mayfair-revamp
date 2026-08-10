@@ -71,6 +71,43 @@ export const PageHeader = ({ label, title, subtitle, right }) => (
   </div>
 );
 
+/* ── View toggle ── */
+const ViewToggle = ({ productView, setProductView }) => (
+  <div className="flex shrink-0 flex-col items-end gap-1.5">
+    <span className="inter-medium-font text-[11px] uppercase tracking-[0.1em] text-slate-400">View as</span>
+    <div className="inline-flex items-center rounded-xl border border-slate-200 bg-slate-50 p-1 gap-0.5">
+      {[
+        { mode: "list", Icon: List, label: "List" },
+        { mode: "grid", Icon: Grid2X2, label: "Grid" },
+      ].map(({ mode, Icon, label }) => (
+        <button
+          key={mode}
+          type="button"
+          onClick={() => setProductView(mode)}
+          aria-pressed={productView === mode}
+          className={`inter-semibold-font inline-flex items-center gap-2 rounded-lg px-4 py-2.5 text-[13px] transition-all duration-150 cursor-pointer
+            ${productView === mode
+              ? "bg-white text-[#47317c] shadow-sm border border-slate-200/80 ring-1 ring-[#47317c]/10"
+              : "text-slate-400 hover:text-slate-700"
+            }`}
+        >
+          <Icon size={15} strokeWidth={productView === mode ? 2.5 : 2} />
+          {label}
+        </button>
+      ))}
+    </div>
+  </div>
+);
+
+/* ── Empty treatments ── */
+const EmptyTreatments = () => (
+  <div className="rounded-lg border border-dashed border-slate-200 bg-white px-4 py-12 text-center">
+    <Pill size={20} strokeWidth={1.5} className="mx-auto text-slate-300" />
+    <p className="inter-medium-font mt-3 text-[13px] text-slate-600">No treatments available</p>
+    <p className="inter-reg-font mt-1 text-[12px] text-slate-400">Treatments will appear here when available.</p>
+  </div>
+);
+
 /* ── My Account ── */
 const MyAccount = () => {
   const { imageUploaded, setImageUploaded } = useImageUploadStore();
@@ -154,12 +191,12 @@ const MyAccount = () => {
   };
 
   useEffect(() => {
-    const run = async () => { try { const r = await GetImageIsUplaod({ reorder }); setImageUploaded(r?.data?.status); } catch {} };
+    const run = async () => { try { const r = await GetImageIsUplaod({ reorder }); setImageUploaded(r?.data?.status); } catch { } };
     run();
   }, [reorder]);
 
   useEffect(() => {
-    const run = async () => { try { const r = await GetIdVerification({ reorder }); setIdVerificationUpload(r?.data?.status); } catch {} };
+    const run = async () => { try { const r = await GetIdVerification({ reorder }); setIdVerificationUpload(r?.data?.status); } catch { } };
     run();
   }, [reorder]);
 
@@ -169,7 +206,7 @@ const MyAccount = () => {
         const r = await GetPrescriptionEvidence({ token });
         setExplainenationEvidence(r?.data?.require_evidence);
         setExplainenationEvidenceDetails(r?.data);
-      } catch {}
+      } catch { }
     };
     run();
   }, []);
@@ -195,141 +232,177 @@ const MyAccount = () => {
             </div>
           }
         />
-
-        {/* Alerts */}
+        <div className="grid grid-cols-12 gap-4">
+          <div className="col-span-12 sm:col-span-6">
         {(!imageUploaded || !idVerificationUpload) && isDashboardRoute && <UploadTopPrompt />}
 
-        {/* Reorder Treatment */}
-        {currentTreatment && (
-          <section>
-            <h2 className="inter-bold-font mb-3 text-[15px] lg:text-[16px] 2xl:text-[19px] text-slate-900">
-              Reorder Treatment
-            </h2>
-            <div className="flex flex-col sm:flex-row sm:items-center overflow-hidden rounded-2xl border border-slate-200 bg-white">
+          </div>
+        </div>
+        {/* Alerts */}
 
-              {/* Image panel */}
-              <div className="flex h-[120px] w-full shrink-0 items-center justify-center bg-slate-50 sm:h-[100px] sm:w-[120px] lg:h-[110px] lg:w-[130px] 2xl:h-[130px] 2xl:w-[150px] border-b border-slate-100 sm:border-b-0 sm:border-r">
-                {currentTreatment?.img ? (
-                  <img
-                    src={currentTreatment.img}
-                    alt={currentTreatment?.name}
-                    className="h-[88px] w-[88px] lg:h-[90px] lg:w-[90px] 2xl:h-[108px] 2xl:w-[108px] object-contain"
-                  />
-                ) : (
-                  <Pill size={28} strokeWidth={1.5} className="text-slate-300" />
-                )}
+        {currentTreatment ? (
+          /* ── WITH REORDER: side-by-side layout ── */
+          <div className="flex flex-col gap-3">
+
+            {/* Row 1: headings + view toggle — same grid so they align perfectly */}
+            <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
+              <div className="lg:col-span-6">
+                <h2 className="inter-bold-font text-[15px] lg:text-[16px] 2xl:text-[19px] text-slate-900">Reorder Treatment</h2>
+                <p className="inter-reg-font mt-0.5 text-[12px] lg:text-[12.5px] 2xl:text-[13.5px] text-slate-500">
+                  Continue your latest clinician-approved treatment.
+                </p>
               </div>
-
-              {/* Info */}
-              <div className="flex flex-1 flex-col gap-3 p-4 lg:p-5 2xl:p-6 sm:flex-row sm:items-center sm:justify-between">
+              <div className="flex items-center justify-between gap-3 lg:col-span-6">
                 <div>
-                  <div className="flex items-center gap-1.5 mb-2">
-                    <CalendarDays size={12} strokeWidth={2} className="text-slate-400" />
-                    <span className="inter-reg-font text-[12px] 2xl:text-[13px] text-slate-400">
-                      Last ordered: <span className="inter-medium-font text-slate-600">{lastOrderDate}</span>
-                    </span>
-                  </div>
-                  <h3 className="inter-bold-font text-[16px] lg:text-[17px] 2xl:text-[20px] text-slate-900 leading-tight">{currentTreatment?.name}</h3>
-                  <p className="inter-reg-font mt-1 text-[12px] lg:text-[12.5px] 2xl:text-[13.5px] text-slate-500">Your latest clinician-approved treatment.</p>
+                  <h2 className="inter-bold-font text-[15px] lg:text-[16px] 2xl:text-[19px] text-slate-900">Available Treatments</h2>
+                  <p className="inter-reg-font mt-0.5 text-[12px] lg:text-[12.5px] 2xl:text-[13.5px] text-slate-500">
+                    Weight loss injection treatment options for your journey.
+                  </p>
                 </div>
-
-                <div className="flex items-center gap-4 sm:shrink-0">
-                  {currentTreatmentDisplayPrice && (
-                    <div className="text-right">
-                      <p className="inter-reg-font text-[10px] uppercase tracking-[0.1em] text-slate-400">From</p>
-                      <p className="inter-bold-font text-[20px] 2xl:text-[24px] text-[#47317c] leading-none mt-0.5">£{currentTreatmentDisplayPrice}</p>
-                    </div>
-                  )}
-                  <button
-                    type="button"
-                    onClick={() => handleReorder(currentTreatment?.id)}
-                    disabled={!currentTreatment?.id || isReorderLoading}
-                    className={`inter-medium-font inline-flex items-center gap-2 rounded-xl px-4 py-2.5 lg:px-5 2xl:px-6 2xl:py-3 text-[13px] 2xl:text-[14px] text-white transition-all duration-150 whitespace-nowrap
-                      ${!currentTreatment?.id || isReorderLoading
-                        ? "cursor-not-allowed bg-slate-200 text-slate-400"
-                        : "cursor-pointer bg-[#47317c] hover:bg-[#392765] active:scale-[0.98]"
-                      }`}
-                  >
-                    {isReorderLoading ? (
-                      <><span className="h-3.5 w-3.5 animate-spin rounded-full border-2 border-white border-t-transparent" />Processing...</>
-                    ) : (
-                      <><RefreshCcw size={13} strokeWidth={2.2} />Reorder treatment</>
-                    )}
-                  </button>
-                </div>
+                <ViewToggle productView={productView} setProductView={setProductView} />
               </div>
             </div>
-          </section>
-        )}
 
-        {/* Available Treatments */}
-        <section>
-          <div className="mb-3 flex items-center justify-between gap-3">
-            <div>
-              <h2 className="inter-bold-font text-[15px] lg:text-[16px] 2xl:text-[19px] text-slate-900">Available Treatments</h2>
-              <p className="inter-reg-font mt-0.5 text-[12px] lg:text-[12.5px] 2xl:text-[13.5px] text-slate-500">
-                Weight loss injection treatment options for your journey.
-              </p>
-            </div>
+            {/* Row 2: card + list — same grid row so heights are equal */}
+            <div className="grid grid-cols-1 gap-6 lg:grid-cols-12 lg:items-stretch">
 
-            {/* View toggle */}
-            <div className="flex shrink-0 flex-col items-end gap-1">
-              <span className="inter-medium-font text-[10px] uppercase tracking-[0.1em] text-slate-400">View as</span>
-              <div className="inline-flex items-center rounded-xl border border-slate-200 bg-slate-50 p-1 gap-0.5">
-                {[
-                  { mode: "list",  Icon: List,    label: "List" },
-                  { mode: "grid",  Icon: Grid2X2, label: "Grid" },
-                ].map(({ mode, Icon, label }) => (
-                  <button
-                    key={mode}
-                    type="button"
-                    onClick={() => setProductView(mode)}
-                    aria-pressed={productView === mode}
-                    title={`Switch to ${label} view`}
-                    className={`inter-semibold-font inline-flex items-center gap-1.5 rounded-lg px-3.5 py-2 text-[12px] transition-all duration-150 cursor-pointer
-                      ${productView === mode
-                        ? "bg-white text-[#47317c] shadow-sm border border-slate-200/80 ring-1 ring-[#47317c]/10"
-                        : "text-slate-400 hover:text-slate-700"
-                      }`}
-                  >
-                    <Icon size={13} strokeWidth={productView === mode ? 2.5 : 2} />
-                    {label}
-                  </button>
-                ))}
+              {/* Left: Reorder card — horizontal */}
+              <div className="lg:col-span-6 flex flex-col">
+                <div className="flex flex-1 overflow-hidden rounded-2xl border border-slate-200 bg-white">
+                  {/* Thumbnail — full height */}
+                  <div className="flex w-[200px] shrink-0 items-center justify-center border-r border-slate-100 bg-[#F1F5F9 Nashte linge a textual, it's a little mical.]">
+                    {currentTreatment?.img ? (
+                      <img
+                        src={currentTreatment.img}
+                        alt={currentTreatment?.name}
+                        className="h-[140px] w-[140px] object-contain"
+                      />
+                    ) : (
+                      <Pill size={48} strokeWidth={1.5} className="text-slate-300" />
+                    )}
+                  </div>
+
+                  {/* Info + price/button */}
+                  <div className="flex flex-1 items-center justify-between gap-6 p-5 2xl:p-6">
+                    {/* Left info */}
+                    <div className="min-w-0">
+                      <div className="flex items-center gap-1.5 mb-3">
+                        <CalendarDays size={11} strokeWidth={2} className="text-slate-400" />
+                        <span className="inter-reg-font text-[11.5px] text-slate-400">
+                          Last ordered: <span className="inter-medium-font text-slate-600">{lastOrderDate}</span>
+                        </span>
+                      </div>
+                      <h3 className="inter-bold-font text-[16px] 2xl:text-[17px] text-slate-900 leading-tight truncate">
+                        {currentTreatment?.name}
+                      </h3>
+                      <p className="inter-reg-font mt-1 text-[12px] text-slate-500">
+                        Your latest clinician-approved treatment.
+                      </p>
+                    </div>
+
+                    {/* Right: price stacked above button */}
+                    <div className="flex shrink-0 flex-col items-end gap-3">
+                      {currentTreatmentDisplayPrice && (
+                        <div className="text-right">
+                          <p className="inter-reg-font text-[10px] uppercase tracking-[0.1em] text-slate-400">From</p>
+                          <p className="inter-bold-font text-[22px] 2xl:text-[24px] text-[#47317c] leading-none mt-0.5">
+                            £{currentTreatmentDisplayPrice}
+                          </p>
+                        </div>
+                      )}
+                      <button
+                        type="button"
+                        onClick={() => handleReorder(currentTreatment?.id)}
+                        disabled={!currentTreatment?.id || isReorderLoading}
+                        className={`inter-medium-font inline-flex items-center gap-2 rounded-xl px-4 py-2.5 text-[13px] text-white transition-all duration-150 whitespace-nowrap
+                          ${!currentTreatment?.id || isReorderLoading
+                            ? "cursor-not-allowed bg-slate-200 text-slate-400"
+                            : "cursor-pointer bg-[#47317c] hover:bg-[#392765] active:scale-[0.98]"
+                          }`}
+                      >
+                        {isReorderLoading ? (
+                          <><span className="h-3.5 w-3.5 animate-spin rounded-full border-2 border-white border-t-transparent" />Processing...</>
+                        ) : (
+                          <><RefreshCcw size={13} strokeWidth={2.2} />Reorder treatment</>
+                        )}
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Right: Available Treatments */}
+              <div className="lg:col-span-6 flex flex-col gap-3">
+                {isLoading ? (
+                  <div className={productView === "list" ? "grid grid-cols-1 gap-3" : "grid grid-cols-1 gap-3 sm:grid-cols-2"}>
+                    {[0, 1, 2].map((i) => <SkeletonCard key={i} viewMode={productView} />)}
+                  </div>
+                ) : availableProducts.length > 0 ? (
+                  <div className={productView === "list" ? "grid grid-cols-1 gap-3" : "grid grid-cols-1 gap-3 sm:grid-cols-2"}>
+                    {availableProducts.map((product, index) => (
+                      <ProductCard
+                        key={product?.id || product?.sequence || index}
+                        id={product?.id}
+                        title={product?.name}
+                        description={product?.short_description || product?.description || product?.subtitle}
+                        image={product?.img}
+                        price={product?.price || "N/A"}
+                        pre_launch_price={product?.pre_launch_price || null}
+                        status={product?.inventories?.[0]?.status}
+                        buttonText="Start Consultation"
+                        reorder={false}
+                        viewMode={productView}
+                      />
+                    ))}
+                  </div>
+                ) : (
+                  <EmptyTreatments />
+                )}
               </div>
             </div>
           </div>
+        ) : (
+          /* ── WITHOUT REORDER: left 6 cols only ── */
+          <div className="grid grid-cols-12">
+            <section className="col-span-12 lg:col-span-6">
+              <div className="mb-3 flex items-center justify-between gap-3">
+                <div>
+                  <h2 className="inter-bold-font text-[15px] lg:text-[16px] 2xl:text-[19px] text-slate-900">Available Treatments</h2>
+                  <p className="inter-reg-font mt-0.5 text-[12px] lg:text-[12.5px] 2xl:text-[13.5px] text-slate-500">
+                    Weight loss injection treatment options for your journey.
+                  </p>
+                </div>
+                <ViewToggle productView={productView} setProductView={setProductView} />
+              </div>
 
-          {isLoading ? (
-            <div className={productView === "list" ? "grid grid-cols-1 gap-3 xl:grid-cols-2" : "grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-3"}>
-              {[0, 1, 2].map((i) => <SkeletonCard key={i} viewMode={productView} />)}
-            </div>
-          ) : availableProducts.length > 0 ? (
-            <div className={productView === "list" ? "grid grid-cols-1 gap-3 xl:grid-cols-2" : "grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-3"}>
-              {availableProducts.map((product, index) => (
-                <ProductCard
-                  key={product?.id || product?.sequence || index}
-                  id={product?.id}
-                  title={product?.name}
-                  description={product?.short_description || product?.description || product?.subtitle}
-                  image={product?.img}
-                  price={product?.price || "N/A"}
-                  pre_launch_price={product?.pre_launch_price || null}
-                  status={product?.inventories?.[0]?.status}
-                  buttonText="Start Consultation"
-                  reorder={false}
-                  viewMode={productView}
-                />
-              ))}
-            </div>
-          ) : (
-            <div className="rounded-lg border border-dashed border-slate-200 bg-white px-4 py-12 text-center">
-              <Pill size={20} strokeWidth={1.5} className="mx-auto text-slate-300" />
-              <p className="inter-medium-font mt-3 text-[13px] text-slate-600">No treatments available</p>
-              <p className="inter-reg-font mt-1 text-[12px] text-slate-400">Treatments will appear here when available.</p>
-            </div>
-          )}
-        </section>
+              {isLoading ? (
+                <div className="grid grid-cols-1 gap-3">
+                  {[0, 1, 2, 3].map((i) => <SkeletonCard key={i} viewMode={productView} />)}
+                </div>
+              ) : availableProducts.length > 0 ? (
+                <div className="grid grid-cols-1 gap-3">
+                  {availableProducts.map((product, index) => (
+                    <ProductCard
+                      key={product?.id || product?.sequence || index}
+                      id={product?.id}
+                      title={product?.name}
+                      description={product?.short_description || product?.description || product?.subtitle}
+                      image={product?.img}
+                      price={product?.price || "N/A"}
+                      pre_launch_price={product?.pre_launch_price || null}
+                      status={product?.inventories?.[0]?.status}
+                      buttonText="Start Consultation"
+                      reorder={false}
+                      viewMode={productView}
+                    />
+                  ))}
+                </div>
+              ) : (
+                <EmptyTreatments />
+              )}
+            </section>
+          </div>
+        )}
 
       </div>
     </main>
