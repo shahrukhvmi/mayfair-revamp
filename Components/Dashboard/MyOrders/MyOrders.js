@@ -366,7 +366,7 @@ const MyOrders = () => {
           </div>
 
           {!isLoading && data && (
-            <div className="border-t border-slate-100 px-5 py-4">
+            <div className="min-w-0 overflow-hidden border-t border-slate-100 px-3 py-4 sm:px-5">
               <Pagination pagination={data} setPage={setCurrentPage} />
             </div>
           )}

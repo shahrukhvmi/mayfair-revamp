@@ -18,6 +18,52 @@ const Pagination = ({ pagination }) => {
       </p>
 
       {/* Controls */}
+      <div className="flex w-full justify-center overflow-hidden sm:hidden">
+        <MUIPagination
+          count={lastPage}
+          page={currentPage}
+          onChange={(_, v) => setCurrentPage(v)}
+          variant="text"
+          shape="rounded"
+          siblingCount={0}
+          boundaryCount={0}
+          sx={{
+            maxWidth: "100%",
+            "& .MuiPagination-ul": {
+              flexWrap: "nowrap",
+              justifyContent: "center",
+              gap: "2px",
+            },
+            "& .MuiPaginationItem-root": {
+              minWidth: "30px",
+              height: "30px",
+              margin: 0,
+              padding: "0 4px",
+              borderRadius: "7px",
+              border: "1px solid #e2e8f0",
+              fontFamily: "var(--inter-medium)",
+              fontSize: "11.5px",
+              color: "#64748b",
+              backgroundColor: "#ffffff",
+            },
+            "& .MuiPaginationItem-root.Mui-selected": {
+              backgroundColor: "#47317c",
+              borderColor: "#47317c",
+              color: "#ffffff",
+              fontFamily: "var(--inter-semibold)",
+            },
+            "& .MuiPaginationItem-icon": {
+              fontSize: "15px",
+            },
+            "& .Mui-disabled": {
+              opacity: 0.4,
+              backgroundColor: "#f8fafc",
+            },
+          }}
+        />
+      </div>
+
+      <div className="hidden sm:block">
       <MUIPagination
         count={lastPage}
         page={currentPage}
@@ -29,9 +75,16 @@ const Pagination = ({ pagination }) => {
         showFirstButton
         showLastButton
         sx={{
+          width: "100%",
+          display: "flex",
+          justifyContent: "center",
+          "@media (min-width: 600px)": {
+            width: "auto",
+          },
           "& .MuiPagination-ul": {
             flexWrap: "nowrap",
             gap: "4px",
+            justifyContent: "center",
           },
           "& .MuiPaginationItem-root": {
             minWidth: "34px",
@@ -70,8 +123,27 @@ const Pagination = ({ pagination }) => {
             opacity: 0.4,
             backgroundColor: "#f8fafc",
           },
+          "@media (max-width: 599px)": {
+            "& .MuiPagination-ul": {
+              gap: "2px",
+            },
+            "& .MuiPaginationItem-root": {
+              minWidth: "28px",
+              height: "30px",
+              padding: "0 4px",
+              borderRadius: "7px",
+              fontSize: "11.5px",
+            },
+            "& .MuiPaginationItem-firstLast": {
+              display: "none",
+            },
+            "& .MuiPaginationItem-icon": {
+              fontSize: "15px",
+            },
+          },
         }}
       />
+      </div>
     </div>
   );
 };

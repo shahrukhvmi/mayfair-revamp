@@ -80,6 +80,7 @@ const StepsHeader = ({ isOpen, toggleSidebar }) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [showLoader, setShowLoader] = useState(false);
   const closeTimer = useRef(null);
+  const accountMenuRef = useRef(null);
 
   const handleMenuEnter = (e) => {
     clearTimeout(closeTimer.current);
@@ -92,6 +93,21 @@ const StepsHeader = ({ isOpen, toggleSidebar }) => {
   const handleMenuPaperLeave = () => {
     closeTimer.current = setTimeout(() => setAnchorEl(null), 200);
   };
+
+  const supportsHover = () =>
+    typeof window !== "undefined" &&
+    window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+
+  useEffect(() => {
+    const handleOutsideClick = (event) => {
+      if (accountMenuRef.current && !accountMenuRef.current.contains(event.target)) {
+        setAnchorEl(null);
+      }
+    };
+
+    document.addEventListener("pointerdown", handleOutsideClick);
+    return () => document.removeEventListener("pointerdown", handleOutsideClick);
+  }, []);
 
   const { showLoginModal, closeLoginModal, openLoginModal } =
     useLoginModalStore();
@@ -348,13 +364,28 @@ const StepsHeader = ({ isOpen, toggleSidebar }) => {
           <div className="ml-auto flex items-center gap-2">
             {!pathname?.startsWith("/login") && token && (
               <div
+                ref={accountMenuRef}
                 className="relative"
-                onMouseEnter={() => { clearTimeout(closeTimer.current); setAnchorEl(true); }}
-                onMouseLeave={() => { closeTimer.current = setTimeout(() => setAnchorEl(null), 150); }}
+                onMouseEnter={() => {
+                  if (!supportsHover()) return;
+                  clearTimeout(closeTimer.current);
+                  setAnchorEl(true);
+                }}
+                onMouseLeave={() => {
+                  if (!supportsHover()) return;
+                  closeTimer.current = setTimeout(() => setAnchorEl(null), 150);
+                }}
               >
                 {/* Trigger button */}
                 <button
                   type="button"
+                  onClick={() => {
+                    if (supportsHover()) return;
+                    clearTimeout(closeTimer.current);
+                    setAnchorEl((current) => current ? null : true);
+                  }}
+                  aria-expanded={Boolean(anchorEl)}
+                  aria-haspopup="menu"
                   className="group flex min-h-[44px] cursor-pointer items-center gap-2 rounded-xl py-1.5 pl-1.5 pr-3 transition-all duration-150 hover:bg-[#47317c]/[0.04]"
                 >
                   <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-[#47317c]">
