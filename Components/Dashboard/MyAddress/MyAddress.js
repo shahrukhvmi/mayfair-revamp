@@ -42,10 +42,10 @@ export default function MyAddress() {
         <div className="grid grid-cols-1 gap-4 xl:grid-cols-2">
           {/* Shipping */}
           <section>
-            <div className="mb-3 flex items-center gap-2">
+            {/* <div className="mb-3 flex items-center gap-2">
               <MapPin size={14} strokeWidth={2} className="text-slate-400" />
               <h2 className="inter-semibold-font text-[14px] text-slate-700">Shipping Address</h2>
-            </div>
+            </div> */}
             {/* <div className="rounded-lg border border-slate-100 bg-white"> */}
               <Shipping shipmentCountries={shipmentCountries} />
             {/* </div> */}
@@ -53,10 +53,10 @@ export default function MyAddress() {
 
           {/* Billing */}
           <section>
-            <div className="mb-3 flex items-center gap-2">
+            {/* <div className="mb-3 flex items-center gap-2">
               <CreditCard size={14} strokeWidth={2} className="text-slate-400" />
               <h2 className="inter-semibold-font text-[14px] text-slate-700">Billing Address</h2>
-            </div>
+            </div> */}
             {/* <div className="rounded-lg border border-slate-100 bg-white"> */}
               <Billing billingCountries={billingCountries} />
             {/* </div> */}

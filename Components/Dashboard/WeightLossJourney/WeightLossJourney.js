@@ -112,7 +112,7 @@ export default function WeightLossJourney() {
   const changeMeta  = getChangeMeta(totalChange);
   const percentage  = stats.start ? Math.abs((totalChange / stats.start) * 100).toFixed(1) : 0;
   const chartData   = prepareChartData(bmiJourney, unit);
-  const displayName = getUserDisplayName(authUserDetail) || firstName?.trim() || "Patient";
+  const displayName = authUserDetail?.fname?.trim() || firstName?.trim() || "Patient";
 
   return (
     <main className="inter-reg-font min-w-0 flex-1 bg-[#FBFBFD]">
@@ -130,14 +130,9 @@ export default function WeightLossJourney() {
 
           {/* Section heading + unit toggle */}
           <div className="flex flex-col gap-4 border-b border-slate-100 p-4 sm:flex-row sm:items-center sm:justify-between lg:p-5 2xl:p-6">
-            <div className="flex items-center gap-3">
-              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#47317c]/[0.08] text-[#47317c]">
-                <Scale size={18} strokeWidth={2} />
-              </span>
-              <div>
-                <h2 className="inter-bold-font text-[16px] lg:text-[17px] 2xl:text-[20px] text-slate-900">Progress overview</h2>
-                <p className="inter-reg-font mt-0.5 text-[12px] 2xl:text-[13px] text-slate-500">Your weight statistics and progression chart.</p>
-              </div>
+            <div>
+              <h2 className="inter-bold-font text-[16px] lg:text-[17px] 2xl:text-[20px] text-slate-900">Progress overview</h2>
+              <p className="inter-reg-font mt-0.5 text-[12px] 2xl:text-[13px] text-slate-500">Your weight statistics and progression chart.</p>
             </div>
             <UnitTabs unit={unit} setUnit={setUnit} />
           </div>
