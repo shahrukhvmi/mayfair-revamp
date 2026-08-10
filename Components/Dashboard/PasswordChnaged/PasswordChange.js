@@ -158,6 +158,15 @@ const PasswordChange = () => {
         {/* Password content */}
         <section className="rounded-lg border border-slate-100 bg-white p-4 sm:p-5 lg:p-6">
           <div className="grid grid-cols-1 gap-5 xl:grid-cols-[minmax(0,1fr)_380px]">
+            {/* Mobile requirements */}
+            <div className="xl:hidden">
+              <PasswordRequirements
+                validations={passwordValidations}
+                progress={passwordProgress}
+                completed={completedRequirements}
+              />
+            </div>
+
             {/* Password form */}
             <div className="overflow-hidden rounded-lg border border-slate-100 bg-white">
               <div className="flex items-start gap-3 border-b border-slate-100 bg-slate-50 px-5 py-4">
@@ -225,15 +234,6 @@ const PasswordChange = () => {
                         value === newPassword || "Passwords do not match",
                     }}
                     errors={errors}
-                  />
-                </div>
-
-                {/* Mobile requirements */}
-                <div className="xl:hidden">
-                  <PasswordRequirements
-                    validations={passwordValidations}
-                    progress={passwordProgress}
-                    completed={completedRequirements}
                   />
                 </div>
 

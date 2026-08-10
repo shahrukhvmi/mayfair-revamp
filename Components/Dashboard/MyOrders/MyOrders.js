@@ -232,9 +232,9 @@ const MyOrders = () => {
             </p>
           </div>
 
-          {/* Desktop table */}
-          <div className="mt-4 hidden overflow-hidden lg:block">
-            <div className="overflow-x-auto">
+          {/* Orders table — horizontally scrollable on smaller screens */}
+          <div className="mt-4 overflow-hidden">
+            <div className="overflow-x-auto overscroll-x-contain">
               <table className="w-full min-w-[1080px] border-collapse text-left">
                 <thead>
                   <tr className="border-b border-slate-100 bg-slate-50/60">
@@ -290,7 +290,7 @@ const MyOrders = () => {
                               type="button"
                               onClick={() => handleSendId(order?.id)}
                               aria-label={`View order ${order.order_id}`}
-                              className="inline-flex h-9 w-9 cursor-pointer items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-500 transition-all duration-150 hover:bg-slate-900 hover:border-slate-900 hover:text-white"
+                              className="inline-flex h-9 w-9 cursor-pointer items-center justify-center rounded-xl border border-[#47317c]/10 bg-[#47317c]/[0.09] text-[#47317c] transition-all duration-150 hover:border-[#47317c]/20 hover:bg-[#47317c]/[0.14]"
                             >
                               <Eye size={15} strokeWidth={2} />
                             </button>
@@ -305,7 +305,7 @@ const MyOrders = () => {
           </div>
 
           {/* Mobile cards */}
-          <div className="mt-4 grid grid-cols-1 gap-3 px-4 pb-4 sm:px-5 sm:pb-5 lg:hidden">
+          <div className="hidden">
             {isLoading ? (
               [...Array(4)].map((_, i) => <MobileOrderSkeleton key={i} />)
             ) : filteredData?.length === 0 ? (

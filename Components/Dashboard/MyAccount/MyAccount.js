@@ -242,17 +242,17 @@ const MyAccount = () => {
 
         {currentTreatment ? (
           /* ── WITH REORDER: side-by-side layout ── */
-          <div className="flex flex-col gap-3">
+          <div className="flex flex-col gap-3 lg:grid lg:grid-cols-12 lg:gap-6">
 
             {/* Row 1: headings + view toggle — same grid so they align perfectly */}
-            <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
-              <div className="lg:col-span-6">
+            <div className="contents">
+              <div className="order-1 lg:col-span-6">
                 <h2 className="inter-bold-font text-[15px] lg:text-[16px] 2xl:text-[19px] text-slate-900">Reorder Treatment</h2>
                 <p className="inter-reg-font mt-0.5 text-[12px] lg:text-[12.5px] 2xl:text-[13.5px] text-slate-500">
                   Continue your latest clinician-approved treatment.
                 </p>
               </div>
-              <div className="flex items-center justify-between gap-3 lg:col-span-6">
+              <div className="order-3 flex items-center justify-between gap-3 lg:order-2 lg:col-span-6">
                 <div>
                   <h2 className="inter-bold-font text-[15px] lg:text-[16px] 2xl:text-[19px] text-slate-900">Available Treatments</h2>
                   <p className="inter-reg-font mt-0.5 text-[12px] lg:text-[12.5px] 2xl:text-[13.5px] text-slate-500">
@@ -264,18 +264,18 @@ const MyAccount = () => {
             </div>
 
             {/* Row 2: card + list — same grid row so heights are equal */}
-            <div className="grid grid-cols-1 gap-6 lg:grid-cols-12 lg:items-stretch">
+            <div className="contents">
 
               {/* Left: Reorder card — horizontal */}
-              <div className="lg:col-span-6 flex flex-col">
-                <div className="flex flex-1 overflow-hidden rounded-2xl border border-slate-200 bg-white">
+              <div className="order-2 flex flex-col pb-3 lg:order-3 lg:col-span-6 lg:pb-0">
+                <div className="flex flex-1 flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white sm:flex-row">
                   {/* Thumbnail — full height */}
-                  <div className="flex w-[200px] shrink-0 items-center justify-center border-r border-slate-100 bg-[#F1F5F9 Nashte linge a textual, it's a little mical.]">
+                  <div className="flex h-[150px] w-full shrink-0 items-center justify-center border-b border-slate-100 bg-[#F1F5F9] sm:h-auto sm:w-[160px] sm:border-b-0 sm:border-r lg:w-[120px] xl:w-[160px] 2xl:w-[200px]">
                     {currentTreatment?.img ? (
                       <img
                         src={currentTreatment.img}
                         alt={currentTreatment?.name}
-                        className="h-[140px] w-[140px] object-contain"
+                        className="h-[120px] w-[120px] object-contain lg:h-[100px] lg:w-[100px] xl:h-[120px] xl:w-[120px] 2xl:h-[140px] 2xl:w-[140px]"
                       />
                     ) : (
                       <Pill size={48} strokeWidth={1.5} className="text-slate-300" />
@@ -283,7 +283,7 @@ const MyAccount = () => {
                   </div>
 
                   {/* Info + price/button */}
-                  <div className="flex flex-1 items-center justify-between gap-6 p-5 2xl:p-6">
+                  <div className="flex min-w-0 flex-1 flex-col items-stretch justify-between gap-4 p-4 sm:flex-row sm:items-center sm:gap-5 sm:p-5 lg:flex-col lg:items-stretch lg:gap-4 lg:p-4 xl:flex-row xl:items-center xl:gap-5 2xl:gap-6 2xl:p-6">
                     {/* Left info */}
                     <div className="min-w-0">
                       <div className="flex items-center gap-1.5 mb-3">
@@ -292,7 +292,7 @@ const MyAccount = () => {
                           Last ordered: <span className="inter-medium-font text-slate-600">{lastOrderDate}</span>
                         </span>
                       </div>
-                      <h3 className="inter-bold-font text-[16px] 2xl:text-[17px] text-slate-900 leading-tight truncate">
+                      <h3 className="inter-bold-font break-words text-[16px] leading-tight text-slate-900 xl:truncate 2xl:text-[17px]">
                         {currentTreatment?.name}
                       </h3>
                       <p className="inter-reg-font mt-1 text-[12px] text-slate-500">
@@ -301,7 +301,7 @@ const MyAccount = () => {
                     </div>
 
                     {/* Right: price stacked above button */}
-                    <div className="flex shrink-0 flex-col items-end gap-3">
+                    <div className="flex shrink-0 items-end justify-between gap-3 sm:flex-col sm:justify-start lg:flex-row lg:justify-between xl:flex-col xl:justify-start">
                       {currentTreatmentDisplayPrice && (
                         <div className="text-right">
                           <p className="inter-reg-font text-[10px] uppercase tracking-[0.1em] text-slate-400">From</p>
@@ -332,7 +332,7 @@ const MyAccount = () => {
               </div>
 
               {/* Right: Available Treatments */}
-              <div className="lg:col-span-6 flex flex-col gap-3">
+              <div className="order-4 flex flex-col gap-3 lg:col-span-6">
                 {isLoading ? (
                   <div className={productView === "list" ? "grid grid-cols-1 gap-3" : "grid grid-cols-1 gap-3 sm:grid-cols-2"}>
                     {[0, 1, 2].map((i) => <SkeletonCard key={i} viewMode={productView} />)}

@@ -174,9 +174,9 @@ const OrderDetail = () => {
                     : "Review your treatment items and patient information."
                 }
                 right={
-                  <div className="flex items-center gap-3">
+                  <div className="grid w-full grid-cols-1 gap-3 sm:flex sm:w-auto sm:items-center">
                     {/* Order Status card */}
-                    <div className="flex items-center gap-3.5 rounded-2xl border border-[#e8e2f5] bg-white px-5 py-4 min-w-[200px]">
+                    <div className="flex min-w-0 w-full items-center gap-3.5 rounded-2xl border border-[#e8e2f5] bg-white px-4 py-3.5 sm:w-auto sm:min-w-[200px] sm:px-5 sm:py-4">
                       <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#47317c]/[0.07]">
                         <ShoppingBag size={18} strokeWidth={1.8} className="text-[#47317c]" />
                       </span>
@@ -188,7 +188,7 @@ const OrderDetail = () => {
                       </div>
                     </div>
                     {/* Payment Status card */}
-                    <div className="flex items-center gap-3.5 rounded-2xl border border-[#e8e2f5] bg-white px-5 py-4 min-w-[210px]">
+                    <div className="flex min-w-0 w-full items-center gap-3.5 rounded-2xl border border-[#e8e2f5] bg-white px-4 py-3.5 sm:w-auto sm:min-w-[210px] sm:px-5 sm:py-4">
                       <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#47317c]/[0.07]">
                         <ReceiptText size={18} strokeWidth={1.8} className="text-[#47317c]" />
                       </span>
@@ -208,13 +208,13 @@ const OrderDetail = () => {
                 <p className="inter-medium-font text-[10px] uppercase tracking-[0.12em] text-slate-400">
                   Switch Details
                 </p>
-                <div className="flex items-center gap-1 rounded-xl border border-slate-200 bg-slate-50 p-1 w-fit">
+                <div className="grid w-full grid-cols-2 gap-1 rounded-xl border border-slate-200 bg-slate-50 p-1 sm:flex sm:w-fit sm:items-center">
                   {TABS.map(({ key, label, icon: Icon }) => (
                     <button
                       key={key}
                       type="button"
                       onClick={() => setActiveTab(key)}
-                      className={`inter-semibold-font inline-flex items-center gap-2 rounded-lg px-4 py-2 text-[13px] transition-all duration-150 cursor-pointer
+                      className={`inter-semibold-font inline-flex min-w-0 items-center justify-center gap-2 rounded-lg px-2 py-2 text-[12px] transition-all duration-150 cursor-pointer sm:px-4 sm:text-[13px]
                         ${activeTab === key
                           ? "bg-white text-[#47317c] shadow-sm border border-slate-200/80 ring-1 ring-[#47317c]/10"
                           : "text-slate-400 hover:text-slate-700"

@@ -13,8 +13,8 @@ const ProductListCard = ({
   return (
     <article
       className={`
-        group flex items-center gap-4 rounded-2xl border bg-white
-        px-4 py-3.5 2xl:px-5 2xl:py-4 transition-all duration-200
+        group flex flex-wrap items-center gap-3 rounded-2xl border bg-white
+        px-3 py-3 sm:flex-nowrap sm:gap-4 sm:px-4 sm:py-3.5 2xl:px-5 2xl:py-4 transition-all duration-200
         ${isOutOfStock
           ? "border-slate-200/70 opacity-60 cursor-not-allowed"
           : "border-slate-200/70 shadow-[0_1px_4px_rgba(0,0,0,0.05)] hover:border-slate-300 hover:shadow-[0_4px_16px_rgba(0,0,0,0.08)] cursor-pointer"
@@ -22,7 +22,7 @@ const ProductListCard = ({
       `}
     >
       {/* Image box */}
-      <div className="relative flex h-[64px] w-[64px] 2xl:h-[76px] 2xl:w-[76px] shrink-0 items-center justify-center overflow-hidden rounded-xl bg-slate-100">
+      <div className="relative flex h-[56px] w-[56px] shrink-0 items-center justify-center overflow-hidden rounded-xl bg-slate-100 sm:h-[64px] sm:w-[64px] 2xl:h-[76px] 2xl:w-[76px]">
         {isOutOfStock && (
           <span className="absolute inset-0 flex items-center justify-center bg-white/70">
             <PackageX size={16} strokeWidth={1.8} className="text-red-400" />
@@ -47,14 +47,14 @@ const ProductListCard = ({
             Out of stock
           </span>
         )}
-        <h3 className="inter-semibold-font truncate text-[14px] lg:text-[14px] 2xl:text-[16px] leading-snug text-slate-900">
+        <h3 className="inter-semibold-font break-words text-[14px] leading-snug text-slate-900 sm:truncate lg:text-[14px] 2xl:text-[16px]">
           {title}
         </h3>
       </div>
 
       {/* Price + Button */}
-      <div className="flex shrink-0 items-center gap-4 2xl:gap-5">
-        <div className="text-right">
+      <div className="flex w-full shrink-0 items-center justify-between gap-3 pl-[68px] sm:w-auto sm:justify-start sm:gap-4 sm:pl-0 2xl:gap-5">
+        <div className="flex items-baseline gap-1.5 text-right sm:block">
           <p className="inter-reg-font text-[10px] uppercase tracking-[0.1em] text-slate-400">From</p>
           <span className="inter-bold-font text-[16px] lg:text-[16px] 2xl:text-[20px] leading-tight text-[#47317c]">
             £{originalPrice}
@@ -66,7 +66,7 @@ const ProductListCard = ({
           onClick={onClick}
           disabled={isOutOfStock || isLoading}
           className={`inter-medium-font inline-flex min-h-[36px] lg:min-h-[36px] 2xl:min-h-[42px] items-center justify-center gap-1.5
-            rounded-xl px-4 lg:px-4 2xl:px-6 text-[12.5px] lg:text-[12.5px] 2xl:text-[13.5px]
+            rounded-xl px-3 text-[12px] sm:px-4 sm:text-[12.5px] lg:px-4 lg:text-[12.5px] 2xl:px-6 2xl:text-[13.5px]
             whitespace-nowrap transition-all duration-150
             ${isOutOfStock
               ? "cursor-not-allowed bg-slate-100 text-slate-400"
