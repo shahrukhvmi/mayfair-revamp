@@ -21,27 +21,29 @@ import { PageHeader } from "@/Components/Dashboard/MyAccount/MyAccount";
 /* ── Helpers ── */
 const getStatusColor = (status = "") => {
   switch (status?.toLowerCase()) {
-    case "processing": return "border-amber-200 bg-amber-50 text-amber-700";
-    case "incomplete":  return "border-orange-200 bg-orange-50 text-orange-700";
-    case "approved":    return "border-emerald-200 bg-emerald-50 text-emerald-700";
-    case "cancelled":   return "border-red-200 bg-red-50 text-red-600";
-    case "paid":        return "border-emerald-200 bg-emerald-50 text-emerald-700";
+    case "processing":
     case "pending":     return "border-amber-200 bg-amber-50 text-amber-700";
-    case "failed":      return "border-red-200 bg-red-50 text-red-600";
-    default:            return "border-slate-200 bg-slate-50 text-slate-600";
+    case "incomplete":  return "border-orange-200 bg-orange-50 text-orange-700";
+    case "approved":
+    case "paid":
+    case "successful":  return "border-emerald-200 bg-emerald-50 text-emerald-700";
+    case "cancelled":
+    case "failed":      return "border-red-200 bg-red-50 text-red-700";
+    default:            return "border-[#d9cff0] bg-[#f3f0f9] text-[#47317c]";
   }
 };
 
 const getStatusCardTheme = (status = "") => {
   switch (status?.toLowerCase()) {
     case "processing":
-    case "pending":     return { card: "border-amber-200 bg-amber-50/40",    icon: "bg-amber-100 text-amber-600",   dot: "bg-amber-500" };
-    case "incomplete":  return { card: "border-orange-200 bg-orange-50/40",  icon: "bg-orange-100 text-orange-600", dot: "bg-orange-500" };
+    case "pending":     return { card: "border-amber-200 bg-amber-50",    icon: "bg-amber-100 text-amber-700",    dot: "bg-amber-500" };
+    case "incomplete":  return { card: "border-orange-200 bg-orange-50",  icon: "bg-orange-100 text-orange-700",  dot: "bg-orange-500" };
     case "approved":
-    case "paid":        return { card: "border-emerald-200 bg-emerald-50/40",icon: "bg-emerald-100 text-emerald-600",dot: "bg-emerald-500" };
+    case "paid":
+    case "successful":  return { card: "border-emerald-200 bg-emerald-50",icon: "bg-emerald-100 text-emerald-700",dot: "bg-emerald-500" };
     case "cancelled":
-    case "failed":      return { card: "border-red-200 bg-red-50/40",        icon: "bg-red-100 text-red-500",       dot: "bg-red-500" };
-    default:            return { card: "border-[#e8e2f5] bg-white",           icon: "bg-[#47317c]/[0.07] text-[#47317c]", dot: "bg-slate-400" };
+    case "failed":      return { card: "border-red-200 bg-red-50",        icon: "bg-red-100 text-red-700",        dot: "bg-red-500" };
+    default:            return { card: "border-[#d9cff0] bg-[#f3f0f9]",   icon: "bg-[#47317c]/[0.08] text-[#47317c]", dot: "bg-[#47317c]" };
   }
 };
 

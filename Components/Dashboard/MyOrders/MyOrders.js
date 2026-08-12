@@ -192,13 +192,19 @@ const MyOrders = () => {
     onSuccess: (response) => {
       const myorders = response?.data?.myorders || {};
       setOrderList(myorders);
-      // Only update overall total when no filter/search is active
       if (status === "all" && !debouncedSearch) {
         setTotalOrders(myorders?.total ?? null);
       }
       setIsLoading(false);
     },
     onError: (error) => { toast.error(error?.response?.data?.errors || "Something went wrong"); setIsLoading(false); },
+  });
+
+  // Sirf total count ke liye — filter/search se independent
+  const getTotalCount = useMutation(GetOrdersApi, {
+    onSuccess: (response) => {
+      setTotalOrders(response?.data?.myorders?.total ?? 0);
+    },
   });
 
   const buildParams = (page) => ({
@@ -231,6 +237,11 @@ const MyOrders = () => {
   }, [status]);
 
   useEffect(() => { isMountedRef.current = true; }, []);
+
+  // Mount par hamesha total fetch karo — filter se qata nazar
+  useEffect(() => {
+    getTotalCount.mutate({ data: {}, page: 1 });
+  }, []);
 
   // All filtering is server-side — only strip orders with missing order_id
   const filteredData = data?.allorders?.filter((order) => !!order?.order_id);

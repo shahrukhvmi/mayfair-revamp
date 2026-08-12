@@ -110,20 +110,19 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
         <div className="flex-1" />
 
         {/* Support */}
-        <div className="border-t border-slate-100 p-4">
+        <div className="border-t border-slate-100 px-5 py-4">
           <a
-            href={`tel:+44 (0)20 7550 6515`}
-            className="group flex items-center gap-3 rounded-md px-3 py-2.5 no-underline transition-colors duration-150 hover:bg-slate-50"
+            href="tel:+442075506515"
+            className="group flex items-center gap-3 no-underline"
           >
-            <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-slate-100 text-slate-600">
+            <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#47317c]/[0.07] text-[#47317c]">
               <Phone size={14} strokeWidth={2} />
             </span>
             <span className="min-w-0">
-              <span className="inter-medium-font block text-[12.5px] leading-4 text-slate-700">
-               Call:
+              <span className="inter-medium-font block text-[10.5px] uppercase tracking-[0.1em] text-slate-400 leading-none">
+                Contact Support
               </span>
-              <span className="inter-reg-font mt-0.5 flex items-center gap-1 text-[11px] leading-4 text-slate-500">
-                 {/* <Phone size={10} strokeWidth={2} /> */}
+              <span className="inter-medium-font mt-1.5 block truncate text-[12px] leading-none text-[#47317c]">
                 +44 (0)20 7550 6515
               </span>
             </span>
