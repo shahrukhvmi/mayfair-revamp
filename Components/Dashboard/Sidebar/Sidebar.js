@@ -12,6 +12,7 @@ import {
   UserRound,
   X,
 } from "lucide-react";
+import ApplicationLogo from "@/config/ApplicationLogo";
 
 const navItems = [
   { href: "/dashboard", label: "My Account", icon: LayoutDashboard, key: "tab-home", match: ["/dashboard"] },
@@ -24,7 +25,6 @@ const navItems = [
 const Sidebar = ({ isOpen, toggleSidebar }) => {
   const router = useRouter();
   const currentPath = router.pathname;
-  const supportPhone = process.env.NEXT_PUBLIC_SUPPORT_PHONE || "Add support number";
 
   return (
     <>
@@ -53,10 +53,9 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
         {/* Mobile header */}
         <div className="flex items-center justify-between border-b border-slate-100 px-5 py-4 lg:hidden">
           <div className="flex items-center gap-2.5">
-              <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-[#47317c]">
-                <UserRound size={15} strokeWidth={2} className="text-white" />
-              </span>
-              <span className="inter-bold-font text-[15px] tracking-[-0.01em] text-slate-900">Mayfair</span>
+              
+              {/* <span className="inter-bold-font text-[15px] tracking-[-0.01em] text-slate-900">Mayfair</span> */}
+                <ApplicationLogo className="h-12 w-auto text-white" />
             </div>
           <button
             type="button"
@@ -64,7 +63,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
             aria-label="Close navigation"
             className="flex h-7 w-7 items-center justify-center rounded-md text-slate-400 hover:bg-slate-100 hover:text-slate-700 transition-colors duration-150"
           >
-            <X size={15} strokeWidth={2} />
+            <X size={22} strokeWidth={2} />
           </button>
         </div>
 
@@ -113,7 +112,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
         {/* Support */}
         <div className="border-t border-slate-100 p-4">
           <a
-            href={`tel:${supportPhone.replace(/[^\d+]/g, "")}`}
+            href={`tel:+44 (0)20 7550 6515`}
             className="group flex items-center gap-3 rounded-md px-3 py-2.5 no-underline transition-colors duration-150 hover:bg-slate-50"
           >
             <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-slate-100 text-slate-600">
