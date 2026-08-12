@@ -116,7 +116,7 @@ export default function WeightLossJourney() {
 
   return (
     <main className="inter-reg-font min-w-0 flex-1 bg-[#FBFBFD]">
-      <div className="mx-auto flex w-full max-w-[1560px] flex-col gap-6 p-4 sm:p-5 lg:p-6 2xl:p-8 2xl:gap-8">
+      <div className="mx-auto flex w-full  flex-col gap-6 p-4 sm:p-5 lg:p-6 2xl:p-8 2xl:gap-8">
 
         {/* Header */}
         <PageHeader
@@ -274,7 +274,7 @@ const JourneyTooltip = ({ active, payload, label, unit }) => {
 /* ── Loader ── */
 const JourneyLoader = () => (
   <main className="min-w-0 flex-1 bg-[#FBFBFD]">
-    <div className="mx-auto flex w-full max-w-[1560px] flex-col gap-6 p-4 sm:p-5 lg:p-6">
+    <div className="mx-auto flex w-full flex-col gap-6 p-4 sm:p-5 lg:p-6">
       <div className="h-[110px] animate-pulse rounded-2xl bg-slate-100" />
       <div className="rounded-2xl border border-slate-200 bg-white p-5">
         <div className="h-6 w-40 animate-pulse rounded-full bg-slate-100" />
@@ -289,15 +289,15 @@ const JourneyLoader = () => (
 
 /* ── Empty ── */
 const EmptyJourneyState = () => (
-  <main className="inter-reg-font min-w-0 flex-1 bg-[#FBFBFD]">
-    <div className="mx-auto flex w-full max-w-[1560px] flex-col gap-6 p-4 sm:p-5 lg:p-6">
-      <div className="flex min-h-[480px] flex-col items-center justify-center rounded-2xl border border-slate-200 bg-white px-5 text-center">
+  <main className="inter-reg-font min-w-0 flex-1">
+    <div className="mx-auto flex w-full flex-col gap-6 p-4 sm:p-5 lg:p-6">
+      <div className="flex min-h-[480px] flex-col items-center justify-center rounded-2xl  px-5 text-center">
         <span className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[#47317c]/[0.08] text-[#47317c]">
           <Scale size={24} strokeWidth={1.8} />
         </span>
         <h2 className="inter-bold-font mt-5 text-[20px] text-slate-900">No weight progression yet</h2>
         <p className="inter-reg-font mt-2 max-w-sm text-[13px] leading-[1.7] text-slate-500">
-          Your weight loss journey will appear here once weight tracking starts with your treatment orders.
+          Your journey will appear once tracking starts.
         </p>
       </div>
     </div>

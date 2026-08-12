@@ -77,7 +77,7 @@ const UploadTopPrompt = () => {
         <AlertBanner
           icon={Camera}
           title="Upload your photo"
-          description="Please upload your photo and ID verification to complete your order."
+          description="Please upload your Photo verification to complete your order."
           buttonText="Upload photo"
           href="/photo-upload"
         />
@@ -96,7 +96,7 @@ const UploadTopPrompt = () => {
         <AlertBanner
           icon={IdCard}
           title="Upload your ID"
-          description="Please upload your ID verification to complete your order. Click here to upload."
+          description="Please upload your ID verification to complete your order."
           buttonText="Upload ID"
           href="/id-verification"
         />

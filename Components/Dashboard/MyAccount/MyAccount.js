@@ -135,7 +135,7 @@ const MyAccount = () => {
   const { clearCoupon } = useCouponStore();
 
   useEffect(() => { setReorderBackProcess(false); }, [setReorderBackProcess]);
-
+console.log("authUserDetail", authUserDetail);
   const getProducts = useMutation(GetProductsApi, {
     onSuccess: (response) => {
       setProductData(response?.data?.data || {});
@@ -234,7 +234,7 @@ const MyAccount = () => {
         />
         <div className="grid grid-cols-12 gap-4">
           <div className="col-span-12 sm:col-span-6">
-        {(!imageUploaded || !idVerificationUpload) && isDashboardRoute && <UploadTopPrompt />}
+            {(!imageUploaded || !idVerificationUpload) && isDashboardRoute && <UploadTopPrompt />}
 
           </div>
         </div>
@@ -252,11 +252,13 @@ const MyAccount = () => {
                   Continue your latest clinician-approved treatment.
                 </p>
               </div>
-              <div className="order-3 flex items-center justify-between gap-3 lg:order-2 lg:col-span-6">
+              <div className="order-3 block sm:flex items-center justify-between gap-3 lg:order-2 lg:col-span-6">
                 <div>
                   <h2 className="inter-bold-font text-[15px] lg:text-[16px] 2xl:text-[19px] text-slate-900">Available Treatments</h2>
                   <p className="inter-reg-font mt-0.5 text-[12px] lg:text-[12.5px] 2xl:text-[13.5px] text-slate-500">
-                    Weight loss injection treatment options for your journey.
+                    We offer the following weight loss injections treatment options to help you in your weight loss journey.
+
+
                   </p>
                 </div>
                 <ViewToggle productView={productView} setProductView={setProductView} />
@@ -267,7 +269,7 @@ const MyAccount = () => {
             <div className="contents">
 
               {/* Left: Reorder card — horizontal */}
-              <div className="order-2 flex flex-col pb-3 lg:order-3 lg:col-span-6 lg:pb-0">
+              <div className="order-2 flex flex-col pb-5 lg:order-3 lg:col-span-6 lg:pb-0">
                 <div className="flex flex-1 flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white sm:flex-row">
                   {/* Thumbnail — full height */}
                   <div className="flex h-[150px] w-full shrink-0 items-center justify-center border-b border-slate-100 bg-[#F1F5F9] sm:h-auto sm:w-[160px] sm:border-b-0 sm:border-r lg:w-[120px] xl:w-[160px] 2xl:w-[200px]">
@@ -369,7 +371,9 @@ const MyAccount = () => {
                 <div>
                   <h2 className="inter-bold-font text-[15px] lg:text-[16px] 2xl:text-[19px] text-slate-900">Available Treatments</h2>
                   <p className="inter-reg-font mt-0.5 text-[12px] lg:text-[12.5px] 2xl:text-[13.5px] text-slate-500">
-                    Weight loss injection treatment options for your journey.
+                    We offer the following weight loss injections treatment options to help you in your weight loss journey.
+
+
                   </p>
                 </div>
                 <ViewToggle productView={productView} setProductView={setProductView} />

@@ -95,7 +95,7 @@ const OrderDetails = () => {
   if (loading) return (
     <DashBoardLayout>
       <main className="inter-reg-font min-w-0 flex-1 bg-[#FBFBFD]">
-        <div className="mx-auto flex w-full max-w-[1560px] flex-col gap-5 p-4 sm:p-5 lg:p-6">
+        <div className="mx-auto flex w-full  flex-col gap-5 p-4 sm:p-5 lg:p-6">
           <div className="h-[110px] animate-pulse rounded-2xl bg-slate-100" />
           <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
             {[0,1,2].map(i => <div key={i} className="h-[200px] animate-pulse rounded-xl bg-slate-100" />)}
@@ -108,7 +108,7 @@ const OrderDetails = () => {
   return (
     <DashBoardLayout>
       <main className="inter-reg-font min-w-0 flex-1 bg-[#FBFBFD]">
-        <div className="mx-auto flex w-full max-w-[1560px] flex-col gap-5 p-4 sm:p-5 lg:p-6 2xl:p-8">
+        <div className="mx-auto flex w-full flex-col gap-5 p-4 sm:p-5 lg:p-6 2xl:p-8">
 
           {/* Header */}
           <PageHeader

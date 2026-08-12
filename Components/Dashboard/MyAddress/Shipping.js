@@ -185,7 +185,9 @@ export default function Shipping({ shipmentCountries = [] }) {
           </h2>
 
           <p className="inter-reg-font mt-1.5 max-w-2xl text-[12.5px] leading-[1.7] text-slate-500 sm:text-[13px]">
-            Update the delivery address used for your future treatment orders.
+            Update your shipping details — changes will apply to future orders only.
+
+
           </p>
         </div>
       </div>

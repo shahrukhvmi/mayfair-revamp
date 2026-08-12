@@ -457,7 +457,7 @@ const StepsHeader = ({ isOpen, toggleSidebar }) => {
 
             {!pathname?.startsWith("/login") && !token && (
               <div className="flex items-center gap-3">
-                <span className="mont-reg-font hidden text-[10.5px] text-slate-500 sm:block">
+                <span className="mont-medium-font hidden text-[14px] text-slate-500 sm:block">
                   Already have an account?
                 </span>
 
@@ -471,7 +471,7 @@ const StepsHeader = ({ isOpen, toggleSidebar }) => {
               text-[10.5px] text-white
               transition-all duration-200
               hover:bg-[#392765]
-              active:scale-[0.98]
+              active:scale-[0.98]  cursor-pointer
             "
                 >
                   <User2 size={14} strokeWidth={2.2} />

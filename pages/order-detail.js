@@ -70,7 +70,7 @@ const TABS = [
 /* ── Loading skeleton ── */
 const OrderDetailLoader = () => (
   <main className="inter-reg-font min-w-0 flex-1 bg-[#FBFBFD]">
-    <div className="mx-auto flex w-full max-w-[1560px] flex-col gap-5 p-4 sm:p-5 lg:p-6">
+    <div className="mx-auto flex w-full flex-col gap-5 p-4 sm:p-5 lg:p-6">
       <div className="h-[110px] animate-pulse rounded-2xl bg-slate-100" />
       <div className="flex flex-col gap-4">
         {[0, 1, 2].map((i) => (
@@ -151,7 +151,7 @@ const OrderDetail = () => {
       <ProtectedPage>
         <DashBoardLayout>
           <main className="inter-reg-font min-w-0 flex-1 bg-[#FBFBFD]">
-            <div className="mx-auto flex w-full max-w-[1560px] flex-col gap-5 p-4 sm:p-5 lg:p-6 2xl:p-8 2xl:gap-6">
+            <div className="mx-auto flex w-full flex-col gap-5 p-4 sm:p-5 lg:p-6 2xl:p-8 2xl:gap-6">
 
               {/* Back link */}
               <div>
@@ -170,7 +170,7 @@ const OrderDetail = () => {
                 title={`Order #${currentOrder?.id}`}
                 subtitle={
                   formattedDate !== "N/A"
-                    ? `Placed on ${formattedDate}${time ? ` · ${time}` : ""}`
+                    ? `Placed on ${formattedDate}`
                     : "Review your treatment items and patient information."
                 }
                 right={

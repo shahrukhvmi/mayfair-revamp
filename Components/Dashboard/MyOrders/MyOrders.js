@@ -180,7 +180,7 @@ const MyOrders = () => {
 
   return (
     <main className="inter-reg-font min-w-0 flex-1 bg-[#FBFBFD]">
-      <div className="mx-auto flex w-full max-w-[1560px] flex-col gap-6 p-4 sm:p-5 lg:p-6 2xl:p-8 2xl:gap-8">
+      <div className="mx-auto flex w-full flex-col gap-6 p-4 sm:p-5 lg:p-6 2xl:p-8 2xl:gap-8">
 
         {/* Header */}
         <PageHeader
@@ -217,18 +217,19 @@ const MyOrders = () => {
 
             <div className="flex items-center gap-3">
               <div className="flex items-center gap-2">
-                <SlidersHorizontal size={14} strokeWidth={2} className="text-slate-400" />
-                <span className="inter-medium-font text-[12px] text-slate-500">Filter</span>
+                <SlidersHorizontal size={14} strokeWidth={2} className="text-slate-400 sm:block hidden" />
+                <span className="inter-reg-font text-[10.5px] sm:text-[12px] text-slate-500">Sort by status</span>
               </div>
               <StatusFilter value={status} onChange={setStatus} />
             </div>
           </div>
 
           {/* Info notice */}
-          <div className="mx-4 mt-4 sm:mx-5 flex items-start gap-3 rounded-xl border border-slate-100 bg-slate-50/60 px-4 py-3">
+          <div className="mx-4 mt-4 sm:mx-5 flex items-start gap-3 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3">
             <Info size={15} strokeWidth={2} className="mt-0.5 shrink-0 text-slate-400" />
-            <p className="inter-reg-font text-[12px] leading-[1.65] text-slate-500">
-              Address changes apply only to future orders and do not affect previous orders.
+            <p className="inter-reg-font text-[14px] leading-[1.65] text-slate-500">
+            <strong className="inter-bold-font">Note:   </strong>
+Changes to your shipping address will only apply to future orders and will not affect previous ones
             </p>
           </div>
 

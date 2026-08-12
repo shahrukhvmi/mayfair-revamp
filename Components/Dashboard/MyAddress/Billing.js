@@ -194,8 +194,9 @@ export default function Billing({ billingCountries = [] }) {
           </h2>
 
           <p className="inter-reg-font mt-1.5 max-w-2xl text-[12.5px] leading-[1.7] text-slate-500 sm:text-[13px]">
-            Update the billing address associated with your future treatment
-            orders.
+           Update your billing details — changes will apply to future orders only.
+
+
           </p>
         </div>
       </div>
