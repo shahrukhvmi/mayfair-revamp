@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/router";
 import { useMutation } from "@tanstack/react-query";
 import toast from "react-hot-toast";
+import { useDebounce } from "use-debounce";
 import {
   CalendarDays,
   ChevronDown,
@@ -21,7 +22,7 @@ import useAuthUserDetailStore from "@/store/useAuthUserDetailStore";
 import { PageHeader } from "@/Components/Dashboard/MyAccount/MyAccount";
 
 const statusOptions = [
-  { value: "all",        label: "All orders",  color: "bg-slate-100 text-slate-700 border-slate-200" },
+  { value: "all",        label: "All orders",  color: "bg-[#f3f0f9] text-[#47317c] border-[#d9cff0]" },
   { value: "processing", label: "Processing",  color: "bg-amber-50 text-amber-700 border-amber-200" },
   { value: "incomplete", label: "Incomplete",  color: "bg-orange-50 text-orange-700 border-orange-200" },
   { value: "approved",   label: "Approved",    color: "bg-emerald-50 text-emerald-700 border-emerald-200" },
@@ -29,7 +30,7 @@ const statusOptions = [
 ];
 
 const statusDot = {
-  all:        "bg-slate-400",
+  all:        "bg-[#47317c]",
   processing: "bg-amber-500",
   incomplete: "bg-orange-500",
   approved:   "bg-emerald-500",
@@ -99,11 +100,33 @@ const StatusFilter = ({ value, onChange }) => {
   );
 };
 
+// Column configs: [width, height] matching real row layout
+const SKELETON_COLS = [
+  { w: 76,  h: 14 }, // Order ID  (bold, larger)
+  { w: 108, h: 13 }, // Order date (icon + text)
+  { w: 148, h: 13 }, // Treatment
+  { w: 168, h: 13, sub: 100 }, // Items (may have 2 lines)
+  { w: 86,  h: 22, pill: true }, // Status pill
+  { w: 68,  h: 14 }, // Total
+  { w: 36,  h: 36, btn: true },  // Action button
+];
+
 const TableSkeletonRow = ({ index }) => (
-  <tr key={index} className="border-b border-slate-100 last:border-b-0">
-    {[80, 105, 155, 180, 92, 72, 42].map((w, i) => (
+  <tr className="border-b border-slate-100 last:border-b-0">
+    {SKELETON_COLS.map((col, i) => (
       <td key={`${index}-${i}`} className="px-5 py-4">
-        <div className="h-4 animate-pulse rounded-full bg-slate-100" style={{ width: w }} />
+        {col.btn ? (
+          <div className="h-9 w-9 animate-pulse rounded-xl bg-[#47317c]/[0.07]" />
+        ) : col.pill ? (
+          <div className="h-[22px] w-[86px] animate-pulse rounded-full bg-slate-100" />
+        ) : (
+          <div className="flex flex-col gap-1.5">
+            <div className="animate-pulse rounded-full bg-slate-100" style={{ width: col.w, height: col.h }} />
+            {col.sub && (
+              <div className="animate-pulse rounded-full bg-slate-100/70" style={{ width: col.sub, height: 12 }} />
+            )}
+          </div>
+        )}
       </td>
     ))}
   </tr>
@@ -113,11 +136,28 @@ const MobileOrderSkeleton = () => (
   <div className="rounded-2xl border border-slate-100 bg-white p-4">
     <div className="flex items-center justify-between gap-3">
       <div className="h-5 w-28 animate-pulse rounded-full bg-slate-100" />
-      <div className="h-7 w-24 animate-pulse rounded-full bg-slate-100" />
+      <div className="h-[22px] w-24 animate-pulse rounded-full bg-slate-100" />
     </div>
-    <div className="mt-4 h-5 w-2/3 animate-pulse rounded-full bg-slate-100" />
-    <div className="mt-2 h-4 w-1/2 animate-pulse rounded-full bg-slate-100" />
-    <div className="mt-5 h-10 w-full animate-pulse rounded-xl bg-slate-100" />
+    <div className="mt-4 grid grid-cols-2 gap-4">
+      <div>
+        <div className="h-3 w-10 animate-pulse rounded-full bg-slate-100" />
+        <div className="mt-2 h-4 w-24 animate-pulse rounded-full bg-slate-100" />
+      </div>
+      <div className="text-right">
+        <div className="ml-auto h-3 w-10 animate-pulse rounded-full bg-slate-100" />
+        <div className="ml-auto mt-2 h-5 w-16 animate-pulse rounded-full bg-slate-100" />
+      </div>
+    </div>
+    <div className="mt-4 border-t border-slate-100 pt-4">
+      <div className="h-3 w-20 animate-pulse rounded-full bg-slate-100" />
+      <div className="mt-2 h-4 w-40 animate-pulse rounded-full bg-slate-100" />
+    </div>
+    <div className="mt-3">
+      <div className="h-3 w-10 animate-pulse rounded-full bg-slate-100" />
+      <div className="mt-2 h-4 w-52 animate-pulse rounded-full bg-slate-100" />
+      <div className="mt-1.5 h-4 w-40 animate-pulse rounded-full bg-slate-100/70" />
+    </div>
+    <div className="mt-5 h-10 w-full animate-pulse rounded-xl bg-[#47317c]/[0.07]" />
   </div>
 );
 
@@ -136,7 +176,9 @@ const EmptyOrders = () => (
 const MyOrders = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [data, setOrderList] = useState(null);
+  const [totalOrders, setTotalOrders] = useState(null);
   const [searchValue, setSearchValue] = useState("");
+  const [debouncedSearch] = useDebounce(searchValue, 500);
 
   const { currentPage, setCurrentPage } = usePaginationStore();
   const { status, setStatus } = useStatusStore();
@@ -144,22 +186,54 @@ const MyOrders = () => {
   const { authUserDetail } = useAuthUserDetailStore();
   const router = useRouter();
 
+  const isMountedRef = useRef(false);
+
   const getOrderList = useMutation(GetOrdersApi, {
-    onSuccess: (response) => { setOrderList(response?.data?.myorders || {}); setIsLoading(false); },
+    onSuccess: (response) => {
+      const myorders = response?.data?.myorders || {};
+      setOrderList(myorders);
+      // Only update overall total when no filter/search is active
+      if (status === "all" && !debouncedSearch) {
+        setTotalOrders(myorders?.total ?? null);
+      }
+      setIsLoading(false);
+    },
     onError: (error) => { toast.error(error?.response?.data?.errors || "Something went wrong"); setIsLoading(false); },
   });
 
-  useEffect(() => { getOrderList.mutate({ data: {}, page: currentPage }); }, [currentPage]);
-
-  const filteredData = data?.allorders?.filter((order) => {
-    const orderItems = Array.isArray(order?.items) ? order.items : [];
-    const matchesSearch =
-      order?.order_id?.toString().includes(searchValue) ||
-      order?.treatment?.toLowerCase().includes(searchValue) ||
-      orderItems.some((item) => item?.product?.toLowerCase().includes(searchValue));
-    const matchesStatus = status === "all" || order?.status?.toLowerCase() === status?.toLowerCase();
-    return matchesSearch && matchesStatus;
+  const buildParams = (page) => ({
+    data: {
+      ...(debouncedSearch ? { search: debouncedSearch } : {}),
+      ...(status !== "all"  ? { status }              : {}),
+    },
+    page,
   });
+
+  const fetchOrders = (page) => {
+    setIsLoading(true);
+    setOrderList(null);
+    getOrderList.mutate(buildParams(page));
+  };
+
+  // Fetch when page changes
+  useEffect(() => { fetchOrders(currentPage); }, [currentPage]);
+
+  // When search changes: reset to page 1 or fetch directly if already on 1
+  useEffect(() => {
+    if (!isMountedRef.current) return;
+    if (currentPage !== 1) { setCurrentPage(1); } else { fetchOrders(1); }
+  }, [debouncedSearch]);
+
+  // When status changes: reset to page 1 or fetch directly if already on 1
+  useEffect(() => {
+    if (!isMountedRef.current) return;
+    if (currentPage !== 1) { setCurrentPage(1); } else { fetchOrders(1); }
+  }, [status]);
+
+  useEffect(() => { isMountedRef.current = true; }, []);
+
+  // All filtering is server-side — only strip orders with missing order_id
+  const filteredData = data?.allorders?.filter((order) => !!order?.order_id);
 
   const handleSendId = (id) => { setOrderId(id); router.push("/order-detail"); };
 
@@ -188,12 +262,15 @@ const MyOrders = () => {
           title="My Orders"
           subtitle="Review your previous orders and complete order details."
           right={
-            data && (
-              <div className="flex items-center gap-2 rounded-xl border border-[#e8e2f5] bg-white/70 px-4 py-2.5">
-                <ShoppingBag size={14} strokeWidth={2} className="text-[#47317c]" />
-                <span className="inter-semibold-font text-[13px] text-slate-800">{data?.allorders?.length || 0} orders</span>
-              </div>
-            )
+            <div className="flex items-center gap-2 rounded-xl border border-[#e8e2f5] bg-white/70 px-4 py-2.5">
+              <ShoppingBag size={14} strokeWidth={2} className="text-[#47317c]" />
+              <span className="inter-semibold-font text-[13px] text-slate-800">
+                {totalOrders === null
+                  ? <span className="inline-block h-3.5 w-10 animate-pulse rounded-full bg-slate-200 align-middle" />
+                  : totalOrders
+                } orders
+              </span>
+            </div>
           }
         />
 
@@ -216,6 +293,12 @@ const MyOrders = () => {
             </form>
 
             <div className="flex items-center gap-3">
+              {/* Filter result count */}
+              {!isLoading && data && (status !== "all" || searchValue) && (
+                <span className={`inter-medium-font whitespace-nowrap rounded-lg border px-3 py-1.5 text-[12px] ${statusOptions.find((o) => o.value === status)?.color ?? "bg-[#f3f0f9] text-[#47317c] border-[#d9cff0]"}`}>
+                  {data?.total ?? 0} results
+                </span>
+              )}
               <div className="flex items-center gap-2">
                 <SlidersHorizontal size={14} strokeWidth={2} className="text-slate-400 sm:block hidden" />
                 <span className="inter-reg-font text-[10.5px] sm:text-[12px] text-slate-500">Sort by status</span>
@@ -256,7 +339,7 @@ Changes to your shipping address will only apply to future orders and will not a
                       const treatments = getUniqueTreatments(order);
                       const groupedItems = getGroupedItems(order);
                       return (
-                        <tr key={order.order_id} className="group border-b border-slate-100 last:border-b-0 transition-colors duration-150 hover:bg-slate-50/60">
+                        <tr key={order.id} className="group border-b border-slate-100 last:border-b-0 transition-colors duration-150 hover:bg-slate-50/60">
                           <td className="px-5 py-4">
                             <span className="inter-bold-font text-[13px] lg:text-[14px] 2xl:text-[15px] text-slate-800">#{order.order_id}</span>
                           </td>
@@ -316,7 +399,7 @@ Changes to your shipping address will only apply to future orders and will not a
                 const treatments = getUniqueTreatments(order);
                 const groupedItems = getGroupedItems(order);
                 return (
-                  <article key={order.order_id} className="overflow-hidden rounded-2xl border border-slate-200/70 bg-white shadow-[0_1px_4px_rgba(0,0,0,0.05)]">
+                  <article key={order.id} className="overflow-hidden rounded-2xl border border-slate-200/70 bg-white shadow-[0_1px_4px_rgba(0,0,0,0.05)]">
                     <div className="flex items-start justify-between gap-3 border-b border-slate-100 px-4 py-3.5">
                       <div>
                         <p className="inter-medium-font text-[10px] uppercase tracking-[0.12em] text-slate-400">Order</p>
@@ -366,7 +449,7 @@ Changes to your shipping address will only apply to future orders and will not a
             )}
           </div>
 
-          {!isLoading && data && (
+          {!isLoading && data && filteredData?.length > 0 && (
             <div className="min-w-0 overflow-hidden border-t border-slate-100 px-3 py-4 sm:px-5">
               <Pagination pagination={data} setPage={setCurrentPage} />
             </div>

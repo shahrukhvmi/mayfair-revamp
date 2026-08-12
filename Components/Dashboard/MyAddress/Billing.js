@@ -9,8 +9,10 @@ import PageLoader from "@/Components/PageLoader/PageLoader";
 import NextButton from "@/Components/NextButton/NextButton";
 import MUISelectField from "@/Components/SelectField/SelectField";
 import { getProfileData, sendProfileData } from "@/api/myProfileApi";
+import { AddressFormSkeleton } from "@/Components/Dashboard/MyAddress/MyAddress";
 
 export default function Billing({ billingCountries = [] }) {
+  const [isDataLoading, setIsDataLoading] = useState(true);
   const [showLoader, setShowLoader] = useState(false);
   const [addressOptions, setAddressOptions] = useState([]);
   const [selectedIndex, setSelectedIndex] = useState("");
@@ -59,18 +61,12 @@ export default function Billing({ billingCountries = [] }) {
   const getProfileDataMutation = useMutation(getProfileData, {
     onSuccess: (response) => {
       const billingData = response?.data?.profile?.billing;
-
-      if (!billingData) {
-        return;
-      }
-
-      setBilling(billingData);
+      if (billingData) setBilling(billingData);
+      setIsDataLoading(false);
     },
-
     onError: (error) => {
-      toast.error(
-        error?.response?.data?.message || "Failed to load profile data.",
-      );
+      toast.error(error?.response?.data?.message || "Failed to load profile data.");
+      setIsDataLoading(false);
     },
   });
 
@@ -179,6 +175,10 @@ export default function Billing({ billingCountries = [] }) {
 
     sendProfileDataMutation.mutate(formData);
   };
+
+  if (isDataLoading) {
+    return <AddressFormSkeleton icon={CreditCard} title="Billing information" subtitle="Update your billing details — changes will apply to future orders only." />;
+  }
 
   return (
     <section className="relative mt-5 overflow-hidden rounded-[22px] border border-[#47317c]/10 bg-[#ffff] p-4 sm:p-5 lg:p-6">

@@ -272,17 +272,66 @@ const JourneyTooltip = ({ active, payload, label, unit }) => {
 };
 
 /* ── Loader ── */
+const pulse = "animate-pulse rounded-full bg-[#47317c]/[0.07]";
+
 const JourneyLoader = () => (
   <main className="min-w-0 flex-1 bg-[#FBFBFD]">
-    <div className="mx-auto flex w-full flex-col gap-6 p-4 sm:p-5 lg:p-6">
-      <div className="h-[110px] animate-pulse rounded-2xl bg-slate-100" />
-      <div className="rounded-2xl border border-slate-200 bg-white p-5">
-        <div className="h-6 w-40 animate-pulse rounded-full bg-slate-100" />
-        <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4">
-          {[0,1,2,3].map((i) => <div key={i} className="h-[140px] animate-pulse rounded-xl bg-slate-100" />)}
-        </div>
-        <div className="mt-4 h-[320px] animate-pulse rounded-xl bg-slate-100" />
+    <div className="mx-auto flex w-full flex-col gap-6 p-4 sm:p-5 lg:p-6 2xl:p-8 2xl:gap-8">
+
+      {/* PageHeader skeleton */}
+      <div className="rounded-2xl border border-[#47317c]/[0.08] bg-white p-4 sm:p-5 lg:p-6">
+        <div className={`h-3 w-28 ${pulse}`} />
+        <div className={`mt-3 h-7 w-52 ${pulse}`} />
+        <div className={`mt-2.5 h-3 w-80 ${pulse}`} />
       </div>
+
+      {/* Content card */}
+      <section className="rounded-2xl border border-slate-200 bg-white">
+
+        {/* Section heading + unit toggle */}
+        <div className="flex flex-col gap-4 border-b border-slate-100 p-4 sm:flex-row sm:items-center sm:justify-between lg:p-5 2xl:p-6">
+          <div>
+            <div className={`h-4 w-36 ${pulse}`} />
+            <div className={`mt-2 h-3 w-56 ${pulse}`} />
+          </div>
+          <div className="h-10 w-32 animate-pulse rounded-xl bg-[#47317c]/[0.07]" />
+        </div>
+
+        {/* Stat cards */}
+        <div className="grid grid-cols-1 gap-3 p-4 sm:grid-cols-2 xl:grid-cols-4 lg:p-5 2xl:p-6 2xl:gap-4">
+          {[0, 1, 2, 3].map((i) => (
+            <article key={i} className="rounded-xl border border-slate-200 bg-white p-4 2xl:p-5">
+              <div className="flex items-start justify-between gap-2">
+                <div className="h-9 w-9 animate-pulse rounded-xl bg-[#47317c]/[0.07]" />
+                <div className={`h-5 w-16 ${pulse}`} />
+              </div>
+              <div className="mt-4 space-y-2">
+                <div className={`h-3 w-24 ${pulse}`} />
+                <div className={`h-7 w-28 ${pulse}`} />
+                <div className={`h-3 w-36 ${pulse}`} />
+              </div>
+            </article>
+          ))}
+        </div>
+
+        {/* Chart area */}
+        <div className="mx-4 mb-4 overflow-hidden rounded-xl border border-slate-100 lg:mx-5 lg:mb-5 2xl:mx-6 2xl:mb-6">
+          <div className="flex flex-col gap-3 border-b border-slate-100 bg-slate-50/60 px-4 py-3.5 sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex items-center gap-2.5">
+              <div className="h-8 w-8 animate-pulse rounded-lg bg-[#47317c]/[0.07]" />
+              <div>
+                <div className={`h-3.5 w-32 ${pulse}`} />
+                <div className={`mt-1.5 h-3 w-48 ${pulse}`} />
+              </div>
+            </div>
+            <div className={`h-7 w-36 ${pulse}`} />
+          </div>
+          <div className="px-4 pb-4 pt-5">
+            <div className="h-[300px] w-full animate-pulse rounded-xl bg-[#47317c]/[0.05] sm:h-[360px]" />
+          </div>
+        </div>
+
+      </section>
     </div>
   </main>
 );

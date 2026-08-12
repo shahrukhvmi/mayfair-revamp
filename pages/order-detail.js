@@ -32,6 +32,19 @@ const getStatusColor = (status = "") => {
   }
 };
 
+const getStatusCardTheme = (status = "") => {
+  switch (status?.toLowerCase()) {
+    case "processing":
+    case "pending":     return { card: "border-amber-200 bg-amber-50/40",    icon: "bg-amber-100 text-amber-600",   dot: "bg-amber-500" };
+    case "incomplete":  return { card: "border-orange-200 bg-orange-50/40",  icon: "bg-orange-100 text-orange-600", dot: "bg-orange-500" };
+    case "approved":
+    case "paid":        return { card: "border-emerald-200 bg-emerald-50/40",icon: "bg-emerald-100 text-emerald-600",dot: "bg-emerald-500" };
+    case "cancelled":
+    case "failed":      return { card: "border-red-200 bg-red-50/40",        icon: "bg-red-100 text-red-500",       dot: "bg-red-500" };
+    default:            return { card: "border-[#e8e2f5] bg-white",           icon: "bg-[#47317c]/[0.07] text-[#47317c]", dot: "bg-slate-400" };
+  }
+};
+
 const formatCurrency = (value) => {
   const n = Number(value);
   return Number.isNaN(n) ? value || "0.00" : n.toFixed(2);
@@ -40,7 +53,7 @@ const formatCurrency = (value) => {
 const formatDate = (value) => {
   if (!value) return "N/A";
   if (moment(value, "DD-MM-YYYY", true).isValid())
-    return moment(value, "DD-MM-YYYY").format("DD MMM YYYY");
+    return moment(value, "DD-MM-YYYY").format("DD-MM-YYYY");
   return value;
 };
 
@@ -68,15 +81,102 @@ const TABS = [
 ];
 
 /* ── Loading skeleton ── */
+const p = "animate-pulse rounded-full bg-[#47317c]/[0.07]";
+
 const OrderDetailLoader = () => (
   <main className="inter-reg-font min-w-0 flex-1 bg-[#FBFBFD]">
-    <div className="mx-auto flex w-full flex-col gap-5 p-4 sm:p-5 lg:p-6">
-      <div className="h-[110px] animate-pulse rounded-2xl bg-slate-100" />
-      <div className="flex flex-col gap-4">
-        {[0, 1, 2].map((i) => (
-          <div key={i} className="h-[200px] animate-pulse rounded-xl bg-slate-100" />
-        ))}
+    <div className="mx-auto flex w-full flex-col gap-5 p-4 sm:p-5 lg:p-6 2xl:p-8 2xl:gap-6">
+
+      {/* Back link */}
+      <div className={`h-4 w-28 ${p}`} />
+
+      {/* PageHeader + status cards */}
+      <div className="rounded-2xl border border-[#47317c]/[0.08] bg-white p-4 sm:p-5 lg:p-6">
+        <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+          <div>
+            <div className={`h-3 w-24 ${p}`} />
+            <div className={`mt-3 h-7 w-40 ${p}`} />
+            <div className={`mt-2.5 h-3 w-56 ${p}`} />
+          </div>
+          <div className="flex flex-col gap-3 sm:flex-row">
+            {[0, 1].map((i) => (
+              <div key={i} className="flex items-center gap-3.5 rounded-2xl border border-[#e8e2f5] bg-white px-4 py-3.5 sm:min-w-[200px]">
+                <div className="h-10 w-10 shrink-0 animate-pulse rounded-xl bg-[#47317c]/[0.07]" />
+                <div className="space-y-2">
+                  <div className={`h-2.5 w-20 ${p}`} />
+                  <div className={`h-6 w-24 ${p}`} />
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
+
+      {/* Tab switcher */}
+      <div>
+        <div className={`h-3 w-24 ${p}`} />
+        <div className="mt-2 inline-flex gap-1 rounded-xl border border-slate-200 bg-slate-50 p-1">
+          <div className="h-9 w-32 animate-pulse rounded-lg bg-[#47317c]/[0.07]" />
+          <div className="h-9 w-32 animate-pulse rounded-lg bg-[#47317c]/[0.04]" />
+        </div>
+      </div>
+
+      {/* Order details card */}
+      <div className="overflow-hidden rounded-[22px] border border-[#47317c]/10 bg-white">
+        {/* Card header */}
+        <div className="flex items-center gap-3 border-b border-[#47317c]/[0.07] bg-[#faf9fc] px-5 py-4">
+          <div className="h-11 w-11 shrink-0 animate-pulse rounded-[13px] bg-[#47317c]/[0.07]" />
+          <div className={`h-5 w-32 ${p}`} />
+        </div>
+
+        {/* Table rows */}
+        <div className="hidden md:block">
+          {/* thead */}
+          <div className="flex border-b border-[#47317c]/[0.07] px-5 py-4 gap-4">
+            <div className={`h-3 w-16 flex-1 ${p}`} />
+            <div className={`h-3 w-16 ${p}`} />
+            <div className={`h-3 w-16 ${p}`} />
+          </div>
+          {[0, 1, 2].map((i) => (
+            <div key={i} className="flex items-center border-b border-[#47317c]/[0.06] px-5 py-5 gap-4">
+              <div className={`h-4 flex-1 ${p}`} style={{ maxWidth: "260px" }} />
+              <div className={`h-8 w-10 ml-auto ${p}`} />
+              <div className={`h-5 w-20 ${p}`} />
+            </div>
+          ))}
+          {/* Shipping row */}
+          <div className="flex items-center border-b border-[#47317c]/[0.06] bg-[#faf9fc]/60 px-5 py-4 gap-4">
+            <div className={`h-3 w-24 ${p}`} />
+            <div className={`h-3 w-16 ml-auto ${p}`} />
+          </div>
+          {/* Total row */}
+          <div className="flex items-center bg-[#47317c]/[0.035] px-5 py-5 gap-4">
+            <div className={`h-5 w-24 ${p}`} />
+            <div className={`h-7 w-20 ml-auto ${p}`} />
+          </div>
+        </div>
+
+        {/* Mobile rows */}
+        <div className="md:hidden">
+          <div className="grid grid-cols-1 gap-3 p-4">
+            {[0, 1, 2].map((i) => (
+              <div key={i} className="rounded-[17px] border border-[#47317c]/[0.08] bg-[#faf9fc] p-4">
+                <div className={`h-4 w-48 ${p}`} />
+                <div className="mt-4 flex items-end justify-between">
+                  <div className={`h-3 w-16 ${p}`} />
+                  <div className={`h-5 w-20 ${p}`} />
+                </div>
+              </div>
+            ))}
+          </div>
+          <div className="border-t border-[#47317c]/[0.07] bg-[#faf9fc] p-4 space-y-3.5">
+            <div className="flex justify-between"><div className={`h-3 w-24 ${p}`} /><div className={`h-3 w-16 ${p}`} /></div>
+            <div className="h-px bg-[#47317c]/10" />
+            <div className="flex justify-between"><div className={`h-5 w-16 ${p}`} /><div className={`h-6 w-20 ${p}`} /></div>
+          </div>
+        </div>
+      </div>
+
     </div>
   </main>
 );
@@ -176,29 +276,45 @@ const OrderDetail = () => {
                 right={
                   <div className="grid w-full grid-cols-1 gap-3 sm:flex sm:w-auto sm:items-center">
                     {/* Order Status card */}
-                    <div className="flex min-w-0 w-full items-center gap-3.5 rounded-2xl border border-[#e8e2f5] bg-white px-4 py-3.5 sm:w-auto sm:min-w-[200px] sm:px-5 sm:py-4">
-                      <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#47317c]/[0.07]">
-                        <ShoppingBag size={18} strokeWidth={1.8} className="text-[#47317c]" />
-                      </span>
-                      <div className="flex flex-col gap-1.5">
-                        <span className="inter-medium-font whitespace-nowrap text-[10px] uppercase tracking-[0.12em] text-slate-400">Order Status</span>
-                        <span className={`inter-semibold-font self-start inline-flex items-center whitespace-nowrap rounded-full border px-3 py-1 text-[12px] capitalize ${getStatusColor(currentOrder?.status || "")}`}>
-                          {currentOrder?.status || "N/A"}
-                        </span>
-                      </div>
-                    </div>
+                    {(() => {
+                      const theme = getStatusCardTheme(currentOrder?.status);
+                      return (
+                        <div className={`flex min-w-0 w-full items-center gap-3.5 rounded-2xl border px-4 py-3.5 sm:w-auto sm:min-w-[200px] sm:px-5 sm:py-4 ${theme.card}`}>
+                          <span className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl ${theme.icon}`}>
+                            <ShoppingBag size={18} strokeWidth={1.8} />
+                          </span>
+                          <div className="flex flex-col gap-1.5">
+                            <span className="inter-medium-font whitespace-nowrap text-[10px] uppercase tracking-[0.12em] text-slate-400">Order Status</span>
+                            <div className="flex items-center gap-1.5">
+                              <span className={`h-1.5 w-1.5 shrink-0 rounded-full ${theme.dot}`} />
+                              <span className={`inter-semibold-font whitespace-nowrap text-[12px] capitalize ${getStatusColor(currentOrder?.status || "").split(" ").find(c => c.startsWith("text-"))}`}>
+                                {currentOrder?.status || "N/A"}
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })()}
                     {/* Payment Status card */}
-                    <div className="flex min-w-0 w-full items-center gap-3.5 rounded-2xl border border-[#e8e2f5] bg-white px-4 py-3.5 sm:w-auto sm:min-w-[210px] sm:px-5 sm:py-4">
-                      <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#47317c]/[0.07]">
-                        <ReceiptText size={18} strokeWidth={1.8} className="text-[#47317c]" />
-                      </span>
-                      <div className="flex flex-col gap-1.5">
-                        <span className="inter-medium-font whitespace-nowrap text-[10px] uppercase tracking-[0.12em] text-slate-400">Payment Status</span>
-                        <span className={`inter-semibold-font self-start inline-flex items-center whitespace-nowrap rounded-full border px-3 py-1 text-[12px] capitalize ${getStatusColor(currentOrder?.payments?.status || "")}`}>
-                          {currentOrder?.payments?.status || "N/A"}
-                        </span>
-                      </div>
-                    </div>
+                    {(() => {
+                      const theme = getStatusCardTheme(currentOrder?.payments?.status);
+                      return (
+                        <div className={`flex min-w-0 w-full items-center gap-3.5 rounded-2xl border px-4 py-3.5 sm:w-auto sm:min-w-[210px] sm:px-5 sm:py-4 ${theme.card}`}>
+                          <span className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl ${theme.icon}`}>
+                            <ReceiptText size={18} strokeWidth={1.8} />
+                          </span>
+                          <div className="flex flex-col gap-1.5">
+                            <span className="inter-medium-font whitespace-nowrap text-[10px] uppercase tracking-[0.12em] text-slate-400">Payment Status</span>
+                            <div className="flex items-center gap-1.5">
+                              <span className={`h-1.5 w-1.5 shrink-0 rounded-full ${theme.dot}`} />
+                              <span className={`inter-semibold-font whitespace-nowrap text-[12px] capitalize ${getStatusColor(currentOrder?.payments?.status || "").split(" ").find(c => c.startsWith("text-"))}`}>
+                                {currentOrder?.payments?.status || "N/A"}
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })()}
                   </div>
                 }
               />
@@ -420,7 +536,9 @@ const OrderDetail = () => {
                       <DetailField label="First name"   value={patientData?.firstName}  capitalize />
                       <DetailField label="Last name"    value={patientData?.lastName}   capitalize />
                       <DetailField label="Gender"       value={patientData?.gender}     capitalize />
-                      <DetailField label="Pregnancy"    value={patientData?.pregnancy}  capitalize />
+                      {patientData?.gender === "female" && (
+                        <DetailField label="Pregnancy"    value={patientData?.pregnancy}  capitalize />
+                      )}
                       <DetailField label="Date of birth" value={formattedDob} />
                       <DetailField label="Phone number" value={patientData?.phoneNo} />
                     </div>

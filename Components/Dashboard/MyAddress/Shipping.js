@@ -9,6 +9,7 @@ import PageLoader from "@/Components/PageLoader/PageLoader";
 import NextButton from "@/Components/NextButton/NextButton";
 import MUISelectField from "@/Components/SelectField/SelectField";
 import { getProfileData, sendProfileData } from "@/api/myProfileApi";
+import { AddressFormSkeleton } from "@/Components/Dashboard/MyAddress/MyAddress";
 
 const SEARCH_BUTTON_CLASS = [
   "inter-medium-font inline-flex w-full cursor-pointer items-center justify-center gap-2",
@@ -25,6 +26,7 @@ const UPDATE_BUTTON_CLASS = [
 ].join(" ");
 
 export default function Shipping({ shipmentCountries = [] }) {
+  const [isDataLoading, setIsDataLoading] = useState(true);
   const [showLoader, setShowLoader] = useState(false);
 
   const [addressOptions, setAddressOptions] = useState([]);
@@ -59,38 +61,23 @@ export default function Shipping({ shipmentCountries = [] }) {
   const getProfileDataMutation = useMutation(getProfileData, {
     onSuccess: (response) => {
       const shippingData = response?.data?.profile?.shipping;
-
-      if (!shippingData) {
-        return;
+      if (shippingData) {
+        setValue("postalcode", shippingData?.postalcode || "");
+        setValue("addressone", shippingData?.addressone || "");
+        setValue("addresstwo", shippingData?.addresstwo || "");
+        setValue("city", shippingData?.city || "");
+        const country = shipmentCountries.find((item) => item?.name === shippingData?.country);
+        if (country) {
+          const countryId = country.id.toString();
+          setValue("shippingCountry", countryId, { shouldValidate: true });
+          setShippingIndex(countryId);
+        }
       }
-
-      setValue("postalcode", shippingData?.postalcode || "");
-
-      setValue("addressone", shippingData?.addressone || "");
-
-      setValue("addresstwo", shippingData?.addresstwo || "");
-
-      setValue("city", shippingData?.city || "");
-
-      const country = shipmentCountries.find(
-        (item) => item?.name === shippingData?.country,
-      );
-
-      if (country) {
-        const countryId = country.id.toString();
-
-        setValue("shippingCountry", countryId, {
-          shouldValidate: true,
-        });
-
-        setShippingIndex(countryId);
-      }
+      setIsDataLoading(false);
     },
-
     onError: (error) => {
-      toast.error(
-        error?.response?.data?.message || "Failed to load profile data.",
-      );
+      toast.error(error?.response?.data?.message || "Failed to load profile data.");
+      setIsDataLoading(false);
     },
   });
 
@@ -170,6 +157,10 @@ export default function Shipping({ shipmentCountries = [] }) {
 
     sendProfileDataMutation.mutate(formData);
   };
+
+  if (isDataLoading) {
+    return <AddressFormSkeleton icon={MapPin} title="Shipping information" subtitle="Update your shipping details — changes will apply to future orders only." />;
+  }
 
   return (
     <section className="relative mt-5 overflow-hidden rounded-[22px] border border-[#47317c]/10 bg-[#ffff] p-4 sm:p-5 lg:p-6">

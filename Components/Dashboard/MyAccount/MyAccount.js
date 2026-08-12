@@ -1,7 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/router";
 import { useMutation } from "@tanstack/react-query";
-import { Skeleton } from "@mui/material";
 import toast from "react-hot-toast";
 import { CalendarDays, Grid2X2, List, Pill, RefreshCcw, User } from "lucide-react";
 
@@ -27,28 +26,51 @@ import UploadTopPrompt from "@/Components/UploadTopPrompt/UploadTopPrompt";
 const SkeletonCard = ({ viewMode = "list" }) => {
   if (viewMode === "list") {
     return (
-      <div className="flex items-center gap-4 rounded-lg border border-slate-100 bg-white p-4">
-        <Skeleton variant="rectangular" width={68} height={68} sx={{ borderRadius: "8px", bgcolor: "rgba(0,0,0,0.05)" }} />
-        <div className="flex-1">
-          <Skeleton variant="text" width="30%" sx={{ bgcolor: "rgba(0,0,0,0.05)" }} />
-          <Skeleton variant="text" width="55%" height={22} sx={{ bgcolor: "rgba(0,0,0,0.05)" }} />
-          <Skeleton variant="text" width="70%" sx={{ bgcolor: "rgba(0,0,0,0.05)" }} />
+      <div className="flex items-center gap-4 rounded-2xl border border-slate-100 bg-white p-4">
+        <div className="h-[68px] w-[68px] shrink-0 animate-pulse rounded-xl bg-slate-100" />
+        <div className="flex-1 space-y-2">
+          <div className="h-3 w-[30%] animate-pulse rounded-full bg-slate-100" />
+          <div className="h-4 w-[55%] animate-pulse rounded-full bg-slate-100" />
+          <div className="h-3 w-[70%] animate-pulse rounded-full bg-slate-100/70" />
         </div>
-        <Skeleton variant="rectangular" width={130} height={36} sx={{ borderRadius: "6px", bgcolor: "rgba(0,0,0,0.05)" }} />
+        <div className="h-9 w-[130px] shrink-0 animate-pulse rounded-xl bg-[#47317c]/[0.07]" />
       </div>
     );
   }
   return (
-    <div className="rounded-lg border border-slate-100 bg-white overflow-hidden">
-      <Skeleton variant="rectangular" height={170} sx={{ bgcolor: "rgba(0,0,0,0.05)" }} />
-      <div className="p-4">
-        <Skeleton variant="text" width="65%" height={22} sx={{ bgcolor: "rgba(0,0,0,0.05)" }} />
-        <Skeleton variant="text" width="90%" sx={{ bgcolor: "rgba(0,0,0,0.05)" }} />
-        <Skeleton variant="rectangular" height={36} sx={{ mt: 2, borderRadius: "6px", bgcolor: "rgba(0,0,0,0.05)" }} />
+    <div className="overflow-hidden rounded-2xl border border-slate-100 bg-white">
+      <div className="h-[170px] w-full animate-pulse bg-slate-100" />
+      <div className="space-y-2 p-4">
+        <div className="h-4 w-[65%] animate-pulse rounded-full bg-slate-100" />
+        <div className="h-3 w-[90%] animate-pulse rounded-full bg-slate-100" />
+        <div className="mt-3 h-9 w-full animate-pulse rounded-xl bg-[#47317c]/[0.07]" />
       </div>
     </div>
   );
 };
+
+/* ── Reorder Card Skeleton ── */
+const ReorderSkeletonCard = () => (
+  <div className="flex flex-1 flex-col overflow-hidden rounded-2xl border border-slate-100 bg-white sm:flex-row">
+    {/* Thumbnail */}
+    <div className="flex h-[150px] w-full shrink-0 items-center justify-center bg-slate-100/60 sm:h-auto sm:w-[160px] lg:w-[120px] xl:w-[160px] 2xl:w-[200px]">
+      <div className="h-[100px] w-[100px] animate-pulse rounded-2xl bg-slate-200" />
+    </div>
+    {/* Info */}
+    <div className="flex flex-1 flex-col justify-between gap-4 p-4 sm:flex-row sm:items-center sm:p-5 lg:flex-col lg:items-stretch lg:p-4 xl:flex-row xl:items-center 2xl:p-6">
+      <div className="flex-1 space-y-2.5">
+        <div className="h-3 w-28 animate-pulse rounded-full bg-slate-100" />
+        <div className="h-5 w-[65%] animate-pulse rounded-full bg-slate-100" />
+        <div className="h-3 w-[80%] animate-pulse rounded-full bg-slate-100/70" />
+      </div>
+      <div className="flex shrink-0 flex-col items-end gap-3">
+        <div className="h-3 w-10 animate-pulse rounded-full bg-slate-100" />
+        <div className="h-7 w-16 animate-pulse rounded-full bg-slate-100" />
+        <div className="h-9 w-[150px] animate-pulse rounded-xl bg-[#47317c]/[0.07]" />
+      </div>
+    </div>
+  </div>
+);
 
 /* ── Page Header ── */
 export const PageHeader = ({ label, title, subtitle, right }) => (
@@ -59,7 +81,7 @@ export const PageHeader = ({ label, title, subtitle, right }) => (
         <p className="inter-semibold-font text-[10px] lg:text-[10px] 2xl:text-[11px] uppercase tracking-[0.16em] text-[#47317c]/70 mb-2">
           {label}
         </p>
-        <h1 className="inter-bold-font text-[21px] leading-tight tracking-[-0.025em] text-slate-900 sm:text-[25px] lg:text-[25px] 2xl:text-[31px]">
+        <h1 className="inter-bold-font text-[21px] leading-tight tracking-[-0.025em] text-slate-900 sm:text-[25px] lg:text-[25px] 2xl:text-[31px] capitalize">
           {title}
         </h1>
         {subtitle && (
@@ -127,6 +149,12 @@ const MyAccount = () => {
   const [productData, setProductData] = useState(null);
   const [productView, setProductView] = useState("list");
   const [isReorderLoading, setIsReorderLoading] = useState(false);
+  const [uploadStatusLoading, setUploadStatusLoading] = useState(true);
+  // Previous session se cached — skeleton decide karne ke liye
+  const [cachedHasReorder, setCachedHasReorder] = useState(() => {
+    if (typeof window !== "undefined") return localStorage.getItem("mf_has_reorder") === "true";
+    return false;
+  });
 
   const { authUserDetail, setIsReturning } = useAuthUserDetailStore();
   const { setReorderBackProcess } = useReorderBackProcessStore();
@@ -138,7 +166,11 @@ const MyAccount = () => {
 console.log("authUserDetail", authUserDetail);
   const getProducts = useMutation(GetProductsApi, {
     onSuccess: (response) => {
-      setProductData(response?.data?.data || {});
+      const data = response?.data?.data || {};
+      setProductData(data);
+      const hasReorder = !!(data?.reorder);
+      setCachedHasReorder(hasReorder);
+      localStorage.setItem("mf_has_reorder", String(hasReorder));
       setIsLoading(false);
     },
     onError: (error) => {
@@ -191,13 +223,23 @@ console.log("authUserDetail", authUserDetail);
   };
 
   useEffect(() => {
-    const run = async () => { try { const r = await GetImageIsUplaod({ reorder }); setImageUploaded(r?.data?.status); } catch { } };
+    let cancelled = false;
+    const run = async () => {
+      try {
+        const [imgRes, idRes] = await Promise.all([
+          GetImageIsUplaod({ reorder }),
+          GetIdVerification({ reorder }),
+        ]);
+        if (!cancelled) {
+          setImageUploaded(imgRes?.data?.status);
+          setIdVerificationUpload(idRes?.data?.status);
+        }
+      } catch { } finally {
+        if (!cancelled) setUploadStatusLoading(false);
+      }
+    };
     run();
-  }, [reorder]);
-
-  useEffect(() => {
-    const run = async () => { try { const r = await GetIdVerification({ reorder }); setIdVerificationUpload(r?.data?.status); } catch { } };
-    run();
+    return () => { cancelled = true; };
   }, [reorder]);
 
   useEffect(() => {
@@ -234,13 +276,60 @@ console.log("authUserDetail", authUserDetail);
         />
         <div className="grid grid-cols-12 gap-4">
           <div className="col-span-12 sm:col-span-6">
-            {(!imageUploaded || !idVerificationUpload) && isDashboardRoute && <UploadTopPrompt />}
+            {isDashboardRoute && <UploadTopPrompt isLoading={uploadStatusLoading} />}
 
           </div>
         </div>
         {/* Alerts */}
 
-        {currentTreatment ? (
+        {isLoading ? (
+          cachedHasReorder ? (
+            /* ── LOADING (reorder user): both columns ── */
+            <div className="flex flex-col gap-6 lg:grid lg:grid-cols-12 lg:gap-6">
+              <div className="flex flex-col gap-3 lg:col-span-6">
+                <div>
+                  <div className="h-5 w-40 animate-pulse rounded-full bg-[#47317c]/[0.08]" />
+                  <div className="mt-2 h-3 w-[65%] animate-pulse rounded-full bg-[#47317c]/[0.05]" />
+                </div>
+                <ReorderSkeletonCard />
+              </div>
+              <div className="flex flex-col gap-3 lg:col-span-6">
+                <div className="flex items-start justify-between gap-3">
+                  <div className="min-w-0 flex-1">
+                    <div className="h-5 w-44 animate-pulse rounded-full bg-[#47317c]/[0.08]" />
+                    <div className="mt-2 h-3 w-[75%] animate-pulse rounded-full bg-[#47317c]/[0.05]" />
+                  </div>
+                  <div className="shrink-0 flex flex-col items-end gap-1.5">
+                    <div className="h-3 w-12 animate-pulse rounded-full bg-[#47317c]/[0.05]" />
+                    <div className="h-10 w-[88px] animate-pulse rounded-xl bg-[#47317c]/[0.07]" />
+                  </div>
+                </div>
+                <div className="grid grid-cols-1 gap-3">
+                  {[0, 1, 2].map((i) => <SkeletonCard key={i} viewMode="list" />)}
+                </div>
+              </div>
+            </div>
+          ) : (
+            /* ── LOADING (no reorder): only Available Treatments ── */
+            <div className="grid grid-cols-12">
+              <div className="col-span-12 flex flex-col gap-3 lg:col-span-6">
+                <div className="flex items-start justify-between gap-3">
+                  <div className="min-w-0 flex-1">
+                    <div className="h-5 w-44 animate-pulse rounded-full bg-[#47317c]/[0.08]" />
+                    <div className="mt-2 h-3 w-[75%] animate-pulse rounded-full bg-[#47317c]/[0.05]" />
+                  </div>
+                  <div className="shrink-0 flex flex-col items-end gap-1.5">
+                    <div className="h-3 w-12 animate-pulse rounded-full bg-[#47317c]/[0.05]" />
+                    <div className="h-10 w-[88px] animate-pulse rounded-xl bg-[#47317c]/[0.07]" />
+                  </div>
+                </div>
+                <div className="grid grid-cols-1 gap-3">
+                  {[0, 1, 2].map((i) => <SkeletonCard key={i} viewMode="list" />)}
+                </div>
+              </div>
+            </div>
+          )
+        ) : currentTreatment ? (
           /* ── WITH REORDER: side-by-side layout ── */
           <div className="flex flex-col gap-3 lg:grid lg:grid-cols-12 lg:gap-6">
 
@@ -367,7 +456,7 @@ console.log("authUserDetail", authUserDetail);
           /* ── WITHOUT REORDER: left 6 cols only ── */
           <div className="grid grid-cols-12">
             <section className="col-span-12 lg:col-span-6">
-              <div className="mb-3 flex items-center justify-between gap-3">
+              <div className="mb-3 block sm:flex items-center justify-between gap-3">
                 <div>
                   <h2 className="inter-bold-font text-[15px] lg:text-[16px] 2xl:text-[19px] text-slate-900">Available Treatments</h2>
                   <p className="inter-reg-font mt-0.5 text-[12px] lg:text-[12.5px] 2xl:text-[13.5px] text-slate-500">
@@ -379,12 +468,8 @@ console.log("authUserDetail", authUserDetail);
                 <ViewToggle productView={productView} setProductView={setProductView} />
               </div>
 
-              {isLoading ? (
-                <div className="grid grid-cols-1 gap-3">
-                  {[0, 1, 2, 3].map((i) => <SkeletonCard key={i} viewMode={productView} />)}
-                </div>
-              ) : availableProducts.length > 0 ? (
-                <div className="grid grid-cols-1 gap-3">
+              {availableProducts.length > 0 ? (
+                <div className={productView === "list" ? "grid grid-cols-1 gap-3" : "grid grid-cols-1 sm:grid-cols-2 gap-3"}>
                   {availableProducts.map((product, index) => (
                     <ProductCard
                       key={product?.id || product?.sequence || index}

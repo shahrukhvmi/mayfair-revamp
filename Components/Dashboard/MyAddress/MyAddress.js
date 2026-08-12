@@ -9,12 +9,47 @@ import { getProfileData } from "@/api/myProfileApi";
 import useAuthUserDetailStore from "@/store/useAuthUserDetailStore";
 import { PageHeader } from "@/Components/Dashboard/MyAccount/MyAccount";
 
+export const AddressFormSkeleton = ({ icon: Icon, title, subtitle }) => (
+  <section className="relative mt-5 overflow-hidden rounded-[22px] border border-[#47317c]/10 bg-white p-4 sm:p-5 lg:p-6">
+    {/* Header */}
+    <div className="flex items-start gap-3.5 border-b border-[#47317c]/[0.07] pb-5">
+      <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-[14px] bg-[#47317c]/[0.08] text-[#47317c]">
+        <Icon size={19} strokeWidth={2} />
+      </span>
+      <div className="min-w-0">
+        <h2 className="inter-bold-font text-[20px] leading-7 text-slate-950 sm:text-[23px]">{title}</h2>
+        <p className="inter-reg-font mt-1.5 text-[12.5px] text-slate-500 sm:text-[13px]">{subtitle}</p>
+      </div>
+    </div>
+    {/* Fields skeleton */}
+    <div className="mt-6 space-y-5">
+      {/* Country */}
+      <div className="h-[52px] w-full animate-pulse rounded-[14px] bg-slate-100" />
+      {/* Postcode + button */}
+      <div className="flex gap-2">
+        <div className="h-[52px] flex-1 animate-pulse rounded-[14px] bg-slate-100" />
+        <div className="h-[52px] w-24 animate-pulse rounded-md bg-[#47317c]/[0.07]" />
+      </div>
+      {/* Address row */}
+      <div className="grid grid-cols-2 gap-5">
+        <div className="h-[52px] animate-pulse rounded-[14px] bg-slate-100" />
+        <div className="h-[52px] animate-pulse rounded-[14px] bg-slate-100" />
+      </div>
+      {/* City */}
+      <div className="h-[52px] w-full animate-pulse rounded-[14px] bg-slate-100" />
+      {/* Button */}
+      <div className="!mt-9 border-t border-[#47317c]/[0.07] pt-5">
+        <div className="h-[46px] w-[160px] animate-pulse rounded-xl bg-[#47317c]/[0.07]" />
+      </div>
+    </div>
+  </section>
+);
+
 export default function MyAddress() {
   const [billingCountries, setBillingCountries] = useState([]);
   const [shipmentCountries, setShipmentCountries] = useState([]);
 
   const { authUserDetail } = useAuthUserDetailStore();
-  const displayEmail = authUserDetail?.email?.trim() || "Not available";
 
   const getProfileDataMutation = useMutation(getProfileData, {
     onSuccess: (data) => {
@@ -28,9 +63,11 @@ export default function MyAddress() {
 
   useEffect(() => { getProfileDataMutation.mutate(); }, []);
 
+  const countriesLoading = getProfileDataMutation.isLoading;
+
   return (
     <main className="inter-reg-font min-w-0 flex-1 bg-[#FBFBFD]">
-      <div className="mx-auto flex w-full  flex-col gap-6 p-4 sm:p-5 lg:p-6">
+      <div className="mx-auto flex w-full flex-col gap-6 p-4 sm:p-5 lg:p-6">
 
         <PageHeader
           label="Account"
@@ -38,28 +75,18 @@ export default function MyAddress() {
           subtitle="Manage shipping and billing addresses for your orders."
         />
 
-        {/* Both forms side by side */}
         <div className="grid grid-cols-1 gap-4 xl:grid-cols-2">
-          {/* Shipping */}
           <section>
-            {/* <div className="mb-3 flex items-center gap-2">
-              <MapPin size={14} strokeWidth={2} className="text-slate-400" />
-              <h2 className="inter-semibold-font text-[14px] text-slate-700">Shipping Address</h2>
-            </div> */}
-            {/* <div className="rounded-lg border border-slate-100 bg-white"> */}
-              <Shipping shipmentCountries={shipmentCountries} />
-            {/* </div> */}
+            {countriesLoading
+              ? <AddressFormSkeleton icon={MapPin} title="Shipping information" subtitle="Update your shipping details — changes will apply to future orders only." />
+              : <Shipping shipmentCountries={shipmentCountries} />
+            }
           </section>
-
-          {/* Billing */}
           <section>
-            {/* <div className="mb-3 flex items-center gap-2">
-              <CreditCard size={14} strokeWidth={2} className="text-slate-400" />
-              <h2 className="inter-semibold-font text-[14px] text-slate-700">Billing Address</h2>
-            </div> */}
-            {/* <div className="rounded-lg border border-slate-100 bg-white"> */}
-              <Billing billingCountries={billingCountries} />
-            {/* </div> */}
+            {countriesLoading
+              ? <AddressFormSkeleton icon={CreditCard} title="Billing information" subtitle="Update your billing details — changes will apply to future orders only." />
+              : <Billing billingCountries={billingCountries} />
+            }
           </section>
         </div>
 

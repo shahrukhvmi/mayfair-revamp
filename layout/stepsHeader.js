@@ -20,8 +20,6 @@ import {
 import ApplicationLogo from "@/config/ApplicationLogo";
 import LoginModal from "@/Components/LoginModal/LoginModal";
 import { Login } from "@/api/loginApi";
-import GetImageIsUplaod from "@/api/GetImageIsUplaod";
-import { GetIdVerification } from "@/api/IdVerificationApi";
 import { GetPrescriptionEvidence } from "@/api/PrescriptionEvidenceApi";
 import Fetcher from "@/library/Fetcher";
 import useAbandonCardStore from "@/store/abandonCardStore";
@@ -34,8 +32,6 @@ import useConfirmationInfoStore from "@/store/confirmationInfoStore";
 import useConfirmationQuestionsStore from "@/store/confirmationQuestionStore";
 import useExplanationEvidenceStore from "@/store/useExplanationEvidenceStore";
 import useGpDetailsStore from "@/store/gpDetailStore";
-import useIdVerificationUploadStore from "@/store/useIdVerificationUploadStore";
-import useImageUploadStore from "@/store/useImageUploadStore ";
 import useImpersonate from "@/store/useImpersonateStore";
 import useLastBmi from "@/store/useLastBmiStore";
 import lastOrderStore from "@/store/lastOrderStore";
@@ -45,7 +41,6 @@ import useMedicalQuestionsStore from "@/store/medicalQuestionStore";
 import usePasswordReset from "@/store/usePasswordReset";
 import usePatientInfoStore from "@/store/patientInfoStore";
 import useProductId from "@/store/useProductIdStore";
-import useReorder from "@/store/useReorderStore";
 import useReturning from "@/store/useReturningPatient";
 import useShippingOrBillingStore from "@/store/shipingOrbilling";
 import useSignupStore from "@/store/signupStore";
@@ -61,19 +56,7 @@ const dashboardRoutes = [
   "/weight-loss-journey/",
 ];
 
-const menuItemSx = {
-  borderRadius: "12px",
-  fontFamily: "var(--mont-medium)",
-  fontSize: "12px",
-  color: "#1e293b",
-  gap: "11px",
-  minHeight: "44px",
-  px: 1.5,
-  "&:hover": {
-    backgroundColor: "rgba(71,49,124,0.06)",
-    color: "#47317c",
-  },
-};
+
 
 const StepsHeader = ({ isOpen, toggleSidebar }) => {
   const { clearLastOrder } = lastOrderStore();
@@ -82,17 +65,6 @@ const StepsHeader = ({ isOpen, toggleSidebar }) => {
   const closeTimer = useRef(null);
   const accountMenuRef = useRef(null);
 
-  const handleMenuEnter = (e) => {
-    clearTimeout(closeTimer.current);
-    setAnchorEl(e.currentTarget);
-  };
-  const handleMenuLeave = () => {
-    closeTimer.current = setTimeout(() => setAnchorEl(null), 200);
-  };
-  const handleMenuPaperEnter = () => clearTimeout(closeTimer.current);
-  const handleMenuPaperLeave = () => {
-    closeTimer.current = setTimeout(() => setAnchorEl(null), 200);
-  };
 
   const supportsHover = () =>
     typeof window !== "undefined" &&
@@ -137,11 +109,6 @@ const StepsHeader = ({ isOpen, toggleSidebar }) => {
   const { clearUserData } = useUserDataStore();
   const { setIsReturningPatient } = useReturning();
   const { impersonate, setImpersonate } = useImpersonate();
-  const { reorder } = useReorder();
-  const { imageUploaded, setImageUploaded } = useImageUploadStore();
-
-  const { idVerificationUpload, setIdVerificationUpload } =
-    useIdVerificationUploadStore();
 
   const { setExplainenationEvidence, setExplainenationEvidenceDetails } =
     useExplanationEvidenceStore();
@@ -259,31 +226,7 @@ const StepsHeader = ({ isOpen, toggleSidebar }) => {
 
   const redirectTo = isDashboardRoute ? "/dashboard" : "/";
 
-  useEffect(() => {
-    const fetchImageStatus = async () => {
-      try {
-        const res = await GetImageIsUplaod({ reorder });
-        setImageUploaded(res?.data?.status);
-      } catch (error) {
-        console.error("Failed to fetch image status:", error);
-      }
-    };
 
-    fetchImageStatus();
-  }, [reorder]);
-
-  useEffect(() => {
-    const fetchIdStatus = async () => {
-      try {
-        const res = await GetIdVerification({ reorder });
-        setIdVerificationUpload(res?.data?.status);
-      } catch (error) {
-        console.error("Failed to fetch ID status:", error);
-      }
-    };
-
-    fetchIdStatus();
-  }, [reorder]);
 
   useEffect(() => {
     const getEvidence = async () => {
@@ -392,7 +335,7 @@ const StepsHeader = ({ isOpen, toggleSidebar }) => {
                     <UserRound size={16} strokeWidth={2} className="text-white" />
                   </span>
                   <span className="hidden min-w-0 text-left sm:block">
-                    <span className="inter-medium-font block max-w-[150px] truncate text-[14px] leading-4 text-slate-900">
+                    <span className="inter-medium-font block max-w-[150px] truncate text-[14px] leading-4 text-slate-900 capitalize">
                       {displayName}
                     </span>
                   </span>
@@ -411,7 +354,7 @@ const StepsHeader = ({ isOpen, toggleSidebar }) => {
                       <p className="inter-medium-font m-0 text-[10px] uppercase tracking-[0.11em] text-slate-500">
                         Logged in as
                       </p>
-                      <p className="inter-semibold-font mt-1.5 truncate text-[14px] text-slate-900">
+                      <p className="inter-semibold-font mt-1.5 truncate text-[14px] text-slate-900 capitalize">
                         {displayName}
                       </p>
                       <p title={email} className="inter-reg-font mt-0.5 truncate text-[12px] text-slate-500">

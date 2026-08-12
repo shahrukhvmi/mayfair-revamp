@@ -55,7 +55,23 @@ const AlertBanner = ({
   );
 };
 
-const UploadTopPrompt = () => {
+const UploadTopPromptSkeleton = () => (
+  <section className="w-full overflow-hidden rounded-2xl border border-amber-200/50 bg-amber-50/30">
+    <div className="flex w-full flex-col gap-4 p-4 sm:p-5 lg:flex-row lg:items-center lg:justify-between">
+      <div className="flex min-w-0 flex-1 items-center gap-3.5">
+        <div className="h-10 w-10 shrink-0 animate-pulse rounded-xl bg-amber-100" />
+        <div className="flex-1 space-y-2">
+          <div className="h-3 w-24 animate-pulse rounded-full bg-amber-100" />
+          <div className="h-4 w-48 animate-pulse rounded-full bg-amber-100" />
+          <div className="h-3 w-64 animate-pulse rounded-full bg-amber-100/70" />
+        </div>
+      </div>
+      <div className="h-9 w-full animate-pulse rounded-xl bg-amber-100 lg:w-[140px]" />
+    </div>
+  </section>
+);
+
+const UploadTopPrompt = ({ isLoading = false }) => {
   const router = useRouter();
 
   const { imageUploaded } = useImageUploadStore();
@@ -63,14 +79,13 @@ const UploadTopPrompt = () => {
 
   const isDashboardRoute = router.pathname === "/dashboard";
 
-  if (!isDashboardRoute) {
-    return null;
-  }
+  if (!isDashboardRoute) return null;
 
-  /*
-   * Priority 1:
-   * Pehle BMI / patient image upload show hogi.
-   */
+  // Dono upload ho chuke hain — banner aayega hi nahi, skeleton bhi nahi
+  if (imageUploaded && idVerificationUpload) return null;
+
+  if (isLoading) return <UploadTopPromptSkeleton />;
+
   if (!imageUploaded) {
     return (
       <div className="w-full">
@@ -85,11 +100,6 @@ const UploadTopPrompt = () => {
     );
   }
 
-  /*
-   * Priority 2:
-   * Image upload complete hone ke baad
-   * ID verification show hogi.
-   */
   if (!idVerificationUpload) {
     return (
       <div className="w-full">
