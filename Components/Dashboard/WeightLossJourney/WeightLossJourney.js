@@ -131,7 +131,7 @@ export default function WeightLossJourney() {
           {/* Section heading + unit toggle */}
           <div className="flex flex-col gap-4 border-b border-slate-100 p-4 sm:flex-row sm:items-center sm:justify-between lg:p-5 2xl:p-6">
             <div>
-              <h2 className="inter-bold-font text-[16px] lg:text-[17px] 2xl:text-[20px] text-slate-900">Progress overview</h2>
+              <h2 className="inter-bold-font text-[16px] lg:text-[17px] 2xl:text-[20px] text-slate-900">Progress Overview</h2>
               <p className="inter-reg-font mt-0.5 text-[12px] 2xl:text-[13px] text-slate-500">Your weight statistics and progression chart.</p>
             </div>
             <UnitTabs unit={unit} setUnit={setUnit} />
