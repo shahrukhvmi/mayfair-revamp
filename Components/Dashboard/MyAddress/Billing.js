@@ -194,7 +194,7 @@ export default function Billing({ billingCountries = [] }) {
           </h2>
 
           <p className="inter-reg-font mt-1.5 max-w-2xl text-[12.5px] leading-[1.7] text-slate-500 sm:text-[13px]">
-           Update your billing details — changes will apply to future orders only.
+            Update your billing details — changes will apply to future orders only.
 
 
           </p>
@@ -243,13 +243,7 @@ export default function Billing({ billingCountries = [] }) {
         />
 
         {/* Postcode */}
-        <div
-          className={
-            isSearchAllowed
-              ? "grid grid-cols-1 gap-3 sm:grid-cols-[minmax(0,1fr)_150px] sm:items-center"
-              : "grid grid-cols-1 gap-3"
-          }
-        >
+        <div className="relative">
           <TextField
             label="Post code"
             name="postalcode"
@@ -263,20 +257,15 @@ export default function Billing({ billingCountries = [] }) {
               type="button"
               onClick={handleSearch}
               disabled={addressSearchLoading}
-              className="inter-medium-font inline-flex w-full cursor-pointer items-center justify-center gap-2 rounded-sm border border-[#47317c] bg-[#47317c] px-4 py-4 text-[12px] text-white transition-all mt-2 duration-150 hover:bg-[#392765] disabled:cursor-not-allowed disabled:border-slate-300 disabled:bg-slate-300 disabled:shadow-none"
-            >
+className="absolute right-2 top-12.5 -translate-y-1/2 bg-[#47317c] hover:bg-[#392765] text-white text-sm font-medium px-4 py-1.5 rounded-md flex items-center gap-1.5 disabled:opacity-60 transition-colors cursor-pointer"            >
               {addressSearchLoading ? (
                 <>
-                  <Loader2
-                    size={16}
-                    strokeWidth={2.3}
-                    className="animate-spin"
-                  />
+                  <Loader2 size={15} strokeWidth={2.3} className="animate-spin" />
                   Searching
                 </>
               ) : (
                 <>
-                  <Search size={16} strokeWidth={2.3} />
+                  <Search size={15} strokeWidth={2.3} />
                   Search
                 </>
               )}

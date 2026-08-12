@@ -235,29 +235,29 @@ export default function Shipping({ shipmentCountries = [] }) {
         />
 
         {/* Postcode and search */}
-        <div className="grid grid-cols-1 gap-3 sm:grid-cols-[minmax(0,1fr)_150px] sm:items-center">
+        <div className="relative">
           <TextField
             label="Post code"
             name="postalcode"
             register={register}
             required
             errors={errors}
+            className="pr-32" // input ke andar right padding ta button fit ho
           />
-
           <button
             type="button"
             onClick={handleSearch}
             disabled={addressSearchLoading}
-            className={SEARCH_BUTTON_CLASS}
+            className="absolute right-2 top-12.5 -translate-y-1/2 bg-[#47317c] hover:bg-[#47317c] text-white text-sm font-medium px-4 py-1.5 rounded-md flex items-center gap-1.5 disabled:opacity-60 transition-colors cursor-pointer"
           >
             {addressSearchLoading ? (
               <>
-                <Loader2 size={16} strokeWidth={2.3} className="animate-spin" />
+                <Loader2 size={15} strokeWidth={2.3} className="animate-spin" />
                 Searching
               </>
             ) : (
               <>
-                <Search size={16} strokeWidth={2.3} />
+                <Search size={15} strokeWidth={2.3} />
                 Search
               </>
             )}
