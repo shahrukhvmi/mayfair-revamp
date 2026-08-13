@@ -150,7 +150,7 @@ const PasswordChange = () => {
       <div className="mx-auto flex w-full flex-col gap-6 p-4 sm:p-5 lg:p-6">
 
         <PageHeader
-          label="Account"
+          label="Password"
           title="Change Password"
           subtitle="Create a strong, secure password to protect your account."
         />

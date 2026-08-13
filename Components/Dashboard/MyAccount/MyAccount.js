@@ -261,7 +261,7 @@ console.log("authUserDetail", authUserDetail);
         <PageHeader
           label="My Account"
           title={`Welcome, ${displayName}`}
-          subtitle="Here's an overview of your Mayfair account."
+          subtitle="Here's an overview of your account."
           right={
             <div className="flex items-center gap-3 rounded-xl border border-[#e8e2f5] bg-white/80 px-4 py-2.5">
               {/* <div className="flex h-8 w-8 2xl:h-10 2xl:w-10 shrink-0 items-center justify-center rounded-xl bg-[#47317c] text-white">

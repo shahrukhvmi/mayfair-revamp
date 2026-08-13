@@ -70,7 +70,7 @@ export default function MyAddress() {
       <div className="mx-auto flex w-full flex-col gap-6 p-4 sm:p-5 lg:p-6">
 
         <PageHeader
-          label="Account"
+          label="Address Book"
           title="My Address Book"
           subtitle="Manage shipping and billing addresses for your orders."
         />
