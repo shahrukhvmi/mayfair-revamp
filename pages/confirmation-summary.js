@@ -205,59 +205,41 @@ const ConfirmationSummary = () => {
         <PageAnimationWrapper>
           <div className="space-y-6">
             {/* Summary Box */}
-            <div className="bg-[#F2EEFF] border border-green-100 rounded-md p-5 text-sm text-gray-800">
-              <p className="bold-font text-black mb-1">
-                <span className="bold-font paragraph">Full Name: </span>{" "}
-                {firstName ? (
-                  <>
-                    {" "}
-                    {firstName} {lastName}
-                  </>
-                ) : (
-                  <>
-                    {patientInfo?.firstName} {patientInfo?.lastName}
-                  </>
-                )}
-              </p>
-              {/* <hr className="border-gray-300 mb-3" /> */}
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-2 gap-x-8">
-                <p className="bold-font text-black">
-                  <span className="bold-font paragraph">Post code: </span>
-                  {patientInfo?.address?.postalcode}
+            <div className="rounded-xl border border-slate-100 bg-[#FBFBFD] overflow-hidden">
+              <div className="bg-[#f5f2fc] px-5 py-3.5 border-b border-[#47317c]/[0.07]">
+                <p className="inter-semibold-font text-[15px] text-slate-900">
+                  {firstName ? <>{firstName} {lastName}</> : <>{patientInfo?.firstName} {patientInfo?.lastName}</>}
                 </p>
-                <p className="bold-font text-black">
-                  <span className="bold-font paragraph">Date of Birth:</span>{" "}
-                  {patientInfo?.dob}
-                </p>
-                <p className="bold-font text-black">
-                  <span className="bold-font paragraph">Height:</span>{" "}
-                  {bmi?.height_unit == "imperial" ? (
-                    <span>
-                      {bmi?.ft} ft {bmi?.inch} inch
-                    </span>
-                  ) : (
-                    <span>{bmi?.cm} cm</span>
-                  )}
-                </p>
-                <p className="bold-font text-black">
-                  <span className="bold-font paragraph">Gender:</span>{" "}
-                  <span className="capitalize">{patientInfo?.gender}</span>
-                </p>
-                <p className="bold-font text-black">
-                  <span className="bold-font paragraph">Weight:</span>{" "}
-                  {bmi?.weight_unit == "metrics" ? (
-                    <span>{bmi?.kg} kg</span>
-                  ) : (
-                    <span>
-                      {bmi?.stones} stones {bmi?.pound} pound
-                    </span>
-                  )}
-                </p>
-                <p className="bold-font text-black">
-                  <span className="text-sm text-gray-700 mt-1">BMI: </span>{" "}
-                  {bmi?.bmi?.toFixed(1)}
-                </p>
+              </div>
+              <div className="px-5 py-4 grid grid-cols-1 sm:grid-cols-2 gap-y-3 gap-x-8">
+                <div>
+                  <p className="inter-medium-font text-[11px] uppercase tracking-wide text-slate-400 mb-0.5">Post code</p>
+                  <p className="inter-medium-font text-[14px] text-slate-800">{patientInfo?.address?.postalcode}</p>
+                </div>
+                <div>
+                  <p className="inter-medium-font text-[11px] uppercase tracking-wide text-slate-400 mb-0.5">Date of Birth</p>
+                  <p className="inter-medium-font text-[14px] text-slate-800">{patientInfo?.dob}</p>
+                </div>
+                <div>
+                  <p className="inter-medium-font text-[11px] uppercase tracking-wide text-slate-400 mb-0.5">Height</p>
+                  <p className="inter-medium-font text-[14px] text-slate-800">
+                    {bmi?.height_unit == "imperial" ? <>{bmi?.ft} ft {bmi?.inch} inch</> : <>{bmi?.cm} cm</>}
+                  </p>
+                </div>
+                <div>
+                  <p className="inter-medium-font text-[11px] uppercase tracking-wide text-slate-400 mb-0.5">Gender</p>
+                  <p className="inter-medium-font text-[14px] text-slate-800 capitalize">{patientInfo?.gender}</p>
+                </div>
+                <div>
+                  <p className="inter-medium-font text-[11px] uppercase tracking-wide text-slate-400 mb-0.5">Weight</p>
+                  <p className="inter-medium-font text-[14px] text-slate-800">
+                    {bmi?.weight_unit == "metrics" ? <>{bmi?.kg} kg</> : <>{bmi?.stones} stones {bmi?.pound} pound</>}
+                  </p>
+                </div>
+                <div>
+                  <p className="inter-medium-font text-[11px] uppercase tracking-wide text-slate-400 mb-0.5">BMI</p>
+                  <p className="inter-semibold-font text-[14px] text-[#47317c]">{bmi?.bmi?.toFixed(1)}</p>
+                </div>
               </div>
             </div>
 

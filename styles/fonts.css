@@ -169,19 +169,19 @@
   --inter-thin: "Inter-Thin";
 
 
-  --reg-font: "NibPro-Regular";
-  --bold-font: "NibPro-bold";
-  --light-font: "NibPro-light";
-  --semibold-font: "NibPro-SemiBold";
-  --font-reg: "AtlasGrotesk-Regular";
-  --font-thin: "AtlasGrotesk-Thin";
-  --font-bold: "AtlasGrotesk-Bold";
-  --font-black: "AtlasGrotesk-Black";
-  --font-medium: "AtlasGrotesk-Medium";
+  --reg-font: "Inter-Regular";
+  --bold-font: "Inter-Bold";
+  --light-font: "Inter-Light";
+  --semibold-font: "Inter-SemiBold";
+  --font-reg: "Inter-Regular";
+  --font-thin: "Inter-Thin";
+  --font-bold: "Inter-Bold";
+  --font-black: "Inter-Bold";
+  --font-medium: "Inter-Medium";
 
-  --mont-reg: "Montserrat-Regular";
-  --mont-bold: "Montserrat-Bold";
-  --mont-medium: "Montserrat-Medium";
+  --mont-reg: "Inter-Regular";
+  --mont-bold: "Inter-Bold";
+  --mont-medium: "Inter-Medium";
 }
 .inter-reg-font {
   font-family: var(--inter-reg) !important;

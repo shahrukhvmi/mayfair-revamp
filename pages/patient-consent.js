@@ -106,50 +106,33 @@ export default function PatientConsent() {
                   const selectedAnswer = watch(`responses[${q.id}].answer`);
 
                   return (
-                    <div
-                      key={q.id}
-                      className="space-y-4 border rounded-md border-gray-700 p-5"
-                    >
-                      {/* Question and Checkbox */}
-                      <span className="bold-font text-gray-700 sm:text-lg text-sm">
+                    <div key={q.id} className={`rounded-xl border p-5 transition-all duration-150 ${selectedAnswer ? "border-[#47317c]/20 bg-[#47317c]/[0.03]" : "border-slate-200 bg-[#FBFBFD]"}`}>
+                      <p className="inter-semibold-font mb-3 text-[13px] uppercase tracking-wide text-slate-500">
                         I confirm and understand that:
-                      </span>
-                      {/* Checklist (if exists) */}
+                      </p>
+
                       {q.checklist && (
                         <div
-                          className="list-disc list-outside sm:pl-5 text-sm text-gray-700 space-y-2 reg-font paragraph [&>ul]:list-disc [&>ul]:ml-6 [&>li]:mt-0.5"
+                          className="inter-reg-font mb-4 text-[13px] leading-relaxed text-slate-600 [&>ul]:list-disc [&>ul]:ml-5 [&>li]:mt-1"
                           dangerouslySetInnerHTML={{ __html: q.checklist }}
-                        ></div>
+                        />
                       )}
 
-                      <div className="flex items-start">
-                        <input
-                          type="checkbox"
-                          id={`question-${q.id}`}
-                          checked={selectedAnswer}
-                          onChange={(e) =>
-                            handleCheckboxChange(q.id, e.target.checked)
-                          }
-                          className="hidden"
-                        />
-                        <label
-                          htmlFor={`question-${q.id}`}
-                          className="flex items-start gap-2 cursor-pointer"
-                        >
-                          {selectedAnswer ? (
-                            <MdCheckBox className="text-primary sm:w-9 w-18 h-18 sm:h-9 mt-1" />
-                          ) : (
-                            <MdCheckBoxOutlineBlank className="text-violet-700 sm:w-9 sm:h-9 w-18 h-18 mt-1" />
+                      <label htmlFor={`question-${q.id}`} className="flex cursor-pointer items-start gap-3">
+                        <input type="checkbox" id={`question-${q.id}`} checked={selectedAnswer}
+                          onChange={(e) => handleCheckboxChange(q.id, e.target.checked)} className="hidden" />
+                        <div className={`mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-[5px] border-2 transition-all duration-150
+                          ${selectedAnswer ? "border-[#47317c] bg-[#47317c]" : "border-slate-300 bg-white"}`}>
+                          {selectedAnswer && (
+                            <svg width="10" height="8" viewBox="0 0 10 8" fill="none">
+                              <path d="M1 4L3.5 6.5L9 1" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                            </svg>
                           )}
-                          <span className="bold-font text-gray-700 sm:text-lg text-sm">
-                            {console.log(q, "q?.question")}
-                            {q?.qsummary
-                              ?.replace("I confirm and understand that:", "")
-                              ?.replace("below", "above")
-                              ?.trim()}
-                          </span>
-                        </label>
-                      </div>
+                        </div>
+                        <span className="inter-medium-font text-[14px] leading-relaxed text-slate-800">
+                          {q?.qsummary?.replace("I confirm and understand that:", "")?.replace("below", "above")?.trim()}
+                        </span>
+                      </label>
                     </div>
                   );
                 })}

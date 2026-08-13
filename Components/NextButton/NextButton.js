@@ -1,7 +1,5 @@
 import React from "react";
 
-import { Inter } from "next/font/google";
-const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 const NextButton = ({
   label = "Next",
   loading = false,
@@ -12,20 +10,18 @@ const NextButton = ({
   subHeading,
 }) => {
   return (
-    <div className={"mb-0"}>
+    <div className="mb-0">
       <button
         type={type}
         onClick={onClick}
         disabled={disabled || loading}
-        className={`${className} w-full ${
-          subHeading ? "" : "sm:px-12"
-        }   border-2 py-3 rounded-full text-white bold-font text-sm transition-all duration-150 ease-in-out
-            flex justify-center items-center cursor-pointer
-            ${
-              disabled || loading
-                ? "bg-gray-300 !cursor-not-allowed"
-                : " border-[#47317c] bg-[#47317c] hover:bg-[#47317c]"
-            }`}
+        className={`${className} w-full inter-medium-font text-[14px] tracking-wide transition-all duration-150 ease-in-out
+          flex justify-center items-center cursor-pointer rounded-lg py-3 px-6
+          ${
+            disabled || loading
+              ? "bg-slate-200 text-slate-400 !cursor-not-allowed"
+              : "bg-[#47317c] hover:bg-[#3d2a6b] text-white"
+          }`}
       >
         {loading ? (
           <div className="flex items-center gap-2">
@@ -33,10 +29,10 @@ const NextButton = ({
             <span>Loading...</span>
           </div>
         ) : (
-          <div className="flex flex-col items-center ">
+          <div className="flex flex-col items-center">
             <div>{label}</div>
             {subHeading && (
-              <div className="text-[13px] reg-font pt-1 normal-case">
+              <div className="text-[12px] inter-reg-font pt-1 normal-case opacity-80">
                 {subHeading}
               </div>
             )}

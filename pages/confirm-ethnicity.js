@@ -78,77 +78,44 @@ export default function ConfirmEthnicity() {
         percentage={"60"}
       >
         <PageAnimationWrapper>
-          <p className="bold-font paragraph my-3">
-            Does one of the following options describe your ethnic group or
-            background?
+          <p className="inter-medium-font mb-4 text-[14px] text-slate-700">
+            Does one of the following options describe your ethnic group or background?
           </p>
-          <div className="">
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
-              {[
-                "South Asian",
-                "Chinese",
-                "Other Asian",
-                "Middle Eastern",
-                "Black African",
-                "African-Caribbean",
-              ].map((ethnicity, index) => (
-                <div key={index} className="flex items-start gap-3">
-                  {/* w-2.5 h-2.5 */}
-                  <div className=" mt-2 bg-primary rounded-full"></div>
-                  <div className="flex items-center">
-                    <GoDotFill className="me-2 text-gray-800 text-xs" />
-                    <p className="niba-bold-font text-gray-700">{ethnicity}</p>
-                  </div>
+          <div>
+            <div className="mb-5 grid grid-cols-2 gap-2 rounded-xl border border-slate-100 bg-[#FBFBFD] p-4">
+              {["South Asian","Chinese","Other Asian","Middle Eastern","Black African","African-Caribbean"].map((ethnicity, index) => (
+                <div key={index} className="flex items-center gap-2">
+                  <div className="h-1.5 w-1.5 shrink-0 rounded-full bg-[#47317c]/50" />
+                  <p className="inter-medium-font text-[13px] text-slate-700">{ethnicity}</p>
                 </div>
               ))}
             </div>
-            <div
-              className={`relative ${
-                showLoader ? "pointer-events-none cursor-not-allowed" : ""
-              }`}
-            >
-              <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-                <div className="space-y-4">
+            <div className={`relative ${showLoader ? "pointer-events-none cursor-not-allowed" : ""}`}>
+              <form onSubmit={handleSubmit(onSubmit)} className="space-y-3">
+                <div className="space-y-3">
                   {options.map((option) => {
                     const isSelected = selectedOption === option;
                     return (
                       <label
                         key={option}
-                        className={`flex items-center gap-3 px-4 py-3 border rounded-lg transition-all cursor-pointer text-sm
-                      ${
-                        isSelected
-                          ? "bg-[#F2EEFF] border-black bold-font paragraph"
-                          : "border-gray-300 bold-font paragraph hover:bg-gray-50"
-                      }`}
+                        className={`flex cursor-pointer items-center gap-3 rounded-xl border-2 px-5 py-4 transition-all duration-150 select-none
+                          ${isSelected ? "border-[#47317c] bg-[#47317c]/[0.05]" : "border-slate-200 bg-white hover:border-slate-300 hover:bg-slate-50"}`}
                       >
-                        <div
-                          className={`w-5 h-5 rounded-sm flex items-center justify-center border transition
-                        ${
-                          isSelected
-                            ? "bg-primary border-violet-800 text-white"
-                            : "border-gray-400 bg-white"
-                        }`}
-                        >
-                          {isSelected && <FiCheck className="w-4 h-4" />}
+                        <div className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full border-2 transition-all duration-150
+                          ${isSelected ? "border-[#47317c] bg-[#47317c]" : "border-slate-300 bg-white"}`}>
+                          {isSelected && <div className="h-2 w-2 rounded-full bg-white" />}
                         </div>
-                        <input
-                          type="radio"
-                          value={option}
-                          {...register("ethnicity", { required: true })}
-                          className="hidden"
-                        />
-                        {option}
+                        <input type="radio" value={option} {...register("ethnicity", { required: true })} className="hidden" />
+                        <span className={`inter-medium-font text-[15px] ${isSelected ? "text-[#47317c]" : "text-slate-700"}`}>{option}</span>
                       </label>
                     );
                   })}
                 </div>
 
-                <NextButton disabled={!isValid} label="Next" />
-                <BackButton
-                  label="Back"
-                  className="mt-2"
-                  onClick={() => router.push("/preferred-phone-number")}
-                />
+                <div className="pt-2">
+                  <NextButton disabled={!isValid} label="Next" />
+                  <BackButton label="Back" className="mt-2" onClick={() => router.push("/preferred-phone-number")} />
+                </div>
               </form>
               {showLoader && (
                 <div className="absolute inset-0 z-20 flex justify-center items-center bg-white/60 rounded-lg cursor-not-allowed">

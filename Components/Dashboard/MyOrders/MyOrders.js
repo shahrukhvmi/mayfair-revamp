@@ -304,7 +304,7 @@ const MyOrders = () => {
                   <button
                     type="button"
                     onClick={() => setSearchValue("")}
-                    className="inter-medium-font absolute right-3 top-1/2 -translate-y-1/2 text-[11px] text-slate-400 transition-colors hover:text-slate-600 cursor-pointer"
+                    className="inter-medium-font absolute right-2.5 top-1/2 -translate-y-1/2 rounded px-1.5 py-0.5 text-[11px] text-slate-500 bg-slate-100 hover:bg-slate-200 transition-colors cursor-pointer"
                   >
                     Clear
                   </button>

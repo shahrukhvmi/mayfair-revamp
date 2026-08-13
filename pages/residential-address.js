@@ -151,37 +151,28 @@ export default function ResidentialAddress() {
             >
               <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
                 <div className="space-y-6">
-                  <div className="relative">
-                    <TextField
-                      label="Post code"
-                      name="postalCode"
-                      register={register}
-                      required
-                      errors={errors}
-                    />
+                  <div className="flex items-end gap-2">
+                    <div className="flex-1">
+                      <TextField
+                        label="Post code"
+                        name="postalCode"
+                        register={register}
+                        required
+                        errors={errors}
+                      />
+                    </div>
                     <button
                       type="button"
                       onClick={handleSearch}
-                      className={`bold-medium-font absolute right-3 transform -translate-y-1/2 cursor-pointer flex items-center bg-primary text-white px-2 py-1 rounded w-32 justify-center ${
-                        errors.postalCode ? "top-2/4" : "top-2/3"
-                      }`}
                       disabled={addressSearchLoading}
+                      className="inter-medium-font mb-[3px] flex shrink-0 cursor-pointer items-center gap-1.5 rounded-lg bg-[#47317c] px-4 py-2.5 text-[13px] text-white transition-colors hover:bg-[#3d2a6b] disabled:opacity-60"
                     >
                       {addressSearchLoading ? (
-                        <motion.div
-                          animate={{ rotate: 360 }}
-                          transition={{
-                            repeat: Infinity,
-                            duration: 1,
-                            ease: "linear",
-                          }}
-                          className="w-6 h-6 border-4 border-t-transparent rounded-full text-white"
+                        <motion.div animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 1, ease: "linear" }}
+                          className="h-4 w-4 rounded-full border-2 border-white border-t-transparent"
                         />
                       ) : (
-                        <span className="flex items-center reg-font">
-                          <FaSearch className="inline-block me-2" />
-                          Search
-                        </span>
+                        <><FaSearch size={12} /><span>Search</span></>
                       )}
                     </button>
                   </div>
@@ -227,15 +218,10 @@ export default function ResidentialAddress() {
                     />
                   )}
 
-                  <div className="text-sm sm:text-right text-center">
-                    <button
-                      type="button"
-                      onClick={() => setManual(!manual)}
-                      className="bold-font paragraph underline transition cursor-pointer"
-                    >
-                      {manual
-                        ? "Hide manual address entry"
-                        : "Enter your address manually"}
+                  <div className="text-right">
+                    <button type="button" onClick={() => setManual(!manual)}
+                      className="inter-medium-font cursor-pointer text-[13px] text-[#47317c] transition-colors hover:text-[#3d2a6b]">
+                      {manual ? "Hide manual address entry" : "Enter your address manually"}
                     </button>
                   </div>
 

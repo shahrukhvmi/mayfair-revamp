@@ -148,114 +148,109 @@ export default function PersonalDetails() {
               }`}
             >
               <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-                <div className="space-y-4">
-                  {/* <h1 className="text-lg font-semibold text-center mb-2 text-black">What is your gender</h1> */}
-                  {/* <p className="text-sm text-green-900 text-center mb-6">
-                                Why do we ask about your sex at birth?
-                            </p> */}
 
-                  <div className="space-y-3">
-                    {["Male", "Female"].map((option) => {
-                      const selected = watch("gender") === option;
-                      return (
-                        <label
-                          key={option}
-                          className={`flex items-center gap-3 px-4 py-3 border rounded-lg transition-all cursor-pointer text-sm
-                            ${
-                              selected
-                                ? "bg-[#F2EEFF] border-black text-black bold-font paragraph"
-                                : "border-gray-300 text-gray-900 hover:bg-gray-50"
-                            } bold-font paragraph`}
-                        >
-                          <div
-                            className={`w-5 h-5 rounded-sm flex items-center justify-center border transition
-                            ${
-                              selected
-                                ? "bg-primary border-violet-800 text-white"
-                                : "border-gray-400 bg-white"
-                            }`}
-                          >
-                            {selected && <FiCheck className="w-4 h-4" />}
-                          </div>
-                          <input
-                            type="radio"
-                            value={option}
-                            {...register("gender", { required: true })}
-                            className="hidden"
-                          />
-
-                          {option}
-                        </label>
-                      );
-                    })}
-
-                    {gender === "Female" && (
-                      <div className="space-y-4 mt-6">
-                        <p className="mb-3 reg-font paragraph !text-black !text-lg">
-                          Are you pregnant, breastfeeding, or trying to
-                          conceive?
-                        </p>
-                        <p className="mb-6 reg-font paragraph">
-                          Our treatment programme is not suitable while
-                          breastfeeding, pregnant, or trying to conceive.
-                        </p>
-
-                        <div className="flex gap-4 mt-2 w-full">
-                          {["yes", "no"].map((option) => {
-                            const isSelected = pregnancy === option;
-                            return (
-                              <label
-                                key={option}
-                                className={`reg-font flex items-center px-4 py-4 rounded-md border justify-start cursor-pointer transition-all duration-200 flex-1
-              ${
-                isSelected
-                  ? "bg-violet-100 border-primary text-violet-700"
-                  : "bg-white border-gray-300 hover:border-gray-400 text-gray-800"
-              }`}
-                              >
-                                <input
-                                  type="radio"
-                                  value={option}
-                                  {...register("pregnancy", { required: true })}
-                                  className="hidden"
-                                />
-                                <div
-                                  className={`w-5 h-5 mr-2 rounded-md border flex items-center justify-center
-                ${
-                  isSelected
-                    ? "bg-primary border-[#47317c] text-white"
-                    : "border-gray-400 bg-white"
-                }`}
-                                >
-                                  {isSelected && (
-                                    <FiCheck className="text-md" />
-                                  )}
-                                </div>
-                                <span className="text-black bold-font paragraph capitalize">
-                                  {option}
-                                </span>
-                              </label>
-                            );
-                          })}
+                {/* Male / Female */}
+                <div className="flex gap-3">
+                  {["Male", "Female"].map((option) => {
+                    const selected = watch("gender") === option;
+                    return (
+                      <label
+                        key={option}
+                        className={`
+                          relative flex flex-1 cursor-pointer items-center gap-3 rounded-xl border-2 px-5 py-4
+                          transition-all duration-200 select-none
+                          ${selected
+                            ? "border-[#47317c] bg-[#47317c]/[0.05]"
+                            : "border-slate-200 bg-white hover:border-slate-300 hover:bg-slate-50"
+                          }
+                        `}
+                      >
+                        <input
+                          type="radio"
+                          value={option}
+                          {...register("gender", { required: true })}
+                          className="hidden"
+                        />
+                        <div className={`
+                          flex h-5 w-5 shrink-0 items-center justify-center rounded-full border-2
+                          transition-all duration-200
+                          ${selected ? "border-[#47317c] bg-[#47317c]" : "border-slate-300 bg-white"}
+                        `}>
+                          {selected && <div className="h-2 w-2 rounded-full bg-white" />}
                         </div>
+                        <span className={`inter-medium-font text-[15px] ${selected ? "text-[#47317c]" : "text-slate-700"}`}>
+                          {option}
+                        </span>
+                      </label>
+                    );
+                  })}
+                </div>
 
-                        {pregnancy === "yes" && (
-                          <p className="text-red-600 text-sm mt-2">
-                            This treatment is not suitable if you are pregnant,
-                            trying to get pregnant or breastfeeding. We
-                            recommend you speak to your GP in person.
-                          </p>
-                        )}
+                {errors.gender && (
+                  <p className="inter-reg-font text-[12px] text-red-500">
+                    Please select your sex at birth
+                  </p>
+                )}
+
+                {/* Pregnancy question — Female only */}
+                {gender === "Female" && (
+                  <div className="rounded-xl border border-slate-100 bg-[#FBFBFD] p-5 space-y-4">
+                    <div>
+                      <p className="inter-semibold-font text-[15px] text-slate-800 leading-snug">
+                        Are you pregnant, breastfeeding, or trying to conceive?
+                      </p>
+                      <p className="inter-reg-font mt-1.5 text-[13px] text-slate-500 leading-relaxed">
+                        Our treatment programme is not suitable while breastfeeding, pregnant, or trying to conceive.
+                      </p>
+                    </div>
+
+                    <div className="flex gap-3">
+                      {["yes", "no"].map((option) => {
+                        const isSelected = pregnancy === option;
+                        return (
+                          <label
+                            key={option}
+                            className={`
+                              relative flex flex-1 cursor-pointer items-center gap-3 rounded-xl border-2 px-5 py-4
+                              transition-all duration-200 select-none
+                              ${isSelected
+                                ? "border-[#47317c] bg-[#47317c]/[0.05]"
+                                : "border-slate-200 bg-white hover:border-slate-300 hover:bg-slate-50"
+                              }
+                            `}
+                          >
+                            <input
+                              type="radio"
+                              value={option}
+                              {...register("pregnancy", { required: true })}
+                              className="hidden"
+                            />
+                            <div className={`
+                              flex h-5 w-5 shrink-0 items-center justify-center rounded-full border-2
+                              transition-all duration-200
+                              ${isSelected ? "border-[#47317c] bg-[#47317c]" : "border-slate-300 bg-white"}
+                            `}>
+                              {isSelected && <div className="h-2 w-2 rounded-full bg-white" />}
+                            </div>
+                            <span className={`inter-medium-font text-[15px] capitalize ${isSelected ? "text-[#47317c]" : "text-slate-700"}`}>
+                              {option}
+                            </span>
+                          </label>
+                        );
+                      })}
+                    </div>
+
+                    {pregnancy === "yes" && (
+                      <div className="rounded-xl border border-red-100 bg-red-50 px-4 py-3">
+                        <p className="inter-reg-font text-[13px] text-red-600 leading-relaxed">
+                          This treatment is not suitable if you are pregnant, trying to get pregnant or breastfeeding. We recommend you speak to your GP in person.
+                        </p>
                       </div>
                     )}
                   </div>
+                )}
 
-                  {errors.gender && (
-                    <p className="text-red-500 text-sm mt-1 text-center">
-                      Please select your gender
-                    </p>
-                  )}
-                </div>
+                {/* Date of Birth */}
                 <div>
                   <MuiDatePickerField
                     name="dob"
@@ -264,17 +259,11 @@ export default function PersonalDetails() {
                     errors={errors}
                     rules={{ validate: validateAge }}
                   />
-
-                  {/* {errors.dob && <p className="text-red-500 text-sm mt-1 text-center">{errors.dob.message}</p>} */}
-
-                  {/* {errors.dob && <p className="text-red-500 text-sm mt-1">Date of birth is required</p>} */}
                 </div>
 
                 <NextButton
                   label="Next"
-                  disabled={
-                    !isValid || (gender === "Female" && pregnancy === "yes")
-                  }
+                  disabled={!isValid || (gender === "Female" && pregnancy === "yes")}
                 />
               </form>
               {showLoader && (
