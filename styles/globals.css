@@ -649,3 +649,14 @@ body {
     font-size: 17px;
   }
 }
+
+/* Compact radio option cards across consultation forms on mobile. */
+@media (max-width: 639px) {
+  label:has(input[type="radio"]) {
+    flex: 0 1 calc(50% - 6px) !important;
+    min-height: 46px !important;
+    padding: 9px 12px !important;
+    gap: 8px !important;
+    border-radius: 10px !important;
+  }
+}

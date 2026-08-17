@@ -201,43 +201,43 @@ const ThankYou = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#F2EEFF] px-4 sm:px-8 md:px-20 my-16">
-      <div className="bg-white shadow-2xl rounded-3xl p-8 md:p-12 w-full max-w-3xl transition-all duration-300">
-        <div className="text-center mb-10">
-          <HiBadgeCheck className="w-20 h-20 text-gray-200 fill-purple-600 mx-auto mb-5" />
-          <h2 className="text-4xl font-bold text-gray-800 mb-4">
+    <div className="min-h-screen bg-[#FBFBFD] px-4 py-10 sm:px-6 sm:py-14">
+      <div className="mx-auto w-full max-w-3xl overflow-hidden rounded-2xl border border-[#47317c]/10 bg-white shadow-[0_18px_55px_rgba(71,49,124,0.10)] transition-all duration-300">
+        <div className="mb-0 border-b border-[#47317c]/[0.08] bg-[#f5f2fc] px-6 py-8 text-center sm:px-10">
+          <HiBadgeCheck className="mx-auto mb-4 h-14 w-14 fill-[#47317c] text-white" />
+          <h2 className="inter-bold-font mb-2 text-[24px] tracking-[-0.02em] text-slate-900 sm:text-[30px]">
             {" "}
             Order Placed Successfully
           </h2>
-          <span className="text-gray-800 font-bold text-2xl">
+          <span className="inter-semibold-font text-[15px] text-[#47317c] sm:text-[16px]">
             {" "}
             Order #{orderId}
           </span>
         </div>
 
-        <div className="space-y-6">
+        <div className="space-y-6 px-5 py-6 sm:px-8 sm:py-8">
           <div>
             {/* <h3 className="text-2xl reg-font text-gray-800 border-b border-gray-200 pb-2 mb-4 text-center">Order Summary</h3> */}
-            <div className="overflow-x-auto rounded-xl border border-gray-200 shadow-md">
-              <table className="min-w-full divide-y divide-gray-200 text-sm text-gray-700">
-                <thead className="bg-gray-100 text-gray-700 font-semibold">
+            <div className="overflow-x-auto rounded-xl border border-slate-200/80">
+              <table className="inter-reg-font min-w-full divide-y divide-slate-100 text-sm text-slate-700">
+                <thead className="inter-semibold-font bg-[#47317c]/[0.05] text-slate-700">
                   <tr>
-                    <th className="px-6 py-4 text-left bold-font">Items</th>
-                    <th className="px-6 py-4 text-right bold-font">Quantity</th>
-                    <th className="px-6 py-4 text-right bold-font">Amount</th>
+                    <th className="inter-semibold-font px-6 py-4 text-left">Items</th>
+                    <th className="inter-semibold-font px-6 py-4 text-right">Quantity</th>
+                    <th className="inter-semibold-font px-6 py-4 text-right">Amount</th>
                     <th className="px-6 py-4 text-right"></th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-gray-100 bg-white">
+                <tbody className="divide-y divide-slate-100 bg-white">
                   {items?.map((item, index) => (
-                    <tr key={`addon-${index}`} className="hover:bg-gray-50">
-                      <td className="px-6 py-3 reg-font text-black">
+                    <tr key={`addon-${index}`} className="transition-colors hover:bg-[#47317c]/[0.02]">
+                      <td className="inter-medium-font px-6 py-3 text-slate-900">
                         {item?.label || item?.product || "Add-on"}
                       </td>
-                      <td className="px-6 py-3 text-center reg-font">
+                      <td className="inter-reg-font px-6 py-3 text-center">
                         {item?.quantity}
                       </td>
-                      <td className="px-6 py-3 text-right reg-font">
+                      <td className="inter-reg-font px-6 py-3 text-right">
                         £
                         {(
                           parseFloat(item?.price) * (item?.quantity || 1)
@@ -271,7 +271,7 @@ const ThankYou = () => {
 
                   {checkOut?.discount?.discount !== null && (
                     <tr className="hover:bg-gray-50">
-                      <td className="px-6 py-3 reg-font text-black">
+                      <td className="inter-reg-font px-6 py-3 text-slate-900">
                         Discount
                         {checkOut?.discount?.type === "Percent"
                           ? ` (${parseInt(checkOut?.discount?.discount)}%)`
@@ -281,7 +281,7 @@ const ThankYou = () => {
                           ` - Code: ${checkOut?.discount?.code}`}
                       </td>
                       <td></td>
-                      <td className="px-6 py-3 text-right reg-font text-primary">
+                      <td className="inter-medium-font px-6 py-3 text-right text-[#47317c]">
                         {checkOut?.discount?.type === "Percent"
                           ? `-£${parseFloat(checkOut?.discount?.discount_value || 0).toFixed(2)}`
                           : `-£${parseFloat(checkOut?.discount?.discount).toFixed(2)}`}
@@ -291,7 +291,7 @@ const ThankYou = () => {
 
                   {/* {checkOut?.discount?.discount !== null && (
                     <tr className="hover:bg-gray-50">
-                      <td className="px-6 py-3 reg-font text-black">
+                      <td className="inter-reg-font px-6 py-3 text-slate-900">
                         Discount
                         {checkOut?.discount?.type &&
                           ` (${checkOut?.discount?.type})`}
@@ -336,17 +336,17 @@ const ThankYou = () => {
                         </span>
                       </td>
                       <td></td>
-                      <td className="px-6 py-3 text-right reg-font ">
+                      <td className="inter-reg-font px-6 py-3 text-right">
                         £{parseFloat(checkOut?.shipment?.price).toFixed(2)}
                       </td>
                     </tr>
                   )}
 
-                  <tr className="bg-gray-100 font-bold text-gray-900">
-                    <td colSpan={2} className="px-6 py-3 text-right bold-font">
+                  <tr className="bg-[#47317c]/[0.055] font-bold text-slate-900">
+                    <td colSpan={2} className="inter-semibold-font px-6 py-3 text-right">
                       Total
                     </td>
-                    <td className="px-6 py-3 text-right bold-font">
+                    <td className="inter-semibold-font px-6 py-3 text-right text-[#47317c]">
                       £{parseFloat(checkOut?.total).toFixed(2)}
                     </td>
                     <td></td>
@@ -358,32 +358,24 @@ const ThankYou = () => {
           {!imageUploaded && (
             <>
               <blockquote
-                style={{
-                  padding: "10px",
-                  backgroundColor: "#F9F9F9",
-                  borderLeft: "3px solid #ccc",
-                  borderRight: "3px solid #ccc",
-                  borderRadius: 15,
-                  padding: 20,
-                }}
-                className={`${imageUploaded ? "my-6" : ""} `}
+                className={`rounded-xl border border-[#47317c]/10 bg-[#47317c]/[0.035] p-5 ${imageUploaded ? "my-6" : ""}`}
               >
-                <h2 className="niba-bold-font underline text-black mb-2">
+                <h2 className="inter-semibold-font mb-2 text-[15px] text-slate-900">
                   Photo Upload Request:
                 </h2>{" "}
-                <p className="thin-font text-gray-700">
+                <p className="inter-reg-font text-[13px] leading-relaxed text-slate-600">
                   {" "}
                   To complete your order, please upload a clear, recent
                   full-body photo as part of our prescription approval process.
                   This helps our prescribers verify your BMI and ensure the safe
                   and appropriate supply of your treatment.
                 </p>
-                <p className="thin-font text-gray-700 my-3">
+                <p className="inter-reg-font my-3 text-[13px] leading-relaxed text-slate-600">
                   {" "}
                   Once your photo has been reviewed and approved, your order
                   will be processed and dispensed by our pharmacy.
                 </p>
-                <p className="thin-font text-gray-700 my-3 ">
+                <p className="inter-reg-font my-3 text-[13px] leading-relaxed text-slate-600">
                   {" "}
                   Your privacy is important to us — all photos are stored
                   securely, encrypted, and handled in strict confidence in line
@@ -393,12 +385,11 @@ const ThankYou = () => {
 
               <div className="my-6 flex justify-center ">
                 <button
-                  className="bg-[#f8d86e] border border-[#FFF3CD] rounded-xl sm:rounded-full  py-3 px-2 sm:px-6 text-black flex items-start sm:items-center bold-font cursor-pointer 
-                w-full  text-start sm:text-center"
+                  className="inter-semibold-font flex w-full cursor-pointer items-center gap-2.5 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-left text-[13px] leading-relaxed text-amber-900 transition-colors hover:bg-amber-100"
                   onClick={handleGoUpload}
                 >
                   <RiErrorWarningLine
-                    className="text-black sm:mr-0 mr-2  sm:w-14 w-14 "
+                    className="shrink-0 text-amber-700"
                     size={20}
                   />
                   Click here to upload your full-body image to complete your
@@ -408,7 +399,7 @@ const ThankYou = () => {
             </>
           )}
 
-          <div className="text-left space-y-4 text-gray-700 text-sm leading-relaxed thin-font">
+          <div className="inter-reg-font space-y-4 text-left text-[13px] leading-relaxed text-slate-600">
             {/* <p>
               We have received your medical consultation form which is now being
               reviewed by our prescribers. You may be contacted by a member of
@@ -418,7 +409,7 @@ const ThankYou = () => {
               account.
             </p> */}
             <p>
-              <span className="bold-font underline text-black">Delivery:</span>{" "}
+              <span className="inter-semibold-font text-slate-900">Delivery:</span>{" "}
               All orders, once approved, are shipped via next-day tracked
               delivery using either DPD or Royal Mail. Orders may take longer
               than one working day to approve due to the clinical checks
@@ -427,14 +418,14 @@ const ThankYou = () => {
               accordingly.
             </p>
             <p>
-              <span className="bold-font underline text-black">
+              <span className="inter-semibold-font text-slate-900">
                 Changes or cancellation:
               </span>{" "}
               If there are any changes you would like to make to your order or
               to cancel it, please contact us immediately by email on{" "}
               <a
                 href="mailto:contact@mayfairweightlossclinic.co.uk."
-                className="text-violet-700 reg-font underline"
+                className="inter-medium-font text-[#47317c] underline underline-offset-2"
               >
                 contact@mayfairweightlossclinic.co.uk.
               </a>{" "}

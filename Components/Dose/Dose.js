@@ -217,7 +217,7 @@ const Dose = ({
         {/* </div> */}
         <div
           onClick={isOutOfStock || isAllowExceeded ? undefined : handleAdd}
-          className={`relative mt-3 flex flex-col items-start justify-between gap-3 rounded-xl border-2 p-4 transition-all duration-200 sm:flex-row sm:items-center sm:gap-0
+          className={`relative mt-3 flex flex-col items-start justify-between gap-3 rounded-xl border-2 p-3.5 transition-all duration-200 sm:flex-row sm:items-center sm:gap-0 sm:p-4
             ${isOutOfStock
               ? "cursor-not-allowed border-slate-200 bg-slate-50 opacity-50"
               : isSelected
@@ -237,14 +237,14 @@ const Dose = ({
           )}
 
           {/* Left Side */}
-          <div className="flex items-start gap-3 sm:items-center">
-            <div className={`mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full border-2 transition-all duration-150
+          <div className="flex w-full min-w-0 items-start gap-2.5 sm:w-auto sm:items-center sm:gap-3">
+            <div className={`mt-0.5 flex h-[18px] w-[18px] shrink-0 items-center justify-center rounded-full border-2 transition-all duration-150 sm:h-5 sm:w-5
               ${isSelected ? "border-[#47317c] bg-[#47317c]" : "border-slate-300 bg-white"}`}>
-              {isSelected && <div className="h-2 w-2 rounded-full bg-white" />}
+              {isSelected && <div className="h-1.5 w-1.5 rounded-full bg-white sm:h-2 sm:w-2" />}
             </div>
 
-            <div>
-              <p className="inter-semibold-font text-[15px] capitalize text-slate-900">
+            <div className="min-w-0 flex-1">
+              <p className="inter-semibold-font break-words text-[14px] capitalize leading-snug text-slate-900 sm:text-[15px]">
                 {doseData?.product_name}
               </p>
               <p className={`inter-medium-font text-[13px] ${isSelected ? "text-[#47317c]" : "text-slate-500"}`}>
@@ -259,14 +259,14 @@ const Dose = ({
           </div>
 
           {/* Right Side */}
-          <div className="flex items-center justify-end gap-3 w-full sm:w-auto">
-            <span className={`inter-semibold-font text-[16px] ${isSelected ? "text-[#47317c]" : "text-slate-700"}`}>
+          <div className={`flex w-full items-center gap-2 border-t border-slate-100 pt-3 sm:w-auto sm:gap-3 sm:border-t-0 sm:pt-0 ${isSelected ? "justify-between" : "justify-end"}`}>
+            <span className={`inter-semibold-font shrink-0 text-[16px] ${isSelected ? "text-[#47317c]" : "text-slate-700"}`}>
               £{parseFloat(doseData?.price).toFixed(2)}
             </span>
 
             {isSelected && (
               <>
-                <div className="flex items-center gap-1 rounded-full border border-slate-200 bg-white px-1 py-1 shadow-sm">
+                <div className="ml-auto flex items-center gap-0.5 rounded-full border border-slate-200 bg-white p-1 shadow-sm sm:ml-0 sm:gap-1">
                   <button type="button" onClick={handleDecrement}
                     className="flex h-7 w-7 items-center justify-center rounded-full bg-slate-100 hover:bg-slate-200 cursor-pointer transition-colors">
                     <FaMinus size={9} className="text-slate-600" />
@@ -281,7 +281,7 @@ const Dose = ({
 
                 <button type="button"
                   onClick={(e) => { e.stopPropagation(); setShowModal(true); }}
-                  className="flex h-8 w-8 items-center justify-center rounded-full bg-red-50 text-red-400 hover:bg-red-100 cursor-pointer transition-colors">
+                  className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-red-50 text-red-400 hover:bg-red-100 cursor-pointer transition-colors">
                   <MdDelete size={15} />
                 </button>
               </>

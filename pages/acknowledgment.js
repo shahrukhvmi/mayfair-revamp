@@ -172,7 +172,7 @@ export default function Acknowledgment() {
                     </span>
                   </label>
 
-                  <ul className="inter-reg-font mt-4 space-y-3 pl-8 text-[13px] text-slate-600 leading-relaxed">
+                  <ul className="inter-reg-font mt-4 space-y-3 pl-0 sm:pl-8 text-[13px] text-slate-600 leading-relaxed">
                     {CONSENT_ITEMS.map((item, i) => (
                       <li key={i} className="flex items-start gap-2">
                         <ShieldCheck

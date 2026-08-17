@@ -48,6 +48,20 @@ const Checkout = () => {
   const headingRef = useRef(null);
 
   const [refIndex, setRefIndex] = useState(0);
+  const [showPasswordStep] = useState(
+    () => isPasswordReset && !isReturningPatient,
+  );
+  const passwordStepIndex = showPasswordStep ? 0 : null;
+  const shippingStepIndex = showPasswordStep ? 1 : 0;
+  const billingStepIndex = billingSameAsShipping
+    ? null
+    : shippingStepIndex + 1;
+  const consentStepIndex = billingSameAsShipping
+    ? shippingStepIndex + 1
+    : billingStepIndex + 1;
+  const shippingDone = completedSteps[shippingStepIndex] || closeShipping;
+  const billingDone =
+    billingSameAsShipping || completedSteps[billingStepIndex] || closeBilling;
 
   useEffect(() => {
     headingRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -55,13 +69,16 @@ const Checkout = () => {
 
   const scrollToRef = (ref) => {
     if (ref?.current) {
-      ref.current.scrollIntoView({ behavior: "smooth", block: "start" });
+      const headerOffset = 78;
+      const sectionTop =
+        ref.current.getBoundingClientRect().top + window.scrollY - headerOffset;
+      window.scrollTo({ top: sectionTop, behavior: "smooth" });
     }
   };
 
   const getStepRefs = () => {
     return [
-      isPasswordReset && personalRef,
+      showPasswordStep && personalRef,
       addressRef,
       !billingSameAsShipping && billingRef,
       paymentRef,
@@ -84,7 +101,7 @@ const Checkout = () => {
     // ✅ Go to next step
     if (stepRefs[nextIndex]) {
       setRefIndex(nextIndex);
-      scrollToRef(stepRefs[nextIndex]);
+      setTimeout(() => scrollToRef(stepRefs[nextIndex]), 420);
     }
   };
 
@@ -170,46 +187,51 @@ const Checkout = () => {
         </div>
 
         {/* Sections */}
-        {showResetPassword && !isReturningPatient && (
-          <div ref={personalRef}>
+        {showPasswordStep && (
+          <motion.div ref={personalRef} initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }}>
             <SetAPassword
-              onComplete={() => goToNextStep(0)}
-              isCompleted={completedSteps[0] || !isPasswordReset}
+              onComplete={() => goToNextStep(passwordStepIndex)}
+              isCompleted={completedSteps[passwordStepIndex] || !isPasswordReset}
             />
-          </div>
+          </motion.div>
         )}
 
-        <div ref={addressRef}>
+        {(!showPasswordStep || completedSteps[passwordStepIndex]) && (
+        <motion.div ref={addressRef} initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35 }}>
           <ShippingAddress
-            onComplete={() => goToNextStep(1)}
-            isCompleted={completedSteps[1] || closeShipping}
+            onComplete={() => goToNextStep(shippingStepIndex)}
+            isCompleted={completedSteps[shippingStepIndex] || closeShipping}
             setIsShippingCheck={setIsShippingCheck}
             setIsBillingCheck={setIsBillingCheck}
             setCloseShipping={setCloseShipping}
             // setIsPostalCheck={setIsPostalCheck}
           />
-        </div>
+        </motion.div>
+        )}
 
-        {!billingSameAsShipping && (
-          <div ref={billingRef}>
+        {!billingSameAsShipping && shippingDone && (
+          <motion.div ref={billingRef} initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35 }}>
             <BillingAddress
-              onComplete={() => goToNextStep(2)}
-              isCompleted={completedSteps[2] || closeBilling}
+              onComplete={() => goToNextStep(billingStepIndex)}
+              isCompleted={completedSteps[billingStepIndex] || closeBilling}
               setIsBillingCheck={setIsBillingCheck}
               setCloseBilling={setCloseBilling}
             />
-          </div>
+          </motion.div>
         )}
 
-        <div ref={paymentRef}>
+        {shippingDone && billingDone && (
+        <motion.div ref={paymentRef} initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35 }}>
           <ProductConsent
-            onComplete={() => goToNextStep(billingSameAsShipping ? 2 : 3)}
+            onComplete={() => goToNextStep(consentStepIndex)}
             setIsConcentCheck={setIsConcentCheck}
             isCompleted={setIsConcentCheck}
           />
-        </div>
+        </motion.div>
+        )}
 
-        <div ref={summaryRef}>
+        {isConcentCheck && (
+        <motion.div ref={summaryRef} initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35 }}>
           <OrderSummary
             onComplete={isConcentCheck}
             // isPostalCheck={isPostalCheck}
@@ -217,7 +239,8 @@ const Checkout = () => {
             isShippingCheck={isShippingCheck}
             isBillingCheck={isBillingCheck}
           />
-        </div>
+        </motion.div>
+        )}
       </div>
       </div>
     </>

@@ -139,13 +139,13 @@ const MedicalQuestions = () => {
                       dangerouslySetInnerHTML={{ __html: q.question }}
                     />
 
-                    <div className="flex flex-col gap-3 sm:flex-row">
+                    <div className="flex gap-2.5 sm:gap-3">
                       {q?.options?.map((option) => {
                         const isSelected = selectedAnswer === option;
                         return (
                           <label
                             key={option}
-                            className={`flex flex-1 cursor-pointer items-center gap-2.5 rounded-xl border-2 px-4 py-3 transition-all duration-150 select-none
+                            className={`flex min-w-0 flex-1 cursor-pointer items-center gap-2 rounded-xl border-2 px-3 py-3 transition-all duration-150 select-none sm:gap-2.5 sm:px-4
                               ${isSelected ? "border-[#47317c] bg-[#47317c]/[0.05]" : "border-slate-200 bg-white hover:border-slate-300 hover:bg-slate-50"}`}
                           >
                             <Controller

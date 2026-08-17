@@ -211,32 +211,32 @@ const ConfirmationSummary = () => {
                   {firstName ? <>{firstName} {lastName}</> : <>{patientInfo?.firstName} {patientInfo?.lastName}</>}
                 </p>
               </div>
-              <div className="px-5 py-4 grid grid-cols-1 sm:grid-cols-2 gap-y-3 gap-x-8">
-                <div>
+              <div className="grid grid-cols-2 gap-2.5 px-3 py-3 sm:gap-x-8 sm:gap-y-3 sm:px-5 sm:py-4">
+                <div className="min-w-0 rounded-lg border border-slate-100 bg-white px-3 py-2.5 sm:rounded-none sm:border-0 sm:bg-transparent sm:px-0 sm:py-0">
                   <p className="inter-medium-font text-[11px] uppercase tracking-wide text-slate-400 mb-0.5">Post code</p>
-                  <p className="inter-medium-font text-[14px] text-slate-800">{patientInfo?.address?.postalcode}</p>
+                  <p className="inter-medium-font break-words text-[13px] text-slate-800 sm:text-[14px]">{patientInfo?.address?.postalcode}</p>
                 </div>
-                <div>
+                <div className="min-w-0 rounded-lg border border-slate-100 bg-white px-3 py-2.5 sm:rounded-none sm:border-0 sm:bg-transparent sm:px-0 sm:py-0">
                   <p className="inter-medium-font text-[11px] uppercase tracking-wide text-slate-400 mb-0.5">Date of Birth</p>
-                  <p className="inter-medium-font text-[14px] text-slate-800">{patientInfo?.dob}</p>
+                  <p className="inter-medium-font break-words text-[13px] text-slate-800 sm:text-[14px]">{patientInfo?.dob}</p>
                 </div>
-                <div>
+                <div className="min-w-0 rounded-lg border border-slate-100 bg-white px-3 py-2.5 sm:rounded-none sm:border-0 sm:bg-transparent sm:px-0 sm:py-0">
                   <p className="inter-medium-font text-[11px] uppercase tracking-wide text-slate-400 mb-0.5">Height</p>
-                  <p className="inter-medium-font text-[14px] text-slate-800">
+                  <p className="inter-medium-font break-words text-[13px] text-slate-800 sm:text-[14px]">
                     {bmi?.height_unit == "imperial" ? <>{bmi?.ft} ft {bmi?.inch} inch</> : <>{bmi?.cm} cm</>}
                   </p>
                 </div>
-                <div>
+                <div className="min-w-0 rounded-lg border border-slate-100 bg-white px-3 py-2.5 sm:rounded-none sm:border-0 sm:bg-transparent sm:px-0 sm:py-0">
                   <p className="inter-medium-font text-[11px] uppercase tracking-wide text-slate-400 mb-0.5">Gender</p>
-                  <p className="inter-medium-font text-[14px] text-slate-800 capitalize">{patientInfo?.gender}</p>
+                  <p className="inter-medium-font break-words text-[13px] capitalize text-slate-800 sm:text-[14px]">{patientInfo?.gender}</p>
                 </div>
-                <div>
+                <div className="min-w-0 rounded-lg border border-slate-100 bg-white px-3 py-2.5 sm:rounded-none sm:border-0 sm:bg-transparent sm:px-0 sm:py-0">
                   <p className="inter-medium-font text-[11px] uppercase tracking-wide text-slate-400 mb-0.5">Weight</p>
-                  <p className="inter-medium-font text-[14px] text-slate-800">
+                  <p className="inter-medium-font break-words text-[13px] text-slate-800 sm:text-[14px]">
                     {bmi?.weight_unit == "metrics" ? <>{bmi?.kg} kg</> : <>{bmi?.stones} stones {bmi?.pound} pound</>}
                   </p>
                 </div>
-                <div>
+                <div className="min-w-0 rounded-lg border border-slate-100 bg-white px-3 py-2.5 sm:rounded-none sm:border-0 sm:bg-transparent sm:px-0 sm:py-0">
                   <p className="inter-medium-font text-[11px] uppercase tracking-wide text-slate-400 mb-0.5">BMI</p>
                   <p className="inter-semibold-font text-[14px] text-[#47317c]">{bmi?.bmi?.toFixed(1)}</p>
                 </div>

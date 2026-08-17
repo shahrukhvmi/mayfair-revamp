@@ -46,9 +46,11 @@ export default function DosageSelection() {
     handleSubmit,
     clearErrors,
     setValue,
+    watch,
     formState: { isValid, errors },
   } = useForm({
     mode: "onChange",
+    defaultValues: { terms: false },
   });
 
   const [isExpiryRequired, setIsExpiryRequired] = useState(false);
@@ -57,14 +59,19 @@ export default function DosageSelection() {
 
   // ✅ useEffect to check if `product?.show_expiry` is `0` or `1`
   useEffect(() => {
-    if (variation?.show_expiry === 1) {
+    if (
+      variation?.name === "Mounjaro (Tirzepatide)" ||
+      variation?.show_expiry === 1
+    ) {
       setIsExpiryRequired(true);
     } else {
       setIsExpiryRequired(false);
       clearErrors("terms");
       setValue("terms", false);
     }
-  }, [variation?.show_expiry, clearErrors, setValue]);
+  }, [variation?.name, variation?.show_expiry, clearErrors, setValue]);
+
+  const expiryConfirmed = watch("terms");
 
   const allowed = variation?.allowed;
   const [showDoseModal, setShowDoseModal] = useState(false);
@@ -431,7 +438,7 @@ export default function DosageSelection() {
                       })}
             </div>
 
-            {variation?.show_expiry === 1 && (
+            {isExpiryRequired && (
               <div className="mt-4 rounded-xl border border-slate-100 bg-[#FBFBFD] p-4">
                 <label className="flex cursor-pointer items-start gap-3">
                   <input type="checkbox" className="hidden"
@@ -441,7 +448,13 @@ export default function DosageSelection() {
                         : false,
                     })}
                   />
-                  <div className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-[5px] border-2 border-slate-300 bg-white" />
+                  <div className={`mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-[5px] border-2 transition-all duration-150 ${expiryConfirmed ? "border-[#47317c] bg-[#47317c]" : "border-slate-300 bg-white"}`}>
+                    {expiryConfirmed && (
+                      <svg width="10" height="8" viewBox="0 0 10 8" fill="none" aria-hidden="true">
+                        <path d="M1 4L3.5 6.5L9 1" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                      </svg>
+                    )}
+                  </div>
                   <p className="inter-medium-font text-[13px] leading-relaxed text-slate-700">
                     Please confirm that you have reviewed the expiry dates of the selected doses.
                   </p>

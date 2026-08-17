@@ -383,7 +383,7 @@ export default function ShippingAddress({
                   ) : (
                     <>
                       <FaSearch size={12} />
-                      Search Address
+                      Search
                     </>
                   )}
                 </button>
