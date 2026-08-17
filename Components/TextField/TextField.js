@@ -17,6 +17,7 @@ const TextField = ({
   multiline = false,
   rows = 4,
   readOnly = false,
+  boxed = false,
   className = "",
 }) => {
   const [showPassword, setShowPassword] = useState(false);
@@ -45,12 +46,15 @@ const TextField = ({
   const hasError = !!errors[name];
 
   const baseInputClass = `
-    inter-reg-font w-full px-0 py-3 text-[15px] text-slate-800 bg-transparent
-    border-0 border-b-2 placeholder-slate-300
+    inter-reg-font w-full text-[15px] text-slate-800 placeholder:text-slate-400
     focus:outline-none transition-all duration-200
+    ${boxed
+      ? "rounded-xl border bg-white px-4 py-3 leading-relaxed shadow-[0_1px_3px_rgba(15,23,42,0.03)] focus:ring-[3px]"
+      : "border-0 border-b-2 bg-transparent px-0 py-3"
+    }
     ${hasError
-      ? "border-red-300 focus:border-red-400"
-      : "border-slate-200 focus:border-[#47317c]"
+      ? `border-red-300 focus:border-red-400 ${boxed ? "focus:ring-red-100" : ""}`
+      : `border-slate-200 focus:border-[#47317c] ${boxed ? "focus:ring-[#47317c]/10" : ""}`
     }
     ${disabled || readOnly ? "text-slate-400 cursor-not-allowed" : ""}
     ${isPassword ? "pr-10" : ""}

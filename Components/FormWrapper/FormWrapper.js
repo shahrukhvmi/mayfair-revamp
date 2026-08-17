@@ -14,13 +14,56 @@ const FormWrapper = ({
 
       {/* Progress bar — sticky below header, full viewport width */}
       {percentage > 0 && (
-        <div className="sticky top-[66px] z-30 h-[3px] w-full overflow-hidden bg-slate-100/80">
+        <div
+          className="sticky top-[66px] z-30 h-[2px] w-full overflow-hidden bg-[#47317c]/[0.07]"
+          role="progressbar"
+          aria-valuemin={0}
+          aria-valuemax={100}
+          aria-valuenow={Number(percentage)}
+        >
           <div
-            className="h-full rounded-r-full bg-[#47317c] transition-all duration-500 ease-out"
+            className="form-progress-fill relative h-full origin-left overflow-hidden rounded-r-full bg-[#47317c] shadow-[0_0_8px_rgba(71,49,124,0.28)] transition-[width] duration-500 ease-out"
             style={{ width: `${percentage}%` }}
-          />
+          >
+            <span className="form-progress-shimmer absolute inset-y-0 left-0 w-1/4 bg-gradient-to-r from-transparent via-white/55 to-transparent" />
+          </div>
         </div>
       )}
+
+      <style jsx>{`
+        .form-progress-fill {
+          animation: progress-grow 650ms cubic-bezier(0.22, 1, 0.36, 1) both;
+        }
+
+        .form-progress-shimmer {
+          animation: progress-shimmer 1.8s ease-in-out infinite;
+        }
+
+        @keyframes progress-grow {
+          from {
+            transform: scaleX(0);
+          }
+          to {
+            transform: scaleX(1);
+          }
+        }
+
+        @keyframes progress-shimmer {
+          from {
+            transform: translateX(-110%);
+          }
+          to {
+            transform: translateX(410%);
+          }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+          .form-progress-fill,
+          .form-progress-shimmer {
+            animation: none;
+          }
+        }
+      `}</style>
 
       {/* Page content */}
       <div className="flex items-start justify-center px-4 py-8 sm:py-12 lg:py-14">

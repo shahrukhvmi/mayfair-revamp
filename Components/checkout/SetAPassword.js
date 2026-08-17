@@ -88,36 +88,34 @@ const SetAPassword = ({ isCompleted, onComplete }) => {
 
 
         <form onSubmit={handleSubmit(onSubmit)} className={`relative ${!isPasswordReset ? "opacity-50 cursor-not-allowed" : ""}`}>
-          <div className={`relative mt-4 ${!isPasswordReset ? "opacity-50 cursor-not-allowed pointer-events-none" : ""}`}>
+          <div className={`relative mt-5 ${!isPasswordReset ? "opacity-50 cursor-not-allowed pointer-events-none" : ""}`}>
             <input
               type={showPassword ? "text" : "password"}
               placeholder="Password"
               {...register("password", { required: true })}
-              className={`reg-font w-full text-black px-3 py-4 border-1 bg-white placeholder-gray-400 focus:outline-none ${password.length > 0 ? "border-[#47317c]" : "border-black"
-                }`}
+              className="inter-reg-font w-full border-0 border-b-2 border-slate-200 bg-transparent px-0 py-3 pr-9 text-[14px] text-slate-900 placeholder:text-slate-400 transition-colors duration-200 focus:border-[#47317c] focus:outline-none focus:ring-0"
             />
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
-              className="cursor-pointer absolute top-1/2 right-3 transform -translate-y-1/2 text-gray-600"
+              className="absolute right-0 top-1/2 -translate-y-1/2 cursor-pointer p-1 text-slate-400 transition-colors hover:text-[#47317c]"
             >
               {showPassword ? <FiEye /> : <FiEyeOff />}
             </button>
           </div>
 
-          <div className={`relative mt-4 ${!isPasswordReset ? "opacity-50 cursor-not-allowed pointer-events-none" : ""}`}>
+          <div className={`relative mt-5 ${!isPasswordReset ? "opacity-50 cursor-not-allowed pointer-events-none" : ""}`}>
             <input
               type={showConfirmPassword ? "text" : "password"}
               placeholder="Confirm Password"
               {...register("confirmPassword", { required: true })}
               onPaste={(e) => e.preventDefault()}
-              className={`reg-font bg-white w-full text-black px-3 py-4 border-1 placeholder-gray-400 focus:outline-none ${confirmPassword.length > 0 ? "border-[#47317c]" : "border-black"
-                }`}
+              className="inter-reg-font w-full border-0 border-b-2 border-slate-200 bg-transparent px-0 py-3 pr-9 text-[14px] text-slate-900 placeholder:text-slate-400 transition-colors duration-200 focus:border-[#47317c] focus:outline-none focus:ring-0"
             />
             <button
               type="button"
               onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-              className="cursor-pointer absolute top-1/2 right-3 transform -translate-y-1/2 text-gray-600"
+              className="absolute right-0 top-1/2 -translate-y-1/2 cursor-pointer p-1 text-slate-400 transition-colors hover:text-[#47317c]"
             >
               {showConfirmPassword ? <FiEye /> : <FiEyeOff />}
             </button>
