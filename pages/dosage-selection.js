@@ -327,7 +327,7 @@ export default function DosageSelection() {
 
       <StepsHeader />
 
-      <div className="min-h-screen bg-[#edeaf5] px-4 pb-44 sm:px-6 lg:px-8">
+      <div className="min-h-screen bg-[#FBFBFD] px-4 pb-44 sm:px-6 lg:px-8">
         <div className="mx-auto w-full max-w-xl py-8">
 
           <h1 className="inter-semibold-font mb-6 text-center text-[22px] text-slate-900">

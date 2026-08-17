@@ -118,7 +118,7 @@ const MedicalQuestions = () => {
               showLoader ? "pointer-events-none cursor-not-allowed" : ""
             }`}
           >
-            <form onSubmit={handleSubmit(onSubmit)} className="mt-8 space-y-8">
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
               {questions.map((q) => {
                 const selectedAnswer = watch(`responses[${q.id}].answer`);
                 const subfieldValue = watch(
@@ -132,14 +132,14 @@ const MedicalQuestions = () => {
                 return (
                   <div
                     key={q?.id}
-                    className={`rounded-xl border p-5 ${showValidationError ? "border-red-200 bg-red-50/30" : "border-slate-100 bg-[#FBFBFD]"}`}
+                    className={`rounded-xl border p-4 sm:p-5 ${showValidationError ? "border-red-200 bg-red-50/30" : "border-slate-100 bg-[#FBFBFD]"}`}
                   >
                     <div
                       className="inter-reg-font mb-4 text-[14px] leading-relaxed text-slate-800 [&>ul]:list-disc [&>ul]:ml-6 [&>li]:mt-0.5"
                       dangerouslySetInnerHTML={{ __html: q.question }}
                     />
 
-                    <div className="flex gap-3">
+                    <div className="flex flex-col gap-3 sm:flex-row">
                       {q?.options?.map((option) => {
                         const isSelected = selectedAnswer === option;
                         return (
@@ -176,7 +176,7 @@ const MedicalQuestions = () => {
 
                     {q.has_sub_field && selectedAnswer === "yes" && (
                       <textarea
-                        className="inter-reg-font mt-4 w-full resize-none rounded-lg border-b-2 border-slate-200 bg-transparent px-0 py-2.5 text-[14px] text-slate-800 placeholder-slate-300 focus:border-[#47317c] focus:outline-none transition-colors duration-200"
+                        className="inter-reg-font mt-4 min-h-[104px] w-full resize-y rounded-xl border border-slate-200 bg-white px-4 py-3 text-[14px] leading-relaxed text-slate-800 shadow-[0_1px_3px_rgba(15,23,42,0.03)] transition-all duration-200 placeholder:text-slate-400 focus:border-[#47317c]/40 focus:outline-none focus:ring-[3px] focus:ring-[#47317c]/10"
                         placeholder={q.sub_field_prompt}
                         rows={3}
                         value={subfieldValue}

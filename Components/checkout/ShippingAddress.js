@@ -358,26 +358,27 @@ export default function ShippingAddress({
               )}
             />
             {/* {console.log(isPostalCodeNotValid, "isPostalCodeNotValid")}  */}
-            <div>
+            <div className="relative">
               <TextField
                 label="Post code"
                 name="postalcode"
                 register={register}
                 required
                 errors={errors}
+                className="pr-36"
               />
               {postal && (
                 <button
                   type="button"
                   onClick={handleSearch}
                   disabled={addressSearchLoading}
-                  className="mt-2 w-full flex items-center justify-center gap-2 rounded-xl border border-[#47317c]/30 py-2.5 inter-semibold-font text-[13px] text-[#47317c] hover:bg-[#47317c]/[0.04] transition-colors duration-200 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="inter-semibold-font absolute bottom-[7px] right-0 flex min-w-[124px] cursor-pointer items-center justify-center gap-2 rounded-md bg-[#47317c] px-4 py-2 text-[12px] text-white transition-colors duration-200 hover:bg-[#392765] disabled:cursor-not-allowed disabled:opacity-50"
                 >
                   {addressSearchLoading ? (
                     <motion.div
                       animate={{ rotate: 360 }}
                       transition={{ repeat: Infinity, duration: 1, ease: "linear" }}
-                      className="w-4 h-4 border-2 border-t-transparent border-[#47317c] rounded-full"
+                      className="h-4 w-4 rounded-full border-2 border-white border-t-transparent"
                     />
                   ) : (
                     <>

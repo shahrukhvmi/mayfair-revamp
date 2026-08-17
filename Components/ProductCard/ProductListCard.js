@@ -9,17 +9,36 @@ const ProductListCard = ({
   isLoading,
   buttonText,
   onClick,
+  isSelected = false,
 }) => {
   return (
     <article
+      onClick={() => {
+        if (!isOutOfStock && !isLoading) onClick?.();
+      }}
+      onKeyDown={(event) => {
+        if (
+          !isOutOfStock &&
+          !isLoading &&
+          (event.key === "Enter" || event.key === " ")
+        ) {
+          event.preventDefault();
+          onClick?.();
+        }
+      }}
+      role="button"
+      tabIndex={isOutOfStock || isLoading ? -1 : 0}
       className={`
         group flex flex-wrap items-center gap-3 rounded-2xl border bg-white
         px-3 py-3 sm:flex-nowrap sm:gap-4 sm:px-4 sm:py-3.5 2xl:px-5 2xl:py-4 transition-all duration-200
-        ${isOutOfStock
+        ${isSelected
+          ? "border-[#47317c] shadow-[0_0_0_3px_rgba(71,49,124,0.10)]"
+          : isOutOfStock
           ? "border-slate-200/70 opacity-60 cursor-not-allowed"
           : "border-slate-200/70 shadow-[0_1px_4px_rgba(0,0,0,0.05)] hover:border-slate-300 hover:shadow-[0_4px_16px_rgba(0,0,0,0.08)] cursor-pointer"
         }
       `}
+      aria-selected={isSelected}
     >
       {/* Image box */}
       <div className="relative flex h-[56px] w-[56px] shrink-0 items-center justify-center overflow-hidden rounded-xl bg-slate-100 sm:h-[64px] sm:w-[64px] 2xl:h-[76px] 2xl:w-[76px]">
@@ -63,7 +82,10 @@ const ProductListCard = ({
 
         <button
           type="button"
-          onClick={onClick}
+          onClick={(event) => {
+            event.stopPropagation();
+            onClick?.();
+          }}
           disabled={isOutOfStock || isLoading}
           className={`inter-medium-font inline-flex min-h-[36px] lg:min-h-[36px] 2xl:min-h-[42px] items-center justify-center gap-1.5
             rounded-xl px-3 text-[12px] sm:px-4 sm:text-[12.5px] lg:px-4 lg:text-[12.5px] 2xl:px-6 2xl:text-[13.5px]

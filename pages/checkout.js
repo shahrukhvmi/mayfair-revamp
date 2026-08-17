@@ -133,7 +133,7 @@ const Checkout = () => {
         )}
       </AnimatePresence>
 
-      <div className="min-h-[calc(100vh-66px)] bg-[#edeaf5]">
+      <div className="min-h-[calc(100vh-66px)] bg-[#FBFBFD]">
       <div className="max-w-2xl mx-auto px-4 pb-14 space-y-6">
         <div ref={headingRef} className="sm:px-6 px-0 pt-10 text-center">
           <h1 className="inter-bold-font text-[22px] sm:text-[26px] mb-2 text-slate-900">

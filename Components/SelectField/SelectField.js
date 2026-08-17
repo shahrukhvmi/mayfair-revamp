@@ -1,11 +1,19 @@
 import React from "react";
 import { FormControl, Select, MenuItem, FormHelperText, OutlinedInput } from "@mui/material";
 
-const MUISelectField = ({ label, name, value, onChange, options = [], error = "", placeholder = "Select an option", required = false }) => {
+const MUISelectField = ({ label, name, value, onChange, options = [], error = "", placeholder = "Select an option", required = false, variant = "outlined" }) => {
+  const isUnderline = variant === "underline";
+
   return (
     <div className="mb-4 relative">
       {label && (
-        <label htmlFor={name} className="bold-font paragraph mb-2">
+        <label
+          htmlFor={name}
+          className={isUnderline
+            ? "inter-medium-font mb-1.5 block text-[13px] text-slate-700"
+            : "bold-font paragraph mb-2"
+          }
+        >
           {label}
           {required ? (
             <span className="text-red-500 absolute top-1 ms-1 niba-semibold-font"> *</span>
@@ -24,21 +32,30 @@ const MUISelectField = ({ label, name, value, onChange, options = [], error = ""
           className="reg-font text-2xl"
           input={<OutlinedInput />}
           sx={{
-            backgroundColor: "#fff",
+            backgroundColor: isUnderline ? "transparent" : "#fff",
             "& .MuiOutlinedInput-notchedOutline": {
-              borderColor: error ? "#f44336" : "#000",
-              borderWidth: "1px",'borderRadius': '5px',
+              border: isUnderline ? "0" : undefined,
+              borderBottom: isUnderline
+                ? `2px solid ${error ? "#fca5a5" : "#e2e8f0"}`
+                : undefined,
+              borderColor: isUnderline ? undefined : (error ? "#f44336" : "#000"),
+              borderWidth: isUnderline ? undefined : "1px",
+              borderRadius: isUnderline ? "0" : "5px",
             },
             "&:hover .MuiOutlinedInput-notchedOutline": {
-              borderColor: error ? "#f44336" : "#000",
+              borderColor: isUnderline ? undefined : (error ? "#f44336" : "#000"),
+              borderBottomColor: isUnderline ? (error ? "#f87171" : "#cbd5e1") : undefined,
             },
             "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-              borderColor: "#7c3aed", // violet-700
-              borderWidth: "2px",
+              borderColor: isUnderline ? undefined : "#7c3aed",
+              borderBottomColor: isUnderline ? "#47317c" : undefined,
+              borderWidth: isUnderline ? undefined : "2px",
             },
             ".MuiSelect-select": {
-              padding: "16px 12px",
-              color: "#000",
+              padding: isUnderline ? "12px 28px 12px 0" : "16px 12px",
+              color: isUnderline ? "#0f172a" : "#000",
+              fontFamily: isUnderline ? "var(--inter-reg)" : undefined,
+              fontSize: isUnderline ? "15px" : undefined,
             },
           }}
         >

@@ -17,6 +17,7 @@ const TextField = ({
   multiline = false,
   rows = 4,
   readOnly = false,
+  className = "",
 }) => {
   const [showPassword, setShowPassword] = useState(false);
   const handlePaste = (e) => { if (disablePaste) e.preventDefault(); };
@@ -53,10 +54,11 @@ const TextField = ({
     }
     ${disabled || readOnly ? "text-slate-400 cursor-not-allowed" : ""}
     ${isPassword ? "pr-10" : ""}
+    ${className}
   `;
 
   return (
-    <div className="mb-1">
+    <div className="mb-4">
       {label && (
         <label htmlFor={name} className="inter-medium-font mb-1.5 flex items-center gap-1 text-[13px] text-slate-700">
           {label}

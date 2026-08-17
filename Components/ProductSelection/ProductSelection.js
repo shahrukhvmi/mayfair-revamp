@@ -3,7 +3,7 @@ import FullScreenModal from "../FullScreenModal/FullScreenModal";
 import GetProductsApi from "@/api/getProducts";
 import useProductId from "@/store/useProductIdStore";
 import { useMutation } from "@tanstack/react-query";
-import Product from "../ProductCard/Product";
+import ProductListCard from "../ProductCard/ProductListCard";
 import { Skeleton } from "@mui/material";
 import { userConsultationApi } from "@/api/consultationApi";
 import useCheckoutStore from "@/store/checkoutStore";
@@ -25,15 +25,30 @@ import useReorder from "@/store/useReorderStore";
 const ProductSelection = ({ showProductSelection }) => {
   /* ───────────────  skeleton card ────────────── */
   const SkeletonCard = () => (
-    <div className="p-4 my-3 bg-white rounded-lg shadow-md">
+    <div className="flex flex-wrap items-center gap-3 rounded-2xl border border-slate-200/70 bg-white px-3 py-3 sm:flex-nowrap sm:gap-4 sm:px-4 sm:py-3.5">
       <Skeleton
-        variant="rectangular"
-        height={208}
-        className="mb-4 rounded-lg"
+        variant="rounded"
+        width={64}
+        height={64}
+        className="!shrink-0 !rounded-xl"
       />
-      <Skeleton variant="text" sx={{ fontSize: "1rem" }} width="80%" />
-      <Skeleton variant="text" sx={{ fontSize: "0.875rem" }} width="60%" />
-      <Skeleton variant="rectangular" height={40} className="mt-4 rounded-md" />
+
+      <div className="min-w-0 flex-1">
+        <Skeleton variant="text" width="65%" height={26} />
+      </div>
+
+      <div className="flex w-full shrink-0 items-center justify-between gap-3 pl-[68px] sm:w-auto sm:justify-start sm:gap-4 sm:pl-0">
+        <div className="flex items-center gap-2 sm:block">
+          <Skeleton variant="text" width={36} height={16} />
+          <Skeleton variant="text" width={68} height={26} />
+        </div>
+        <Skeleton
+          variant="rounded"
+          width={142}
+          height={40}
+          className="!rounded-xl"
+        />
+      </div>
     </div>
   );
   /* ───────────────  local state ────────────── */
@@ -91,10 +106,26 @@ const ProductSelection = ({ showProductSelection }) => {
 
   /* ───────────────  helper ────────────── */
   const renderSkeletons = () => (
-    <div className="grid grid-cols-2 gap-6">
-      {Array.from({ length: 2 }).map((_, i) => (
-        <SkeletonCard key={i} />
-      ))}
+    <div className="flex w-full flex-col gap-5">
+      <div className="flex flex-col items-center">
+        <Skeleton variant="text" width={190} height={36} />
+        <Skeleton variant="text" width="min(100%, 390px)" height={24} />
+      </div>
+
+      <div className="grid w-full grid-cols-1 gap-3">
+        {Array.from({ length: 3 }).map((_, i) => (
+          <SkeletonCard key={i} />
+        ))}
+      </div>
+
+      <div className="flex w-full justify-end border-t border-slate-100 pt-4">
+        <Skeleton
+          variant="rounded"
+          width={180}
+          height={42}
+          className="!w-full !rounded-lg sm:!w-[180px]"
+        />
+      </div>
     </div>
   );
 
@@ -138,50 +169,45 @@ const ProductSelection = ({ showProductSelection }) => {
       {isLoading ? (
         renderSkeletons()
       ) : (
-        <div className="w-full flex flex-col items-center justify-center px-4 py-2">
-          <div className="w-full flex flex-col items-center justify-center gap-8">
+        <div className="flex w-full flex-col items-center justify-center">
+          <div className="flex w-full flex-col items-center justify-center gap-5">
             {/* ───── Reorder Treatments ───── */}
 
             {/* ───── Available Treatments ───── */}
             {productData?.products?.length ? (
-              <section className="w-full flex flex-col items-center gap-6">
+              <section className="flex w-full flex-col items-center gap-5">
                 <div className="text-center">
-                  <h2 className="text-2xl font-bold text-gray-800">
+                  <h2 className="inter-bold-font text-[21px] tracking-[-0.02em] text-slate-900 sm:text-[24px]">
                     Select Treatment
                   </h2>
-                  <p className="text-sm text-gray-500 mt-1 max-w-md mx-auto">
+                  <p className="inter-reg-font mx-auto mt-1.5 max-w-md text-[12.5px] leading-5 text-slate-500 sm:text-[13px]">
                     We offer the following weight-loss injection treatments to
                     help you in your weight-loss journey…
                   </p>
                 </div>
 
-                <div
-                  className={`flex flex-wrap gap-6 w-full ${
-                    productData.products.filter(
-                      (p) => p?.inventories?.[0]?.status === 1,
-                    ).length === 1
-                      ? "justify-center"
-                      : "justify-center"
-                  }`}
-                >
+                <div className="grid w-full grid-cols-1 gap-3">
                   {(Array.isArray(productData.reorder)
                     ? productData.reorder
                     : [productData.reorder]
                   )
                     .filter((item) => item?.inventories?.[0]?.status === 1)
                     .map((item) => (
-                      <Product
+                      <ProductListCard
                         key={item?.id}
                         id={item?.id}
                         title={item?.name}
                         image={item?.img}
-                        price={item?.price || "N/A"}
-                        status={item?.inventories?.[0]?.status}
-                        lastOrderDate={item?.lastOrderDate}
-                        buttonText="Reorder Treatment"
-                        reorder
+                        originalPrice={item?.price || "N/A"}
+                        isOutOfStock={!item?.inventories?.[0]?.status}
+                        isLoading={false}
+                        buttonText={
+                          selectedProductId === item?.id
+                            ? "Selected"
+                            : "Reorder Treatment"
+                        }
                         isSelected={selectedProductId === item?.id}
-                        onSelect={() =>
+                        onClick={() =>
                           handleProductSelect(item?.id, "reorder")
                         }
                       />
@@ -190,16 +216,21 @@ const ProductSelection = ({ showProductSelection }) => {
                     .filter((p) => p?.inventories?.[0]?.status === 1)
                     .sort((a, b) => (a.sequence || 0) - (b.sequence || 0))
                     .map((p) => (
-                      <Product
+                      <ProductListCard
                         key={p?.id}
                         id={p?.id}
                         title={p?.name}
                         image={p?.img}
-                        price={p?.price || "N/A"}
-                        status={p?.inventories?.[0]?.status}
-                        buttonText="Start Consultation"
+                        originalPrice={p?.price || "N/A"}
+                        isOutOfStock={!p?.inventories?.[0]?.status}
+                        isLoading={false}
+                        buttonText={
+                          selectedProductId === p?.id
+                            ? "Selected"
+                            : "Start Consultation"
+                        }
                         isSelected={selectedProductId === p?.id}
-                        onSelect={() => handleProductSelect(p?.id, "new")}
+                        onClick={() => handleProductSelect(p?.id, "new")}
                       />
                     ))}
                 </div>
@@ -211,14 +242,16 @@ const ProductSelection = ({ showProductSelection }) => {
             )}
 
             {/* ───── Continue Button ───── */}
-            <div className="pt-6">
-              <NextButton
-                disabled={!selectedProductId}
-                onClick={hanlePrevData}
-                label="Continue"
-                loading={isButtonLoading}
-                className={"px-5"}
-              />
+            <div className="sticky bottom-0 flex w-full justify-end border-t border-slate-100 bg-white/95 pt-4 backdrop-blur-sm">
+              <div className="w-full sm:w-[180px]">
+                <NextButton
+                  disabled={!selectedProductId}
+                  onClick={hanlePrevData}
+                  label="Continue"
+                  loading={isButtonLoading}
+                  className="!rounded-lg px-5"
+                />
+              </div>
             </div>
           </div>
         </div>
