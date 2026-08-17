@@ -217,132 +217,72 @@ const Dose = ({
         {/* </div> */}
         <div
           onClick={isOutOfStock || isAllowExceeded ? undefined : handleAdd}
-          className={`flex flex-col sm:flex-row items-start sm:items-center justify-between w-full p-4 border-2 mt-3 transition-all duration-300 ease-in-out relative rounded-md border-primary gap-4 sm:gap-0
-    ${
-      isOutOfStock
-        ? "opacity-50 cursor-not-allowed bg-white border-gray-400"
-        : isSelected
-          ? "border-primary bg-violet-100 cursor-pointer"
-          : isAllowExceeded
-            ? "border-primary bg-white cursor-not-allowed opacity-60"
-            : "border-primary bg-white hover:bg-gray-50 cursor-pointer"
-    }`}
+          className={`relative mt-3 flex flex-col items-start justify-between gap-3 rounded-xl border-2 p-4 transition-all duration-200 sm:flex-row sm:items-center sm:gap-0
+            ${isOutOfStock
+              ? "cursor-not-allowed border-slate-200 bg-slate-50 opacity-50"
+              : isSelected
+                ? "cursor-pointer border-[#47317c] bg-[#47317c]/[0.04]"
+                : isAllowExceeded
+                  ? "cursor-not-allowed border-slate-200 bg-white opacity-60"
+                  : "cursor-pointer border-slate-200 bg-white hover:border-[#47317c]/40 hover:bg-[#47317c]/[0.02]"
+            }`}
         >
-          {/* Overlay when out of stock */}
           {isOutOfStock && (
             <>
-              {/* Overlay to disable interaction */}
-              <div className="absolute inset-0 z-10 bg-white/10  cursor-not-allowed rounded-md"></div>
-
-              {/* Out of stock badge */}
-              <div className="absolute left-[14px] top-[-10px] bg-primary text-white px-3 py-0.5 text-xs font-semibold rounded z-20">
+              <div className="absolute inset-0 z-10 cursor-not-allowed rounded-xl" />
+              <div className="absolute left-3 top-[-10px] z-20 rounded-full bg-slate-500 px-3 py-0.5 text-[11px] font-semibold text-white">
                 {Number(productId) == 7 ? "Coming Soon" : "Out of stock"}
               </div>
             </>
           )}
 
-          {/* Tick if selected */}
-          {isSelected && (
-            <div
-              className={`absolute -top-3 -right-3 bg-primary text-white rounded-full p-2 shadow-lg
-             ${isSelected ? "cursor-not-allowed" : "cursor-pointer"}`}
-            >
-              <FaCheck size={12} />
+          {/* Left Side */}
+          <div className="flex items-start gap-3 sm:items-center">
+            <div className={`mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full border-2 transition-all duration-150
+              ${isSelected ? "border-[#47317c] bg-[#47317c]" : "border-slate-300 bg-white"}`}>
+              {isSelected && <div className="h-2 w-2 rounded-full bg-white" />}
             </div>
-          )}
 
-          {/* Left Side - Product Details */}
-          <div className="flex items-start sm:items-center gap-3 w-full sm:w-auto">
-            {isSelected ? (
-              <FaDotCircle className="text-primary w-4 h-4 mt-1" />
-            ) : (
-              <FaRegCircle className="text-gray-800 w-4 h-4 mt-1" />
-            )}
-
-            <div className="text-sm sm:text-base text-gray-800">
-              <div className="capitalize font-semibold text-md sm:text-lg text-black">
+            <div>
+              <p className="inter-semibold-font text-[15px] capitalize text-slate-900">
                 {doseData?.product_name}
-              </div>
-              <div className="text-sm text-gray-700">{doseData.name}</div>
+              </p>
+              <p className={`inter-medium-font text-[13px] ${isSelected ? "text-[#47317c]" : "text-slate-500"}`}>
+                {doseData.name}
+              </p>
               {doseData?.expiry && (
-                <div className="text-xs text-gray-500 mt-1">
+                <p className="inter-reg-font mt-0.5 text-[12px] text-slate-400">
                   Expiry: {moment(doseData?.expiry).format("DD/MM/YYYY")}
-                </div>
+                </p>
               )}
             </div>
           </div>
 
-          {/* Right Side - Price and Quantity */}
+          {/* Right Side */}
           <div className="flex items-center justify-end gap-3 w-full sm:w-auto">
-            <span
-              className={`font-semibold text-md sm:text-lg ${isSelected ? "text-primary" : "text-gray-700"}`}
-            >
+            <span className={`inter-semibold-font text-[16px] ${isSelected ? "text-[#47317c]" : "text-slate-700"}`}>
               £{parseFloat(doseData?.price).toFixed(2)}
             </span>
 
-            {/* <span
-              className={`font-semibold text-md sm:text-lg ${
-                isSelected ? "text-primary" : "text-gray-700"
-              }`}
-            >
-              {isPriceComingSoon ? (
-                <span className="text-primary text-sm font-semibold">
-                  Price is coming soon
-                </span>
-              ) : shouldUsePreLaunchPrice ? (
-                <span className="flex items-center gap-2">
-                  <span className="text-sm font-medium text-gray-500 line-through">
-                    £{price.toFixed(2)}
-                  </span>
-
-                  <span className="font-bold text-primary">
-                    £{preLaunchPrice.toFixed(2)}
-                  </span>
-                </span>
-              ) : (
-                <span className="font-bold text-primary">
-                  £{price.toFixed(2)}
-                </span>
-              )}
-            </span> */}
-
             {isSelected && (
               <>
-                <div className="flex items-center space-x-2 bg-white rounded-full px-2 py-1 shadow-md">
-                  <button
-                    type="button"
-                    onClick={handleDecrement}
-                    className="bg-gray-100 hover:bg-gray-200 p-2 rounded-full cursor-pointer"
-                  >
-                    <FaMinus size={10} className="text-black" />
+                <div className="flex items-center gap-1 rounded-full border border-slate-200 bg-white px-1 py-1 shadow-sm">
+                  <button type="button" onClick={handleDecrement}
+                    className="flex h-7 w-7 items-center justify-center rounded-full bg-slate-100 hover:bg-slate-200 cursor-pointer transition-colors">
+                    <FaMinus size={9} className="text-slate-600" />
                   </button>
-
-                  <span className="px-2 text-sm font-bold text-black">
-                    {qty}
-                  </span>
-
-                  <button
-                    type="button"
-                    onClick={handleIncrement}
-                    className={`p-2 rounded-full ${
-                      qty >= allowed
-                        ? "cursor-not-allowed bg-gray-100 opacity-50"
-                        : "bg-gray-100 hover:bg-gray-200 cursor-pointer"
-                    }`}
-                  >
-                    <FaPlus size={10} className="text-black" />
+                  <span className="inter-semibold-font w-6 text-center text-[13px] text-slate-900">{qty}</span>
+                  <button type="button" onClick={handleIncrement}
+                    className={`flex h-7 w-7 items-center justify-center rounded-full transition-colors
+                      ${qty >= allowed ? "cursor-not-allowed bg-slate-100 opacity-40" : "bg-slate-100 hover:bg-slate-200 cursor-pointer"}`}>
+                    <FaPlus size={9} className="text-slate-600" />
                   </button>
                 </div>
 
-                <button
-                  type="button"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setShowModal(true);
-                  }}
-                  className="bg-red-100 hover:bg-red-200 text-red-500 rounded-full p-2 cursor-pointer"
-                >
-                  <MdDelete />
+                <button type="button"
+                  onClick={(e) => { e.stopPropagation(); setShowModal(true); }}
+                  className="flex h-8 w-8 items-center justify-center rounded-full bg-red-50 text-red-400 hover:bg-red-100 cursor-pointer transition-colors">
+                  <MdDelete size={15} />
                 </button>
               </>
             )}

@@ -29,7 +29,6 @@ import useAuthStore from "@/store/authStore";
 import usePasswordReset from "@/store/usePasswordReset";
 import useLastBmi from "@/store/useLastBmiStore";
 import useUserDataStore from "@/store/userDataStore";
-import OrderSummaryHeader from "./OrderSummaryHeader";
 import lastOrderStore from "@/store/lastOrderStore";
 import useAbandonCardStore from "@/store/abandonCardStore";
 
@@ -291,60 +290,64 @@ const OrderSummary = ({
         <>
           <div className="col-span-12 sm:col-span-4 mb-3">
             <div className="mb-24 sm:mb-0">
-              <div className="bg-white p-6 rounded-2xl shadow-lg font-inter">
-                <div className="relative">
-                  <OrderSummaryHeader
-                    stepNumber={4}
-                    title="Order Summary"
-                    isCompleted={onComplete}
-                  />
-                  <div className="absolute right-14 bottom-2 w-20">
-                    <button
-                      type="button"
-                      onClick={handleEdit}
-                      className="flex justify-around align-middle cursor-pointer ml-2 p-2 w-30 rounded-lg bg-white hover:bg-gray-100 text-primary shadow transition"
-                    >
-                      <span className="reg-font text-sm text-gray-500">
-                        Edit order
-                      </span>
-                      <HiOutlinePencilAlt className="w-4 h-4" color="#47317c" />
-                    </button>
+              <div className="rounded-2xl overflow-hidden shadow-[0_8px_32px_rgba(71,49,124,0.10)] border border-[#47317c]/[0.08] font-inter">
+                <div className="bg-[#f5f2fc] px-6 py-4 border-b border-[#47317c]/[0.07] flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className={`flex items-center justify-center w-7 h-7 rounded-full text-[13px] transition-all duration-300 ${
+                      onComplete ? "bg-[#47317c] text-white" : "border-2 border-[#47317c] text-[#47317c] inter-semibold-font"
+                    }`}>
+                      {onComplete ? (
+                        <svg viewBox="0 0 14 12" fill="none" className="w-4 h-4">
+                          <path d="M1 6l4 4L13 1" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                        </svg>
+                      ) : "4"}
+                    </div>
+                    <h2 className="inter-semibold-font text-[15px] text-slate-900">Order Summary</h2>
                   </div>
+                  <button
+                    type="button"
+                    onClick={handleEdit}
+                    className="flex items-center gap-1.5 inter-medium-font text-[12.5px] text-slate-500 hover:text-[#47317c] transition-colors cursor-pointer"
+                  >
+                    <HiOutlinePencilAlt className="w-3.5 h-3.5" />
+                    Edit
+                  </button>
                 </div>
 
+                <div className="bg-white px-6 py-5">
                 <div className="overflow-y-auto">
                   <ul className="space-y-4 overflow-y-auto max-h-[250px] pr-1 pb-4">
                     {items?.doses?.map((dose, index) => (
                       <React.Fragment key={index}>
                         {/* Standard dose item */}
-                        <li className="group flex items-center justify-between rounded-lg bg-[#F2EEFF] hover:bg-violet-50 p-4 shadow-md transition-all duration-200">
+                        <li className="flex items-center justify-between rounded-xl border border-slate-100 bg-[#f5f2fc] p-4 transition-all duration-200">
                           <div className="flex flex-col">
-                            <span className="text-base bold-font text-gray-900 truncate">
+                            <span className="inter-semibold-font text-[14px] text-slate-900 truncate">
                               {dose?.product} {dose?.name}
                             </span>
-                            <span className="bold-font text-sm text-gray-600 mt-1">
+                            <span className="inter-reg-font text-[12px] text-slate-500 mt-1">
                               Quantity: x{dose?.qty}
                             </span>
                           </div>
 
-                          <span className="text-base bold-font text-black px-4 py-1 rounded-full">
+                          <span className="inter-semibold-font text-[14px] text-[#47317c]">
                             £{dose?.price?.toFixed(2)}
                           </span>
                         </li>
 
                         {/* Additional item if product is Mounjaro */}
                         {dose?.product === "Mounjaro (Tirzepatide)" && (
-                          <li className="group flex items-center justify-between rounded-lg bg-[#ececec] hover:bg-violet-50 p-4 shadow-md transition-all duration-200 mt-2">
+                          <li className="flex items-center justify-between rounded-xl border border-slate-100 bg-slate-50 p-4 transition-all duration-200 mt-2">
                             <div className="flex flex-col">
-                              <span className="text-base bold-font text-gray-900 truncate">
+                              <span className="inter-semibold-font text-[14px] text-slate-900 truncate">
                                 Pack of 5 Needle
                               </span>
-                              <span className="bold-font text-sm text-gray-600 mt-1">
+                              <span className="inter-reg-font text-[12px] text-slate-500 mt-1">
                                 Quantity: x{dose.qty}
                               </span>
                             </div>
 
-                            <span className="text-base bold-font text-black px-4 py-1 rounded-full">
+                            <span className="inter-semibold-font text-[14px] text-slate-500">
                               £0.00
                             </span>
                           </li>
@@ -355,18 +358,18 @@ const OrderSummary = ({
                     {items?.addons?.map((addon, index) => (
                       <li
                         key={index}
-                        className="group flex items-center justify-between rounded-lg bg-[#F2EEFF] hover:bg-violet-50  p-4 shadow-md transition-all duration-200"
+                        className="flex items-center justify-between rounded-xl border border-slate-100 bg-[#f5f2fc] p-4 transition-all duration-200"
                       >
                         <div className="flex flex-col">
-                          <span className="text-base bold-font text-gray-900  truncate">
+                          <span className="inter-semibold-font text-[14px] text-slate-900 truncate">
                             {addon?.name}
                           </span>
-                          <span className="bold-font text-sm text-gray-600 mt-1">
+                          <span className="inter-reg-font text-[12px] text-slate-500 mt-1">
                             Quantity: x{addon?.qty}
                           </span>
                         </div>
 
-                        <span className="text-base bold-font  text-black px-4 py-1 rounded-full">
+                        <span className="inter-semibold-font text-[14px] text-[#47317c]">
                           £{addon?.price?.toFixed(2)}
                         </span>
                       </li>
@@ -374,49 +377,49 @@ const OrderSummary = ({
                   </ul>
 
                   <div className="flex justify-between items-center mt-8">
-                    <p className="bold-font paragraph !text-black">Subtotal</p>
-                    <p className="bold-font text-black">
+                    <p className="inter-medium-font text-[13.5px] text-slate-600">Subtotal</p>
+                    <p className="inter-semibold-font text-[14px] text-slate-900">
                       £{totalAmount?.toFixed(2)}
                     </p>
                   </div>
 
-                  <div className="flex justify-between items-center mt-4">
-                    <p className="bold-font paragraph !text-black">VAT</p>
-                    <p className="bold-font text-black">£0.00</p>
+                  <div className="flex justify-between items-center mt-3">
+                    <p className="inter-medium-font text-[13.5px] text-slate-600">VAT</p>
+                    <p className="inter-semibold-font text-[14px] text-slate-900">£0.00</p>
                   </div>
 
                   {Coupon && (
-                    <div className="flex justify-between items-center mt-4">
-                      <p className="text-sm text-[#47317c] bold-font">
+                    <div className="flex justify-between items-center mt-3">
+                      <p className="inter-semibold-font text-[13px] text-[#47317c]">
                         Discount
                       </p>
-                      <p className="text-sm text-[#47317c] bold-font">
+                      <p className="inter-semibold-font text-[13px] text-[#47317c]">
                         -£{discountAmount?.toFixed(2)}
                       </p>
                     </div>
                   )}
-                  <div className="flex justify-between items-center mt-4">
-                    <p className="bold-font paragraph !text-black">
+                  <div className="flex justify-between items-center mt-3">
+                    <p className="inter-medium-font text-[13.5px] text-slate-600">
                       Shipping
-                      <span className="reg-font paragraph ms-2">
+                      <span className="inter-reg-font ms-1 text-slate-400">
                         ({shipping?.country_name})
                       </span>
                     </p>
-                    <p className="bold-font text-black">
+                    <p className="inter-semibold-font text-[14px] text-slate-900">
                       £{shipping?.country_price}
                     </p>
                   </div>
 
-                  <hr className="my-4 border-gray-200" />
+                  <hr className="my-4 border-slate-100" />
 
                   <div className="flex justify-between items-center">
-                    <p className="bold-font text-xl text-black">Total</p>
-                    <p className="bold-font text-xl text-black">
+                    <p className="inter-bold-font text-[17px] text-slate-900">Total</p>
+                    <p className="inter-bold-font text-[17px] text-[#47317c]">
                       £{finalTotal?.toFixed(2)}
                     </p>
                   </div>
 
-                  <hr className="my-4 border-gray-200" />
+                  <hr className="my-4 border-slate-100" />
 
                   {/* Discount Section */}
                   <AnimatePresence>
@@ -426,21 +429,16 @@ const OrderSummary = ({
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -12 }}
                         transition={{ duration: 0.25, ease: "easeOut" }}
-                        className="relative mt-6 rounded-lg border-2 border-[#47317c] bg-green-50 p-4 flex items-center justify-between"
+                        className="mt-6 rounded-xl border border-[#47317c]/20 bg-[#47317c]/[0.04] px-4 py-3.5 flex items-center justify-between"
                       >
                         <div className="flex items-center gap-3">
-                          <div className="flex items-center justify-center  border-[#47317c] text-[#47317c]">
-                            <GoCheckCircleFill size={32} />
-                          </div>
-
+                          <GoCheckCircleFill size={22} className="text-[#47317c] shrink-0" />
                           <div>
-                            <p className="niba-bold-font text-[#47317c]">
+                            <p className="inter-semibold-font text-[13.5px] text-[#47317c]">
                               {Coupon?.Data?.code}{" "}
-                              <span className="reg-font paragraph">
-                                Applied
-                              </span>
+                              <span className="inter-reg-font text-slate-600">Applied</span>
                             </p>
-                            <p className="text-gray-700 text-md  reg-font">
+                            <p className="inter-reg-font text-[12px] text-slate-500 mt-0.5">
                               - £{Coupon?.Data?.discount}{" "}
                               {Coupon?.Data?.type === "Percent" &&
                                 `(${Coupon?.Data?.discount}% off)`}
@@ -451,39 +449,41 @@ const OrderSummary = ({
                         <button
                           type="button"
                           onClick={handleRemoveCoupon}
-                          className="text-red-500 text-sm reg-font hover:underline cursor-pointer"
+                          className="flex h-7 w-7 items-center justify-center rounded-full bg-red-50 text-red-400 hover:bg-red-100 cursor-pointer transition-colors"
                         >
-                          <RxCross2 className="bold-font " size={24} />
+                          <RxCross2 size={14} />
                         </button>
                       </motion.div>
                     ) : (
-                      <div className="flex mt-6 rounded-lg shadow-sm overflow-hidden">
-                        <input
-                          type="text"
-                          placeholder="Enter discount code"
-                          value={discountCode}
-                          onChange={(e) => setDiscountCode(e.target.value)}
-                          className="flex-1 text-sm text-gray-800 bg-gray-100 placeholder-gray-400 p-4 focus:outline-none reg-font"
-                        />
-                        <button
-                          type="button"
-                          onClick={handleApplyCoupon}
-                          disabled={!isApplyEnabled}
-                          className={`cursor-pointer px-6 text-sm bold-font text-white transition-all duration-200 ${
-                            isApplyEnabled
-                              ? "bg-primary hover:bg-primary"
-                              : "bg-gray-300 cursor-not-allowed"
-                          }`}
-                        >
-                          {couponLoading ? "Applying..." : "Apply"}
-                        </button>
+                      <div className="mt-6">
+                        <div className="flex items-center gap-2 rounded-xl border border-slate-200 bg-white overflow-hidden px-3 py-1.5 focus-within:border-[#47317c] transition-colors duration-200">
+                          <input
+                            type="text"
+                            placeholder="Enter discount code"
+                            value={discountCode}
+                            onChange={(e) => setDiscountCode(e.target.value)}
+                            className="inter-reg-font flex-1 text-[13.5px] text-slate-900 placeholder:text-slate-400 py-2 focus:outline-none bg-transparent"
+                          />
+                          <button
+                            type="button"
+                            onClick={handleApplyCoupon}
+                            disabled={!isApplyEnabled}
+                            className={`inter-semibold-font shrink-0 rounded-lg px-4 py-2 text-[12.5px] text-white transition-all duration-200 ${
+                              isApplyEnabled
+                                ? "bg-[#47317c] hover:bg-[#3a2769] cursor-pointer"
+                                : "bg-slate-300 cursor-not-allowed"
+                            }`}
+                          >
+                            {couponLoading ? "Applying..." : "Apply"}
+                          </button>
+                        </div>
                       </div>
                     )}
                   </AnimatePresence>
                 </div>
                 <div className="my-5">
                   {isButtonLoading == true ? (
-                    <div className="w-full px-28  py-3 rounded-full text-white bg-primary flex justify-center">
+                    <div className="w-full py-3 rounded-full bg-[#47317c] flex justify-center">
                       <motion.div
                         animate={{ rotate: 360 }}
                         transition={{
@@ -491,7 +491,7 @@ const OrderSummary = ({
                           duration: 1,
                           ease: "linear",
                         }}
-                        className="w-5 h-5 border-4 border-t-transparent rounded-full text-white"
+                        className="w-5 h-5 border-[3px] border-t-transparent border-white rounded-full"
                       />
                     </div>
                   ) : (
@@ -504,6 +504,7 @@ const OrderSummary = ({
                       onClick={handlePayment}
                     />
                   )}
+                </div>
                 </div>
               </div>
             </div>

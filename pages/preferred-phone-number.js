@@ -102,8 +102,32 @@ export default function SignUp() {
                           {...field}
                           country="gb"
                           placeholder="Enter your number"
-                          inputStyle={{ border: "none", width: "100%", background: "transparent", fontSize: "14px", color: "#1e293b" }}
-                          buttonStyle={{ border: "none", background: "transparent" }}
+                          containerStyle={{ width: "100%" }}
+                          inputStyle={{
+                            border: "none",
+                            width: "100%",
+                            background: "transparent",
+                            fontSize: "14px",
+                            color: "#1e293b",
+                            paddingLeft: "52px",
+                            height: "40px",
+                            boxShadow: "none",
+                            outline: "none",
+                          }}
+                          buttonStyle={{
+                            border: "none",
+                            background: "transparent",
+                            paddingLeft: "0",
+                          }}
+                          dropdownStyle={{
+                            borderRadius: "12px",
+                            border: "1px solid #e2e8f0",
+                            boxShadow: "0 8px 24px rgba(71,49,124,0.10)",
+                            fontSize: "13px",
+                            fontFamily: "inherit",
+                            marginTop: "6px",
+                            color: "#1e293b",
+                          }}
                         />
                       </div>
 

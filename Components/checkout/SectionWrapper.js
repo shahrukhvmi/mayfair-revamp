@@ -11,7 +11,7 @@ const SectionWrapper = ({ children }) => (
       damping: 15, // ⭐ More bounce, slower stop
       duration: 1.2, // ⭐ Slow graceful feel
     }}
-    className="bg-white rounded-xl shadow-sm p-6 mb-8 relative"
+    className="rounded-2xl overflow-hidden shadow-[0_8px_32px_rgba(71,49,124,0.10)] border border-[#47317c]/[0.08] mb-6 relative"
   >
     {children}
   </motion.div>

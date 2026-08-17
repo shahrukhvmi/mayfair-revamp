@@ -14,50 +14,34 @@ const OrderSummaryHeader = ({
       transition={{ duration: 0.4 }}
       className="bg-white"
     >
-      <div className="flex items-center space-x-4">
-        {/* Step Circle or Check */}
+      <div className="flex items-center gap-3">
         <div
-          className={`flex items-center justify-center w-8 h-8 rounded-full font-bold text-sm transition-all duration-300 ${
+          className={`flex items-center justify-center w-7 h-7 rounded-full text-[13px] transition-all duration-300 ${
             isCompleted
-              ? "bg-primary text-white"
-              : "border border-black text-black"
+              ? "bg-[#47317c] text-white"
+              : "border-2 border-[#47317c] text-[#47317c] inter-semibold-font"
           }`}
         >
           <AnimatePresence mode="wait" initial={false}>
             {isCompleted ? (
-              <motion.div
-                key="check"
-                initial={{ scale: 0 }}
-                animate={{ scale: 1 }}
-                exit={{ scale: 0 }}
-                transition={{ duration: 0.3 }}
-              >
-                <FiCheck className="w-5 h-5" />
+              <motion.div key="check" initial={{ scale: 0 }} animate={{ scale: 1 }} exit={{ scale: 0 }} transition={{ duration: 0.3 }}>
+                <FiCheck className="w-4 h-4" />
               </motion.div>
             ) : (
-              <motion.div
-                key="number"
-                initial={{ scale: 0 }}
-                animate={{ scale: 1 }}
-                exit={{ scale: 0 }}
-                transition={{ duration: 0.3 }}
-              >
+              <motion.div key="number" initial={{ scale: 0 }} animate={{ scale: 1 }} exit={{ scale: 0 }} transition={{ duration: 0.3 }}>
                 {stepNumber}
               </motion.div>
             )}
           </AnimatePresence>
         </div>
 
-        {/* Title */}
-        <h2 className="text-black bold-font text-base">{title}</h2>
+        <h2 className="inter-semibold-font text-[15px] text-slate-900">{title}</h2>
       </div>
 
-      {/* Divider */}
-      <hr className="border-gray-200 my-4 relative top-1" />
+      <hr className="border-slate-100 my-4" />
 
-      {/* Description */}
       {description && (
-        <p className="text-sm text-black mt-1 reg-font paragraph">
+        <p className="inter-reg-font text-[13px] text-slate-500 mb-4">
           {description}
         </p>
       )}

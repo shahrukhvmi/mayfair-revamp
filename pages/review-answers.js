@@ -341,80 +341,80 @@ const ReviewAnswers = () => {
       <StepsHeader />
       <FormWrapper percentage={"95"} heading="Review Your Answers">
         <PageAnimationWrapper>
-          <div className="py-12">
+          <div className="py-6">
             <div className="max-w-2xl mx-auto">
               {/* Q&A Summary */}
               <div className="space-y-6">
                 {/* <div>
-                  <p className="text-sm font-semibold text-black">What is your sex at birth?</p>
-                  <p className="text-sm text-gray-700 mt-1">{patientInfo?.gender}</p>
-                  <hr className="mt-4 border-gray-200" />
+                  <p className="inter-semibold-font text-[14px] text-slate-900">What is your sex at birth?</p>
+                  <p className="inter-reg-font text-[13px] text-slate-600 mt-1">{patientInfo?.gender}</p>
+                  <hr className="mt-4 border-slate-100" />
                 </div>
                 <div>
-                  <p className="text-sm font-semibold text-black">What is your date of birth?</p>
-                  <p className="text-sm text-gray-700 mt-1">{patientInfo?.dob}</p>
-                  <hr className="mt-4 border-gray-200" />
+                  <p className="inter-semibold-font text-[14px] text-slate-900">What is your date of birth?</p>
+                  <p className="inter-reg-font text-[13px] text-slate-600 mt-1">{patientInfo?.dob}</p>
+                  <hr className="mt-4 border-slate-100" />
                 </div> */}
                 <div>
-                  <p className="text-sm font-semibold text-black">
+                  <p className="inter-semibold-font text-[14px] text-slate-900">
                     Patient Residential Address
                   </p>
-                  <p className="text-sm text-gray-700 mt-1">
+                  <p className="inter-reg-font text-[13px] text-slate-600 mt-1">
                     {patientInfo?.address?.postalcode}
                   </p>
-                  <p className="text-sm text-gray-700 mt-1">
+                  <p className="inter-reg-font text-[13px] text-slate-600 mt-1">
                     {patientInfo?.address?.addressone}
                   </p>
                   {patientInfo?.address?.addresstwo?.trim() && (
-                    <p className="text-sm text-gray-700 mt-1">
+                    <p className="inter-reg-font text-[13px] text-slate-600 mt-1">
                       {patientInfo.address.addresstwo}
                     </p>
                   )}
-                  <p className="text-sm text-gray-700 mt-1">
+                  <p className="inter-reg-font text-[13px] text-slate-600 mt-1">
                     {patientInfo?.address?.city}
                   </p>
-                  <p className="text-sm text-gray-700 mt-1">
+                  <p className="inter-reg-font text-[13px] text-slate-600 mt-1">
                     {patientInfo?.address?.state}
                   </p>
-                  <hr className="mt-4 border-gray-200" />
+                  <hr className="mt-4 border-slate-100" />
                 </div>
                 <div>
-                  <p className="text-sm font-semibold text-black">
+                  <p className="inter-semibold-font text-[14px] text-slate-900">
                     Phone Number
                   </p>
-                  <p className="text-sm text-gray-700 mt-1">
+                  <p className="inter-reg-font text-[13px] text-slate-600 mt-1">
                     {patientInfo?.phoneNo}
                   </p>
-                  <hr className="mt-4 border-gray-200" />
+                  <hr className="mt-4 border-slate-100" />
                 </div>
 
                 {/* <div>
-                  <p className="text-sm font-semibold text-black">Your BMI</p>
-                  <p className="text-sm text-gray-700 mt-1">BMI: {bmi?.bmi}</p>
-                  <p className="text-sm text-gray-700 mt-1">BMI: {bmi?.bmi}</p>
+                  <p className="inter-semibold-font text-[14px] text-slate-900">Your BMI</p>
+                  <p className="inter-reg-font text-[13px] text-slate-600 mt-1">BMI: {bmi?.bmi}</p>
+                  <p className="inter-reg-font text-[13px] text-slate-600 mt-1">BMI: {bmi?.bmi}</p>
                   {bmi?.bmiConsent?.previously_taking_medicine?.[0]?.trim() && (
-                    <p className="text-sm text-gray-700 mt-1">{bmi.bmiConsent.previously_taking_medicine[0]}</p>
+                    <p className="inter-reg-font text-[13px] text-slate-600 mt-1">{bmi.bmiConsent.previously_taking_medicine[0]}</p>
                   )}
-                  <p className="text-sm text-gray-700 mt-1">{bmi.bmiConsent?.assian_message}</p>
-                  <p className="text-sm text-gray-700 mt-1">{bmi.bmiConsent?.weight_related_comorbidity[0]}</p>
-                  <p className="text-sm text-gray-700 mt-1">{bmi.bmiConsent?.weight_related_comorbidity_explanation}</p>
-                  <hr className="mt-4 border-gray-200" />
+                  <p className="inter-reg-font text-[13px] text-slate-600 mt-1">{bmi.bmiConsent?.assian_message}</p>
+                  <p className="inter-reg-font text-[13px] text-slate-600 mt-1">{bmi.bmiConsent?.weight_related_comorbidity[0]}</p>
+                  <p className="inter-reg-font text-[13px] text-slate-600 mt-1">{bmi.bmiConsent?.weight_related_comorbidity_explanation}</p>
+                  <hr className="mt-4 border-slate-100" />
                 </div> */}
 
                 {medicalInfo.map((item, index) => {
                   return (
                     <div>
                       <div
-                        className="text-sm font-semibold text-black [&>ul]:list-disc [&>ul]:ml-6 [&>li]:mt-0.5"
+                        className="inter-semibold-font text-[14px] text-slate-900 [&>ul]:list-disc [&>ul]:ml-6 [&>li]:mt-0.5"
                         dangerouslySetInnerHTML={{ __html: item.question }}
                       ></div>
-                      <p className="text-sm text-gray-700 mt-1 capitalize">
+                      <p className="inter-reg-font text-[13px] text-slate-600 mt-1 capitalize">
                         {item?.answer}{" "}
                       </p>
-                      <p className="text-sm text-gray-700 mt-1">
+                      <p className="inter-reg-font text-[13px] text-slate-600 mt-1">
                         {item?.subfield_response}
                       </p>
-                      <hr className="mt-4 border-gray-200" />
+                      <hr className="mt-4 border-slate-100" />
                     </div>
                   );
                 })}

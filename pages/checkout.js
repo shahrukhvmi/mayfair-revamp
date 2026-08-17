@@ -98,15 +98,6 @@ const Checkout = () => {
 
       <StepsHeader />
 
-      <div className="bottom-[30px] fixed left-10 cursor-pointer py-2 rounded-full border-2 border-violet-700 sm:block hidden">
-        <button
-          onClick={back}
-          className="text-violet-700 reg-font px-6 cursor-pointer"
-        >
-          <span>Back</span>
-        </button>
-      </div>
-
       <AnimatePresence>
         {showThankYouModal && (
           <motion.div
@@ -142,9 +133,10 @@ const Checkout = () => {
         )}
       </AnimatePresence>
 
-      <div className="max-w-2xl mx-auto px-4 pb-10 space-y-10">
+      <div className="min-h-[calc(100vh-66px)] bg-[#edeaf5]">
+      <div className="max-w-2xl mx-auto px-4 pb-14 space-y-6">
         <div ref={headingRef} className="sm:px-6 px-0 pt-10 text-center">
-          <h1 className="text-2xl niba-reg-font heading mb-2 text-gray-900">
+          <h1 className="inter-bold-font text-[22px] sm:text-[26px] mb-2 text-slate-900">
             {reorder ? (
               <>
                 Confirm your treatment
@@ -155,7 +147,7 @@ const Checkout = () => {
               "Checkout to kick-start your weight loss journey"
             )}
           </h1>
-          <p className="text-sm reg-font paragraph mb-6">
+          <p className="inter-reg-font text-[13.5px] text-slate-500 mb-6">
             {reorder
               ? "You're almost done. Complete your checkout to continue your weight loss journey without interruption."
               : "Complete your details below to secure your consultation. If you decide not to proceed after your consult for any reason, you will be fully refunded."}
@@ -211,6 +203,7 @@ const Checkout = () => {
             isBillingCheck={isBillingCheck}
           />
         </div>
+      </div>
       </div>
     </>
   );
