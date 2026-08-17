@@ -151,21 +151,22 @@ export default function ResidentialAddress() {
             >
               <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
                 <div className="space-y-6">
-                  <div className="flex items-end gap-2">
-                    <div className="flex-1">
+                  <div className="relative">
+                    <div className="min-w-0">
                       <TextField
                         label="Post code"
                         name="postalCode"
                         register={register}
                         required
                         errors={errors}
+                        className="pr-[108px]"
                       />
                     </div>
                     <button
                       type="button"
                       onClick={handleSearch}
                       disabled={addressSearchLoading}
-                      className="inter-medium-font mb-[3px] flex shrink-0 cursor-pointer items-center gap-1.5 rounded-lg bg-[#47317c] px-4 py-2.5 text-[13px] text-white transition-colors hover:bg-[#3d2a6b] disabled:opacity-60"
+                      className="inter-medium-font absolute right-0 top-[24px] flex min-h-[38px] min-w-[96px] cursor-pointer items-center justify-center gap-1.5 rounded-md bg-[#47317c] px-4 py-2 text-[12px] text-white transition-colors hover:bg-[#3d2a6b] disabled:cursor-not-allowed disabled:opacity-60"
                     >
                       {addressSearchLoading ? (
                         <motion.div animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 1, ease: "linear" }}

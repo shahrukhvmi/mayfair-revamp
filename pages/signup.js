@@ -110,7 +110,7 @@ export default function SignUp() {
                   />
                   <BackButton
                     label="Back"
-                    className="flex justify-center"
+                    className="flex justify-center mt-1"
                     onClick={() => router.push("/acknowledgment")}
                   />
                 </div>

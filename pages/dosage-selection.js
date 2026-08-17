@@ -297,7 +297,7 @@ export default function DosageSelection() {
       <AnimatePresence>
         {showDoseModal && selectedDose && (
           <motion.div
-            className="fixed inset-0 z-[9999] flex items-end justify-center bg-black/40 backdrop-blur-sm sm:items-center px-4"
+            className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/40 px-4 py-6 backdrop-blur-sm"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -307,7 +307,7 @@ export default function DosageSelection() {
               animate={{ y: 0, opacity: 1 }}
               exit={{ y: 60, opacity: 0 }}
               transition={{ type: "spring", stiffness: 300, damping: 28 }}
-              className="w-full max-w-md overflow-hidden rounded-2xl bg-white shadow-[0_24px_64px_rgba(71,49,124,0.18)]"
+              className="max-h-[calc(100dvh-48px)] w-full max-w-md overflow-y-auto rounded-2xl bg-white shadow-[0_24px_64px_rgba(71,49,124,0.18)]"
             >
               <div className="bg-[#f5f2fc] px-6 py-5 border-b border-[#47317c]/[0.07]">
                 <h2 className="inter-semibold-font text-[18px] text-slate-900">

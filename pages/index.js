@@ -92,7 +92,7 @@ export default function Index() {
           </div>
 
           {/* Heading */}
-          <h2 className="inter-bold-font mb-2 text-start text-[22px] leading-[1.3] tracking-[-0.02em] text-slate-900 sm:text-[25px]">
+          <h2 className="inter-semibold-font mb-2 text-start text-[21px] leading-[1.3] tracking-[-0.02em] text-slate-900 sm:text-[23px]">
             Let's get you started on your weight loss journey.
           </h2>
 

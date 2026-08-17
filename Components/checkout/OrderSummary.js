@@ -429,16 +429,16 @@ const OrderSummary = ({
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -12 }}
                         transition={{ duration: 0.25, ease: "easeOut" }}
-                        className="mt-6 rounded-xl border border-[#47317c]/20 bg-[#47317c]/[0.04] px-4 py-3.5 flex items-center justify-between"
+                        className="mt-6 flex items-center justify-between rounded-xl border border-emerald-200/80 bg-emerald-50/70 px-3.5 py-3"
                       >
-                        <div className="flex items-center gap-3">
-                          <GoCheckCircleFill size={22} className="text-[#47317c] shrink-0" />
+                        <div className="flex min-w-0 items-center gap-2.5">
+                          <GoCheckCircleFill size={20} className="shrink-0 text-emerald-600" />
                           <div>
-                            <p className="inter-semibold-font text-[13.5px] text-[#47317c]">
-                              {Coupon?.Data?.code}{" "}
-                              <span className="inter-reg-font text-slate-600">Applied</span>
+                            <p className="flex flex-wrap items-center gap-1.5">
+                              <span className="inter-semibold-font text-[13px] text-slate-900">{Coupon?.Data?.code}</span>
+                              <span className="inter-medium-font rounded-full bg-emerald-100 px-2 py-0.5 text-[10px] text-emerald-700">Applied</span>
                             </p>
-                            <p className="inter-reg-font text-[12px] text-slate-500 mt-0.5">
+                            <p className="inter-medium-font mt-0.5 text-[11.5px] text-emerald-700">
                               - £{Coupon?.Data?.discount}{" "}
                               {Coupon?.Data?.type === "Percent" &&
                                 `(${Coupon?.Data?.discount}% off)`}
@@ -449,7 +449,7 @@ const OrderSummary = ({
                         <button
                           type="button"
                           onClick={handleRemoveCoupon}
-                          className="flex h-7 w-7 items-center justify-center rounded-full bg-red-50 text-red-400 hover:bg-red-100 cursor-pointer transition-colors"
+                          className="ml-3 flex h-7 w-7 shrink-0 cursor-pointer items-center justify-center rounded-lg border border-red-100 bg-white text-red-400 transition-colors hover:bg-red-50 hover:text-red-500"
                         >
                           <RxCross2 size={14} />
                         </button>
