@@ -78,35 +78,35 @@ export default function ConfirmEthnicity() {
         percentage={"60"}
       >
         <PageAnimationWrapper>
-          <p className="inter-medium-font mb-4 text-[14px] text-slate-700">
+          <p className="inter-medium-font mb-4 text-[14px] leading-relaxed text-slate-800">
             Does one of the following options describe your ethnic group or background?
           </p>
           <div>
-            <div className="mb-5 grid grid-cols-2 gap-2 rounded-xl border border-slate-100 bg-[#FBFBFD] p-4">
+            <div className="mb-6 grid grid-cols-1 gap-x-6 gap-y-3 rounded-xl border border-[#47317c]/10 bg-[#47317c]/[0.035] p-4 sm:grid-cols-2 sm:p-5">
               {["South Asian","Chinese","Other Asian","Middle Eastern","Black African","African-Caribbean"].map((ethnicity, index) => (
-                <div key={index} className="flex items-center gap-2">
-                  <div className="h-1.5 w-1.5 shrink-0 rounded-full bg-[#47317c]/50" />
-                  <p className="inter-medium-font text-[13px] text-slate-700">{ethnicity}</p>
+                <div key={index} className="flex items-center gap-2.5">
+                  <div className="h-2.5 w-2.5 shrink-0 rounded-full border-[3px] border-[#47317c]/20 bg-[#47317c] shadow-[0_0_0_3px_rgba(71,49,124,0.06)]" />
+                  <p className="inter-medium-font text-[13.5px] text-slate-700">{ethnicity}</p>
                 </div>
               ))}
             </div>
             <div className={`relative ${showLoader ? "pointer-events-none cursor-not-allowed" : ""}`}>
               <form onSubmit={handleSubmit(onSubmit)} className="space-y-3">
-                <div className="space-y-3">
-                  {options.map((option) => {
+                <div className="grid grid-cols-2 gap-3">
+                  {options.map((option, index) => {
                     const isSelected = selectedOption === option;
                     return (
                       <label
                         key={option}
-                        className={`flex cursor-pointer items-center gap-3 rounded-xl border-2 px-5 py-4 transition-all duration-150 select-none
-                          ${isSelected ? "border-[#47317c] bg-[#47317c]/[0.05]" : "border-slate-200 bg-white hover:border-slate-300 hover:bg-slate-50"}`}
+                        className={`flex min-h-[56px] cursor-pointer items-center gap-3 rounded-xl border px-4 py-3.5 transition-all duration-150 select-none ${index === 2 ? "col-span-2" : ""}
+                          ${isSelected ? "border-[#47317c] bg-[#47317c]/[0.08] shadow-[0_3px_12px_rgba(71,49,124,0.08)]" : "border-slate-200 bg-white hover:border-[#47317c]/25 hover:bg-[#47317c]/[0.02]"}`}
                       >
-                        <div className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full border-2 transition-all duration-150
+                        <div className={`flex h-[18px] w-[18px] shrink-0 items-center justify-center rounded-full border-2 transition-all duration-150
                           ${isSelected ? "border-[#47317c] bg-[#47317c]" : "border-slate-300 bg-white"}`}>
-                          {isSelected && <div className="h-2 w-2 rounded-full bg-white" />}
+                          {isSelected && <div className="h-1.5 w-1.5 rounded-full bg-white" />}
                         </div>
                         <input type="radio" value={option} {...register("ethnicity", { required: true })} className="hidden" />
-                        <span className={`inter-medium-font text-[15px] ${isSelected ? "text-[#47317c]" : "text-slate-700"}`}>{option}</span>
+                        <span className={`inter-medium-font text-[14px] ${isSelected ? "text-[#47317c]" : "text-slate-700"}`}>{option}</span>
                       </label>
                     );
                   })}

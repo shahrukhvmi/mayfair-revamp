@@ -14,6 +14,7 @@ import useReorder from "@/store/useReorderStore";
 import MetaLayout from "@/Meta/MetaLayout";
 import { meta_url } from "@/config/constants";
 import useReturning from "@/store/useReturningPatient";
+import { ArrowLeft } from "lucide-react";
 
 const Checkout = () => {
   const { isReturningPatient } = useReturning();
@@ -135,23 +136,37 @@ const Checkout = () => {
 
       <div className="min-h-[calc(100vh-66px)] bg-[#FBFBFD]">
       <div className="max-w-2xl mx-auto px-4 pb-14 space-y-6">
-        <div ref={headingRef} className="sm:px-6 px-0 pt-10 text-center">
-          <h1 className="inter-bold-font text-[22px] sm:text-[26px] mb-2 text-slate-900">
-            {reorder ? (
-              <>
-                Confirm your treatment
-                <br />
-                re-order
-              </>
-            ) : (
-              "Checkout to kick-start your weight loss journey"
-            )}
-          </h1>
-          <p className="inter-reg-font text-[13.5px] text-slate-500 mb-6">
-            {reorder
-              ? "You're almost done. Complete your checkout to continue your weight loss journey without interruption."
-              : "Complete your details below to secure your consultation. If you decide not to proceed after your consult for any reason, you will be fully refunded."}
-          </p>
+        <div ref={headingRef} className="px-0 pt-6 sm:px-6 sm:pt-8">
+          <div className="mb-5 flex justify-start">
+            <button
+              type="button"
+              onClick={back}
+              className="inter-medium-font inline-flex cursor-pointer items-center gap-1.5 py-1 text-[13px] text-slate-500 transition-colors duration-150 hover:text-[#47317c] focus-visible:outline-none focus-visible:text-[#47317c]"
+              aria-label="Back to dosage selection"
+            >
+              <ArrowLeft size={14} strokeWidth={1.8} />
+              <span>Back</span>
+            </button>
+          </div>
+
+          <div className="text-center">
+            <h1 className="inter-bold-font mb-2 text-[22px] text-slate-900 sm:text-[26px]">
+              {reorder ? (
+                <>
+                  Confirm your treatment
+                  <br />
+                  re-order
+                </>
+              ) : (
+                "Checkout to kick-start your weight loss journey"
+              )}
+            </h1>
+            <p className="inter-reg-font mb-6 text-[13.5px] text-slate-500">
+              {reorder
+                ? "You're almost done. Complete your checkout to continue your weight loss journey without interruption."
+                : "Complete your details below to secure your consultation. If you decide not to proceed after your consult for any reason, you will be fully refunded."}
+            </p>
+          </div>
         </div>
 
         {/* Sections */}
