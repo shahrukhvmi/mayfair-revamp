@@ -73,13 +73,13 @@ const AddOn = ({ addon, onAdd, onIncrement, onDecrement, isSelected, quantity })
           </div>
           <div>
             <p className="inter-semibold-font text-[15px] capitalize text-slate-900">{addon?.product_name}</p>
-            <p className={`inter-medium-font text-[13px] ${isSelected ? "text-[#47317c]" : "text-slate-500"}`}>{addon.name}</p>
+            <p className={`inter-medium-font text-[13px] ${isSelected ? "text-[#47317c]" : "text-slate-900"}`}>{addon.name}</p>
           </div>
         </div>
 
         {/* Right Content */}
         <div className="flex items-center justify-end gap-3 w-full sm:w-auto">
-          <span className={`inter-semibold-font text-[16px] ${isSelected ? "text-[#47317c]" : "text-slate-700"}`}>
+          <span className={`inter-semibold-font text-[16px] ${isSelected ? "text-[#47317c]" : "text-slate-900"}`}>
             £{parseFloat(addon?.price).toFixed(2)}
           </span>
 
