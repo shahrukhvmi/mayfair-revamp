@@ -483,7 +483,7 @@ const OrderSummary = ({
                 </div>
                 <div className="my-5">
                   {isButtonLoading == true ? (
-                    <div className="w-full py-3 rounded-full bg-[#47317c] flex justify-center">
+                    <div className="w-full py-3 rounded-lg bg-[#47317c] flex justify-center items-center gap-2 cursor-not-allowed">
                       <motion.div
                         animate={{ rotate: 360 }}
                         transition={{

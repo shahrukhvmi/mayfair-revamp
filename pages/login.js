@@ -283,7 +283,7 @@ export default function LoginScreen() {
                     <TextField
                       label="Email Address"
                       name="email"
-                      placeholder="Email Address"
+                      placeholder="name@example.com"
                       type="email"
                       register={register}
                       required
@@ -293,7 +293,7 @@ export default function LoginScreen() {
                     <TextField
                       label="Password"
                       name="password"
-                      placeholder="Password"
+                      placeholder="Enter your password"
                       type="password"
                       register={register}
                       required

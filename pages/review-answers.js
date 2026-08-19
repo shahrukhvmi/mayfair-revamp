@@ -339,96 +339,108 @@ const ReviewAnswers = () => {
     <>
       <MetaLayout canonical={`${meta_url}review-answers/`} />
       <StepsHeader />
-      <FormWrapper percentage={"95"} heading="Review Your Answers">
+      <FormWrapper
+        percentage={"95"}
+        heading="Review Your Answers"
+        description="Please check that your details and medical answers are correct before continuing."
+        width="!max-w-[760px]"
+      >
         <PageAnimationWrapper>
-          <div className="py-6">
-            <div className="max-w-2xl mx-auto">
-              {/* Q&A Summary */}
-              <div className="space-y-6">
-                {/* <div>
-                  <p className="inter-semibold-font text-[14px] text-slate-900">What is your sex at birth?</p>
-                  <p className="inter-reg-font text-[13px] text-slate-600 mt-1">{patientInfo?.gender}</p>
-                  <hr className="mt-4 border-slate-100" />
-                </div>
-                <div>
-                  <p className="inter-semibold-font text-[14px] text-slate-900">What is your date of birth?</p>
-                  <p className="inter-reg-font text-[13px] text-slate-600 mt-1">{patientInfo?.dob}</p>
-                  <hr className="mt-4 border-slate-100" />
-                </div> */}
-                <div>
-                  <p className="inter-semibold-font text-[14px] text-slate-900">
-                    Patient Residential Address
-                  </p>
-                  <p className="inter-reg-font text-[13px] text-slate-600 mt-1">
-                    {patientInfo?.address?.postalcode}
-                  </p>
-                  <p className="inter-reg-font text-[13px] text-slate-600 mt-1">
-                    {patientInfo?.address?.addressone}
-                  </p>
-                  {patientInfo?.address?.addresstwo?.trim() && (
-                    <p className="inter-reg-font text-[13px] text-slate-600 mt-1">
-                      {patientInfo.address.addresstwo}
+          <div>
+            <div className="mx-auto max-w-[680px]">
+              <section aria-labelledby="contact-summary-heading">
+                <h2
+                  id="contact-summary-heading"
+                  className="inter-semibold-font text-[15px] text-slate-900"
+                >
+                  Contact details
+                </h2>
+                <div className="mt-3 grid overflow-hidden rounded-xl border border-slate-200 bg-[#FBFBFD] sm:grid-cols-[1.4fr_0.6fr] sm:divide-x sm:divide-slate-200">
+                  <div className="px-4 py-4 sm:px-5">
+                    <p className="inter-medium-font text-[10px] uppercase tracking-[0.1em] text-slate-400">
+                      Residential address
                     </p>
-                  )}
-                  <p className="inter-reg-font text-[13px] text-slate-600 mt-1">
-                    {patientInfo?.address?.city}
-                  </p>
-                  <p className="inter-reg-font text-[13px] text-slate-600 mt-1">
-                    {patientInfo?.address?.state}
-                  </p>
-                  <hr className="mt-4 border-slate-100" />
+                    <address className="inter-reg-font mt-2 not-italic text-[13px] leading-6 text-slate-700">
+                      {[
+                        patientInfo?.address?.addressone,
+                        patientInfo?.address?.addresstwo,
+                        patientInfo?.address?.city,
+                        patientInfo?.address?.state,
+                        patientInfo?.address?.postalcode,
+                      ]
+                        .filter(Boolean)
+                        .join(", ") || "Not provided"}
+                    </address>
+                  </div>
+                  <div className="border-t border-slate-200 px-4 py-4 sm:border-t-0 sm:px-5">
+                    <p className="inter-medium-font text-[10px] uppercase tracking-[0.1em] text-slate-400">
+                      Phone number
+                    </p>
+                    <p className="inter-medium-font mt-2 break-words text-[13px] text-slate-700">
+                      {patientInfo?.phoneNo || "Not provided"}
+                    </p>
+                  </div>
                 </div>
-                <div>
-                  <p className="inter-semibold-font text-[14px] text-slate-900">
-                    Phone Number
-                  </p>
-                  <p className="inter-reg-font text-[13px] text-slate-600 mt-1">
-                    {patientInfo?.phoneNo}
-                  </p>
-                  <hr className="mt-4 border-slate-100" />
+              </section>
+
+              <section className="mt-7" aria-labelledby="medical-summary-heading">
+                <div className="mb-3 flex items-end justify-between gap-4">
+                  <div>
+                    <h2
+                      id="medical-summary-heading"
+                      className="inter-semibold-font text-[15px] text-slate-900"
+                    >
+                      Medical questionnaire
+                    </h2>
+                    {/* <p className="inter-reg-font mt-1 text-[12.5px] text-slate-500">
+                      {medicalInfo.length} answers to review
+                    </p> */}
+                  </div>
                 </div>
 
-                {/* <div>
-                  <p className="inter-semibold-font text-[14px] text-slate-900">Your BMI</p>
-                  <p className="inter-reg-font text-[13px] text-slate-600 mt-1">BMI: {bmi?.bmi}</p>
-                  <p className="inter-reg-font text-[13px] text-slate-600 mt-1">BMI: {bmi?.bmi}</p>
-                  {bmi?.bmiConsent?.previously_taking_medicine?.[0]?.trim() && (
-                    <p className="inter-reg-font text-[13px] text-slate-600 mt-1">{bmi.bmiConsent.previously_taking_medicine[0]}</p>
-                  )}
-                  <p className="inter-reg-font text-[13px] text-slate-600 mt-1">{bmi.bmiConsent?.assian_message}</p>
-                  <p className="inter-reg-font text-[13px] text-slate-600 mt-1">{bmi.bmiConsent?.weight_related_comorbidity[0]}</p>
-                  <p className="inter-reg-font text-[13px] text-slate-600 mt-1">{bmi.bmiConsent?.weight_related_comorbidity_explanation}</p>
-                  <hr className="mt-4 border-slate-100" />
-                </div> */}
+                <div className="divide-y divide-slate-200 overflow-hidden rounded-xl border border-slate-200 bg-white">
+                  {medicalInfo.map((item, index) => (
+                    <article key={index} className="px-4 py-5 sm:px-5">
+                      <div className="flex items-start gap-3">
+                        <span className="inter-semibold-font flex h-6 w-6 shrink-0 items-center justify-center rounded-lg bg-[#47317c]/[0.07] text-[11px] text-[#47317c]">
+                          {index + 1}
+                        </span>
+                        <div
+                          className="inter-medium-font min-w-0 flex-1 text-[13.5px] leading-[1.65] text-slate-800 [&>ul]:ml-5 [&>ul]:mt-2 [&>ul]:list-disc [&>li]:mt-1 [&>li]:font-normal [&>li]:text-slate-600"
+                          dangerouslySetInnerHTML={{ __html: item.question }}
+                        />
+                      </div>
 
-                {medicalInfo.map((item, index) => {
-                  return (
-                    <div>
-                      <div
-                        className="inter-semibold-font text-[14px] text-slate-900 [&>ul]:list-disc [&>ul]:ml-6 [&>li]:mt-0.5"
-                        dangerouslySetInnerHTML={{ __html: item.question }}
-                      ></div>
-                      <p className="inter-reg-font text-[13px] text-slate-600 mt-1 capitalize">
-                        {item?.answer}{" "}
-                      </p>
-                      <p className="inter-reg-font text-[13px] text-slate-600 mt-1">
-                        {item?.subfield_response}
-                      </p>
-                      <hr className="mt-4 border-slate-100" />
-                    </div>
-                  );
-                })}
-              </div>
+                      <div className="ml-9 mt-3 border-l-2 border-[#47317c]/25 pl-3.5">
+                        <div className="flex flex-wrap items-baseline gap-x-2 gap-y-1">
+                          <span className="inter-medium-font text-[10px] uppercase tracking-[0.09em] text-slate-400">
+                            Your answer
+                          </span>
+                          <span className="inter-semibold-font text-[14px] capitalize text-[#47317c]">
+                            {item?.answer || "Not answered"}
+                          </span>
+                        </div>
+
+                        {String(item?.subfield_response || "").trim() && (
+                          <p className="inter-reg-font mt-1.5 text-[13px] leading-relaxed text-slate-600">
+                            {item.subfield_response}
+                          </p>
+                        )}
+                      </div>
+                    </article>
+                  ))}
+                </div>
+              </section>
 
               {/* Bottom Action Buttons */}
-              <div className="mt-8 space-y-3">
+              <div className="mt-7 border-t border-slate-200 pt-6">
                 <NextButton
                   label="Confirm and Proceed"
                   onClick={handleSubmit}
                 />
                 <BackButton
                   label="Edit answers"
-                  className="mt-2"
+                  className="mt-3"
                   onClick={handleRestart}
                 />
               </div>

@@ -169,7 +169,7 @@ export default function EmailConfirmation() {
                 label="Email Address"
                 name="email"
                 type="email"
-                placeholder="Email Address"
+                placeholder="name@example.com"
                 register={register}
                 required
                 errors={errors}
@@ -180,13 +180,13 @@ export default function EmailConfirmation() {
                 label="Confirm Email Address"
                 name="confirmationEmail"
                 type="email"
-                placeholder="Confirm Email Address"
+                placeholder="Re-enter your email address"
                 register={register}
                 required
                 validation={{
                   validate: (value) =>
                     value === getValues("email") ||
-                    "Email addresses must match.",
+                    "Email address must match.",
                 }}
                 errors={errors}
                 disablePaste

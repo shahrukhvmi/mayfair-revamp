@@ -95,7 +95,7 @@ export default function ForgotForm({ register, handleSubmit, errors, onSubmit, i
       ) : (
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <p className="paragraph reg-font">Enter your email address below and we will send you a password reset link.</p>
-          <TextField label="Email Address" name="email" type="email" placeholder="Enter your email" register={register} required errors={errors} />
+          <TextField label="Email Address" name="email" type="email" placeholder="name@example.com" register={register} required errors={errors} />
           <NextButton label="Send Password Reset Link" type="submit" disabled={isLoading} />
 
           <div className="mt-2">

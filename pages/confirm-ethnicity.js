@@ -85,7 +85,10 @@ export default function ConfirmEthnicity() {
             <div className="mb-6 grid grid-cols-1 gap-x-6 gap-y-3 rounded-xl border border-[#47317c]/10 bg-[#47317c]/[0.035] p-4 sm:grid-cols-2 sm:p-5">
               {["South Asian","Chinese","Other Asian","Middle Eastern","Black African","African-Caribbean"].map((ethnicity, index) => (
                 <div key={index} className="flex items-center gap-2.5">
-                  <div className="h-2.5 w-2.5 shrink-0 rounded-full border-[3px] border-[#47317c]/20 bg-[#47317c] shadow-[0_0_0_3px_rgba(71,49,124,0.06)]" />
+                  <span
+                    aria-hidden="true"
+                    className="h-1.5 w-1.5 shrink-0 rounded-full bg-[#47317c]/80"
+                  />
                   <p className="inter-medium-font text-[13.5px] text-slate-700">{ethnicity}</p>
                 </div>
               ))}

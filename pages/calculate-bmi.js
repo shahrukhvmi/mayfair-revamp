@@ -359,6 +359,13 @@ export default function CalculateBmi() {
                   }
                   setHeightUnit(value);
                   setHeightUnitKey(value);
+                  setTimeout(() => {
+                    void trigger(
+                      value === "imperial"
+                        ? ["heightFt", "heightIn"]
+                        : ["heightCm"],
+                    );
+                  }, 0);
                 } else {
                   if (value === "metrics") {
                     const st = parseFloat(watch("weightSt")) || 0;
@@ -377,6 +384,13 @@ export default function CalculateBmi() {
                   }
                   setWeightUnit(value);
                   setWeightUnitKey(value);
+                  setTimeout(() => {
+                    void trigger(
+                      value === "imperial"
+                        ? ["weightSt", "weightLbs"]
+                        : ["weightKg"],
+                    );
+                  }, 0);
                 }
               }}
             />
@@ -408,6 +422,7 @@ export default function CalculateBmi() {
                           onChange: (e) => {
                             if (e.target.value !== "")
                               setHeightUnitKey("imperial");
+                            void trigger("heightFt");
                           },
                         })}
                         errors={errors}
@@ -432,6 +447,7 @@ export default function CalculateBmi() {
                           onChange: (e) => {
                             if (e.target.value !== "")
                               setHeightUnitKey("imperial");
+                            void trigger("heightIn");
                           },
                         })}
                         errors={errors}
@@ -458,6 +474,7 @@ export default function CalculateBmi() {
                         onChange: (e) => {
                           if (e.target.value !== "")
                             setHeightUnitKey("metrics");
+                          void trigger("heightCm");
                         },
                       })}
                       errors={errors}
@@ -486,6 +503,7 @@ export default function CalculateBmi() {
                             onChange: (e) => {
                               if (e.target.value !== "")
                                 setWeightUnitKey("imperial");
+                              void trigger("weightSt");
                             },
                           })}
                           errors={errors}
@@ -508,6 +526,7 @@ export default function CalculateBmi() {
                             onChange: (e) => {
                               if (e.target.value !== "")
                                 setWeightUnitKey("imperial");
+                              void trigger("weightLbs");
                             },
                           })}
                           errors={errors}
@@ -532,6 +551,7 @@ export default function CalculateBmi() {
                           onChange: (e) => {
                             if (e.target.value !== "")
                               setWeightUnitKey("metrics");
+                            void trigger("weightKg");
                           },
                         })}
                         errors={errors}

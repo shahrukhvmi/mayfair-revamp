@@ -101,7 +101,7 @@ export default function SignUp() {
                         <PhoneInput
                           {...field}
                           country="gb"
-                          placeholder="Enter your number"
+                          placeholder="e.g. 7700 900123"
                           containerStyle={{ width: "100%" }}
                           inputStyle={{
                             border: "none",

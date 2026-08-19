@@ -32,7 +32,6 @@ import useReorderBackProcessStore from "@/store/useReorderBackProcess";
 const ConfirmationSummary = () => {
   const router = useRouter();
   const [showLoader, setShowLoader] = useState(false);
-
   // Zustand States
   const { patientInfo, setPatientInfo, clearPatientInfo } =
     usePatientInfoStore();
@@ -65,6 +64,7 @@ const ConfirmationSummary = () => {
     clearConfirmationEmail,
     firstName,
     lastName,
+    email
   } = useSignupStore();
 
   console.log(bmi);
@@ -193,6 +193,8 @@ const ConfirmationSummary = () => {
       router.push("/gp-detail");
     }
   };
+
+  console.log("patientInfo", patientInfo);
   return (
     <>
       <MetaLayout canonical={`${meta_url}confirmation-summary/`} />
@@ -203,15 +205,24 @@ const ConfirmationSummary = () => {
         percentage={95}
       >
         <PageAnimationWrapper>
-          <div className="space-y-6">
+          <div className="">
             {/* Summary Box */}
-            <div className="rounded-xl border border-slate-100 bg-[#FBFBFD] overflow-hidden">
-              <div className="bg-[#f5f2fc] px-5 py-3.5 border-b border-[#47317c]/[0.07]">
-                <p className="inter-semibold-font text-[15px] text-slate-900">
+            <div className="rounded-xl  bg-[#FBFBFD] overflow-hidden">
+              {/* <div className="bg-[#f5f2fc] px-5 py-3.5 border-b border-[#47317c]/[0.07]"> */}
+                {/* <p className="inter-semibold-font text-[15px] text-slate-900">
                   {firstName ? <>{firstName} {lastName}</> : <>{patientInfo?.firstName} {patientInfo?.lastName}</>}
-                </p>
+                </p> */}
               </div>
               <div className="grid grid-cols-2 gap-2.5 px-3 py-3 sm:gap-x-8 sm:gap-y-3 sm:px-5 sm:py-4">
+                <div className="min-w-0 rounded-lg border border-slate-100 bg-white px-3 py-2.5 sm:rounded-none sm:border-0 sm:bg-transparent sm:px-0 sm:py-0">
+                  <p className="inter-medium-font text-[11px] uppercase tracking-wide text-slate-400 mb-0.5">Name</p>
+                  <p className="inter-medium-font break-words text-[13px] text-slate-800 sm:text-[14px]">{firstName ? <>{firstName} {lastName}</> : <>{patientInfo?.firstName} {patientInfo?.lastName}</>}</p>
+                </div>
+
+                <div className="min-w-0 rounded-lg border border-slate-100 bg-white px-3 py-2.5 sm:rounded-none sm:border-0 sm:bg-transparent sm:px-0 sm:py-0">
+                  <p className="inter-medium-font text-[11px] uppercase tracking-wide text-slate-400 mb-0.5">Email</p>
+                  <p className="inter-medium-font break-words text-[13px] text-slate-800 sm:text-[14px]"> {email}</p>
+                </div>
                 <div className="min-w-0 rounded-lg border border-slate-100 bg-white px-3 py-2.5 sm:rounded-none sm:border-0 sm:bg-transparent sm:px-0 sm:py-0">
                   <p className="inter-medium-font text-[11px] uppercase tracking-wide text-slate-400 mb-0.5">Post code</p>
                   <p className="inter-medium-font break-words text-[13px] text-slate-800 sm:text-[14px]">{patientInfo?.address?.postalcode}</p>
@@ -241,7 +252,7 @@ const ConfirmationSummary = () => {
                   <p className="inter-semibold-font text-[14px] text-[#47317c]">{bmi?.bmi?.toFixed(1)}</p>
                 </div>
               </div>
-            </div>
+            {/* </div> */}
 
             {/* Confirm & Review Buttons */}
             <div className="space-y-3">

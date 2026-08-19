@@ -10,7 +10,7 @@ const FormWrapper = ({
   bodyClassName = "",
 }) => {
   return (
-    <div className={`min-h-[calc(100vh-66px)] bg-[#FBFBFD] ${showLoader ? "cursor-not-allowed" : ""}`}>
+    <div className={`min-h-[calc(100dvh-66px)] bg-[#FBFBFD] ${showLoader ? "cursor-not-allowed" : ""}`}>
 
       {/* Progress bar — sticky below header, full viewport width */}
       {percentage > 0 && (

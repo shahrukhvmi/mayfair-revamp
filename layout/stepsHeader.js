@@ -270,8 +270,8 @@ const StepsHeader = ({ isOpen, toggleSidebar }) => {
         </div>
       )}
 
-      <header className="sticky top-0 z-40 w-full border-b border-[#47317c]/[0.07] bg-white/95 backdrop-blur-xl">
-        <div className="mx-auto flex h-[66px] w-full items-center justify-between gap-3 px-3 sm:px-5 lg:px-7">
+      <header className="sticky top-0 z-40 h-[66px] w-full border-b border-[#47317c]/[0.07] bg-white/95 backdrop-blur-xl">
+        <div className="mx-auto flex h-full w-full items-center justify-between gap-3 px-3 sm:px-5 lg:px-7">
           {/* Left side */}
           <div className="flex min-w-0 items-center gap-3">
             {isDashboardRoute && (
@@ -411,7 +411,7 @@ const StepsHeader = ({ isOpen, toggleSidebar }) => {
               mont-medium-font inline-flex min-h-[40px]
               items-center gap-2 rounded-[11px]
               bg-[#47317c] px-4 py-2
-              text-[10.5px] text-white
+              text-[14px] text-white
               transition-all duration-200
               hover:bg-[#392765]
               active:scale-[0.98]  cursor-pointer

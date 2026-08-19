@@ -195,6 +195,7 @@ const PasswordChange = () => {
                   type="password"
                   label="Current Password"
                   name="old_password"
+                  placeholder="Enter your current password"
                   register={register}
                   validation={{
                     required: "Current password is required",
@@ -208,6 +209,7 @@ const PasswordChange = () => {
                     type="password"
                     label="New Password"
                     name="newpassword"
+                    placeholder="Create a new password"
                     register={register}
                     required
                     validation={{
@@ -226,6 +228,7 @@ const PasswordChange = () => {
                     type="password"
                     label="Confirm Password"
                     name="newpassword_confirmation"
+                    placeholder="Re-enter your new password"
                     required
                     register={register}
                     validation={{

@@ -72,7 +72,7 @@ export default function MyAddress() {
         <PageHeader
           label="Address Book"
           title="My Address Book"
-          subtitle="Manage shipping and billing addresses for your orders."
+          subtitle="Manage shipping and billing address for your orders."
         />
 
         <div className="grid grid-cols-1 gap-4 xl:grid-cols-2">

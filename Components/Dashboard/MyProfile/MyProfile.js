@@ -91,9 +91,9 @@ const MyProfile = () => {
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
         {/* First & Last Name */}
         <div className="grid sm:grid-cols-2 gap-4">
-          <ProfileTextField required label="First Name" name="firstname" placeholder="First Name" register={register} errors={errors} />
+          <ProfileTextField required label="First Name" name="firstname" placeholder="Enter your first name" register={register} errors={errors} />
 
-          <ProfileTextField required label="Last Name" name="lastname" placeholder="Last Name" register={register} errors={errors} />
+          <ProfileTextField required label="Last Name" name="lastname" placeholder="Enter your last name" register={register} errors={errors} />
         </div>
 
         {/* Gender & DOB */}
@@ -168,7 +168,7 @@ const MyProfile = () => {
                   <PhoneInput
                     {...field}
                     country="gb"
-                    placeholder="Enter your number"
+                    placeholder="e.g. 7700 900123"
                     inputStyle={{ border: "none", width: "100%", background: "transparent" }}
                     className="reg-font"
                   />

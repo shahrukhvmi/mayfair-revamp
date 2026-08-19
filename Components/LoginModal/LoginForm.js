@@ -13,7 +13,7 @@ export default function LoginForm({ register, handleSubmit, errors, isLoading, o
         label="Email Address"
         name="email"
         type="email"
-        placeholder="Email"
+        placeholder="name@example.com"
         register={register}
         required
         errors={errors}
@@ -22,7 +22,7 @@ export default function LoginForm({ register, handleSubmit, errors, isLoading, o
         label="Password"
         name="password"
         type="password"
-        placeholder="Password"
+        placeholder="Enter your password"
         register={register}
         required
         errors={errors}

@@ -314,6 +314,7 @@ export default function BillingAddress({
             <TextField
               label="Post code"
               name="postalcode"
+              placeholder="e.g. SW1A 1AA"
               register={register}
               required
               errors={errors}
@@ -392,6 +393,7 @@ export default function BillingAddress({
           <TextField
             label="Address"
             name="addressone"
+            placeholder="e.g. 10 Downing Street"
             register={register}
             required
             errors={errors}
@@ -399,12 +401,14 @@ export default function BillingAddress({
           <TextField
             label="Address 2"
             name="addresstwo"
+            placeholder="Apartment, suite or unit (optional)"
             register={register}
             errors={errors}
           />
           <TextField
             label="Town / City"
             name="city"
+            placeholder="e.g. London"
             required
             register={register}
             errors={errors}
@@ -412,6 +416,7 @@ export default function BillingAddress({
           <TextField
             label="State / County"
             name="state"
+            placeholder="e.g. Greater London"
             register={register}
             errors={errors}
           />

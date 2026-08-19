@@ -25,7 +25,14 @@ body {
   font-family: Arial, Helvetica, sans-serif;
   background-color: #f2eeff;
 }
+.css-1hgcujo-MuiPickersInputBase-root-MuiPickersOutlinedInput-root {
 
+    border-radius: 0.75rem !Important;
+}
+.css-113d811-MuiFormLabel-root-MuiInputLabel-root.Mui-focused {
+
+    color: #47317c !Important;
+}
 /* global css */
 
 .heading {

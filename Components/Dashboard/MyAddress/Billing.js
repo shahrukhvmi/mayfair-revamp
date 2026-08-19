@@ -136,7 +136,7 @@ export default function Billing({ billingCountries = [] }) {
     } catch (error) {
       console.error("Postcode API error:", error);
 
-      toast.error("Something went wrong while fetching addresses.");
+      toast.error("Something went wrong while fetching address.");
     } finally {
       setAddressSearchLoading(false);
     }
@@ -247,6 +247,7 @@ export default function Billing({ billingCountries = [] }) {
           <TextField
             label="Post code"
             name="postalcode"
+            placeholder="e.g. SW1A 1AA"
             register={register}
             required
             errors={errors}
@@ -330,6 +331,7 @@ className="absolute right-2 top-12.5 -translate-y-1/2 bg-[#47317c] hover:bg-[#39
           <TextField
             label="Address"
             name="addressone"
+            placeholder="e.g. 10 Downing Street"
             register={register}
             required
             errors={errors}
@@ -338,6 +340,7 @@ className="absolute right-2 top-12.5 -translate-y-1/2 bg-[#47317c] hover:bg-[#39
           <TextField
             label="Address 2"
             name="addresstwo"
+            placeholder="Apartment, suite or unit (optional)"
             register={register}
             errors={errors}
           />
@@ -345,6 +348,7 @@ className="absolute right-2 top-12.5 -translate-y-1/2 bg-[#47317c] hover:bg-[#39
           <TextField
             label="Town / City"
             name="city"
+            placeholder="e.g. London"
             register={register}
             required
             errors={errors}
@@ -353,6 +357,7 @@ className="absolute right-2 top-12.5 -translate-y-1/2 bg-[#47317c] hover:bg-[#39
           <TextField
             label="State / County"
             name="state"
+            placeholder="e.g. Greater London"
             register={register}
             errors={errors}
           />

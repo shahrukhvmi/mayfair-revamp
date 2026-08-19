@@ -41,10 +41,15 @@ export default function PageLoader() {
           {!reduceMotion && (
             <motion.span
               aria-hidden="true"
-              className="pointer-events-none absolute inset-y-0 w-10 -skew-x-12 bg-gradient-to-r from-transparent via-white/70 to-transparent"
-              initial={{ x: -55 }}
-              animate={{ x: 180 }}
-              transition={{ duration: 1.45, repeat: Infinity, ease: "easeInOut", repeatDelay: 0.25 }}
+              className="pointer-events-none absolute -top-1/2 h-[200%] w-7 rotate-[22deg] bg-gradient-to-r from-transparent via-white/45 to-transparent blur-[0.5px]"
+              initial={{ x: -50, y: -24 }}
+              animate={{ x: 185, y: 24 }}
+              transition={{
+                duration: 1.35,
+                repeat: Infinity,
+                ease: "easeInOut",
+                repeatDelay: 0.45,
+              }}
             />
           )}
         </motion.div>

@@ -88,7 +88,7 @@ export default function ResidentialAddress() {
         setAddressOptions(data.result);
         setManual(true);
       } else {
-        toast.error("No addresses found");
+        toast.error("No address found");
       }
     } catch (error) {
       console.error("Ideal Postcodes error:", error);
@@ -156,6 +156,7 @@ export default function ResidentialAddress() {
                       <TextField
                         label="Post code"
                         name="postalCode"
+                        placeholder="e.g. SW1A 1AA"
                         register={register}
                         required
                         errors={errors}
@@ -231,6 +232,7 @@ export default function ResidentialAddress() {
                       <TextField
                         label="Address"
                         name="address1"
+                        placeholder="e.g. 10 Downing Street"
                         register={register}
                         required
                         errors={errors}
@@ -238,12 +240,14 @@ export default function ResidentialAddress() {
                       <TextField
                         label="Address 2"
                         name="address2"
+                        placeholder="Apartment, suite or unit (optional)"
                         register={register}
                         errors={errors}
                       />
                       <TextField
                         label="Town / City"
                         name="city"
+                        placeholder="e.g. London"
                         register={register}
                         required
                         errors={errors}
@@ -251,6 +255,7 @@ export default function ResidentialAddress() {
                       <TextField
                         label="Country"
                         name="country"
+                        placeholder="e.g. United Kingdom"
                         register={register}
                         required
                         errors={errors}

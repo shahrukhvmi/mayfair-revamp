@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
-import { Check, ShieldCheck } from "lucide-react";
+import { Check, CircleCheck, CircleCheckBig, CircleSmall, ShieldCheck } from "lucide-react";
 
 import NextButton from "@/Components/NextButton/NextButton";
 import StepsHeader from "@/layout/stepsHeader";
@@ -175,7 +175,7 @@ export default function Acknowledgment() {
                   <ul className="inter-reg-font mt-4 space-y-3 pl-0 sm:pl-8 text-[13px] text-slate-600 leading-relaxed">
                     {CONSENT_ITEMS.map((item, i) => (
                       <li key={i} className="flex items-start gap-2">
-                        <ShieldCheck
+                        <CircleCheck
                           size={14}
                           className="mt-0.5 shrink-0 text-[#47317c]/50"
                           strokeWidth={2}

@@ -194,15 +194,18 @@ export default function StepsInformation() {
     <>
       <MetaLayout canonical={`${meta_url}steps-information/`} />
       <StepsHeader />
-      {showLoader && (
-        <div className="absolute inset-0 z-20 flex justify-center items-center bg-black/30 rounded-lg cursor-not-allowed">
-          <PageLoader />
-        </div>
-      )}
 
-      {showProductSelection && (
-        <ProductSelection showProductSelection={showProductSelection} />
-      )}
+      <main className="min-h-[calc(100vh-66px)] bg-[#FBFBFD]">
+        {showLoader && (
+          <div className="absolute inset-0 z-20 flex cursor-not-allowed items-center justify-center bg-white/60">
+            <PageLoader />
+          </div>
+        )}
+
+        {showProductSelection && (
+          <ProductSelection showProductSelection={showProductSelection} />
+        )}
+      </main>
 
       {/* )} */}
     </>

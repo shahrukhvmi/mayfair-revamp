@@ -270,6 +270,7 @@ export default function GpDetail() {
                     label="GP Email"
                     name="email"
                     type="email"
+                    placeholder="gp.practice@example.com"
                     register={register}
                     errors={errors}
                   />
@@ -279,6 +280,7 @@ export default function GpDetail() {
                       <TextField
                         label="Post code"
                         name="postalCode"
+                        placeholder="e.g. SW1A 1AA"
                         register={register}
                         required
                         errors={errors}
@@ -339,6 +341,7 @@ export default function GpDetail() {
                       <TextField
                         label="GP Name"
                         name="gpName"
+                        placeholder="Enter your GP or practice name"
                         register={register}
                         required
                         errors={errors}
@@ -346,6 +349,7 @@ export default function GpDetail() {
                       <TextField
                         label="Address"
                         name="addressLine1"
+                        placeholder="e.g. 10 High Street"
                         register={register}
                         required
                         errors={errors}
@@ -353,12 +357,14 @@ export default function GpDetail() {
                       <TextField
                         label="Address 2"
                         name="addressLine2"
+                        placeholder="Building, suite or unit (optional)"
                         register={register}
                         errors={errors}
                       />
                       <TextField
                         label="Town / City"
                         name="city"
+                        placeholder="e.g. London"
                         register={register}
                         required
                         errors={errors}

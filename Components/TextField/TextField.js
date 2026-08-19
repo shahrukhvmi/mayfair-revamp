@@ -28,6 +28,18 @@ const TextField = ({
 
   const baseRules = {
     ...(required ? { required: "This field is required" } : {}),
+    ...(type === "text" && !readOnly
+      ? {
+          minLength: {
+            value: 2,
+            message: "Please enter at least 2 characters",
+          },
+          maxLength: {
+            value: 100,
+            message: "Please enter no more than 100 characters",
+          },
+        }
+      : {}),
     ...validation,
   };
 
@@ -91,6 +103,7 @@ const TextField = ({
             readOnly={readOnly}
             id={name}
             type={inputType}
+            maxLength={type === "text" ? 100 : undefined}
             placeholder={placeholder}
             disabled={disabled}
             onPaste={handlePaste}

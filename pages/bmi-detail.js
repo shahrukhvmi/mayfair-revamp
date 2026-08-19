@@ -289,7 +289,7 @@ export default function BmiDetail() {
                     rules={{ required: "Explanation is required" }}
                     render={({ field }) => (
                       <TextField {...field} required label="Explanation"
-                        name="weight_related_comorbidity_explanation" errors={errors} multiline boxed rows={4} />
+                        name="weight_related_comorbidity_explanation" placeholder="Describe your condition(s)" errors={errors} multiline boxed rows={4} />
                     )}
                   />
                 )}

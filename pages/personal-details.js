@@ -75,7 +75,7 @@ export default function PersonalDetails() {
       return "Wegovy (Semaglutide) is not recommended for individuals above 85 years of age";
     }
 
-    if (productId === 7 && isOver85) {
+    if (productId === 11 && isOver85) {
       return "Wegovy Pill is not recommended for individuals above 85 years of age";
     }
 
@@ -127,6 +127,7 @@ export default function PersonalDetails() {
     await new Promise((resolve) => setTimeout(resolve, 500)); // Wait 2s
     router.push("/residential-address");
   };
+
 
   return (
     <>

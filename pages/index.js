@@ -129,7 +129,7 @@ export default function Index() {
               name="action"
               value="Returning Patient"
               disabled={!isValid}
-              className="group flex min-h-[54px] w-full cursor-pointer flex-col items-center justify-center rounded-xl border border-[#47317c]/30 bg-white px-6 py-3 mt-3 text-[#47317c] transition-all duration-150 hover:border-[#47317c] hover:bg-[#47317c]/[0.04] disabled:cursor-not-allowed disabled:border-slate-200 disabled:text-slate-400"
+              className="group flex min-h-[54px] w-full cursor-pointer flex-col items-center justify-center rounded-xl border border-[#47317c]/30 bg-white px-6 py-3 mt-3 text-[#47317c] transition-all duration-3 hover:border-[#47317c] hover:bg-[#47317c]/[0.04] disabled:cursor-not-allowed disabled:border-slate-200 disabled:text-slate-400"
             >
               Returning Patient
               <p className="inter-reg-font mt-0.5 !text-[12px] text-[#47317c]/75 group-disabled:text-slate-400">
@@ -139,7 +139,7 @@ export default function Index() {
           </form>
 
           {showLoader && (
-            <div className="absolute inset-0 z-20 flex cursor-not-allowed items-center justify-center bg-white/75 backdrop-blur-[1px]">
+            <div className="fixed inset-0 z-[100] flex cursor-not-allowed items-center justify-center bg-white">
               <PageLoader />
             </div>
           )}

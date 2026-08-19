@@ -118,7 +118,7 @@ export default function Shipping({ shipmentCountries = [] }) {
     } catch (error) {
       console.error("Postcode API error:", error);
 
-      toast.error("Something went wrong while fetching addresses.");
+      toast.error("Something went wrong while fetching address.");
     } finally {
       setAddressSearchLoading(false);
     }
@@ -230,6 +230,7 @@ export default function Shipping({ shipmentCountries = [] }) {
           <TextField
             label="Post code"
             name="postalcode"
+            placeholder="e.g. SW1A 1AA"
             register={register}
             required
             errors={errors}
@@ -308,6 +309,7 @@ export default function Shipping({ shipmentCountries = [] }) {
           <TextField
             label="Address"
             name="addressone"
+            placeholder="e.g. 10 Downing Street"
             register={register}
             required
             errors={errors}
@@ -316,6 +318,7 @@ export default function Shipping({ shipmentCountries = [] }) {
           <TextField
             label="Address 2"
             name="addresstwo"
+            placeholder="Apartment, suite or unit (optional)"
             register={register}
             errors={errors}
           />
@@ -324,6 +327,7 @@ export default function Shipping({ shipmentCountries = [] }) {
         <TextField
           label="Town / City"
           name="city"
+          placeholder="e.g. London"
           register={register}
           required
           errors={errors}

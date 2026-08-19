@@ -38,26 +38,36 @@ const MuiDatePickerField = ({ name, label, control, rules, required = true, erro
                   "& .MuiOutlinedInput-root": {
                     borderRadius: "12px",
                     backgroundColor: "#fff",
-                    transition: "border-color 180ms ease, box-shadow 180ms ease",
-                    "& fieldset": {
-                      borderColor: "#e2e8f0",
-                    },
-                    "&:hover fieldset": {
-                      borderColor: "rgba(71, 49, 124, 0.45)",
-                    },
+                    transition: "box-shadow 180ms ease",
                     "&.Mui-focused": {
                       boxShadow: "0 0 0 3px rgba(71, 49, 124, 0.10)",
                     },
-                    "&.Mui-focused fieldset": {
-                      borderColor: "#47317c",
-                      borderWidth: "1px",
-                    },
+                  },
+                  "& .MuiOutlinedInput-notchedOutline": {
+                    borderColor: "#e2e8f0",
+                    borderWidth: "2px",
+                    borderRadius: "0.75rem",
+                    transition: "border-color 180ms ease",
+                  },
+                  "& .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline": {
+                    borderColor: "#47317c !important",
+                  },
+                  "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                    borderColor: "#47317c !important",
+                    borderWidth: "2px",
+                  },
+                  "& .MuiOutlinedInput-root.Mui-error .MuiOutlinedInput-notchedOutline": {
+                    borderColor: "#fca5a5",
+                    borderWidth: "2px",
+                  },
+                  "& .MuiInputLabel-root": {
+                    color: "#475569 !important",
                   },
                   "& .MuiInputLabel-root.Mui-focused": {
-                    color: "#47317c",
+                    color: "#47317c !important",
                   },
                   "& .MuiIconButton-root": {
-                    color: "#47317c",
+                    color: "#47317c !important",
                   },
                 },
               },

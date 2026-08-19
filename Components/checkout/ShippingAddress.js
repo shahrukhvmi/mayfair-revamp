@@ -308,6 +308,7 @@ export default function ShippingAddress({
             <TextField
               label="First Name"
               name="first_name"
+              placeholder="Enter your first name"
               register={register}
               required
               errors={errors}
@@ -315,6 +316,7 @@ export default function ShippingAddress({
             <TextField
               label="Last Name"
               name="last_name"
+              placeholder="Enter your last name"
               register={register}
               required
               errors={errors}
@@ -362,6 +364,7 @@ export default function ShippingAddress({
               <TextField
                 label="Post code"
                 name="postalcode"
+                placeholder="e.g. SW1A 1AA"
                 register={register}
                 required
                 errors={errors}
@@ -420,6 +423,7 @@ export default function ShippingAddress({
             <TextField
               label="Address"
               name="addressone"
+              placeholder="e.g. 10 Downing Street"
               register={register}
               required
               errors={errors}
@@ -427,6 +431,7 @@ export default function ShippingAddress({
             <TextField
               label="Address 2"
               name="addresstwo"
+              placeholder="Apartment, suite or unit (optional)"
               register={register}
               errors={errors}
               // readOnly
@@ -434,6 +439,7 @@ export default function ShippingAddress({
             <TextField
               label="Town / City"
               name="city"
+              placeholder="e.g. London"
               register={register}
               required
               errors={errors}

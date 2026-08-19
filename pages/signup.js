@@ -88,7 +88,7 @@ export default function SignUp() {
                 <TextField
                   label="First Name"
                   name="firstName"
-                  placeholder="First Name"
+                  placeholder="Enter your first name"
                   register={register}
                   required
                   errors={errors}
@@ -96,7 +96,7 @@ export default function SignUp() {
                 <TextField
                   label="Last Name"
                   name="lastName"
-                  placeholder="Last Name"
+                  placeholder="Enter your last name"
                   register={register}
                   required
                   errors={errors}
