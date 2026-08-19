@@ -261,7 +261,7 @@ export default function LoginScreen() {
         </div>
       ) : (
         <>
-          <div className={`flex justify-center bg-[#F2EEFF] py-8 sm:py-16`}>
+          <div className={`flex justify-center bg-[#FBFBFD] py-8 sm:py-16`}>
             <div
               className={`bg-white rounded-xl shadow-md w-full max-w-lg p-8`}
             >
