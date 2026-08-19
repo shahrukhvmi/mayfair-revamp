@@ -290,8 +290,8 @@ const OrderSummary = ({
         <>
           <div className="col-span-12 sm:col-span-4 mb-3">
             <div className="mb-24 sm:mb-0">
-              <div className="rounded-2xl overflow-hidden shadow-[0_8px_32px_rgba(71,49,124,0.10)] border border-[#47317c]/[0.08] font-inter">
-                <div className="bg-[#f5f2fc] px-6 py-4 border-b border-[#47317c]/[0.07] flex items-center justify-between">
+              <div className="overflow-hidden rounded-[20px] border border-slate-200/80 bg-white font-inter shadow-[0_12px_40px_rgba(30,41,59,0.06)]">
+                <div className="flex items-center justify-between border-b border-slate-100 bg-white px-6 py-[18px]">
                   <div className="flex items-center gap-3">
                     <div className={`flex items-center justify-center w-7 h-7 rounded-full text-[13px] transition-all duration-300 ${
                       onComplete ? "bg-[#47317c] text-white" : "border-2 border-[#47317c] text-[#47317c] inter-semibold-font"
@@ -302,12 +302,15 @@ const OrderSummary = ({
                         </svg>
                       ) : "4"}
                     </div>
-                    <h2 className="inter-semibold-font text-[15px] text-slate-900">Order Summary</h2>
+                    <div>
+                      <h2 className="inter-semibold-font text-[16px] text-slate-950">Order Summary</h2>
+                      <p className="inter-reg-font mt-0.5 text-[11.5px] text-slate-500">Review your items before payment</p>
+                    </div>
                   </div>
                   <button
                     type="button"
                     onClick={handleEdit}
-                    className="flex items-center gap-1.5 inter-medium-font text-[12.5px] text-slate-500 hover:text-[#47317c] transition-colors cursor-pointer"
+                    className="inter-medium-font flex cursor-pointer items-center gap-1.5 rounded-lg px-2 py-1.5 text-[12.5px] text-slate-500 transition-colors hover:bg-[#f5f2fc] hover:text-[#47317c]"
                   >
                     <HiOutlinePencilAlt className="w-3.5 h-3.5" />
                     Edit
@@ -315,35 +318,35 @@ const OrderSummary = ({
                 </div>
 
                 <div className="bg-white px-6 py-5">
-                <div className="overflow-y-auto">
-                  <ul className="space-y-4 overflow-y-auto max-h-[250px] pr-1 pb-4">
+                <div>
+                  <ul className="max-h-[250px] space-y-3 overflow-y-auto pr-1">
                     {items?.doses?.map((dose, index) => (
                       <React.Fragment key={index}>
                         {/* Standard dose item */}
-                        <li className="flex items-center justify-between rounded-xl border border-slate-100 bg-[#f5f2fc] p-4 transition-all duration-200">
-                          <div className="flex flex-col">
-                            <span className="inter-semibold-font text-[14px] text-slate-900 truncate">
+                        <li className="flex items-center justify-between gap-4 rounded-xl border border-slate-200/80 bg-slate-50/60 px-4 py-3.5">
+                          <div className="flex min-w-0 flex-col">
+                            <span className="inter-semibold-font truncate text-[13.5px] text-slate-900">
                               {dose?.product} {dose?.name}
                             </span>
-                            <span className="inter-reg-font text-[12px] text-slate-500 mt-1">
-                              Quantity: x{dose?.qty}
+                            <span className="inter-reg-font mt-1 text-[11.5px] text-slate-500">
+                              Qty {dose?.qty}
                             </span>
                           </div>
 
-                          <span className="inter-semibold-font text-[14px] text-[#47317c]">
+                          <span className="inter-semibold-font shrink-0 text-[14px] text-slate-950">
                             £{dose?.price?.toFixed(2)}
                           </span>
                         </li>
 
                         {/* Additional item if product is Mounjaro */}
                         {dose?.product === "Mounjaro (Tirzepatide)" && (
-                          <li className="flex items-center justify-between rounded-xl border border-slate-100 bg-slate-50 p-4 transition-all duration-200 mt-2">
+                          <li className="mt-2 flex items-center justify-between gap-4 rounded-xl border border-slate-200/80 bg-slate-50/60 px-4 py-3.5">
                             <div className="flex flex-col">
                               <span className="inter-semibold-font text-[14px] text-slate-900 truncate">
                                 Pack of 5 Needle
                               </span>
                               <span className="inter-reg-font text-[12px] text-slate-500 mt-1">
-                                Quantity: x{dose.qty}
+                                Qty {dose.qty}
                               </span>
                             </div>
 
@@ -358,38 +361,39 @@ const OrderSummary = ({
                     {items?.addons?.map((addon, index) => (
                       <li
                         key={index}
-                        className="flex items-center justify-between rounded-xl border border-slate-100 bg-[#f5f2fc] p-4 transition-all duration-200"
+                        className="flex items-center justify-between gap-4 rounded-xl border border-slate-200/80 bg-slate-50/60 px-4 py-3.5"
                       >
                         <div className="flex flex-col">
                           <span className="inter-semibold-font text-[14px] text-slate-900 truncate">
                             {addon?.name}
                           </span>
                           <span className="inter-reg-font text-[12px] text-slate-500 mt-1">
-                            Quantity: x{addon?.qty}
+                            Qty {addon?.qty}
                           </span>
                         </div>
 
-                        <span className="inter-semibold-font text-[14px] text-[#47317c]">
+                        <span className="inter-semibold-font shrink-0 text-[14px] text-slate-950">
                           £{addon?.price?.toFixed(2)}
                         </span>
                       </li>
                     ))}
                   </ul>
 
-                  <div className="flex justify-between items-center mt-8">
+                  <div className="mt-5 space-y-3 border-t border-slate-100 pt-5">
+                  <div className="flex items-center justify-between">
                     <p className="inter-medium-font text-[13.5px] text-slate-600">Subtotal</p>
                     <p className="inter-semibold-font text-[14px] text-slate-900">
                       £{totalAmount?.toFixed(2)}
                     </p>
                   </div>
 
-                  <div className="flex justify-between items-center mt-3">
+                  <div className="flex items-center justify-between">
                     <p className="inter-medium-font text-[13.5px] text-slate-600">VAT</p>
                     <p className="inter-semibold-font text-[14px] text-slate-900">£0.00</p>
                   </div>
 
                   {Coupon && (
-                    <div className="flex justify-between items-center mt-3">
+                    <div className="flex items-center justify-between">
                       <p className="inter-semibold-font text-[13px] text-[#47317c]">
                         Discount
                       </p>
@@ -398,7 +402,7 @@ const OrderSummary = ({
                       </p>
                     </div>
                   )}
-                  <div className="flex justify-between items-center mt-3">
+                  <div className="flex items-center justify-between">
                     <p className="inter-medium-font text-[13.5px] text-slate-600">
                       Shipping
                       <span className="inter-reg-font ms-1 text-slate-400">
@@ -410,16 +414,14 @@ const OrderSummary = ({
                     </p>
                   </div>
 
-                  <hr className="my-4 border-slate-100" />
+                  </div>
 
-                  <div className="flex justify-between items-center">
-                    <p className="inter-bold-font text-[17px] text-slate-900">Total</p>
-                    <p className="inter-bold-font text-[17px] text-[#47317c]">
+                  <div className="mt-5 flex items-center justify-between rounded-xl bg-[#f5f2fc] px-4 py-3.5">
+                    <p className="inter-semibold-font text-[15px] text-slate-950">Total</p>
+                    <p className="inter-bold-font text-[18px] text-[#47317c]">
                       £{finalTotal?.toFixed(2)}
                     </p>
                   </div>
-
-                  <hr className="my-4 border-slate-100" />
 
                   {/* Discount Section */}
                   <AnimatePresence>
@@ -429,7 +431,7 @@ const OrderSummary = ({
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -12 }}
                         transition={{ duration: 0.25, ease: "easeOut" }}
-                        className="mt-6 flex items-center justify-between rounded-xl border border-emerald-200/80 bg-emerald-50/70 px-3.5 py-3"
+                        className="mt-4 flex items-center justify-between rounded-xl border border-emerald-200/80 bg-emerald-50/70 px-3.5 py-3"
                       >
                         <div className="flex min-w-0 items-center gap-2.5">
                           <GoCheckCircleFill size={20} className="shrink-0 text-emerald-600" />
@@ -455,33 +457,33 @@ const OrderSummary = ({
                         </button>
                       </motion.div>
                     ) : (
-                      <div className="mt-6">
-                        <div className="flex items-center gap-2 rounded-xl border border-slate-200 bg-white overflow-hidden px-3 py-1.5 focus-within:border-[#47317c] transition-colors duration-200">
+                      <div className="mt-4">
+                        <div className="flex items-center gap-2 overflow-hidden rounded-xl border border-slate-200 bg-white px-2 py-1.5 transition-[border-color,box-shadow] duration-200 focus-within:border-[#47317c] focus-within:shadow-[0_0_0_3px_rgba(71,49,124,0.08)]">
                           <input
                             type="text"
                             placeholder="Enter discount code"
                             value={discountCode}
                             onChange={(e) => setDiscountCode(e.target.value)}
-                            className="inter-reg-font flex-1 text-[13.5px] text-slate-900 placeholder:text-slate-400 py-2 focus:outline-none bg-transparent"
+                            className="inter-reg-font min-w-0 flex-1 bg-transparent px-1 py-2 text-[13.5px] text-slate-900 placeholder:text-slate-400 focus:outline-none"
                           />
                           <button
                             type="button"
                             onClick={handleApplyCoupon}
                             disabled={!isApplyEnabled}
-                            className={`inter-semibold-font shrink-0 rounded-lg px-4 py-2 text-[12.5px] text-white transition-all duration-200 ${
+                            className={`inter-semibold-font shrink-0 rounded-lg px-4 py-2.5 text-[12.5px] text-white transition-colors duration-200 ${
                               isApplyEnabled
                                 ? "bg-[#47317c] hover:bg-[#3a2769] cursor-pointer"
                                 : "bg-slate-300 cursor-not-allowed"
                             }`}
                           >
-                            {couponLoading ? "Applying..." : "Apply"}
+                            {couponLoading ? "Loading..." : "Apply"}
                           </button>
                         </div>
                       </div>
                     )}
                   </AnimatePresence>
                 </div>
-                <div className="my-5">
+                <div className="mb-1 mt-4">
                   {isButtonLoading == true ? (
                     <div className="w-full py-3 rounded-lg bg-[#47317c] flex justify-center items-center gap-2 cursor-not-allowed">
                       <motion.div
