@@ -341,7 +341,7 @@ export default function GpDetail() {
                       <TextField
                         label="GP Name"
                         name="gpName"
-                        placeholder="Enter your GP or practice name"
+                        placeholder="Enter your GP name"
                         register={register}
                         required
                         errors={errors}

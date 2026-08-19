@@ -213,7 +213,7 @@ const ConfirmationSummary = () => {
                   {firstName ? <>{firstName} {lastName}</> : <>{patientInfo?.firstName} {patientInfo?.lastName}</>}
                 </p> */}
               </div>
-              <div className="grid grid-cols-2 gap-2.5 px-3 py-3 sm:gap-x-8 sm:gap-y-3 sm:px-5 sm:py-4">
+              <div className="grid grid-cols-2 gap-2.5 px-3 sm:gap-x-8 sm:gap-y-3 sm:px-5 mb-6">
                 <div className="min-w-0 rounded-lg border border-slate-100 bg-white px-3 py-2.5 sm:rounded-none sm:border-0 sm:bg-transparent sm:px-0 sm:py-0">
                   <p className="inter-medium-font text-[11px] uppercase tracking-wide text-slate-400 mb-0.5">Name</p>
                   <p className="inter-medium-font break-words text-[13px] text-slate-800 sm:text-[14px]">{firstName ? <>{firstName} {lastName}</> : <>{patientInfo?.firstName} {patientInfo?.lastName}</>}</p>

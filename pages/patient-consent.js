@@ -93,53 +93,87 @@ export default function PatientConsent() {
       <MetaLayout canonical={`${meta_url}patient-consent/`} />
       <StepsHeader />
 
-      <FormWrapper heading={"Patient Consent"} percentage={"85"}>
+      <FormWrapper
+        heading={"Patient Consent"}
+        description=""
+        percentage={"85"}
+      >
         <PageAnimationWrapper>
-          <div className="pt-2 pb-6">
+          <div>
             <div
               className={`relative ${
                 showLoader ? "pointer-events-none cursor-not-allowed" : ""
               }`}
             >
               <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-                {questions.map((q) => {
-                  const selectedAnswer = watch(`responses[${q.id}].answer`);
+                <section aria-labelledby="consent-statements-heading">
+                  <div className="mb-2 border-b border-slate-200 pb-4">
+                    <h2
+                      id="consent-statements-heading"
+                      className="inter-semibold-font text-[16px] text-slate-900 sm:text-[17px]"
+                    >
+                      I confirm and understand that:
+                    </h2>
+                    
+                  </div>
 
-                  return (
-                    <div key={q.id} className={`rounded-xl border p-5 transition-all duration-150 ${selectedAnswer ? "border-[#47317c]/20 bg-[#47317c]/[0.03]" : "border-slate-200 bg-[#FBFBFD]"}`}>
-                      <p className="inter-semibold-font mb-3 text-[13px] uppercase tracking-wide text-slate-500">
-                        I confirm and understand that:
-                      </p>
+                  <div className="divide-y divide-slate-200">
+                    {questions.map((q) => {
+                      const selectedAnswer = watch(`responses[${q.id}].answer`);
 
-                      {q.checklist && (
-                        <div
-                          className="inter-reg-font mb-4 text-[13px] leading-relaxed text-slate-600 [&>ul]:list-disc [&>ul]:ml-5 [&>li]:mt-1"
-                          dangerouslySetInnerHTML={{ __html: q.checklist }}
-                        />
-                      )}
+                      return (
+                        <article key={q.id} className="py-5 first:pt-4">
+                          <div className="min-w-0">
+                              {q.checklist && (
+                                <div
+                                  className="inter-reg-font mb-4 text-[14px] leading-[1.75] text-slate-600 sm:text-[14.5px] [&>ul]:ml-5 [&>ul]:list-disc [&>li]:mt-1.5"
+                                  dangerouslySetInnerHTML={{ __html: q.checklist }}
+                                />
+                              )}
 
-                      <label htmlFor={`question-${q.id}`} className="flex cursor-pointer items-start gap-3">
-                        <input type="checkbox" id={`question-${q.id}`} checked={selectedAnswer}
-                          onChange={(e) => handleCheckboxChange(q.id, e.target.checked)} className="hidden" />
-                        <div className={`mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-[5px] border-2 transition-all duration-150
-                          ${selectedAnswer ? "border-[#47317c] bg-[#47317c]" : "border-slate-300 bg-white"}`}>
-                          {selectedAnswer && (
-                            <svg width="10" height="8" viewBox="0 0 10 8" fill="none">
-                              <path d="M1 4L3.5 6.5L9 1" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                            </svg>
-                          )}
-                        </div>
-                        <span className="inter-medium-font text-[14px] leading-relaxed text-slate-800">
-                          {q?.qsummary?.replace("I confirm and understand that:", "")?.replace("below", "above")?.trim()}
-                        </span>
-                      </label>
-                    </div>
-                  );
-                })}
+                              <label
+                                htmlFor={`question-${q.id}`}
+                                className="group flex cursor-pointer items-start gap-3"
+                              >
+                                <input
+                                  type="checkbox"
+                                  id={`question-${q.id}`}
+                                  checked={selectedAnswer}
+                                  onChange={(e) =>
+                                    handleCheckboxChange(q.id, e.target.checked)
+                                  }
+                                  className="sr-only"
+                                />
+                                <span
+                                  className={`mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-[6px] border-2 transition-all duration-150 group-hover:border-[#47317c]/60 ${
+                                    selectedAnswer
+                                      ? "border-[#47317c] bg-[#47317c]"
+                                      : "border-slate-300 bg-white"
+                                  }`}
+                                >
+                                  {selectedAnswer && (
+                                    <svg width="10" height="8" viewBox="0 0 10 8" fill="none">
+                                      <path d="M1 4L3.5 6.5L9 1" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                                    </svg>
+                                  )}
+                                </span>
+                                <span className={`inter-medium-font text-[15px] leading-[1.65] transition-colors sm:text-[15.5px] ${selectedAnswer ? "text-[#47317c]" : "text-slate-800"}`}>
+                                  {q?.qsummary
+                                    ?.replace("I confirm and understand that:", "")
+                                    ?.replace("below", "above")
+                                    ?.trim()}
+                                </span>
+                              </label>
+                          </div>
+                        </article>
+                      );
+                    })}
+                  </div>
+                </section>
 
                 {/* Show error if not accepted */}
                 {!isNextEnabled && (
-                  <p className="text-sm text-red-500 mt-2">
+                  <p className="inter-reg-font border-l-2 border-amber-300 pl-3 text-[13.5px] leading-relaxed text-amber-700">
                     You must confirm before proceeding.
                   </p>
                 )}
