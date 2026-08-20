@@ -369,7 +369,7 @@ className="absolute right-2 top-12.5 -translate-y-1/2 bg-[#47317c] hover:bg-[#39
             <NextButton
               label="Update billing"
               disabled={!isValid}
-              className="inter-medium-font !min-h-[46px] !rounded-[13px] !border-[#47317c] !bg-[#47317c] !px-6 !py-3 !text-[12px] hover:!bg-[#392765]"
+              className="inter-medium-font !min-h-[46px] !rounded-[13px] !border-[#47317c] !bg-[#47317c] !px-6 !py-3 !text-[12px] !text-white hover:!bg-[#392765]"
             />
           </div>
         </div>

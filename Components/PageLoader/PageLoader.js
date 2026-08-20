@@ -7,7 +7,7 @@ export default function PageLoader() {
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-white/65 px-4 backdrop-blur-[5px]"
+      className="fixed inset-0 z-[10000] flex items-center justify-center bg-white/65 px-4 backdrop-blur-[5px]"
       role="status"
       aria-live="polite"
       aria-label="Loading"

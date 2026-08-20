@@ -24,6 +24,7 @@ import {
   HiOutlineInformationCircle,
 } from "react-icons/hi";
 import useAbandonCardStore from "@/store/abandonCardStore";
+import PageLoader from "@/Components/PageLoader/PageLoader";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 
@@ -294,6 +295,7 @@ export default function DosageSelection() {
   return (
     <>
       <MetaLayout canonical={`${meta_url}dosage-selection/`} />
+      {isButtonLoading && <PageLoader />}
       <AnimatePresence>
         {showDoseModal && selectedDose && (
           <motion.div

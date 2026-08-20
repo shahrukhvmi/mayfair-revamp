@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import {
@@ -55,36 +55,49 @@ const AlertBanner = ({
   );
 };
 
-const UploadTopPromptSkeleton = () => (
-  <section className="w-full overflow-hidden rounded-2xl border border-amber-200/50 bg-amber-50/30">
-    <div className="flex w-full flex-col gap-4 p-4 sm:p-5 lg:flex-row lg:items-center lg:justify-between">
-      <div className="flex min-w-0 flex-1 items-center gap-3.5">
-        <div className="h-10 w-10 shrink-0 animate-pulse rounded-xl bg-amber-100" />
-        <div className="flex-1 space-y-2">
-          <div className="h-3 w-24 animate-pulse rounded-full bg-amber-100" />
-          <div className="h-4 w-48 animate-pulse rounded-full bg-amber-100" />
-          <div className="h-3 w-64 animate-pulse rounded-full bg-amber-100/70" />
-        </div>
-      </div>
-      <div className="h-9 w-full animate-pulse rounded-xl bg-amber-100 lg:w-[140px]" />
-    </div>
-  </section>
-);
-
 const UploadTopPrompt = ({ isLoading = false }) => {
   const router = useRouter();
+
+  const [uploadStoresHydrated, setUploadStoresHydrated] = useState(() =>
+    typeof window !== "undefined" &&
+    useImageUploadStore.persist.hasHydrated() &&
+    useIdVerificationUploadStore.persist.hasHydrated(),
+  );
 
   const { imageUploaded } = useImageUploadStore();
   const { idVerificationUpload } = useIdVerificationUploadStore();
 
+  useEffect(() => {
+    const updateHydrationState = () => {
+      setUploadStoresHydrated(
+        useImageUploadStore.persist.hasHydrated() &&
+          useIdVerificationUploadStore.persist.hasHydrated(),
+      );
+    };
+
+    updateHydrationState();
+
+    const unsubscribeImage =
+      useImageUploadStore.persist.onFinishHydration(updateHydrationState);
+    const unsubscribeId =
+      useIdVerificationUploadStore.persist.onFinishHydration(updateHydrationState);
+
+    return () => {
+      unsubscribeImage?.();
+      unsubscribeId?.();
+    };
+  }, []);
+
   const isDashboardRoute = router.pathname === "/dashboard";
 
-  if (!isDashboardRoute) return null;
+  if (!isDashboardRoute || !uploadStoresHydrated) return null;
 
   // Dono upload ho chuke hain — banner aayega hi nahi, skeleton bhi nahi
   if (imageUploaded && idVerificationUpload) return null;
 
-  if (isLoading) return <UploadTopPromptSkeleton />;
+  // Prompt eligibility API se confirm hone tak optional area render na karo.
+  // Is se first visit par default `false` store values ki wajah se false skeleton flash nahi hota.
+  if (isLoading) return null;
 
   if (!imageUploaded) {
     return (

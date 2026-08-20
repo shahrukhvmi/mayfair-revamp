@@ -102,14 +102,14 @@ export default function Acknowledgment() {
         <PageAnimationWrapper>
           <div className="relative">
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-              <div className="rounded-xl border border-[#47317c]/10 bg-[#47317c]/[0.035] p-4 sm:p-5">
+              {/* <div className="rounded-xl border border-[#47317c]/10 bg-[#47317c]/[0.035] p-4 sm:p-5"> */}
                 <div>
                   <p className="inter-medium-font text-[14px] leading-relaxed text-slate-800">
                     Has anything changed since your last order?
                   </p>
                   {renderYesNo("personalUse", personalUse)}
                 </div>
-              </div>
+              {/* </div> */}
 
               <div>
                 <NextButton disabled={!isValid} label="I Confirm" />

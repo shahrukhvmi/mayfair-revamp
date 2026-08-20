@@ -22,7 +22,7 @@ const SEARCH_BUTTON_CLASS = [
 const UPDATE_BUTTON_CLASS = [
   "inter-medium-font !min-h-[46px] !rounded-xl",
   "!border-[#47317c] !bg-[#47317c] !px-6 !py-3",
-  "!text-[12px] hover:!bg-[#392765]",
+  "!text-[12px] !text-white hover:!bg-[#392765]",
 ].join(" ");
 
 export default function Shipping({ shipmentCountries = [] }) {
