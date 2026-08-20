@@ -345,8 +345,10 @@ export default function DosageSelection() {
 
             {/* Product card */}
             <div className="mb-5 overflow-hidden rounded-2xl border border-[#47317c]/[0.08] bg-white shadow-[0_4px_20px_rgba(71,49,124,0.10)]">
-              <div className="bg-[#47317c] flex items-center justify-center p-6">
-                <img src={variation?.img} alt={variation?.name} className="h-36 w-full object-contain" />
+              <div className="flex items-center justify-center bg-[#47317c] p-5">
+                <div className="flex w-full max-w-[320px] items-center justify-center px-5 py-3 ">
+                  <img src={variation?.img} alt={variation?.name} className="h-36 w-full object-contain" />
+                </div>
               </div>
               <div className="px-5 py-4">
                 <h2 className="inter-semibold-font text-[18px] text-slate-900">{variation?.name}</h2>
@@ -364,7 +366,7 @@ export default function DosageSelection() {
             {/* Dosage section */}
             <div className="overflow-hidden rounded-2xl border border-[#47317c]/[0.08] bg-white px-5 py-5 shadow-[0_4px_20px_rgba(71,49,124,0.10)]">
               <h2 className="inter-semibold-font mb-4 text-[16px] text-slate-900">
-                Choose your Dosage
+                Choose your dosage
               </h2>
 
                     {variation?.variations
@@ -455,7 +457,7 @@ export default function DosageSelection() {
                       </svg>
                     )}
                   </div>
-                  <p className="inter-medium-font text-[13px] leading-relaxed text-slate-700">
+                  <p className="inter-medium-font text-[14px] leading-relaxed text-slate-700">
                     Please confirm that you have reviewed the expiry dates of the selected doses.
                   </p>
                 </label>
@@ -513,6 +515,13 @@ export default function DosageSelection() {
           </div>
 
           {/* Action row */}
+          {(totalSelectedQty() === 0 || !isValid) && (
+            <p className="inter-medium-font mb-2 text-center text-[12px] text-slate-500">
+              {totalSelectedQty() === 0
+                ? "Select at least one dose to continue."
+                : "Confirm the expiry dates to continue."}
+            </p>
+          )}
           <div className="flex items-center gap-2">
             <button type="button" onClick={back}
               className="inter-medium-font flex h-11 shrink-0 items-center gap-1 text-[13px] text-slate-500 hover:text-[#47317c] transition-colors cursor-pointer px-1">

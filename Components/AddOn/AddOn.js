@@ -54,24 +54,28 @@ const AddOn = ({ addon, onAdd, onIncrement, onDecrement, isSelected, quantity })
           ${isOutOfStock
             ? "cursor-not-allowed border-slate-200 bg-slate-50/80"
             : isSelected
-              ? "cursor-pointer border-[#47317c] bg-[#47317c]/[0.04] ring-1 ring-[#47317c]"
+              ? "cursor-pointer border-[#47317c] bg-[#47317c]/[0.04]"
               : "cursor-pointer border-slate-200 bg-white hover:border-[#47317c]/40 hover:bg-[#47317c]/[0.02]"
           }`}
       >
         {isOutOfStock && (
           <>
             <div className="absolute inset-0 z-10 cursor-not-allowed rounded-[14px] bg-slate-100/20" />
-            <div className="inter-semibold-font absolute -top-3 left-3 z-20 inline-flex h-6 items-center rounded-lg border border-rose-200 bg-rose-50 px-3 text-[11px] text-rose-700 shadow-[0_1px_2px_rgba(15,23,42,0.04)]">
+            <div className="inter-semibold-font absolute -top-3.5 left-3 z-20 inline-flex h-7 items-center rounded-lg border border-rose-200 bg-rose-50 px-3 text-[11.5px] text-rose-700 shadow-[0_1px_2px_rgba(15,23,42,0.04)]">
               Out of stock
             </div>
           </>
         )}
 
         {/* Left Content */}
-        <div className={`flex items-start gap-3 transition-opacity sm:items-center ${isOutOfStock ? "opacity-50 grayscale" : ""}`}>
-          <div className={`mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full border-2 transition-all duration-150
+        <div className={`flex items-start gap-3 transition-opacity sm:items-center ${isOutOfStock ? "opacity-60 grayscale" : ""}`}>
+          <div className={`mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-[5px] border-2 transition-all duration-150
             ${isSelected ? "border-[#47317c] bg-[#47317c]" : "border-slate-300 bg-white"}`}>
-            {isSelected && <div className="h-2 w-2 rounded-full bg-white" />}
+            {isSelected && (
+              <svg width="10" height="8" viewBox="0 0 10 8" fill="none" aria-hidden="true">
+                <path d="M1 4L3.5 6.5L9 1" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            )}
           </div>
           <div>
             <p className="inter-semibold-font text-[15px] capitalize text-slate-900">{addon?.product_name}</p>
@@ -80,7 +84,7 @@ const AddOn = ({ addon, onAdd, onIncrement, onDecrement, isSelected, quantity })
         </div>
 
         {/* Right Content */}
-        <div className={`flex w-full items-center justify-end gap-3 transition-opacity sm:w-auto ${isOutOfStock ? "opacity-50 grayscale" : ""}`}>
+        <div className={`flex w-full items-center justify-end gap-3 transition-opacity sm:w-auto ${isOutOfStock ? "opacity-60 grayscale" : ""}`}>
           <span className={`inter-semibold-font text-[16px] ${isSelected ? "text-[#47317c]" : "text-slate-900"}`}>
             £{parseFloat(addon?.price).toFixed(2)}
           </span>
@@ -102,7 +106,7 @@ const AddOn = ({ addon, onAdd, onIncrement, onDecrement, isSelected, quantity })
 
               <button type="button"
                 onClick={(e) => { e.stopPropagation(); setShowModal(true); }}
-                className="flex h-8 w-8 items-center justify-center rounded-full bg-red-50 text-red-400 hover:bg-red-100 cursor-pointer transition-colors">
+                className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-lg border border-red-100 bg-red-50 text-red-500 transition-colors hover:border-red-200 hover:bg-red-100">
                 <MdDelete size={15} />
               </button>
             </>

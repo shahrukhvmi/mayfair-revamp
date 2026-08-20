@@ -19,7 +19,7 @@ const NextButton = ({
           flex justify-center items-center cursor-pointer rounded-lg py-3 px-6
           ${
             disabled || loading
-              ? "bg-slate-200 text-slate-400 !cursor-not-allowed"
+              ? "bg-slate-200 text-slate-500 !cursor-not-allowed"
               : "bg-[#47317c] hover:bg-[#3d2a6b] text-white"
           }`}
       >
