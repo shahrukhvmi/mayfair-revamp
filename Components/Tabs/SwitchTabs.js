@@ -31,7 +31,7 @@ const SwitchTabs = ({ tabs, selectedTab, onTabChange }) => {
             role="tab"
             aria-selected={isActive}
             onClick={() => onTabChange(tab.value)}
-            className={`inter-bold-font relative z-10 min-h-[44px] w-full cursor-pointer rounded-[9px] border border-transparent bg-transparent px-4 py-2.5 text-[14px] uppercase transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#47317c]/25 focus-visible:ring-offset-1
+            className={`inter-bold-font relative z-10 min-h-[44px] w-full cursor-pointer rounded-[9px] border border-transparent bg-transparent px-4 py-2.5 text-[14px]  transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#47317c]/25 focus-visible:ring-offset-1
               ${
                 isActive
                   ? "text-[#3f2b70]"

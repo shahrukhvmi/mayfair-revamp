@@ -126,14 +126,14 @@ export default function PatientConsent() {
                           <div className="min-w-0">
                               {q.checklist && (
                                 <div
-                                  className="inter-reg-font mb-4 text-[14px] leading-[1.75] text-slate-600 sm:text-[14.5px] [&>ul]:ml-5 [&>ul]:list-disc [&>li]:mt-1.5"
+                                  className="inter-reg-font mb-4 text-[14px] leading-[1.75] text-slate-600 sm:text-[16px] [&>ul]:ml-5 [&>ul]:list-disc [&>li]:mt-1.5"
                                   dangerouslySetInnerHTML={{ __html: q.checklist }}
                                 />
                               )}
 
                               <label
                                 htmlFor={`question-${q.id}`}
-                                className="group flex cursor-pointer items-start gap-3"
+                                className="group grid cursor-pointer grid-cols-[20px_minmax(0,1fr)] items-center gap-3"
                               >
                                 <input
                                   type="checkbox"
@@ -145,7 +145,7 @@ export default function PatientConsent() {
                                   className="sr-only"
                                 />
                                 <span
-                                  className={`mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-[6px] border-2 transition-all duration-150 group-hover:border-[#47317c]/60 ${
+                                  className={`flex h-5 w-5 items-center justify-center self-center rounded-[6px] border-2 transition-all duration-150 group-hover:border-[#47317c]/60 ${
                                     selectedAnswer
                                       ? "border-[#47317c] bg-[#47317c]"
                                       : "border-slate-300 bg-white"

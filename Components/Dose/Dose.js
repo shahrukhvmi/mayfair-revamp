@@ -163,7 +163,7 @@ const Dose = ({
         
 
         {doseStatus === 0 && Number(productId) !== 7 && (
-          <div className="absolute right-4 top-[-10px] group inline-block z-50">
+          <div className="group absolute -top-3 right-3 z-20 inline-block">
             <button
               type="button"
               onClick={(e) => {
@@ -171,7 +171,7 @@ const Dose = ({
                 handleNotifiedClick(doseData);
               }}
               disabled={isLoading}
-              className="inline-flex items-end justify-end gap-1 px-3 py-1 text-xs text-green-700 cursor-pointer shadow-sm bg-green-100 hover:bg-green-200 border border-green-300 rounded"
+              className="inter-semibold-font inline-flex h-6 cursor-pointer items-center justify-center gap-1.5 rounded-lg border border-emerald-200 bg-emerald-50 px-3 text-[11px] text-emerald-700 shadow-[0_1px_2px_rgba(15,23,42,0.04)] transition-colors hover:border-emerald-300 hover:bg-emerald-100 disabled:cursor-wait disabled:opacity-70"
             >
               {isLoading ? (
                 <>
@@ -195,21 +195,21 @@ const Dose = ({
                       d="M4 12a8 8 0 018-8v8H4z"
                     />
                   </svg>
-                  <span className="font-semibold whitespace-nowrap">
+                  <span className="whitespace-nowrap">
                     Loading...
                   </span>
                 </>
               ) : (
                 <>
-                  <FaInfoCircle />
-                  <span className="font-semibold whitespace-nowrap">
+                  <FaInfoCircle className="text-[12px]" />
+                  <span className="whitespace-nowrap">
                     Get Notified
                   </span>
                 </>
               )}
             </button>
 
-            <div className="absolute right-20 bottom-5 mt-1 px-2 py-1 text-xs text-white bg-gray-800 rounded opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap z-[70]">
+            <div className="inter-reg-font pointer-events-none absolute right-0 top-8 z-30 whitespace-nowrap rounded-lg bg-slate-900 px-2.5 py-1.5 text-[11px] text-white opacity-0 shadow-lg transition-opacity duration-200 group-hover:opacity-100">
               You'll be notified when this item is back in stock.
             </div>
           </div>
@@ -217,11 +217,11 @@ const Dose = ({
         {/* </div> */}
         <div
           onClick={isOutOfStock || isAllowExceeded ? undefined : handleAdd}
-          className={`relative mt-3 flex flex-col items-start justify-between gap-3 rounded-xl border-2 p-3.5 transition-all duration-200 sm:flex-row sm:items-center sm:gap-0 sm:p-4
+          className={`relative mt-5 flex flex-col items-start justify-between gap-3 rounded-[14px] border p-3.5 transition-all duration-200 sm:flex-row sm:items-center sm:gap-0 sm:p-4
             ${isOutOfStock
-              ? "cursor-not-allowed border-slate-200 bg-slate-50 opacity-50"
+              ? "cursor-not-allowed border-slate-200 bg-slate-50/80"
               : isSelected
-                ? "cursor-pointer border-[#47317c] bg-[#47317c]/[0.04]"
+                ? "cursor-pointer border-[#47317c] bg-[#47317c]/[0.04] ring-1 ring-[#47317c]"
                 : isAllowExceeded
                   ? "cursor-not-allowed border-slate-200 bg-white opacity-60"
                   : "cursor-pointer border-slate-200 bg-white hover:border-[#47317c]/40 hover:bg-[#47317c]/[0.02]"
@@ -229,15 +229,15 @@ const Dose = ({
         >
           {isOutOfStock && (
             <>
-              <div className="absolute inset-0 z-10 cursor-not-allowed rounded-xl" />
-              <div className="absolute left-3 top-[-10px] z-20 rounded-full bg-slate-500 px-3 py-0.5 text-[11px] font-semibold text-white">
+              <div className="absolute inset-0 z-10 cursor-not-allowed rounded-[14px] bg-slate-100/20" />
+              <div className="inter-semibold-font absolute -top-3 left-3 z-20 inline-flex h-6 items-center rounded-lg border border-rose-200 bg-rose-50 px-3 text-[11px] text-rose-700 shadow-[0_1px_2px_rgba(15,23,42,0.04)]">
                 {Number(productId) == 7 ? "Coming Soon" : "Out of stock"}
               </div>
             </>
           )}
 
           {/* Left Side */}
-          <div className="flex w-full min-w-0 items-start gap-2.5 sm:w-auto sm:items-center sm:gap-3">
+          <div className={`flex w-full min-w-0 items-start gap-2.5 transition-opacity sm:w-auto sm:items-center sm:gap-3 ${isOutOfStock ? "opacity-50 grayscale" : ""}`}>
             <div className={`mt-0.5 flex h-[18px] w-[18px] shrink-0 items-center justify-center rounded-full border-2 transition-all duration-150 sm:h-5 sm:w-5
               ${isSelected ? "border-[#47317c] bg-[#47317c]" : "border-slate-300 bg-white"}`}>
               {isSelected && <div className="h-1.5 w-1.5 rounded-full bg-white sm:h-2 sm:w-2" />}
@@ -259,7 +259,7 @@ const Dose = ({
           </div>
 
           {/* Right Side */}
-          <div className={`flex w-full items-center gap-2 border-t border-slate-100 pt-3 sm:w-auto sm:gap-3 sm:border-t-0 sm:pt-0 ${isSelected ? "justify-between" : "justify-end"}`}>
+          <div className={`flex w-full items-center gap-2 border-t border-slate-100 pt-3 transition-opacity sm:w-auto sm:gap-3 sm:border-t-0 sm:pt-0 ${isSelected ? "justify-between" : "justify-end"} ${isOutOfStock ? "opacity-50 grayscale" : ""}`}>
             <span className={`inter-semibold-font shrink-0 text-[16px] ${isSelected ? "text-[#47317c]" : "text-slate-700"}`}>
               £{parseFloat(doseData?.price).toFixed(2)}
             </span>
