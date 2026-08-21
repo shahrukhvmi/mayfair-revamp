@@ -121,7 +121,7 @@ export default function Index() {
               label="New Patient"
               subHeading="Click here to start online consultation"
               disabled={!isValid}
-              className="!rounded-xl"
+              className="!rounded-xl text-[16px]"
             />
 
             <button
@@ -129,7 +129,7 @@ export default function Index() {
               name="action"
               value="Returning Patient"
               disabled={!isValid}
-              className="group flex min-h-[54px] w-full cursor-pointer flex-col items-center justify-center rounded-xl border border-[#47317c]/30 bg-white px-6 py-3 mt-3 text-[#47317c] transition-all duration-3 hover:border-[#47317c] hover:bg-[#47317c]/[0.04] disabled:cursor-not-allowed disabled:border-slate-200 disabled:text-slate-400"
+              className="group flex min-h-[54px] w-full cursor-pointer flex-col ite ms-center justify-center rounded-xl border border-[#47317c]/30 bg-white px-6 py-3 mt-3 text-[#47317c] transition-all duration-3 hover:border-[#47317c] hover:bg-[#47317c]/[0.04] disabled:cursor-not-allowed disabled:border-slate-200 disabled:text-slate-400 inter-medium-font"
             >
               Returning Patient
               <p className="inter-reg-font mt-0.5 !text-[12px] text-[#47317c]/75 group-disabled:text-slate-400">
