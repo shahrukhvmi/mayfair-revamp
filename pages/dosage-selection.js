@@ -104,8 +104,8 @@ export default function DosageSelection() {
       return `If this is your first time taking Wegovy Tablets, you should start with the 1.5mg dose. Starting on a higher dose may increase the risk of side effects.\n\nPlease confirm that you are currently taking Wegovy Tablets from another provider, or have previously used, or currently use, a GLP-1 treatment such as Wegovy or Mounjaro.`;
     }
 
-      if (productId == FoundayoProductId) {
-      return `If this is your first time taking Foundayo Tablets, you should start with the 2.5mg dose. Starting on a higher dose may increase the risk of side effects.\n\nPlease confirm that you are currently taking Foundayo Tablets from another provider, or have previously used, or currently use, a GLP-1 treatment such as Wegovy or Mounjaro.`;
+    if (productId == FoundayoProductId) {
+      return `If this is your first time taking Foundayo Tablets or a GLP-1 medication, you should start with the 0.8mg dose. Starting on a higher dose may increase the risk of side effects.\n\nPlease confirm that you are currently taking Foundayo Tablets from another provider, or have previously used, or currently use, a GLP-1 treatment such as Wegovy or Mounjaro.`;
     }
 
     const sortedVariations = [...variations].sort((a, b) => {
@@ -184,37 +184,37 @@ export default function DosageSelection() {
 
     // START FOUNDAYO PRE-LAUNCH PRICE LOGIC ⚠️⚠️⚠️
 
-const productName = String(dose?.product_name || "")
-  .trim()
-  .toLowerCase();
+    const productName = String(dose?.product_name || "")
+      .trim()
+      .toLowerCase();
 
-const doseName = String(dose?.name || "")
-  .trim()
-  .toLowerCase()
-  .replace(/\s+/g, "");
+    const doseName = String(dose?.name || "")
+      .trim()
+      .toLowerCase()
+      .replace(/\s+/g, "");
 
-const isFoundayo =
-  Number(productId) === FoundayoProductId ||
-  productName === "foundayo (orforglipron)";
+    const isFoundayo =
+      Number(productId) === FoundayoProductId ||
+      productName === "foundayo (orforglipron)";
 
-const preLaunchDoses = ["0.8mg", "2.5mg"];
+    const preLaunchDoses = ["0.8mg", "2.5mg"];
 
-const isPreLaunchDose = preLaunchDoses.includes(doseName);
+    const isPreLaunchDose = preLaunchDoses.includes(doseName);
 
-const regularPrice = Number(dose?.price || 0);
-const preLaunchPrice = Number(dose?.pre_launch_price || 0);
+    const regularPrice = Number(dose?.price || 0);
+    const preLaunchPrice = Number(dose?.pre_launch_price || 0);
 
-const shouldUsePreLaunchPrice =
-  isFoundayo &&
-  isPreLaunchDose &&
-  Number.isFinite(preLaunchPrice) &&
-  preLaunchPrice > 0;
+    const shouldUsePreLaunchPrice =
+      isFoundayo &&
+      isPreLaunchDose &&
+      Number.isFinite(preLaunchPrice) &&
+      preLaunchPrice > 0;
 
-const finalPrice = shouldUsePreLaunchPrice
-  ? preLaunchPrice
-  : regularPrice;
+    const finalPrice = shouldUsePreLaunchPrice
+      ? preLaunchPrice
+      : regularPrice;
 
-// END FOUNDAYO PRE-LAUNCH PRICE LOGIC ⚠️⚠️⚠️
+    // END FOUNDAYO PRE-LAUNCH PRICE LOGIC ⚠️⚠️⚠️
 
     const isFiveMg = dose?.name === "5 mg";
     const firstTwoDoses = variation?.variations?.slice(0, 1).map((v) => v.name);
@@ -253,7 +253,7 @@ const finalPrice = shouldUsePreLaunchPrice
         id: dose.id,
         type: "dose",
         name: dose.name,
-         price: finalPrice,
+        price: finalPrice,
         // price: parseInt(dose?.price),
         allowed: parseInt(dose.allowed),
         item_id: dose.id,
@@ -416,14 +416,14 @@ const finalPrice = shouldUsePreLaunchPrice
 
                       <span className="bold-font text-black">
                         From{" "}
-                          <span>
-                            £
-                            {parseFloat(
-                              variation?.name === "Foundayo (Orforglipron)"
-                                ? variation?.pre_launch_price || 0
-                                : variation?.price || 0
-                            ).toFixed(2)}
-                          </span>
+                        <span>
+                          £
+                          {parseFloat(
+                            variation?.name === "Foundayo (Orforglipron)"
+                              ? variation?.pre_launch_price || 0
+                              : variation?.price || 0
+                          ).toFixed(2)}
+                        </span>
                       </span>
                       {/* <div
                         className="reg-font text-gray-600 bg-red-50  p-3 rounded-md text-sm"
@@ -563,12 +563,12 @@ const finalPrice = shouldUsePreLaunchPrice
                             .sort((a, b) => {
                               const aOutOfStock =
                                 a?.stock?.status === 0 ||
-                                a?.stock?.quantity === 0
+                                  a?.stock?.quantity === 0
                                   ? 1
                                   : 0;
                               const bOutOfStock =
                                 b?.stock?.status === 0 ||
-                                b?.stock?.quantity === 0
+                                  b?.stock?.quantity === 0
                                   ? 1
                                   : 0;
 
