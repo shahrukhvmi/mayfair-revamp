@@ -16,6 +16,7 @@ import { getNotified } from "@/api/GetNotified";
 import RemoveAbandonCartApi from "@/api/RemoveAbandonCartApi";
 import { useMutation } from "@tanstack/react-query";
 import useProductId from "@/store/useProductIdStore";
+import { FoundayoProductId } from "@/config/constants";
 
 const Dose = ({
   doseData,
@@ -125,44 +126,51 @@ const Dose = ({
     } catch (err) {
       toast.error(
         err?.response?.data?.errors?.Notification ||
-          "Something went wrong. Please try again.",
+        "Something went wrong. Please try again.",
       );
     } finally {
       setIsLoading(false);
     }
   };
 
-  // const price = Number(doseData?.price || 0);
-  // const preLaunchPrice = Number(doseData?.pre_launch_price || 0);
-  // const productName = String(doseData?.product_name || "")
-  //   .trim()
-  //   .toLowerCase();
+  const productName = String(doseData?.product_name || "")
+    .trim()
+    .toLowerCase();
 
-  // const doseName = String(doseData?.name || "")
-  //   .trim()
-  //   .toLowerCase()
-  //   .replace(/\s+/g, "");
+  const doseName = String(doseData?.name || "")
+    .trim()
+    .toLowerCase()
+    .replace(/\s+/g, "");
 
-  // const isWegovyPill = productName === "wegovy pill";
-  // const isTwentyFiveMg = doseName === "25mg";
+  const isFoundayo = productName === "foundayo (orforglipron)";
 
-  // const price = Number(doseData?.price || 0);
-  // const preLaunchPrice = Number(doseData?.pre_launch_price || 0);
+  // Pre-launch price sirf in 2 doses ke liye
+  const preLaunchDoses = ["0.8mg", "2.5mg"];
 
-  // const shouldUsePreLaunchPrice =
-  //   isWegovyPill && isTwentyFiveMg && preLaunchPrice > 0;
+  const isPreLaunchDose = preLaunchDoses.includes(doseName);
 
-  // const isPriceComingSoon =
-  //   isWegovyPill && price <= 0 && !shouldUsePreLaunchPrice;
+  const price = Number(doseData?.price || 0);
+  const preLaunchPrice = Number(doseData?.pre_launch_price || 0);
+
+  const shouldUsePreLaunchPrice =
+    isFoundayo &&
+    isPreLaunchDose &&
+    preLaunchPrice > 0;
+
+  const isPriceComingSoon =
+    isFoundayo &&
+    isPreLaunchDose &&
+    price <= 0 &&
+    !shouldUsePreLaunchPrice;
 
   return (
     <>
       <div className="relative">
         {/* <div className="absolute right-2 top-0 z-[60] flex items-center gap-2 flex-wrap justify-end"> */}
 
-        
 
-        {doseStatus === 0 && Number(productId) !== 7 && (
+
+        {doseStatus === 0 && Number(productId) !== FoundayoProductId  && (
           <div className="absolute right-4 top-[-10px] group inline-block z-50">
             <button
               type="button"
@@ -218,15 +226,14 @@ const Dose = ({
         <div
           onClick={isOutOfStock || isAllowExceeded ? undefined : handleAdd}
           className={`flex flex-col sm:flex-row items-start sm:items-center justify-between w-full p-4 border-2 mt-3 transition-all duration-300 ease-in-out relative rounded-md border-primary gap-4 sm:gap-0
-    ${
-      isOutOfStock
-        ? "opacity-50 cursor-not-allowed bg-white border-gray-400"
-        : isSelected
-          ? "border-primary bg-violet-100 cursor-pointer"
-          : isAllowExceeded
-            ? "border-primary bg-white cursor-not-allowed opacity-60"
-            : "border-primary bg-white hover:bg-gray-50 cursor-pointer"
-    }`}
+    ${isOutOfStock
+              ? "opacity-50 cursor-not-allowed bg-white border-gray-400"
+              : isSelected
+                ? "border-primary bg-violet-100 cursor-pointer"
+                : isAllowExceeded
+                  ? "border-primary bg-white cursor-not-allowed opacity-60"
+                  : "border-primary bg-white hover:bg-gray-50 cursor-pointer"
+            }`}
         >
           {/* Overlay when out of stock */}
           {isOutOfStock && (
@@ -236,7 +243,7 @@ const Dose = ({
 
               {/* Out of stock badge */}
               <div className="absolute left-[14px] top-[-10px] bg-primary text-white px-3 py-0.5 text-xs font-semibold rounded z-20">
-                {Number(productId) == 7 ? "Coming Soon" : "Out of stock"}
+                {Number(productId) == FoundayoProductId ? "Coming Soon" : "Out of stock"}
               </div>
             </>
           )}
@@ -274,16 +281,15 @@ const Dose = ({
 
           {/* Right Side - Price and Quantity */}
           <div className="flex items-center justify-end gap-3 w-full sm:w-auto">
-            <span
+            {/* <span
               className={`font-semibold text-md sm:text-lg ${isSelected ? "text-primary" : "text-gray-700"}`}
             >
               £{parseFloat(doseData?.price).toFixed(2)}
-            </span>
+            </span> */}
 
-            {/* <span
-              className={`font-semibold text-md sm:text-lg ${
-                isSelected ? "text-primary" : "text-gray-700"
-              }`}
+            <span
+              className={`font-semibold text-md sm:text-lg ${isSelected ? "text-primary" : "text-gray-700"
+                }`}
             >
               {isPriceComingSoon ? (
                 <span className="text-primary text-sm font-semibold">
@@ -304,7 +310,7 @@ const Dose = ({
                   £{price.toFixed(2)}
                 </span>
               )}
-            </span> */}
+            </span>
 
             {isSelected && (
               <>
@@ -324,11 +330,10 @@ const Dose = ({
                   <button
                     type="button"
                     onClick={handleIncrement}
-                    className={`p-2 rounded-full ${
-                      qty >= allowed
+                    className={`p-2 rounded-full ${qty >= allowed
                         ? "cursor-not-allowed bg-gray-100 opacity-50"
                         : "bg-gray-100 hover:bg-gray-200 cursor-pointer"
-                    }`}
+                      }`}
                   >
                     <FaPlus size={10} className="text-black" />
                   </button>

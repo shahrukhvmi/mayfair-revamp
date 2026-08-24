@@ -9,6 +9,9 @@
 //   "https://mayfairweightlossclinic.co.uk/start-consultation/";
 // export default { app_url };
 // CONSTANT FILE
+
+const FoundayoProductId =8;
+const WegovyPillProductId = 7;
 const serverType = process.env.NEXT_PUBLIC_SERVER_TYPE;
 console.log(serverType, "SERVERRRrrrrrrrr");
 let app_url = "";
@@ -36,4 +39,4 @@ switch (serverType) {
     meta_url = "https://www.mayfairweightlossclinic.co.uk/start-consultation/";
     break;
 }
-export { app_url, meta_url, passwordlink };
+export { app_url, meta_url, passwordlink, FoundayoProductId, WegovyPillProductId };

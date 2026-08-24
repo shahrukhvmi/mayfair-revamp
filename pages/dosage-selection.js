@@ -17,7 +17,7 @@ import { abandonCart } from "@/api/abandonCartApi";
 import { useMutation } from "@tanstack/react-query";
 import useProductId from "@/store/useProductIdStore";
 import MetaLayout from "@/Meta/MetaLayout";
-import { meta_url } from "@/config/constants";
+import { FoundayoProductId, meta_url, WegovyPillProductId } from "@/config/constants";
 import { Checkbox, FormControlLabel } from "@mui/material";
 import {
   HiOutlineExclamationCircle,
@@ -100,8 +100,12 @@ export default function DosageSelection() {
 
   // ✅ Put here → outside your component or at the top inside your component file
   const generateProductConcent = (variations, selectedDoseName) => {
-    if (productId == 7) {
+    if (productId == WegovyPillProductId) {
       return `If this is your first time taking Wegovy Tablets, you should start with the 1.5mg dose. Starting on a higher dose may increase the risk of side effects.\n\nPlease confirm that you are currently taking Wegovy Tablets from another provider, or have previously used, or currently use, a GLP-1 treatment such as Wegovy or Mounjaro.`;
+    }
+
+      if (productId == FoundayoProductId) {
+      return `If this is your first time taking Foundayo Tablets, you should start with the 2.5mg dose. Starting on a higher dose may increase the risk of side effects.\n\nPlease confirm that you are currently taking Foundayo Tablets from another provider, or have previously used, or currently use, a GLP-1 treatment such as Wegovy or Mounjaro.`;
     }
 
     const sortedVariations = [...variations].sort((a, b) => {
@@ -177,6 +181,41 @@ export default function DosageSelection() {
 
     // new weegovy pill pre launch price added price End⚠️⚠️⚠️⚠️⚠️
 
+
+    // START FOUNDAYO PRE-LAUNCH PRICE LOGIC ⚠️⚠️⚠️
+
+const productName = String(dose?.product_name || "")
+  .trim()
+  .toLowerCase();
+
+const doseName = String(dose?.name || "")
+  .trim()
+  .toLowerCase()
+  .replace(/\s+/g, "");
+
+const isFoundayo =
+  Number(productId) === FoundayoProductId ||
+  productName === "foundayo (orforglipron)";
+
+const preLaunchDoses = ["0.8mg", "2.5mg"];
+
+const isPreLaunchDose = preLaunchDoses.includes(doseName);
+
+const regularPrice = Number(dose?.price || 0);
+const preLaunchPrice = Number(dose?.pre_launch_price || 0);
+
+const shouldUsePreLaunchPrice =
+  isFoundayo &&
+  isPreLaunchDose &&
+  Number.isFinite(preLaunchPrice) &&
+  preLaunchPrice > 0;
+
+const finalPrice = shouldUsePreLaunchPrice
+  ? preLaunchPrice
+  : regularPrice;
+
+// END FOUNDAYO PRE-LAUNCH PRICE LOGIC ⚠️⚠️⚠️
+
     const isFiveMg = dose?.name === "5 mg";
     const firstTwoDoses = variation?.variations?.slice(0, 1).map((v) => v.name);
     const isFirstTwoDose = firstTwoDoses?.includes(dose?.name);
@@ -186,7 +225,8 @@ export default function DosageSelection() {
         id: dose.id,
         type: "dose",
         name: dose.name,
-        price: parseInt(dose?.price),
+        price: finalPrice,
+        // price: parseInt(dose?.price),
         allowed: parseInt(dose.allowed),
         item_id: dose.id,
         product: dose?.product_name || "Dose Product",
@@ -213,7 +253,8 @@ export default function DosageSelection() {
         id: dose.id,
         type: "dose",
         name: dose.name,
-        price: parseInt(dose?.price),
+         price: finalPrice,
+        // price: parseInt(dose?.price),
         allowed: parseInt(dose.allowed),
         item_id: dose.id,
         product: dose?.product_name || "Dose Product",
@@ -321,7 +362,7 @@ export default function DosageSelection() {
                 </p>
               )}
               <NextButton
-                label={productId == 7 ? "I confirm this dose" : " I Confirm"}
+                label={productId == FoundayoProductId || productId == WegovyPillProductId ? "I confirm this dose" : " I Confirm"}
                 onClick={() => {
                   setShowDoseModal(false);
                 }}
@@ -375,9 +416,14 @@ export default function DosageSelection() {
 
                       <span className="bold-font text-black">
                         From{" "}
-                        <span className="">
-                          £{parseFloat(variation?.price || 0).toFixed(2)}
-                        </span>
+                          <span>
+                            £
+                            {parseFloat(
+                              variation?.name === "Foundayo (Orforglipron)"
+                                ? variation?.pre_launch_price || 0
+                                : variation?.price || 0
+                            ).toFixed(2)}
+                          </span>
                       </span>
                       {/* <div
                         className="reg-font text-gray-600 bg-red-50  p-3 rounded-md text-sm"
@@ -504,7 +550,7 @@ export default function DosageSelection() {
 
                   {Array.isArray(variation?.addons) &&
                     variation?.addons.length > 0 &&
-                    productId != 7 && (
+                    productId != FoundayoProductId && productId != WegovyPillProductId && (
                       <div className="bg-white rounded-lg shadow-lg  px-4 py-6 my-4">
                         <>
                           <h1 className="my-4 niba-reg-font text-2xl text-gray-800">

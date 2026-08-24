@@ -27,7 +27,7 @@ import ProductSelection from "@/Components/ProductSelection/ProductSelection";
 import useReorderButtonStore from "@/store/useReorderButton";
 import StepsHeader from "@/layout/stepsHeader";
 import MetaLayout from "@/Meta/MetaLayout";
-import { meta_url } from "@/config/constants";
+import { FoundayoProductId, meta_url, WegovyPillProductId } from "@/config/constants";
 import useReturning from "@/store/useReturningPatient";
 
 export default function StepsInformation() {
@@ -176,7 +176,7 @@ export default function StepsInformation() {
     setShowLoader(true);
     if (productId != null) {
       consultationMutation.mutate(formData);
-      if (productId == 7) {
+      if (productId == WegovyPillProductId || productId == FoundayoProductId) {
         medicalQuestionsMutation.mutate(formData);
       } else {
         medicalQuestionsMutation.mutate();

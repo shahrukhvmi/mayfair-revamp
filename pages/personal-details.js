@@ -15,7 +15,7 @@ import { differenceInYears, format, parse } from "date-fns";
 import usePatientInfoStore from "@/store/patientInfoStore";
 import useProductId from "@/store/useProductIdStore";
 import MetaLayout from "@/Meta/MetaLayout";
-import { meta_url } from "@/config/constants";
+import { FoundayoProductId, meta_url, WegovyPillProductId } from "@/config/constants";
 
 export default function PersonalDetails() {
   const [showLoader, setShowLoader] = useState(false);
@@ -74,8 +74,11 @@ export default function PersonalDetails() {
     if (productId === 1 && isOver85) {
       return "Wegovy (Semaglutide) is not recommended for individuals above 85 years of age";
     }
+    if (productId === FoundayoProductId && isOver85) {
+      return "Foundayo (Orforglipron) is not recommended for individuals above 85 years of age";
+    }
 
-    if (productId === 7 && isOver85) {
+    if (productId === WegovyPillProductId && isOver85) {
       return "Wegovy Pill is not recommended for individuals above 85 years of age";
     }
 

@@ -21,6 +21,7 @@ import useCouponStore from "@/store/couponStore";
 import useSignupStore from "@/store/signupStore";
 import useReturning from "@/store/useReturningPatient";
 import lastOrderStore from "@/store/lastOrderStore";
+import { FoundayoProductId } from "@/config/constants";
 
 const ProductCard = ({
   id,
@@ -163,7 +164,8 @@ const ProductCard = ({
                 From
               </span>
               <span className="text-xs mont-bold-font  tracking-wide text-white">
-                £{price}
+                {title === "Foundayo (Orforglipron)" ? `£${pre_launch_price}` : `£${price}`}
+                {/* £{price} */}
               </span>
             </div>
           </div>
