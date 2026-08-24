@@ -37,7 +37,7 @@ const PaymentFailed = () => {
         <div className="px-6 py-6 sm:px-10 sm:py-7">
           <NextButton
             onClick={handleGoBack}
-            label="Continue to Available Treatments"
+            label="Visit patient dashboard"
           />
         </div>
       </div>
