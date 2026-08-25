@@ -18,6 +18,7 @@ import toast from "react-hot-toast";
 import BackButton from "@/Components/BackButton/BackButton";
 import MetaLayout from "@/Meta/MetaLayout";
 import { meta_url } from "@/config/constants";
+import StepsHeader from "@/layout/stepsHeader";
 
 export default function ReviewScreen() {
   const { token, setReview } = useAuthStore();
@@ -143,7 +144,7 @@ export default function ReviewScreen() {
   return (
     <>
       <MetaLayout canonical={`${meta_url}review/`} noIndex />
-
+      <StepsHeader />
       <section className="review-container ">
         <div className="review-shell">
           <ApplicationLogo className="mx-auto w-46 mb-6 review-logo" />
@@ -239,11 +240,10 @@ export default function ReviewScreen() {
                     <button
                       type="button"
                       disabled={!feedback.trim()}
-                      className={`submit-btn ${
-                        !feedback.trim()
+                      className={`submit-btn ${!feedback.trim()
                           ? "bg-gray-300 text-gray-500 cursor-not-allowed pointer-events-none"
                           : "cursor-pointer"
-                      }`}
+                        }`}
                       onClick={() => {
                         sendReview({
                           review_type: "sad",
@@ -334,20 +334,18 @@ function ReviewButton({ icon, label, brand, className = "", onClick }) {
     >
       {/* 🌈 Gradient Ring */}
       <span
-        className={`pointer-events-none absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 ${
-          isTrustpilot
+        className={`pointer-events-none absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 ${isTrustpilot
             ? "bg-[linear-gradient(120deg,rgba(0,182,122,.45),rgba(255,255,255,.6),rgba(0,182,122,.45))]"
             : "bg-[linear-gradient(120deg,rgba(66,133,244,.45),rgba(255,255,255,.6),rgba(66,133,244,.45))]"
-        }`}
+          }`}
       />
 
       {/* ICON */}
       <motion.div
         whileHover={{ y: -2 }}
         transition={{ type: "spring", stiffness: 300 }}
-        className={`relative z-10 w-10 h-10 rounded-full flex items-center justify-center shadow-[0_8px_18px_rgba(0,0,0,0.15)] ${
-          isTrustpilot ? "bg-[#e8f7f1] border border-[#00b67a]/30" : "bg-white"
-        }`}
+        className={`relative z-10 w-10 h-10 rounded-full flex items-center justify-center shadow-[0_8px_18px_rgba(0,0,0,0.15)] ${isTrustpilot ? "bg-[#e8f7f1] border border-[#00b67a]/30" : "bg-white"
+          }`}
       >
         <Image
           src={icon}
@@ -370,9 +368,8 @@ function ReviewButton({ icon, label, brand, className = "", onClick }) {
 
       {/* ✨ Soft Glow */}
       <span
-        className={`absolute -inset-6 blur-2xl opacity-0 group-hover:opacity-40 transition-opacity ${
-          isTrustpilot ? "bg-[#00b67a]" : "bg-[#4285f4]"
-        }`}
+        className={`absolute -inset-6 blur-2xl opacity-0 group-hover:opacity-40 transition-opacity ${isTrustpilot ? "bg-[#00b67a]" : "bg-[#4285f4]"
+          }`}
       />
     </motion.button>
   );
