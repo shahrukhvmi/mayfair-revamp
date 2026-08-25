@@ -3,7 +3,7 @@ import FullScreenModal from "../FullScreenModal/FullScreenModal";
 import GetProductsApi from "@/api/getProducts";
 import useProductId from "@/store/useProductIdStore";
 import { useMutation } from "@tanstack/react-query";
-import ProductListCard from "../ProductCard/ProductListCard";
+import ModalProductListCard from "./ModalProductListCard";
 import { Skeleton } from "@mui/material";
 import { userConsultationApi } from "@/api/consultationApi";
 import useCheckoutStore from "@/store/checkoutStore";
@@ -25,7 +25,7 @@ import useReorder from "@/store/useReorderStore";
 const ProductSelection = ({ showProductSelection }) => {
   /* ───────────────  skeleton card ────────────── */
   const SkeletonCard = () => (
-    <div className="flex flex-wrap items-center gap-3 rounded-2xl border border-slate-200/70 bg-white px-3 py-3 sm:flex-nowrap sm:gap-4 sm:px-4 sm:py-3.5">
+    <div className="flex flex-col items-stretch gap-2 rounded-2xl border border-slate-200/70 bg-white px-3 py-3 sm:flex-row sm:items-center sm:gap-4 sm:px-4 sm:py-3.5">
       <Skeleton
         variant="rounded"
         width={64}
@@ -37,7 +37,7 @@ const ProductSelection = ({ showProductSelection }) => {
         <Skeleton variant="text" width="65%" height={26} />
       </div>
 
-      <div className="flex w-full shrink-0 items-center justify-between gap-3 pl-[68px] sm:w-auto sm:justify-start sm:gap-4 sm:pl-0">
+      <div className="flex w-full shrink-0 flex-col gap-2 sm:w-auto sm:flex-row sm:items-center sm:justify-start sm:gap-4">
         <div className="flex items-center gap-2 sm:block">
           <Skeleton variant="text" width={36} height={16} />
           <Skeleton variant="text" width={68} height={26} />
@@ -46,7 +46,7 @@ const ProductSelection = ({ showProductSelection }) => {
           variant="rounded"
           width={142}
           height={40}
-          className="!rounded-xl"
+          className="!w-full !rounded-xl sm:!w-[142px]"
         />
       </div>
     </div>
@@ -112,7 +112,7 @@ const ProductSelection = ({ showProductSelection }) => {
         <Skeleton variant="text" width="min(100%, 390px)" height={24} />
       </div>
 
-      <div className="grid w-full grid-cols-1 gap-3">
+      <div className="grid w-full grid-cols-2 gap-2.5 sm:grid-cols-1 sm:gap-3">
         {Array.from({ length: 3 }).map((_, i) => (
           <SkeletonCard key={i} />
         ))}
@@ -186,14 +186,14 @@ const ProductSelection = ({ showProductSelection }) => {
                   </p>
                 </div>
 
-                <div className="grid w-full grid-cols-1 gap-3">
+                <div className="grid w-full grid-cols-2 gap-2.5 sm:grid-cols-1 sm:gap-3">
                   {(Array.isArray(productData.reorder)
                     ? productData.reorder
                     : [productData.reorder]
                   )
                     .filter((item) => item?.inventories?.[0]?.status === 1)
                     .map((item) => (
-                      <ProductListCard
+                      <ModalProductListCard
                         key={item?.id}
                         id={item?.id}
                         title={item?.name}
@@ -216,7 +216,7 @@ const ProductSelection = ({ showProductSelection }) => {
                     .filter((p) => p?.inventories?.[0]?.status === 1)
                     .sort((a, b) => (a.sequence || 0) - (b.sequence || 0))
                     .map((p) => (
-                      <ProductListCard
+                      <ModalProductListCard
                         key={p?.id}
                         id={p?.id}
                         title={p?.name}

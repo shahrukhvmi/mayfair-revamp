@@ -13,29 +13,14 @@ const ProductListCard = ({
 }) => {
   return (
     <article
-      onClick={() => {
-        if (!isOutOfStock && !isLoading) onClick?.();
-      }}
-      onKeyDown={(event) => {
-        if (
-          !isOutOfStock &&
-          !isLoading &&
-          (event.key === "Enter" || event.key === " ")
-        ) {
-          event.preventDefault();
-          onClick?.();
-        }
-      }}
-      role="button"
-      tabIndex={isOutOfStock || isLoading ? -1 : 0}
       className={`
         group flex flex-wrap items-center gap-3 rounded-2xl border bg-white
         px-3 py-3 sm:flex-nowrap sm:gap-4 sm:px-4 sm:py-3.5 2xl:px-5 2xl:py-4 transition-all duration-200
         ${isSelected
           ? "border-[#47317c] shadow-[0_0_0_3px_rgba(71,49,124,0.10)]"
           : isOutOfStock
-          ? "border-slate-200/70 opacity-60 cursor-not-allowed"
-          : "border-slate-200/70 shadow-[0_1px_4px_rgba(0,0,0,0.05)] hover:border-slate-300 hover:shadow-[0_4px_16px_rgba(0,0,0,0.08)] cursor-pointer"
+          ? "border-slate-200/70 opacity-60"
+          : "border-slate-200/70 shadow-[0_1px_4px_rgba(0,0,0,0.05)] hover:border-slate-300 hover:shadow-[0_4px_16px_rgba(0,0,0,0.08)]"
         }
       `}
       aria-selected={isSelected}
