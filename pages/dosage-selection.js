@@ -352,7 +352,7 @@ export default function DosageSelection() {
               transition={{ type: "spring", stiffness: 300, damping: 28 }}
               className="max-h-[calc(100dvh-48px)] w-full max-w-md overflow-y-auto rounded-2xl bg-white shadow-[0_24px_64px_rgba(71,49,124,0.18)]"
             >
-              <div className="bg-[#f5f2fc] px-6 py-5 border-b border-[#47317c]/[0.07]">
+              <div className="border-b border-[#47317c]/[0.07] bg-[#f5f2fc] px-6 py-5">
                 <h2 className="inter-semibold-font text-[18px] text-slate-900">
                   Dosage Confirmation
                 </h2>
@@ -364,19 +364,21 @@ export default function DosageSelection() {
                   </p>
                 </div>
               )}
-              <NextButton
-                label={productId == FoundayoProductId || productId == WegovyPillProductId ? "I confirm this dose" : " I Confirm"}
-                onClick={() => {
-                  setShowDoseModal(false);
-                }}
-              />
-
-              {/* <button
-                onClick={() => setShowDoseModal(false)}
-                className="w-full mt-2 border border-gray-300 py-2 px-4 rounded text-gray-600 hover:bg-gray-100"
-              >
-                Cancel
-              </button> */}
+              <div className="flex justify-center px-6 pb-6 pt-1">
+                <div className="w-full max-w-[220px]">
+                  <NextButton
+                    type="button"
+                    className="shadow-[0_6px_16px_rgba(71,49,124,0.18)]"
+                    label={
+                      productId == FoundayoProductId ||
+                      productId == WegovyPillProductId
+                        ? "I confirm this dose"
+                        : "I Confirm"
+                    }
+                    onClick={() => setShowDoseModal(false)}
+                  />
+                </div>
+              </div>
             </motion.div>
           </motion.div>
         )}
