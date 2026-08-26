@@ -364,11 +364,11 @@ export default function DosageSelection() {
                   </p>
                 </div>
               )}
-              <div className="flex justify-center px-6 pb-6 pt-1">
+              <div className="px-6 pb-6 pt-1">
                 <button
                   type="button"
                   onClick={() => setShowDoseModal(false)}
-                  className="inter-medium-font inline-flex min-h-11 w-full max-w-[210px] cursor-pointer items-center justify-center rounded-xl bg-[#47317c] px-5 py-2.5 text-[14px] text-white shadow-[0_6px_16px_rgba(71,49,124,0.20)] transition-all duration-150 hover:bg-[#3d2a6b] active:scale-[0.98]"
+                  className="inter-medium-font inline-flex min-h-11 w-full cursor-pointer items-center justify-center rounded-xl bg-[#47317c] px-5 py-2.5 text-[14px] text-white shadow-[0_6px_16px_rgba(71,49,124,0.20)] transition-all duration-150 hover:bg-[#3d2a6b] active:scale-[0.98]"
                 >
                   {productId == FoundayoProductId ||
                   productId == WegovyPillProductId
