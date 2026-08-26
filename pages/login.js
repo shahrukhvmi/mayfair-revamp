@@ -261,7 +261,7 @@ export default function LoginScreen() {
         </div>
       ) : (
         <>
-          <div className={`flex justify-center bg-[#F2EEFF] py-8 sm:py-16`}>
+          <div className={`flex justify-center bg-[#FBFBFD] py-8 sm:py-16`}>
             <div
               className={`bg-white rounded-xl shadow-md w-full max-w-lg p-8`}
             >
@@ -283,7 +283,7 @@ export default function LoginScreen() {
                     <TextField
                       label="Email Address"
                       name="email"
-                      placeholder="Email Address"
+                      placeholder="name@example.com"
                       type="email"
                       register={register}
                       required
@@ -293,7 +293,7 @@ export default function LoginScreen() {
                     <TextField
                       label="Password"
                       name="password"
-                      placeholder="Password"
+                      placeholder="Enter your password"
                       type="password"
                       register={register}
                       required

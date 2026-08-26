@@ -10,14 +10,14 @@ const BmiTextField = ({
   disabled = false,
 }) => {
   return (
-    <div className="mb-4">
+    <div className="mb-5">
       {label && (
-        <label htmlFor={name} className="bold-font paragraph mb-2 relative">
+        <label htmlFor={name} className="inter-medium-font mb-1.5 block text-[13px] text-slate-700">
           {label}
           {required ? (
-            <span className="text-red-500 absolute m-1 niba-semibold-font"> *</span>
+            <span className="text-red-500 ml-0.5">*</span>
           ) : (
-            <span className="text-gray-500 text-sm font-normal ml-1">(optional)</span>
+            <span className="inter-reg-font ml-1 text-[12px] text-slate-400">(optional)</span>
           )}
         </label>
       )}
@@ -29,14 +29,13 @@ const BmiTextField = ({
         disabled={disabled}
         {...fieldProps}
         onBlur={onBlur}
-        className={`reg-font w-full text-black px-3 py-4 border bg-white placeholder:text-gray-400 
-          focus:outline-none focus:ring-1 focus:ring-[#47317c] focus:border-[#47317c] 
-          border-[#CBCBCB66] ${errors[name] ? "border-red-500" : ""} 
-          ${(readOnly || disabled) ? "opacity-50  cursor-not-allowed" : ""}
+        className={`inter-reg-font w-full border-0 border-b-2 bg-transparent px-0 py-3 text-[15px] text-slate-900 placeholder:text-slate-400 transition-colors duration-200 focus:outline-none focus:ring-0
+          ${errors[name] ? "border-red-400 focus:border-red-500" : "border-slate-200 focus:border-[#47317c]"}
+          ${(readOnly || disabled) ? "cursor-not-allowed opacity-50" : ""}
         `}
       />
       {errors[name] && (
-        <p className="text-red-500 text-sm mt-1">
+        <p className="inter-reg-font mt-1.5 text-[12px] text-red-500">
           {errors[name]?.message || "This field is required"}
         </p>
       )}

@@ -118,7 +118,7 @@ const MedicalQuestions = () => {
               showLoader ? "pointer-events-none cursor-not-allowed" : ""
             }`}
           >
-            <form onSubmit={handleSubmit(onSubmit)} className="mt-8 space-y-8">
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
               {questions.map((q) => {
                 const selectedAnswer = watch(`responses[${q.id}].answer`);
                 const subfieldValue = watch(
@@ -132,61 +132,36 @@ const MedicalQuestions = () => {
                 return (
                   <div
                     key={q?.id}
-                    className={`p-5 shadow-sm border rounded-md bg-white ${
-                      showValidationError ? "border-red-400" : "border-gray-200"
-                    }`}
+                    className={`rounded-xl border p-4 sm:p-5 ${showValidationError ? "border-red-200 bg-red-50/30" : "border-slate-100 bg-[#FBFBFD]"}`}
                   >
                     <div
-                      className="text-base text-[#1C1C29] reg-font paragraph mb-4 [&>ul]:list-disc [&>ul]:ml-6 [&>li]:mt-0.5"
+                      className="inter-reg-font mb-4 text-[14px] leading-relaxed text-slate-800 [&>ul]:list-disc [&>ul]:ml-6 [&>li]:mt-0.5"
                       dangerouslySetInnerHTML={{ __html: q.question }}
-                    ></div>
+                    />
 
-                    <div className="flex gap-4 mt-4">
+                    <div className="flex gap-2.5 sm:gap-3">
                       {q?.options?.map((option) => {
                         const isSelected = selectedAnswer === option;
-
                         return (
                           <label
                             key={option}
-                            className={`bold-font paragraph flex items-center justify-start border px-3 sm:px-6 py-2 transition-all cursor-pointer w-full sm:w-auto rounded-md
-                                ${
-                                  isSelected
-                                    ? "bg-[#F2EEFF] border-primary"
-                                    : "border-gray-300 bg-white hover:bg-gray-50"
-                                }`}
+                            className={`flex min-w-0 flex-1 cursor-pointer items-center gap-2 rounded-xl border-2 px-3 py-3 transition-all duration-150 select-none sm:gap-2.5 sm:px-4
+                              ${isSelected ? "border-[#47317c] bg-[#47317c]/[0.05]" : "border-slate-200 bg-white hover:border-slate-300 hover:bg-slate-50"}`}
                           >
                             <Controller
                               name={`responses[${q.id}].answer`}
                               control={control}
                               render={({ field }) => (
-                                <input
-                                  type="radio"
-                                  {...field}
-                                  value={option}
-                                  checked={field.value === option}
-                                  onChange={(e) =>
-                                    handleAnswerChange(q.id, e.target.value)
-                                  }
-                                  className="hidden"
-                                />
+                                <input type="radio" {...field} value={option} checked={field.value === option}
+                                  onChange={(e) => handleAnswerChange(q.id, e.target.value)} className="hidden" />
                               )}
                             />
-                            <div
-                              className={`w-5 h-5 rounded-sm border mr-2 flex items-center justify-center 
-                                ${
-                                  isSelected
-                                    ? "bg-primary border-violet-700 text-white"
-                                    : "border-gray-400"
-                                }`}
-                            >
-                              {isSelected && <FaCheck className="text-xs" />}
+                            <div className={`flex h-4 w-4 shrink-0 items-center justify-center rounded-full border-2 transition-all duration-150
+                              ${isSelected ? "border-[#47317c] bg-[#47317c]" : "border-slate-300 bg-white"}`}>
+                              {isSelected && <div className="h-1.5 w-1.5 rounded-full bg-white" />}
                             </div>
-                            <span
-                              className={`reg-font paragraph ${
-                                isSelected ? "text-violet-700" : "text-gray-700"
-                              }`}
-                            >
-                              {option.charAt(0).toUpperCase() + option.slice(1)}
+                            <span className={`inter-medium-font text-[14px] capitalize ${isSelected ? "text-[#47317c]" : "text-slate-700"}`}>
+                              {option}
                             </span>
                           </label>
                         );
@@ -194,19 +169,18 @@ const MedicalQuestions = () => {
                     </div>
 
                     {showValidationError && (
-                      <p className="text-sm text-red-500 mt-2">
-                        {q.validation_error_msg}
-                      </p>
+                      <div className="mt-3 rounded-lg border border-red-100 bg-red-50 px-3 py-2.5">
+                        <p className="inter-reg-font text-[12px] text-red-600">{q.validation_error_msg}</p>
+                      </div>
                     )}
 
                     {q.has_sub_field && selectedAnswer === "yes" && (
                       <textarea
-                        className="text-black w-full p-3 mt-4 border border-violet-300 focus:ring-2 focus:ring-violet-600 rounded-md text-sm"
+                        className="inter-reg-font mt-4 min-h-[104px] w-full resize-y rounded-xl border border-slate-200 bg-white px-4 py-3 text-[14px] leading-relaxed text-slate-800 shadow-[0_1px_3px_rgba(15,23,42,0.03)] transition-all duration-200 placeholder:text-slate-400 focus:border-[#47317c]/40 focus:outline-none focus:ring-[3px] focus:ring-[#47317c]/10"
                         placeholder={q.sub_field_prompt}
+                        rows={3}
                         value={subfieldValue}
-                        onChange={(e) =>
-                          handleSubFieldChange(q.id, e.target.value)
-                        }
+                        onChange={(e) => handleSubFieldChange(q.id, e.target.value)}
                       />
                     )}
                   </div>

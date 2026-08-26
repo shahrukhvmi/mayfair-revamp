@@ -169,9 +169,8 @@ const Dose = ({
         {/* <div className="absolute right-2 top-0 z-[60] flex items-center gap-2 flex-wrap justify-end"> */}
 
 
-
-        {doseStatus === 0 && Number(productId) !== FoundayoProductId  && (
-          <div className="absolute right-4 top-[-10px] group inline-block z-50">
+        {doseStatus === 0 && Number(productId) !== FoundayoProductId && (
+          <div className="group absolute -top-3.5 right-3 z-20 inline-block">
             <button
               type="button"
               onClick={(e) => {
@@ -179,7 +178,7 @@ const Dose = ({
                 handleNotifiedClick(doseData);
               }}
               disabled={isLoading}
-              className="inline-flex items-end justify-end gap-1 px-3 py-1 text-xs text-green-700 cursor-pointer shadow-sm bg-green-100 hover:bg-green-200 border border-green-300 rounded"
+              className="inter-semibold-font inline-flex h-7 cursor-pointer items-center justify-center gap-1.5 rounded-lg border border-emerald-200 bg-emerald-50 px-3 text-[11.5px] text-emerald-700 shadow-[0_1px_2px_rgba(15,23,42,0.04)] transition-colors hover:border-emerald-300 hover:bg-emerald-100 disabled:cursor-wait disabled:opacity-70"
             >
               {isLoading ? (
                 <>
@@ -203,21 +202,21 @@ const Dose = ({
                       d="M4 12a8 8 0 018-8v8H4z"
                     />
                   </svg>
-                  <span className="font-semibold whitespace-nowrap">
+                  <span className="whitespace-nowrap">
                     Loading...
                   </span>
                 </>
               ) : (
                 <>
-                  <FaInfoCircle />
-                  <span className="font-semibold whitespace-nowrap">
+                  <FaInfoCircle className="text-[12px]" />
+                  <span className="whitespace-nowrap">
                     Get Notified
                   </span>
                 </>
               )}
             </button>
 
-            <div className="absolute right-20 bottom-5 mt-1 px-2 py-1 text-xs text-white bg-gray-800 rounded opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap z-[70]">
+            <div className="inter-reg-font pointer-events-none absolute right-0 top-9 z-30 whitespace-nowrap rounded-lg bg-slate-900 px-2.5 py-1.5 text-[11px] text-white opacity-0 shadow-lg transition-opacity duration-200 group-hover:opacity-100">
               You'll be notified when this item is back in stock.
             </div>
           </div>
@@ -225,70 +224,61 @@ const Dose = ({
         {/* </div> */}
         <div
           onClick={isOutOfStock || isAllowExceeded ? undefined : handleAdd}
-          className={`flex flex-col sm:flex-row items-start sm:items-center justify-between w-full p-4 border-2 mt-3 transition-all duration-300 ease-in-out relative rounded-md border-primary gap-4 sm:gap-0
-    ${isOutOfStock
-              ? "opacity-50 cursor-not-allowed bg-white border-gray-400"
+          className={`relative mt-5 flex flex-col items-start justify-between gap-3 rounded-[14px] border p-3.5 transition-all duration-200 sm:flex-row sm:items-center sm:gap-0 sm:p-4
+            ${isOutOfStock
+              ? "cursor-not-allowed border-slate-200 bg-slate-50/80"
               : isSelected
-                ? "border-primary bg-violet-100 cursor-pointer"
+                ? "cursor-pointer border-[#47317c] bg-[#47317c]/[0.04]"
                 : isAllowExceeded
-                  ? "border-primary bg-white cursor-not-allowed opacity-60"
-                  : "border-primary bg-white hover:bg-gray-50 cursor-pointer"
+                  ? "cursor-not-allowed border-slate-200 bg-slate-50/80"
+                  : "cursor-pointer border-slate-200 bg-white hover:border-[#47317c]/40 hover:bg-[#47317c]/[0.02]"
             }`}
         >
-          {/* Overlay when out of stock */}
           {isOutOfStock && (
             <>
-              {/* Overlay to disable interaction */}
-              <div className="absolute inset-0 z-10 bg-white/10  cursor-not-allowed rounded-md"></div>
-
-              {/* Out of stock badge */}
-              <div className="absolute left-[14px] top-[-10px] bg-primary text-white px-3 py-0.5 text-xs font-semibold rounded z-20">
+              <div className="absolute inset-0 z-10 cursor-not-allowed rounded-[14px] bg-slate-100/20" />
+              <div className="inter-semibold-font absolute -top-3.5 left-3 z-20 inline-flex h-7 items-center rounded-lg border border-rose-200 bg-rose-50 px-3 text-[11.5px] text-rose-700 shadow-[0_1px_2px_rgba(15,23,42,0.04)]">
                 {Number(productId) == FoundayoProductId ? "Coming Soon" : "Out of stock"}
               </div>
             </>
           )}
 
-          {/* Tick if selected */}
-          {isSelected && (
-            <div
-              className={`absolute -top-3 -right-3 bg-primary text-white rounded-full p-2 shadow-lg
-             ${isSelected ? "cursor-not-allowed" : "cursor-pointer"}`}
-            >
-              <FaCheck size={12} />
+          {!isOutOfStock && !isSelected && isAllowExceeded && (
+            <div className="inter-semibold-font absolute -top-3.5 left-3 z-20 inline-flex h-7 items-center rounded-lg border border-amber-200 bg-amber-50 px-3 text-[11.5px] text-amber-700 shadow-[0_1px_2px_rgba(15,23,42,0.04)]">
+              Selection limit reached
             </div>
           )}
 
-          {/* Left Side - Product Details */}
-          <div className="flex items-start sm:items-center gap-3 w-full sm:w-auto">
-            {isSelected ? (
-              <FaDotCircle className="text-primary w-4 h-4 mt-1" />
-            ) : (
-              <FaRegCircle className="text-gray-800 w-4 h-4 mt-1" />
-            )}
+          {/* Left Side */}
+          <div className={`flex w-full min-w-0 items-start gap-2.5 transition-opacity sm:w-auto sm:items-center sm:gap-3 ${isOutOfStock || (!isSelected && isAllowExceeded) ? "opacity-60 grayscale" : ""}`}>
+            <div className={`mt-0.5 flex h-[18px] w-[18px] shrink-0 items-center justify-center rounded-[5px] border-2 transition-all duration-150 sm:h-5 sm:w-5
+              ${isSelected ? "border-[#47317c] bg-[#47317c]" : "border-slate-300 bg-white"}`}>
+              {isSelected && (
+                <svg width="10" height="8" viewBox="0 0 10 8" fill="none" aria-hidden="true">
+                  <path d="M1 4L3.5 6.5L9 1" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              )}
+            </div>
 
-            <div className="text-sm sm:text-base text-gray-800">
-              <div className="capitalize font-semibold text-md sm:text-lg text-black">
+            <div className="min-w-0 flex-1">
+              <p className="inter-semibold-font break-words text-[14px] capitalize leading-snug text-slate-900 sm:text-[15px]">
                 {doseData?.product_name}
-              </div>
-              <div className="text-sm text-gray-700">{doseData.name}</div>
+              </p>
+              <p className={`inter-medium-font text-[13px] ${isSelected ? "text-[#47317c]" : "text-slate-500"}`}>
+                {doseData.name}
+              </p>
               {doseData?.expiry && (
-                <div className="text-xs text-gray-500 mt-1">
+                <p className="inter-reg-font mt-0.5 text-[12.5px] text-slate-500">
                   Expiry: {moment(doseData?.expiry).format("DD/MM/YYYY")}
-                </div>
+                </p>
               )}
             </div>
           </div>
 
-          {/* Right Side - Price and Quantity */}
-          <div className="flex items-center justify-end gap-3 w-full sm:w-auto">
-            {/* <span
-              className={`font-semibold text-md sm:text-lg ${isSelected ? "text-primary" : "text-gray-700"}`}
-            >
-              £{parseFloat(doseData?.price).toFixed(2)}
-            </span> */}
-
+          {/* Right Side */}
+          <div className={`flex w-full items-center gap-2 border-t border-slate-100 pt-3 transition-opacity sm:w-auto sm:gap-3 sm:border-t-0 sm:pt-0 ${isSelected ? "justify-between" : "justify-end"} ${isOutOfStock || (!isSelected && isAllowExceeded) ? "opacity-60 grayscale" : ""}`}>
             <span
-              className={`font-semibold text-md sm:text-lg ${isSelected ? "text-primary" : "text-gray-700"
+              className={`inter-semibold-font shrink-0 text-[16px] ${isSelected ? "text-[#47317c]" : "text-slate-700"
                 }`}
             >
               {isPriceComingSoon ? (
@@ -311,43 +301,25 @@ const Dose = ({
                 </span>
               )}
             </span>
-
             {isSelected && (
               <>
-                <div className="flex items-center space-x-2 bg-white rounded-full px-2 py-1 shadow-md">
-                  <button
-                    type="button"
-                    onClick={handleDecrement}
-                    className="bg-gray-100 hover:bg-gray-200 p-2 rounded-full cursor-pointer"
-                  >
-                    <FaMinus size={10} className="text-black" />
+                <div className="ml-auto flex items-center gap-0.5 rounded-full border border-slate-200 bg-white p-1 shadow-sm sm:ml-0 sm:gap-1">
+                  <button type="button" onClick={handleDecrement}
+                    className="flex h-7 w-7 items-center justify-center rounded-full bg-slate-100 hover:bg-slate-200 cursor-pointer transition-colors">
+                    <FaMinus size={9} className="text-slate-600" />
                   </button>
-
-                  <span className="px-2 text-sm font-bold text-black">
-                    {qty}
-                  </span>
-
-                  <button
-                    type="button"
-                    onClick={handleIncrement}
-                    className={`p-2 rounded-full ${qty >= allowed
-                        ? "cursor-not-allowed bg-gray-100 opacity-50"
-                        : "bg-gray-100 hover:bg-gray-200 cursor-pointer"
-                      }`}
-                  >
-                    <FaPlus size={10} className="text-black" />
+                  <span className="inter-semibold-font w-6 text-center text-[13px] text-slate-900">{qty}</span>
+                  <button type="button" onClick={handleIncrement}
+                    className={`flex h-7 w-7 items-center justify-center rounded-full transition-colors
+                      ${qty >= allowed ? "cursor-not-allowed bg-slate-100 opacity-40" : "bg-slate-100 hover:bg-slate-200 cursor-pointer"}`}>
+                    <FaPlus size={9} className="text-slate-600" />
                   </button>
                 </div>
 
-                <button
-                  type="button"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setShowModal(true);
-                  }}
-                  className="bg-red-100 hover:bg-red-200 text-red-500 rounded-full p-2 cursor-pointer"
-                >
-                  <MdDelete />
+                <button type="button"
+                  onClick={(e) => { e.stopPropagation(); setShowModal(true); }}
+                  className="flex h-8 w-8 shrink-0 cursor-pointer items-center justify-center rounded-lg border border-red-100 bg-red-50 text-red-500 transition-colors hover:border-red-200 hover:bg-red-100">
+                  <MdDelete size={15} />
                 </button>
               </>
             )}

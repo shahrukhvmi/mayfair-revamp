@@ -294,6 +294,7 @@ export default function BillingAddress({
               <MUISelectField
                 label="Select Country"
                 name="billingCountry"
+                variant="underline"
                 value={field.value}
                 required
                 onChange={(e) => {
@@ -313,17 +314,17 @@ export default function BillingAddress({
             <TextField
               label="Post code"
               name="postalcode"
+              placeholder="e.g. SW1A 1AA"
               register={register}
               required
               errors={errors}
+              className="pr-32"
             />
             {isSearchAllowed && (
               <button
                 type="button"
                 onClick={handleSearch}
-                className={`reg-font absolute right-3 transform -translate-y-1/2 text-white bg-primary px-3 py-1 rounded cursor-pointer w-28 flex items-center justify-center ${
-                  errors.postalcode ? "top-2/4" : "top-2/3"
-                }`}
+                className="inter-semibold-font absolute bottom-[7px] right-0 flex min-w-[104px] cursor-pointer items-center justify-center gap-2 rounded-md bg-[#47317c] px-4 py-2 text-[12px] text-white transition-colors duration-200 hover:bg-[#392765] disabled:cursor-not-allowed disabled:opacity-50"
                 disabled={addressSearchLoading}
               >
                 {addressSearchLoading ? (
@@ -353,6 +354,7 @@ export default function BillingAddress({
               <MUISelectField
                 label="Select Your Address"
                 name="addressSelect"
+                variant="underline"
                 value={selectedIndex}
                 required
                 onChange={(e) => {
@@ -391,6 +393,7 @@ export default function BillingAddress({
           <TextField
             label="Address"
             name="addressone"
+            placeholder="e.g. 10 Downing Street"
             register={register}
             required
             errors={errors}
@@ -398,12 +401,14 @@ export default function BillingAddress({
           <TextField
             label="Address 2"
             name="addresstwo"
+            placeholder="Apartment, suite or unit (optional)"
             register={register}
             errors={errors}
           />
           <TextField
             label="Town / City"
             name="city"
+            placeholder="e.g. London"
             required
             register={register}
             errors={errors}
@@ -411,6 +416,7 @@ export default function BillingAddress({
           <TextField
             label="State / County"
             name="state"
+            placeholder="e.g. Greater London"
             register={register}
             errors={errors}
           />

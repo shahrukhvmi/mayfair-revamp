@@ -24,6 +24,7 @@ import {
   HiOutlineInformationCircle,
 } from "react-icons/hi";
 import useAbandonCardStore from "@/store/abandonCardStore";
+import PageLoader from "@/Components/PageLoader/PageLoader";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 
@@ -46,9 +47,11 @@ export default function DosageSelection() {
     handleSubmit,
     clearErrors,
     setValue,
+    watch,
     formState: { isValid, errors },
   } = useForm({
     mode: "onChange",
+    defaultValues: { terms: false },
   });
 
   const [isExpiryRequired, setIsExpiryRequired] = useState(false);
@@ -57,14 +60,19 @@ export default function DosageSelection() {
 
   // ✅ useEffect to check if `product?.show_expiry` is `0` or `1`
   useEffect(() => {
-    if (variation?.show_expiry === 1) {
+    if (
+      variation?.name === "Mounjaro (Tirzepatide)" ||
+      variation?.show_expiry === 1
+    ) {
       setIsExpiryRequired(true);
     } else {
       setIsExpiryRequired(false);
       clearErrors("terms");
       setValue("terms", false);
     }
-  }, [variation?.show_expiry, clearErrors, setValue]);
+  }, [variation?.name, variation?.show_expiry, clearErrors, setValue]);
+
+  const expiryConfirmed = watch("terms");
 
   const allowed = variation?.allowed;
   const [showDoseModal, setShowDoseModal] = useState(false);
@@ -328,38 +336,33 @@ export default function DosageSelection() {
   return (
     <>
       <MetaLayout canonical={`${meta_url}dosage-selection/`} />
-      <div className="bottom-[100px] fixed left-10 cursor-pointer py-2 rounded-full border-2 border-violet-700 sm:block hidden">
-        {/* <BackButton label="Back" onClick={back} className="mt-2 sm:block hidden " /> */}
-        <button
-          label="Back"
-          onClick={back}
-          className="text-violet-700 reg-font px-6 cursor-pointer"
-        >
-          <span>Back</span>
-        </button>
-      </div>
+      {isButtonLoading && <PageLoader />}
       <AnimatePresence>
         {showDoseModal && selectedDose && (
           <motion.div
-            className="fixed inset-0 bg-black/50 backdrop-blur-sm flex justify-center items-center z-[9999]"
+            className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/40 px-4 py-6 backdrop-blur-sm"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
           >
             <motion.div
-              initial={{ y: 100, opacity: 0 }}
+              initial={{ y: 60, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
-              exit={{ y: 100, opacity: 0 }}
-              transition={{ type: "spring", stiffness: 300, damping: 25 }}
-              className="bg-white rounded-lg shadow-xl p-6 max-w-md w-full"
+              exit={{ y: 60, opacity: 0 }}
+              transition={{ type: "spring", stiffness: 300, damping: 28 }}
+              className="max-h-[calc(100dvh-48px)] w-full max-w-md overflow-y-auto rounded-2xl bg-white shadow-[0_24px_64px_rgba(71,49,124,0.18)]"
             >
-              <h2 className="text-xl bold-font mb-4 text-gray-800 text-center">
-                Dosage Confirmation
-              </h2>
+              <div className="bg-[#f5f2fc] px-6 py-5 border-b border-[#47317c]/[0.07]">
+                <h2 className="inter-semibold-font text-[18px] text-slate-900">
+                  Dosage Confirmation
+                </h2>
+              </div>
               {selectedDose?.productConcent && (
-                <p className="text-md paragraph rounded-md p-3 reg-font mb-4">
-                  {selectedDose?.productConcent}
-                </p>
+                <div className="px-6 py-5">
+                  <p className="inter-reg-font text-[13.5px] leading-relaxed text-slate-600">
+                    {selectedDose?.productConcent}
+                  </p>
+                </div>
               )}
               <NextButton
                 label={productId == FoundayoProductId || productId == WegovyPillProductId ? "I confirm this dose" : " I Confirm"}
@@ -381,61 +384,40 @@ export default function DosageSelection() {
 
       <StepsHeader />
 
-      <div
-        className={`${inter.className} flex items-center justify-center bg-[#F2EEFF] px-4 sm:px-6 lg:px-8 mb-40 sm:mb-0`}
-      >
-        <div className="rounded-xl w-full max-w-2xl sm:my-10">
-          <div className="w-full mx-auto sm:px-8 my-6 rounded-md">
-            <div className="flex justify-center">
-              <h1 className="niba-reg-font heading text-center my-3">
-                You’re ready to start your personal weight loss journey
-              </h1>
+      <div className="min-h-screen bg-[#FBFBFD] px-4 pb-44 sm:px-6 lg:px-8">
+        <div className="mx-auto w-full max-w-xl py-8">
+
+          <h1 className="inter-semibold-font mb-6 text-center text-[22px] text-slate-900">
+            You’re ready to start your personal weight loss journey
+          </h1>
+
+          <form onSubmit={handleSubmit(onSubmit)}>
+
+            {/* Product card */}
+            <div className="mb-5 overflow-hidden rounded-2xl border border-[#47317c]/[0.08] bg-white shadow-[0_4px_20px_rgba(71,49,124,0.10)]">
+              <div className="flex items-center justify-center bg-[#47317c] p-5">
+                <div className="flex w-full max-w-[320px] items-center justify-center px-5 py-3 ">
+                  <img src={variation?.img} alt={variation?.name} className="h-36 w-full object-contain" />
+                </div>
+              </div>
+              <div className="px-5 py-4">
+                <h2 className="inter-semibold-font text-[18px] text-slate-900">{variation?.name}</h2>
+                {variation?.name === "Mounjaro (Tirzepatide)" && (
+                  <span className="inter-medium-font mt-1.5 inline-block rounded-full bg-[#47317c]/10 px-3 py-1 text-[11px] text-[#47317c]">
+                    Pack of 5 Needles is included with every dose
+                  </span>
+                )}
+                <p className="inter-medium-font mt-2 text-[14px] text-slate-500">
+                  From <span className="inter-semibold-font text-[#47317c]">£{parseFloat(variation?.price || 0).toFixed(2)}</span>
+                </p>
+              </div>
             </div>
-            <form onSubmit={handleSubmit(onSubmit)}>
-              <div className="">
-                <div className="col-span-12 sm:col-span-6 md:px-4 py-10">
-                  <div className="bg-white rounded-lg shadow-lg overflow-hidden mb-6">
-                    <div className="bg-primary p-6">
-                      <img
-                        src={variation?.img}
-                        alt={variation?.name}
-                        className="w-full h-40 object-contain"
-                      />
-                    </div>
-                    <div className="sm:p-6 p-3">
-                      <h2 className="text-2xl mb-2 bold-font text-gray-800">
-                        {variation?.name}
-                      </h2>
-                      {variation?.name === "Mounjaro (Tirzepatide)" && (
-                        <p className="inline-block px-3 py-1 text-xs font-semibold text-white bg-violet-500 rounded-full mb-2">
-                          Pack of 5 Needles is included with every dose
-                        </p>
-                      )}
 
-                      <br />
-
-                      <span className="bold-font text-black">
-                        From{" "}
-                        <span>
-                          £
-                          {parseFloat(
-                            variation?.name === "Foundayo (Orforglipron)"
-                              ? variation?.pre_launch_price || 0
-                              : variation?.price || 0
-                          ).toFixed(2)}
-                        </span>
-                      </span>
-                      {/* <div
-                        className="reg-font text-gray-600 bg-red-50  p-3 rounded-md text-sm"
-                        dangerouslySetInnerHTML={{ __html: variation?.description }}
-                      ></div> */}
-                    </div>
-                  </div>
-
-                  <div className="bg-white rounded-lg shadow-lg  px-4 py-6">
-                    <h1 className="my-4 niba-bold-font text-2xl text-black text-start">
-                      <span className="niba-reg-font">Choose your </span> Dosage
-                    </h1>
+            {/* Dosage section */}
+            <div className="overflow-hidden rounded-2xl border border-[#47317c]/[0.08] bg-white px-5 py-5 shadow-[0_4px_20px_rgba(71,49,124,0.10)]">
+              <h2 className="inter-semibold-font mb-4 text-[16px] text-slate-900">
+                Choose your dosage
+              </h2>
 
                     {variation?.variations
                       ?.sort((a, b) => {
@@ -506,154 +488,108 @@ export default function DosageSelection() {
                           </React.Fragment>
                         );
                       })}
-                  </div>
+            </div>
 
-                  {variation?.show_expiry === 1 && (
-                    <div className="flex flex-col space-y-2 text-sm py-6">
-                      <FormControlLabel
-                        control={
-                          <Checkbox
-                            {...register("terms", {
-                              required: isExpiryRequired
-                                ? "Please confirm that you have read and acknowledged the expiry information."
-                                : false,
-                            })}
-                            icon={
-                              <span className="w-5 h-5 border-2 border-gray-400 rounded-full flex items-center justify-center" />
-                            }
-                            checkedIcon={
-                              <span className="w-5 h-5 border-2 border-[#4565BF] rounded-full flex items-center justify-center">
-                                <span className="w-2.5 h-2.5 bg-[#4565BF] rounded-full" />
-                              </span>
-                            }
-                            sx={{
-                              "& .MuiSvgIcon-root": {
-                                display: "none",
-                              },
-                            }}
-                          />
-                        }
-                        label={
-                          <p className="font-sans font-bold text-sm italic text-black">
-                            Please confirm that you have reviewed the expiry
-                            dates of the selected doses.
-                          </p>
-                        }
-                      />
-                      {errors.terms && (
-                        <p className="text-red-600 text-xs font-semibold">
-                          {errors.terms.message}
-                        </p>
-                      )}
-                    </div>
-                  )}
-
-                  {Array.isArray(variation?.addons) &&
-                    variation?.addons.length > 0 &&
-                    productId != FoundayoProductId && productId != WegovyPillProductId && (
-                      <div className="bg-white rounded-lg shadow-lg  px-4 py-6 my-4">
-                        <>
-                          <h1 className="my-4 niba-reg-font text-2xl text-gray-800">
-                            Select{" "}
-                            <span className="font-bold text-2xl">Add-ons</span>
-                          </h1>
-
-                          {variation?.addons
-                            .slice()
-                            .sort((a, b) => {
-                              const aOutOfStock =
-                                a?.stock?.status === 0 ||
-                                  a?.stock?.quantity === 0
-                                  ? 1
-                                  : 0;
-                              const bOutOfStock =
-                                b?.stock?.status === 0 ||
-                                  b?.stock?.quantity === 0
-                                  ? 1
-                                  : 0;
-
-                              return aOutOfStock - bOutOfStock;
-                            })
-                            .map((addon) => {
-                              const cartAddon = items.addons.find(
-                                (item) => item.id === addon.id,
-                              );
-                              const cartQty = cartAddon?.qty || 0;
-
-                              return (
-                                <AddOn
-                                  key={addon.id}
-                                  addon={addon}
-                                  quantity={cartQty}
-                                  isSelected={cartQty > 0}
-                                  onAdd={() => handleAddAddon(addon)}
-                                  onIncrement={() =>
-                                    increaseQuantity(addon.id, "addon")
-                                  }
-                                  onDecrement={() =>
-                                    decreaseQuantity(addon.id, "addon")
-                                  }
-                                />
-                              );
-                            })}
-                        </>
-                      </div>
+            {isExpiryRequired && (
+              <div className="mt-4 rounded-xl border border-slate-100 bg-[#FBFBFD] p-4">
+                <label className="flex cursor-pointer items-start gap-3">
+                  <input
+                    type="checkbox"
+                    className="hidden"
+                    {...register("terms", {
+                      required: "Please confirm that you have read and acknowledged the expiry information.",
+                    })}
+                  />
+                  <div className={`mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-[5px] border-2 transition-all duration-150 ${expiryConfirmed ? "border-[#47317c] bg-[#47317c]" : "border-slate-300 bg-white"}`}>
+                    {expiryConfirmed && (
+                      <svg width="10" height="8" viewBox="0 0 10 8" fill="none" aria-hidden="true">
+                        <path d="M1 4L3.5 6.5L9 1" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                      </svg>
                     )}
-                </div>
+                  </div>
+                  <p className="inter-medium-font text-[14px] leading-relaxed text-slate-700">
+                    Please confirm that you have reviewed the expiry dates of the selected doses.
+                  </p>
+                </label>
+                {errors.terms && (
+                  <p className="inter-reg-font mt-1.5 text-[12px] text-red-500">{errors.terms.message}</p>
+                )}
               </div>
-            </form>
-          </div>
+            )}
+            
+
+            {Array.isArray(variation?.addons) && variation?.addons.length > 0 && productId != 7 && (
+              <div className="mt-5 overflow-hidden rounded-2xl border border-[#47317c]/[0.08] bg-white px-5 py-5 shadow-[0_4px_20px_rgba(71,49,124,0.10)]">
+                <h2 className="inter-semibold-font mb-4 text-[16px] text-slate-900">
+                  Select Add-ons
+                </h2>
+                {variation?.addons
+                  .slice()
+                  .sort((a, b) => {
+                    const aOutOfStock = a?.stock?.status === 0 || a?.stock?.quantity === 0 ? 1 : 0;
+                    const bOutOfStock = b?.stock?.status === 0 || b?.stock?.quantity === 0 ? 1 : 0;
+                    return aOutOfStock - bOutOfStock;
+                  })
+                  .map((addon) => {
+                    const cartAddon = items.addons.find((item) => item.id === addon.id);
+                    const cartQty = cartAddon?.qty || 0;
+                    return (
+                      <AddOn key={addon.id} addon={addon} quantity={cartQty} isSelected={cartQty > 0}
+                        onAdd={() => handleAddAddon(addon)}
+                        onIncrement={() => increaseQuantity(addon.id, "addon")}
+                        onDecrement={() => decreaseQuantity(addon.id, "addon")}
+                      />
+                    );
+                  })}
+              </div>
+            )}
+
+          </form>
         </div>
       </div>
 
-      <div className="fixed bottom-0 left-0 right-0 z-50 bg-[#ffffff] px-4 py-3 shadow-[0_-2px_10px_rgba(0,0,0,0.1)]">
-        <div className="max-w-xl mx-auto flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          {/* Product Info */}
-          <div className="flex items-start sm:items-center space-x-3 me-5">
-            <img
-              src={variation?.img}
-              alt={variation?.name}
-              className="w-10 h-10 rounded-md object-contain"
-            />
-            <div className="text-black leading-tight">
-              <div className="text-lg bold-font">{variation?.name}</div>
-              <div className="text-lg bold-font">
-                <span className="me-2 sm:text-lg text-md reg-font paragraph">
-                  Order total
-                </span>
-                £{parseFloat(totalAmount)?.toFixed(2)}
+      {/* Fixed bottom bar */}
+      <div className="fixed bottom-0 left-0 right-0 z-50 border-t border-slate-100 bg-white/95 backdrop-blur-xl">
+        <div className="mx-auto max-w-xl px-4 py-3">
+          {/* Order summary row */}
+          <div className="mb-3 flex items-center justify-between">
+            <div className="flex items-center gap-2.5">
+              <div className="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-[#47317c]/10">
+                <img src={variation?.img} alt={variation?.name} className="h-7 w-7 object-contain" />
               </div>
+              <p className="inter-medium-font text-[13px] text-slate-600 truncate max-w-[160px]">{variation?.name}</p>
+            </div>
+            <div className="text-right">
+              <p className="inter-medium-font text-[11px] uppercase tracking-wide text-slate-400">Order total</p>
+              <p className="inter-semibold-font text-[16px] text-[#47317c]">£{parseFloat(totalAmount)?.toFixed(2)}</p>
             </div>
           </div>
 
-          {/* Button */}
-          <div className="w-full sm:w-auto">
-            {isButtonLoading === true ? (
-              <div className="w-full px-28 py-3 rounded-full text-white bg-primary flex justify-center">
-                <motion.div
-                  animate={{ rotate: 360 }}
-                  transition={{
-                    repeat: Infinity,
-                    duration: 1,
-                    ease: "linear",
-                  }}
-                  className="w-5 h-5 border-4 border-t-transparent rounded-full text-white"
-                />
-              </div>
-            ) : (
-              <NextButton
-                onClick={handleSubmit(onSubmit)}
-                disabled={totalSelectedQty() === 0 || !isValid}
-                label="Proceed to Checkout"
-                className="w-full sm:w-auto"
-              />
-            )}
+          {/* Action row */}
+          {(totalSelectedQty() === 0 || !isValid) && (
+            <p className="inter-medium-font mb-2 text-center text-[12px] text-slate-500">
+              {totalSelectedQty() === 0
+                ? "Select at least one dose to continue."
+                : "Confirm the expiry dates to continue."}
+            </p>
+          )}
+          <div className="flex items-center gap-2">
+            <button type="button" onClick={back}
+              className="inter-medium-font flex h-11 shrink-0 items-center gap-1 text-[13px] text-slate-500 hover:text-[#47317c] transition-colors cursor-pointer px-1">
+              <IoIosArrowBack size={15} />
+              Back
+            </button>
 
-            <BackButton
-              label="Back"
-              className="mt-2 sm:hidden block"
-              onClick={back}
-            />
+            <div className="flex-1">
+              {isButtonLoading ? (
+                <div className="flex w-full items-center justify-center rounded-lg bg-[#47317c] py-3">
+                  <motion.div animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 1, ease: "linear" }}
+                    className="h-5 w-5 rounded-full border-2 border-white border-t-transparent" />
+                </div>
+              ) : (
+                <NextButton onClick={handleSubmit(onSubmit)} disabled={totalSelectedQty() === 0 || !isValid} label="Proceed to Checkout" />
+              )}
+            </div>
           </div>
         </div>
       </div>

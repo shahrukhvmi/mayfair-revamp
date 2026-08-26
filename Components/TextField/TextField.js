@@ -9,63 +9,81 @@ const TextField = ({
   register,
   required = false,
   validation = {},
-  // registerOptions = {},
   errors = {},
   disabled = false,
   disablePaste = false,
-  value, // <-- Controlled input
-  onChange, // <-- Controlled input
+  value,
+  onChange,
   multiline = false,
   rows = 4,
   readOnly = false,
+  boxed = false,
+  className = "",
 }) => {
   const [showPassword, setShowPassword] = useState(false);
-  const handlePaste = (e) => {
-    if (disablePaste) {
-      e.preventDefault();
-    }
-  };
+  const handlePaste = (e) => { if (disablePaste) e.preventDefault(); };
 
   const isPassword = type === "password";
   const inputType = isPassword ? (showPassword ? "text" : "password") : type;
 
-
-  // 🔥 Build validation rules (for RHF)
   const baseRules = {
     ...(required ? { required: "This field is required" } : {}),
+    ...(type === "text" && !readOnly
+      ? {
+          minLength: {
+            value: 2,
+            message: "Please enter at least 2 characters",
+          },
+          maxLength: {
+            value: 100,
+            message: "Please enter no more than 100 characters",
+          },
+        }
+      : {}),
     ...validation,
   };
+
   if (name === "city") {
     const existingValidate = baseRules.validate;
-
     baseRules.validate = (val) => {
-      // pehle agar user ne custom validate diya hai to usko respect karo
       if (existingValidate) {
         const result = existingValidate(val);
         if (result !== true) return result;
       }
-
-      // ab whitespace-only check
-      if (!val || val.trim() === "") {
-        return "Town / City cannot be empty or spaces only";
-      }
-
+      if (!val || val.trim() === "") return "Town / City cannot be empty or spaces only";
       return true;
     };
   }
+
+  const hasError = !!errors[name];
+
+  const baseInputClass = `
+    inter-reg-font w-full text-[15px] text-slate-800 placeholder:text-slate-400
+    focus:outline-none transition-all duration-200
+    ${boxed
+      ? "rounded-xl border bg-white px-4 py-3 leading-relaxed shadow-[0_1px_3px_rgba(15,23,42,0.03)] focus:ring-[3px]"
+      : "border-0 border-b-2 bg-transparent px-0 py-3"
+    }
+    ${hasError
+      ? `border-red-300 focus:border-red-400 ${boxed ? "focus:ring-red-100" : ""}`
+      : `border-slate-200 focus:border-[#47317c] ${boxed ? "focus:ring-[#47317c]/10" : ""}`
+    }
+    ${disabled || readOnly ? "text-slate-400 cursor-not-allowed" : ""}
+    ${isPassword ? "pr-10" : ""}
+    ${className}
+  `;
+
   return (
-    <div className="mb-4 relative">
+    <div className="mb-4">
       {label && (
-        <label htmlFor={name} className="bold-font paragraph mb-2">
+        <label htmlFor={name} className="inter-medium-font mb-1.5 flex items-center gap-1 text-[13px] text-slate-700">
           {label}
-          {required ? (
-            <span className="text-red-500 absolute top-1 ms-1 niba-semibold-font"> *</span>
-          ) : (
-            <span className="text-gray-500 text-sm font-normal ml-1">(optional)</span>
-          )}
+          {required
+            ? <span className="text-red-400 text-[14px] leading-none">*</span>
+            : <span className="inter-reg-font text-[12px] text-slate-400">(optional)</span>
+          }
         </label>
       )}
-
 
       {multiline ? (
         <textarea
@@ -77,10 +95,7 @@ const TextField = ({
           value={value}
           onChange={onChange}
           rows={rows}
-          className={`reg-font w-full text-black px-3 py-4 border rounded-sm placeholder-gray-400 
-            focus:outline-none focus:ring-2 focus:ring-violet-300 focus:border-primary
-            ${errors[name] ? "border-red-500" : "border-black"}
-          `}
+          className={`${baseInputClass} resize-none`}
         />
       ) : (
         <div className="relative">
@@ -88,35 +103,32 @@ const TextField = ({
             readOnly={readOnly}
             id={name}
             type={inputType}
+            maxLength={type === "text" ? 100 : undefined}
             placeholder={placeholder}
             disabled={disabled}
             onPaste={handlePaste}
             {...(register
-              ? register(name, {
-                ...baseRules,
-                // ...registerOptions,
-              })
-              : { value, onChange })}
-            className={`reg-font w-full text-black px-3 py-4 border rounded-sm placeholder-gray-400 
-              focus:outline-none focus:ring-violet-300 focus:border-primary
-              ${errors[name] ? "border-red-500" : "border-black"}
-              ${isPassword ? "pr-12" : ""}
-               ${readOnly ? "bg-gray-100 text-gray-800 cursor-not-allowed select-none" : "text-black"}
-            `}
+              ? register(name, { ...baseRules })
+              : { value, onChange }
+            )}
+            className={baseInputClass}
           />
-
           {isPassword && (
             <span
               onClick={() => setShowPassword((prev) => !prev)}
-              className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 cursor-pointer"
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 cursor-pointer hover:text-slate-600 transition-colors"
             >
-              {showPassword ? <AiOutlineEye size={20} /> : <AiOutlineEyeInvisible size={20} />}
+              {showPassword ? <AiOutlineEye size={18} /> : <AiOutlineEyeInvisible size={18} />}
             </span>
           )}
         </div>
       )}
 
-      {errors[name] && <p className="text-red-500 text-sm mt-1">{errors[name]?.message || "This field is required"}</p>}
+      {hasError && (
+        <p className="inter-reg-font mt-1.5 text-[12px] text-red-500">
+          {errors[name]?.message || "This field is required"}
+        </p>
+      )}
     </div>
   );
 };

@@ -93,70 +93,87 @@ export default function PatientConsent() {
       <MetaLayout canonical={`${meta_url}patient-consent/`} />
       <StepsHeader />
 
-      <FormWrapper heading={"Patient Consent"} percentage={"85"}>
+      <FormWrapper
+        heading={"Patient Consent"}
+        description=""
+        percentage={"85"}
+      >
         <PageAnimationWrapper>
-          <div className="pt-2 pb-6">
+          <div>
             <div
               className={`relative ${
                 showLoader ? "pointer-events-none cursor-not-allowed" : ""
               }`}
             >
               <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-                {questions.map((q) => {
-                  const selectedAnswer = watch(`responses[${q.id}].answer`);
-
-                  return (
-                    <div
-                      key={q.id}
-                      className="space-y-4 border rounded-md border-gray-700 p-5"
+                <section aria-labelledby="consent-statements-heading">
+                  <div className="mb-2 border-b border-slate-200 pb-4">
+                    <h2
+                      id="consent-statements-heading"
+                      className="inter-semibold-font text-[16px] text-slate-900 sm:text-[17px]"
                     >
-                      {/* Question and Checkbox */}
-                      <span className="bold-font text-gray-700 sm:text-lg text-sm">
-                        I confirm and understand that:
-                      </span>
-                      {/* Checklist (if exists) */}
-                      {q.checklist && (
-                        <div
-                          className="list-disc list-outside sm:pl-5 text-sm text-gray-700 space-y-2 reg-font paragraph [&>ul]:list-disc [&>ul]:ml-6 [&>li]:mt-0.5"
-                          dangerouslySetInnerHTML={{ __html: q.checklist }}
-                        ></div>
-                      )}
+                      I confirm and understand that:
+                    </h2>
+                    
+                  </div>
 
-                      <div className="flex items-start">
-                        <input
-                          type="checkbox"
-                          id={`question-${q.id}`}
-                          checked={selectedAnswer}
-                          onChange={(e) =>
-                            handleCheckboxChange(q.id, e.target.checked)
-                          }
-                          className="hidden"
-                        />
-                        <label
-                          htmlFor={`question-${q.id}`}
-                          className="flex items-start gap-2 cursor-pointer"
-                        >
-                          {selectedAnswer ? (
-                            <MdCheckBox className="text-primary sm:w-9 w-18 h-18 sm:h-9 mt-1" />
-                          ) : (
-                            <MdCheckBoxOutlineBlank className="text-violet-700 sm:w-9 sm:h-9 w-18 h-18 mt-1" />
-                          )}
-                          <span className="bold-font text-gray-700 sm:text-lg text-sm">
-                            {console.log(q, "q?.question")}
-                            {q?.qsummary
-                              ?.replace("I confirm and understand that:", "")
-                              ?.replace("below", "above")
-                              ?.trim()}
-                          </span>
-                        </label>
-                      </div>
-                    </div>
-                  );
-                })}
+                  <div className="divide-y divide-slate-200">
+                    {questions.map((q) => {
+                      const selectedAnswer = watch(`responses[${q.id}].answer`);
+
+                      return (
+                        <article key={q.id} className="py-5 first:pt-4">
+                          <div className="min-w-0">
+                              {q.checklist && (
+                                <div
+                                  className="inter-reg-font mb-4 text-[14px] leading-[1.75] text-slate-600 sm:text-[16px] [&>ul]:ml-5 [&>ul]:list-disc [&>li]:mt-1.5"
+                                  dangerouslySetInnerHTML={{ __html: q.checklist }}
+                                />
+                              )}
+
+                              <label
+                                htmlFor={`question-${q.id}`}
+                                className="group grid cursor-pointer grid-cols-[20px_minmax(0,1fr)] items-center gap-3"
+                              >
+                                <input
+                                  type="checkbox"
+                                  id={`question-${q.id}`}
+                                  checked={selectedAnswer}
+                                  onChange={(e) =>
+                                    handleCheckboxChange(q.id, e.target.checked)
+                                  }
+                                  className="sr-only"
+                                />
+                                <span
+                                  className={`flex h-5 w-5 items-center justify-center self-center rounded-[6px] border-2 transition-all duration-150 group-hover:border-[#47317c]/60 ${
+                                    selectedAnswer
+                                      ? "border-[#47317c] bg-[#47317c]"
+                                      : "border-slate-300 bg-white"
+                                  }`}
+                                >
+                                  {selectedAnswer && (
+                                    <svg width="10" height="8" viewBox="0 0 10 8" fill="none">
+                                      <path d="M1 4L3.5 6.5L9 1" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                                    </svg>
+                                  )}
+                                </span>
+                                <span className={`inter-medium-font text-[15px] leading-[1.65] transition-colors sm:text-[15.5px] ${selectedAnswer ? "text-[#47317c]" : "text-slate-800"}`}>
+                                  {q?.qsummary
+                                    ?.replace("I confirm and understand that:", "")
+                                    ?.replace("below", "above")
+                                    ?.trim()}
+                                </span>
+                              </label>
+                          </div>
+                        </article>
+                      );
+                    })}
+                  </div>
+                </section>
 
                 {/* Show error if not accepted */}
                 {!isNextEnabled && (
-                  <p className="text-sm text-red-500 mt-2">
+                  <p className="inter-reg-font border-l-2 border-amber-300 pl-3 text-[13.5px] leading-relaxed text-amber-700">
                     You must confirm before proceeding.
                   </p>
                 )}

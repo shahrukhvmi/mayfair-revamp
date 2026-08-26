@@ -198,43 +198,32 @@ export default function GpDetail() {
             }`}
           >
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-              <h1 className="text-gray-500 reg-font">
+              <p className="inter-medium-font text-[14px] text-slate-700">
                 Are you registered with a GP in the UK?
-              </h1>
-              <div className="flex mt-4 gap-2">
-                {["yes", "no"].map((option) => (
-                  <label
-                    key={option}
-                    className={`cursor-pointer w-1/2 flex items-center gap-3 px-4 py-3 border rounded-lg text-black ${
-                      gpDetails === option
-                        ? "bg-[#F2EEFF] border-primary"
-                        : "border-gray-300 hover:bg-gray-50"
-                    }`}
-                  >
-                    <input
-                      type="radio"
-                      value={option}
-                      {...register("gpDetails", { required: true })}
-                      className="hidden"
-                    />
-                    <div
-                      className={`w-5 h-5 rounded-sm flex items-center justify-center border ${
-                        gpDetails === option
-                          ? "bg-primary border-[#47317c] text-white"
-                          : "border-gray-400"
-                      }`}
-                    >
-                      {gpDetails === option && <FiCheck />}
-                    </div>
-                    {option.charAt(0).toUpperCase() + option.slice(1)}
-                  </label>
-                ))}
+              </p>
+              <div className="flex gap-3">
+                {["yes", "no"].map((option) => {
+                  const isSelected = gpDetails === option;
+                  return (
+                    <label key={option}
+                      className={`flex flex-1 cursor-pointer items-center gap-2.5 rounded-xl border-2 px-4 py-3 transition-all duration-150 select-none
+                        ${isSelected ? "border-[#47317c] bg-[#47317c]/[0.05]" : "border-slate-200 bg-white hover:border-slate-300 hover:bg-slate-50"}`}>
+                      <input type="radio" value={option} {...register("gpDetails", { required: true })} className="hidden" />
+                      <div className={`flex h-4 w-4 shrink-0 items-center justify-center rounded-full border-2 transition-all duration-150
+                        ${isSelected ? "border-[#47317c] bg-[#47317c]" : "border-slate-300 bg-white"}`}>
+                        {isSelected && <div className="h-1.5 w-1.5 rounded-full bg-white" />}
+                      </div>
+                      <span className={`inter-medium-font text-[14px] capitalize ${isSelected ? "text-[#47317c]" : "text-slate-700"}`}>
+                        {option}
+                      </span>
+                    </label>
+                  );
+                })}
               </div>
 
-              {/* This was missing (✅ FIXED now) */}
               {gpDetails === "no" && (
-                <div className="bg-[#FFF3CD] px-4 py-4 mt-6 text-gray-700 rounded shadow-md">
-                  <p>
+                <div className="rounded-xl border border-amber-200/70 bg-amber-50/70 px-4 py-3.5">
+                  <p className="inter-reg-font text-[13px] text-amber-800">
                     You should inform your doctor of any medication you take.
                     Contact us if you want us to email a letter for your doctor.
                   </p>
@@ -243,51 +232,34 @@ export default function GpDetail() {
 
               {gpDetails === "yes" && (
                 <>
-                  <p className="text-gray-500 mt-6 mb-3">
+                  <p className="inter-reg-font text-[13px] text-slate-600">
                     If you are registered with a GP in the UK then we can inform
                     them on your behalf.
                   </p>
-                  <p className="text-gray-500 mt-0">
+                  <p className="inter-medium-font text-[14px] text-slate-700">
                     Do you consent for us to inform your GP about the treatment?
                   </p>
-                  <div className="mt-4 flex flex-col sm:flex-row sm:gap-4">
+                  <div className="flex flex-col gap-3 sm:flex-row">
                     {[
                       { value: "yes", label: "Yes – Please inform my GP" },
-                      {
-                        value: "no",
-                        label:
-                          "No – I will inform my GP prior to starting treatment",
-                      },
-                    ].map((option) => (
-                      <label
-                        key={option.value}
-                        className={`cursor-pointer flex-1 flex items-center gap-3 px-4 sm:my-0 my-2 py-3 border rounded-lg text-black ${
-                          gepTreatMent === option.value
-                            ? "bg-[#F2EEFF] border-[#47317c]"
-                            : "border-gray-300 hover:bg-gray-50"
-                        }`}
-                      >
-                        <input
-                          type="radio"
-                          value={option.value}
-                          {...register("gepTreatMent", { required: true })}
-                          className="hidden"
-                        />
-                        <div
-                          className={`min-w-5 h-5 rounded-sm flex items-center justify-center border ${
-                            gepTreatMent === option.value
-                              ? "bg-primary border-[#47317c] text-white"
-                              : "border-gray-400"
-                          }`}
-                        >
-                          {gepTreatMent === option.value && (
-                            <FiCheck size={16} />
-                          )}
-                        </div>
-
-                        <span className="text-sm">{option.label}</span>
-                      </label>
-                    ))}
+                      { value: "no", label: "No – I will inform my GP prior to starting treatment" },
+                    ].map((option) => {
+                      const isSelected = gepTreatMent === option.value;
+                      return (
+                        <label key={option.value}
+                          className={`flex flex-1 cursor-pointer items-center gap-2.5 rounded-xl border-2 px-4 py-3 transition-all duration-150 select-none
+                            ${isSelected ? "border-[#47317c] bg-[#47317c]/[0.05]" : "border-slate-200 bg-white hover:border-slate-300 hover:bg-slate-50"}`}>
+                          <input type="radio" value={option.value} {...register("gepTreatMent", { required: true })} className="hidden" />
+                          <div className={`flex h-4 w-4 shrink-0 items-center justify-center rounded-full border-2 transition-all duration-150
+                            ${isSelected ? "border-[#47317c] bg-[#47317c]" : "border-slate-300 bg-white"}`}>
+                            {isSelected && <div className="h-1.5 w-1.5 rounded-full bg-white" />}
+                          </div>
+                          <span className={`inter-medium-font text-[13px] leading-snug ${isSelected ? "text-[#47317c]" : "text-slate-700"}`}>
+                            {option.label}
+                          </span>
+                        </label>
+                      );
+                    })}
                   </div>
                 </>
               )}
@@ -298,39 +270,35 @@ export default function GpDetail() {
                     label="GP Email"
                     name="email"
                     type="email"
+                    placeholder="gp.practice@example.com"
                     register={register}
                     errors={errors}
                   />
 
                   <div className="relative">
-                    <TextField
-                      label="Post code"
-                      name="postalCode"
-                      register={register}
-                      required
-                      errors={errors}
-                    />
+                    <div className="min-w-0">
+                      <TextField
+                        label="Post code"
+                        name="postalCode"
+                        placeholder="e.g. SW1A 1AA"
+                        register={register}
+                        required
+                        errors={errors}
+                        className="pr-[108px]"
+                      />
+                    </div>
                     <button
                       type="button"
                       onClick={handleAddressFetch}
                       disabled={searchLoading}
-                      className="absolute right-3 top-9 bg-primary text-white px-3 py-1 rounded w-28 flex items-center cursor-pointer text-center justify-center"
+                      className="inter-medium-font absolute right-0 top-[24px] flex min-h-[38px] min-w-[96px] cursor-pointer items-center justify-center gap-1.5 rounded-md bg-[#47317c] px-4 py-2 text-[12px] text-white transition-colors hover:bg-[#3d2a6b] disabled:cursor-not-allowed disabled:opacity-60"
                     >
                       {searchLoading ? (
-                        <motion.div
-                          animate={{ rotate: 360 }}
-                          transition={{
-                            repeat: Infinity,
-                            duration: 1,
-                            ease: "linear",
-                          }}
-                          className="w-6 h-6 border-4 border-t-transparent rounded-full text-white"
+                        <motion.div animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 1, ease: "linear" }}
+                          className="h-4 w-4 rounded-full border-2 border-white border-t-transparent"
                         />
                       ) : (
-                        <>
-                          <FaSearch className="mr-2" />
-                          Search
-                        </>
+                        <><FaSearch size={12} /><span>Search</span></>
                       )}
                     </button>
                   </div>
@@ -346,21 +314,12 @@ export default function GpDetail() {
                           const selected = searchResults[idx];
                           setSelectedIndex(idx);
 
-                          // Fill form with selected address
-                          setValue("gpName", selected.OrganisationName || "", {
-                            shouldValidate: true,
-                          });
-                          setValue("addressLine1", selected.Address1 || "", {
-                            shouldValidate: true,
-                          });
-                          setValue("addressLine2", selected.Address2 || "", {
-                            shouldValidate: true,
-                          });
-                          setValue("city", selected.City || "", {
-                            shouldValidate: true,
-                          });
+                          setValue("gpName", selected.OrganisationName || "", { shouldValidate: true });
+                          setValue("addressLine1", selected.Address1 || "", { shouldValidate: true });
+                          setValue("addressLine2", selected.Address2 || "", { shouldValidate: true });
+                          setValue("city", selected.City || "", { shouldValidate: true });
 
-                          setManual(true); // force manual section open so user sees populated fields
+                          setManual(true);
                         }}
                         options={searchResults.map((item, idx) => ({
                           value: idx,
@@ -370,15 +329,10 @@ export default function GpDetail() {
                     </div>
                   )}
 
-                  <div className="text-sm  text-center sm:text-right mt-4">
-                    <button
-                      type="button"
-                      onClick={() => setManual(!manual)}
-                      className="text-black font-bold underline cursor-pointer"
-                    >
-                      {manual
-                        ? "Hide manual address entry"
-                        : "Enter your address manually"}
+                  <div className="text-right">
+                    <button type="button" onClick={() => setManual(!manual)}
+                      className="inter-medium-font cursor-pointer text-[13px] text-[#47317c] transition-colors hover:text-[#3d2a6b]">
+                      {manual ? "Hide manual address entry" : "Enter your address manually"}
                     </button>
                   </div>
 
@@ -387,6 +341,7 @@ export default function GpDetail() {
                       <TextField
                         label="GP Name"
                         name="gpName"
+                        placeholder="Enter your GP name"
                         register={register}
                         required
                         errors={errors}
@@ -394,6 +349,7 @@ export default function GpDetail() {
                       <TextField
                         label="Address"
                         name="addressLine1"
+                        placeholder="e.g. 10 High Street"
                         register={register}
                         required
                         errors={errors}
@@ -401,12 +357,14 @@ export default function GpDetail() {
                       <TextField
                         label="Address 2"
                         name="addressLine2"
+                        placeholder="Building, suite or unit (optional)"
                         register={register}
                         errors={errors}
                       />
                       <TextField
                         label="Town / City"
                         name="city"
+                        placeholder="e.g. London"
                         register={register}
                         required
                         errors={errors}

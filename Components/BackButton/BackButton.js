@@ -2,17 +2,16 @@ import React from "react";
 
 const BackButton = ({ label = "Back", loading = false, disabled = false, type = "button", onClick, className = "" }) => {
   return (
-    <div className={`${className}`}>
+    <div className={`${className} flex items-center justify-center`}>
       <button
         type={type}
         onClick={onClick}
         disabled={disabled || loading}
-        className={`reg-font cursor-pointer w-full px-12 underline rounded-xl  text-primary text-sm font-medium transition-all duration-150
-         disabled:opacity-50 disabled:cursor-not-allowed flex justify-center items-center`}
+        className="inter-medium-font flex items-center justify-center gap-1 text-[13px] text-[#47317c]  underline hover:text-slate-600 transition-colors duration-150 cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
       >
         {loading ? (
           <div className="flex items-center gap-2">
-            <div className="w-4 h-4 border-2 border-primary border-t-transparent rounded-full animate-spin"></div>
+            <div className="w-3.5 h-3.5 border-2 border-[#47317c] border-t-transparent rounded-full animate-spin" />
             <span>Loading...</span>
           </div>
         ) : (

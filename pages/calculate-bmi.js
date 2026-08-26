@@ -359,6 +359,13 @@ export default function CalculateBmi() {
                   }
                   setHeightUnit(value);
                   setHeightUnitKey(value);
+                  setTimeout(() => {
+                    void trigger(
+                      value === "imperial"
+                        ? ["heightFt", "heightIn"]
+                        : ["heightCm"],
+                    );
+                  }, 0);
                 } else {
                   if (value === "metrics") {
                     const st = parseFloat(watch("weightSt")) || 0;
@@ -377,6 +384,13 @@ export default function CalculateBmi() {
                   }
                   setWeightUnit(value);
                   setWeightUnitKey(value);
+                  setTimeout(() => {
+                    void trigger(
+                      value === "imperial"
+                        ? ["weightSt", "weightLbs"]
+                        : ["weightKg"],
+                    );
+                  }, 0);
                 }
               }}
             />
@@ -408,6 +422,7 @@ export default function CalculateBmi() {
                           onChange: (e) => {
                             if (e.target.value !== "")
                               setHeightUnitKey("imperial");
+                            void trigger("heightFt");
                           },
                         })}
                         errors={errors}
@@ -432,6 +447,7 @@ export default function CalculateBmi() {
                           onChange: (e) => {
                             if (e.target.value !== "")
                               setHeightUnitKey("imperial");
+                            void trigger("heightIn");
                           },
                         })}
                         errors={errors}
@@ -458,6 +474,7 @@ export default function CalculateBmi() {
                         onChange: (e) => {
                           if (e.target.value !== "")
                             setHeightUnitKey("metrics");
+                          void trigger("heightCm");
                         },
                       })}
                       errors={errors}
@@ -486,6 +503,7 @@ export default function CalculateBmi() {
                             onChange: (e) => {
                               if (e.target.value !== "")
                                 setWeightUnitKey("imperial");
+                              void trigger("weightSt");
                             },
                           })}
                           errors={errors}
@@ -508,6 +526,7 @@ export default function CalculateBmi() {
                             onChange: (e) => {
                               if (e.target.value !== "")
                                 setWeightUnitKey("imperial");
+                              void trigger("weightLbs");
                             },
                           })}
                           errors={errors}
@@ -532,6 +551,7 @@ export default function CalculateBmi() {
                           onChange: (e) => {
                             if (e.target.value !== "")
                               setWeightUnitKey("metrics");
+                            void trigger("weightKg");
                           },
                         })}
                         errors={errors}
@@ -542,21 +562,21 @@ export default function CalculateBmi() {
                     {lastBmi ? (
                       lastBmi?.weight_unit == "metrics" ||
                         lastBmi?.weight_unit == "metric" ? (
-                        <div className="bg-[#FFF3CD] px-4 py-4 mt-6 mb-6 text-gray-700 rounded shadow-md">
-                          <p className="flex items-center">
-                            <BsInfoCircle className="me-2" /> Your previous
+                        <div className="rounded-xl border border-amber-200/70 bg-amber-50/70 px-4 py-3.5">
+                          <p className="inter-reg-font flex items-center gap-2 text-[13px] text-amber-800">
+                            <BsInfoCircle className="shrink-0" /> Your previous
                             recorded weight was{" "}
-                            <span className="font-bold ms-1">
+                            <span className="inter-semibold-font">
                               {lastBmi?.kg} kg
                             </span>
                           </p>
                         </div>
                       ) : (
-                        <div className="bg-[#FFF3CD] px-4 py-4 mt-6 mb-6 text-gray-700 rounded shadow-md">
-                          <p className="flex items-center">
-                            <BsInfoCircle className="me-2" /> Your previous
+                        <div className="rounded-xl border border-amber-200/70 bg-amber-50/70 px-4 py-3.5">
+                          <p className="inter-reg-font flex items-center gap-2 text-[13px] text-amber-800">
+                            <BsInfoCircle className="shrink-0" /> Your previous
                             recorded weight was{" "}
-                            <span className="font-bold ms-1">
+                            <span className="inter-semibold-font">
                               {lastBmi?.stones} st & {lastBmi?.pound} lbs
                             </span>
                           </p>

@@ -1,32 +1,43 @@
 import React from "react";
 import { useRouter } from "next/router";
-import { LuBadgeX } from "react-icons/lu";
 import NextButton from "../NextButton/NextButton";
-import { RxCross2 } from "react-icons/rx";
+import { AlertTriangle, CreditCard } from "lucide-react";
 
 const PaymentFailed = () => {
-  const GO = useRouter();
+  const router = useRouter();
 
   const handleGoBack = () => {
-    GO.push("/dashboard");
+    router.push("/dashboard");
   };
 
   return (
-    <div className="flex items-center justify-center h-screen bg-[#F2EEFF] px-6 sm:px-44">
-      <div className="bg-white rounded-lg shadow-lg p-8 text-center w-full max-w-2xl">
-        <div  className="flex justify-center mb-4">
+    <div className="flex min-h-screen items-center justify-center bg-[#FBFBFD] px-4 py-10 sm:px-6">
+      <div className="w-full max-w-[580px] overflow-hidden rounded-2xl border border-[#47317c]/10 bg-white text-center shadow-[0_22px_65px_rgba(71,49,124,0.12)]">
+        <div className="relative overflow-hidden border-b border-[#47317c]/[0.08] bg-[#f5f2fc] px-6 py-9 sm:px-10 sm:py-10">
+          <div aria-hidden="true" className="absolute -right-12 -top-16 h-40 w-40 rounded-full border-[22px] border-[#47317c]/[0.035]" />
+          <div aria-hidden="true" className="absolute -bottom-16 -left-12 h-36 w-36 rounded-full bg-[#47317c]/[0.035]" />
 
-          <div className="w-16 h-16 rounded-full bg-red-500 flex items-center justify-center"> <RxCross2 className="text-white bold-font" size={40} />
-
+          <div className="relative mb-6 flex justify-center">
+            <div className="relative flex h-[82px] w-[112px] items-center justify-center rounded-2xl border border-[#47317c]/15 bg-white text-[#47317c] shadow-[0_12px_30px_rgba(71,49,124,0.14)]">
+              <CreditCard size={42} strokeWidth={1.6} />
+              <span className="absolute -bottom-2.5 -right-2.5 flex h-9 w-9 items-center justify-center rounded-xl border-4 border-[#f5f2fc] bg-red-500 text-white shadow-sm">
+                <AlertTriangle size={17} strokeWidth={2.2} />
+              </span>
+            </div>
           </div>
+          <h2 className="inter-bold-font relative text-[25px] tracking-[-0.025em] text-slate-900 sm:text-[29px]">
+            Payment Failed
+          </h2>
+          <p className="inter-reg-font relative mx-auto mt-2.5 max-w-md text-[13.5px] leading-relaxed text-slate-500">
+            It looks like your payment wasn’t completed. You can try again or
+            contact us if you need help.
+          </p>
         </div>
-        <h2 className="text-3xl niba-bold-font text-gray-800 mb-4">Payment Failed</h2>
-        <p className="text-gray-600 mb-6 reg-font">It looks like your payment wasn’t completed. You can try again or contact us if you need help.</p>
-        <div className="text-center flex justify-center">
+
+        <div className="px-6 py-6 sm:px-10 sm:py-7">
           <NextButton
             onClick={handleGoBack}
-            className={"s:!w-96 "}
-            label="Continue to Available Treatments"
+            label="Visit patient dashboard"
           />
         </div>
       </div>
@@ -35,4 +46,3 @@ const PaymentFailed = () => {
 };
 
 export default PaymentFailed;
-// 

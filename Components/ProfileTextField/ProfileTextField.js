@@ -60,12 +60,25 @@ const ProfileTextField = ({
           <input
             id={name}
             type={inputType}
+            maxLength={type === "text" ? 100 : undefined}
             placeholder={placeholder}
             disabled={disabled}
             onPaste={handlePaste}
             {...(register
               ? register(name, {
                 required: required && "This field is required",
+                ...(type === "text"
+                  ? {
+                      minLength: {
+                        value: 2,
+                        message: "Please enter at least 2 characters",
+                      },
+                      maxLength: {
+                        value: 100,
+                        message: "Please enter no more than 100 characters",
+                      },
+                    }
+                  : {}),
                 ...validation,
               })
               : { value, onChange })}

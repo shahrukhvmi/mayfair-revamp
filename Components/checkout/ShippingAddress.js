@@ -6,18 +6,11 @@ import { FaSearch, FaShippingFast } from "react-icons/fa";
 import TextField from "@/Components/TextField/TextField";
 import PageLoader from "@/Components/PageLoader/PageLoader";
 // import { Client } from "getaddress-api";
-import MUISelectField from "@/Components/SelectField/SelectField";
 import useShippingOrBillingStore from "@/store/shipingOrbilling";
 import { useRouter } from "next/router";
 import useShipmentCountries from "@/store/useShipmentCountriesStore";
 import { motion } from "framer-motion";
 import toast from "react-hot-toast";
-import {
-  MdCheckBox,
-  MdCheckBoxOutlineBlank,
-  MdOutlineCheckBox,
-  MdOutlineCheckBoxOutlineBlank,
-} from "react-icons/md";
 import NextButton from "../NextButton/NextButton";
 
 // const api = new Client("aYssNMkdXEGsdfGVZjiY0Q26381");
@@ -315,6 +308,7 @@ export default function ShippingAddress({
             <TextField
               label="First Name"
               name="first_name"
+              placeholder="Enter your first name"
               register={register}
               required
               errors={errors}
@@ -322,6 +316,7 @@ export default function ShippingAddress({
             <TextField
               label="Last Name"
               name="last_name"
+              placeholder="Enter your last name"
               register={register}
               required
               errors={errors}
@@ -332,35 +327,36 @@ export default function ShippingAddress({
               control={control}
               rules={{ required: "Country is required" }}
               render={({ field }) => (
-                <MUISelectField
-                  label="Select Country"
-                  name="shippingCountry"
-                  value={field.value}
-                  required
-                  onChange={(e) => {
-                    const id = e.target.value;
-                    field.onChange(id); // ✅ set id to RHF
-                    setShippingIndex(id); // ✅ set id to local state
-                    // ✅ Find selected country
-                    const selectedCountry = shipmentCountries.find(
-                      (c) => c.id.toString() === id,
-                    );
-
-                    if (selectedCountry) {
-                      // ✅ Update shipping immediately when user changes country
-                      setShipping({
-                        ...shipping,
-                        id: selectedCountry.id,
-                        country_name: selectedCountry.name,
-                        country_price: selectedCountry.price, // ✅ Update price
-                      });
-                    }
-                  }}
-                  options={(shipmentCountries || []).map((addr) => ({
-                    value: addr.id.toString(), // ✅ Use country id as value
-                    label: addr.name,
-                  }))}
-                />
+                <div className="mb-4">
+                  <label className="inter-medium-font mb-1.5 block text-[13px] text-slate-700">
+                    Select Country <span className="text-red-500">*</span>
+                  </label>
+                  <select
+                    value={field.value}
+                    onChange={(e) => {
+                      const id = e.target.value;
+                      field.onChange(id);
+                      setShippingIndex(id);
+                      const selectedCountry = shipmentCountries.find(
+                        (c) => c.id.toString() === id,
+                      );
+                      if (selectedCountry) {
+                        setShipping({
+                          ...shipping,
+                          id: selectedCountry.id,
+                          country_name: selectedCountry.name,
+                          country_price: selectedCountry.price,
+                        });
+                      }
+                    }}
+                    className="inter-reg-font w-full border-0 border-b-2 bg-transparent px-0 py-3 text-[15px] text-slate-900 focus:outline-none transition-colors duration-200 border-slate-200 focus:border-[#47317c] cursor-pointer"
+                  >
+                    <option value="">Select a country</option>
+                    {(shipmentCountries || []).map((c) => (
+                      <option key={c.id} value={c.id.toString()}>{c.name}</option>
+                    ))}
+                  </select>
+                </div>
               )}
             />
             {/* {console.log(isPostalCodeNotValid, "isPostalCodeNotValid")}  */}
@@ -368,86 +364,66 @@ export default function ShippingAddress({
               <TextField
                 label="Post code"
                 name="postalcode"
+                placeholder="e.g. SW1A 1AA"
                 register={register}
-                // registerOptions={{
-                //   onChange: () => {
-                //     setIsPostalCodeNotValid(true);
-                //     setIsPostalCheck(true);
-                //   },
-                // }}
                 required
                 errors={errors}
+                className="pr-36"
               />
               {postal && (
-                <>
-                  <button
-                    type="button"
-                    onClick={handleSearch}
-                    className={`absolute right-3 transform -translate-y-1/2 text-white bg-primary px-3 py-1 rounded cursor-pointer w-28 flex items-center justify-center ${
-                      errors.postalcode ? "top-2/4" : "top-2/3"
-                    }`}
-                    disabled={addressSearchLoading}
-                  >
-                    {addressSearchLoading ? (
-                      <motion.div
-                        animate={{ rotate: 360 }}
-                        transition={{
-                          repeat: Infinity,
-                          duration: 1,
-                          ease: "linear",
-                        }}
-                        className="w-6 h-6 border-4 border-t-transparent rounded-full text-white"
-                      />
-                    ) : (
-                      <span className="flex items-center reg-font">
-                        <FaSearch className="inline-block me-2" />
-                        Search
-                      </span>
-                    )}
-                  </button>
-                </>
+                <button
+                  type="button"
+                  onClick={handleSearch}
+                  disabled={addressSearchLoading}
+                  className="inter-semibold-font absolute bottom-[7px] right-0 flex min-w-[124px] cursor-pointer items-center justify-center gap-2 rounded-md bg-[#47317c] px-4 py-2 text-[12px] text-white transition-colors duration-200 hover:bg-[#392765] disabled:cursor-not-allowed disabled:opacity-50"
+                >
+                  {addressSearchLoading ? (
+                    <motion.div
+                      animate={{ rotate: 360 }}
+                      transition={{ repeat: Infinity, duration: 1, ease: "linear" }}
+                      className="h-4 w-4 rounded-full border-2 border-white border-t-transparent"
+                    />
+                  ) : (
+                    <>
+                      <FaSearch size={12} />
+                      Search
+                    </>
+                  )}
+                </button>
               )}
             </div>
             {/* !isPostalCodeNotValid &&  */}
             {!addressSearchLoading && addressOptions.length > 0 && (
-              <MUISelectField
-                label="Select Your Address"
-                name="addressSelect"
-                value={selectedIndex}
-                required
-                onChange={(e) => {
-                  const idx = e.target.value;
-                  const selected = addressOptions[idx];
-                  setSelectedIndex(idx);
-
-                  setValue("addressone", selected.line_1 || "", {
-                    shouldValidate: true,
-                  });
-                  setValue("addresstwo", selected.line_2 || "", {
-                    shouldValidate: true,
-                  });
-                  setValue("city", selected.post_town || "", {
-                    shouldValidate: true,
-                  });
-                }}
-                options={addressOptions.map((addr, idx) => ({
-                  value: idx,
-                  label: [
-                    addr.line_1,
-                    addr.line_2,
-                    addr.line_3,
-                    addr.post_town,
-                    addr.postcode,
-                  ]
-                    .filter(Boolean)
-                    .join(", "),
-                }))}
-              />
+              <div className="mb-4">
+                <label className="inter-medium-font mb-1.5 block text-[13px] text-slate-700">
+                  Select Your Address <span className="text-red-500">*</span>
+                </label>
+                <select
+                  value={selectedIndex}
+                  onChange={(e) => {
+                    const idx = e.target.value;
+                    const selected = addressOptions[idx];
+                    setSelectedIndex(idx);
+                    setValue("addressone", selected.line_1 || "", { shouldValidate: true });
+                    setValue("addresstwo", selected.line_2 || "", { shouldValidate: true });
+                    setValue("city", selected.post_town || "", { shouldValidate: true });
+                  }}
+                  className="inter-reg-font w-full border-0 border-b-2 bg-transparent px-0 py-3 text-[14px] text-slate-900 focus:outline-none transition-colors duration-200 border-slate-200 focus:border-[#47317c] cursor-pointer"
+                >
+                  <option value="">Select an address</option>
+                  {addressOptions.map((addr, idx) => (
+                    <option key={idx} value={idx}>
+                      {[addr.line_1, addr.line_2, addr.line_3, addr.post_town, addr.postcode].filter(Boolean).join(", ")}
+                    </option>
+                  ))}
+                </select>
+              </div>
             )}
 
             <TextField
               label="Address"
               name="addressone"
+              placeholder="e.g. 10 Downing Street"
               register={register}
               required
               errors={errors}
@@ -455,6 +431,7 @@ export default function ShippingAddress({
             <TextField
               label="Address 2"
               name="addresstwo"
+              placeholder="Apartment, suite or unit (optional)"
               register={register}
               errors={errors}
               // readOnly
@@ -462,6 +439,7 @@ export default function ShippingAddress({
             <TextField
               label="Town / City"
               name="city"
+              placeholder="e.g. London"
               register={register}
               required
               errors={errors}
@@ -473,18 +451,18 @@ export default function ShippingAddress({
               control={control}
               render={({ field }) => (
                 <div
-                  className="flex items-center space-x-2 cursor-pointer"
+                  className="flex items-center gap-2.5 cursor-pointer"
                   onClick={() => field.onChange(!field.value)}
                 >
-                  {field.value ? (
-                    <MdCheckBox className="text-primary mt-1" size={18} />
-                  ) : (
-                    <MdCheckBoxOutlineBlank
-                      className="text-[#47317c]  mt-1"
-                      size={18}
-                    />
-                  )}
-                  <span className="text-gray-700 reg-font mt-1">
+                  <div className={`flex h-5 w-5 shrink-0 items-center justify-center rounded border-2 transition-all duration-150
+                    ${field.value ? "border-[#47317c] bg-[#47317c]" : "border-slate-300 bg-white"}`}>
+                    {field.value && (
+                      <svg viewBox="0 0 12 10" fill="none" className="h-3 w-3">
+                        <path d="M1 5l3.5 3.5L11 1" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                      </svg>
+                    )}
+                  </div>
+                  <span className="inter-reg-font text-[13.5px] text-slate-700">
                     Make billing address same as shipping address
                   </span>
                 </div>

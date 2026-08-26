@@ -32,7 +32,6 @@ import useReorderBackProcessStore from "@/store/useReorderBackProcess";
 const ConfirmationSummary = () => {
   const router = useRouter();
   const [showLoader, setShowLoader] = useState(false);
-
   // Zustand States
   const { patientInfo, setPatientInfo, clearPatientInfo } =
     usePatientInfoStore();
@@ -65,6 +64,7 @@ const ConfirmationSummary = () => {
     clearConfirmationEmail,
     firstName,
     lastName,
+    email
   } = useSignupStore();
 
   console.log(bmi);
@@ -193,6 +193,8 @@ const ConfirmationSummary = () => {
       router.push("/gp-detail");
     }
   };
+
+  console.log("patientInfo", patientInfo);
   return (
     <>
       <MetaLayout canonical={`${meta_url}confirmation-summary/`} />
@@ -203,63 +205,54 @@ const ConfirmationSummary = () => {
         percentage={95}
       >
         <PageAnimationWrapper>
-          <div className="space-y-6">
+          <div className="">
             {/* Summary Box */}
-            <div className="bg-[#F2EEFF] border border-green-100 rounded-md p-5 text-sm text-gray-800">
-              <p className="bold-font text-black mb-1">
-                <span className="bold-font paragraph">Full Name: </span>{" "}
-                {firstName ? (
-                  <>
-                    {" "}
-                    {firstName} {lastName}
-                  </>
-                ) : (
-                  <>
-                    {patientInfo?.firstName} {patientInfo?.lastName}
-                  </>
-                )}
-              </p>
-              {/* <hr className="border-gray-300 mb-3" /> */}
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-2 gap-x-8">
-                <p className="bold-font text-black">
-                  <span className="bold-font paragraph">Post code: </span>
-                  {patientInfo?.address?.postalcode}
-                </p>
-                <p className="bold-font text-black">
-                  <span className="bold-font paragraph">Date of Birth:</span>{" "}
-                  {patientInfo?.dob}
-                </p>
-                <p className="bold-font text-black">
-                  <span className="bold-font paragraph">Height:</span>{" "}
-                  {bmi?.height_unit == "imperial" ? (
-                    <span>
-                      {bmi?.ft} ft {bmi?.inch} inch
-                    </span>
-                  ) : (
-                    <span>{bmi?.cm} cm</span>
-                  )}
-                </p>
-                <p className="bold-font text-black">
-                  <span className="bold-font paragraph">Gender:</span>{" "}
-                  <span className="capitalize">{patientInfo?.gender}</span>
-                </p>
-                <p className="bold-font text-black">
-                  <span className="bold-font paragraph">Weight:</span>{" "}
-                  {bmi?.weight_unit == "metrics" ? (
-                    <span>{bmi?.kg} kg</span>
-                  ) : (
-                    <span>
-                      {bmi?.stones} stones {bmi?.pound} pound
-                    </span>
-                  )}
-                </p>
-                <p className="bold-font text-black">
-                  <span className="text-sm text-gray-700 mt-1">BMI: </span>{" "}
-                  {bmi?.bmi?.toFixed(1)}
-                </p>
+            <div className="rounded-xl  bg-[#FBFBFD] overflow-hidden">
+              {/* <div className="bg-[#f5f2fc] px-5 py-3.5 border-b border-[#47317c]/[0.07]"> */}
+                {/* <p className="inter-semibold-font text-[15px] text-slate-900">
+                  {firstName ? <>{firstName} {lastName}</> : <>{patientInfo?.firstName} {patientInfo?.lastName}</>}
+                </p> */}
               </div>
-            </div>
+              <div className="grid grid-cols-2 gap-2.5 px-3 sm:gap-x-8 sm:gap-y-3 sm:px-5 mb-6">
+                <div className="min-w-0 rounded-lg border border-slate-100 bg-white px-3 py-2.5 sm:rounded-none sm:border-0 sm:bg-transparent sm:px-0 sm:py-0">
+                  <p className="inter-medium-font text-[11px] uppercase tracking-wide text-slate-400 mb-0.5">Name</p>
+                  <p className="inter-medium-font break-words text-[13px] text-slate-800 sm:text-[14px]">{firstName ? <>{firstName} {lastName}</> : <>{patientInfo?.firstName} {patientInfo?.lastName}</>}</p>
+                </div>
+
+                <div className="min-w-0 rounded-lg border border-slate-100 bg-white px-3 py-2.5 sm:rounded-none sm:border-0 sm:bg-transparent sm:px-0 sm:py-0">
+                  <p className="inter-medium-font text-[11px] uppercase tracking-wide text-slate-400 mb-0.5">Email</p>
+                  <p className="inter-medium-font break-words text-[13px] text-slate-800 sm:text-[14px]"> {email}</p>
+                </div>
+                <div className="min-w-0 rounded-lg border border-slate-100 bg-white px-3 py-2.5 sm:rounded-none sm:border-0 sm:bg-transparent sm:px-0 sm:py-0">
+                  <p className="inter-medium-font text-[11px] uppercase tracking-wide text-slate-400 mb-0.5">Post code</p>
+                  <p className="inter-medium-font break-words text-[13px] text-slate-800 sm:text-[14px]">{patientInfo?.address?.postalcode}</p>
+                </div>
+                <div className="min-w-0 rounded-lg border border-slate-100 bg-white px-3 py-2.5 sm:rounded-none sm:border-0 sm:bg-transparent sm:px-0 sm:py-0">
+                  <p className="inter-medium-font text-[11px] uppercase tracking-wide text-slate-400 mb-0.5">Date of Birth</p>
+                  <p className="inter-medium-font break-words text-[13px] text-slate-800 sm:text-[14px]">{patientInfo?.dob}</p>
+                </div>
+                <div className="min-w-0 rounded-lg border border-slate-100 bg-white px-3 py-2.5 sm:rounded-none sm:border-0 sm:bg-transparent sm:px-0 sm:py-0">
+                  <p className="inter-medium-font text-[11px] uppercase tracking-wide text-slate-400 mb-0.5">Height</p>
+                  <p className="inter-medium-font break-words text-[13px] text-slate-800 sm:text-[14px]">
+                    {bmi?.height_unit == "imperial" ? <>{bmi?.ft} ft {bmi?.inch} inch</> : <>{bmi?.cm} cm</>}
+                  </p>
+                </div>
+                <div className="min-w-0 rounded-lg border border-slate-100 bg-white px-3 py-2.5 sm:rounded-none sm:border-0 sm:bg-transparent sm:px-0 sm:py-0">
+                  <p className="inter-medium-font text-[11px] uppercase tracking-wide text-slate-400 mb-0.5">Gender</p>
+                  <p className="inter-medium-font break-words text-[13px] capitalize text-slate-800 sm:text-[14px]">{patientInfo?.gender}</p>
+                </div>
+                <div className="min-w-0 rounded-lg border border-slate-100 bg-white px-3 py-2.5 sm:rounded-none sm:border-0 sm:bg-transparent sm:px-0 sm:py-0">
+                  <p className="inter-medium-font text-[11px] uppercase tracking-wide text-slate-400 mb-0.5">Weight</p>
+                  <p className="inter-medium-font break-words text-[13px] text-slate-800 sm:text-[14px]">
+                    {bmi?.weight_unit == "metrics" ? <>{bmi?.kg} kg</> : <>{bmi?.stones} stones {bmi?.pound} pound</>}
+                  </p>
+                </div>
+                <div className="min-w-0 rounded-lg border border-slate-100 bg-white px-3 py-2.5 sm:rounded-none sm:border-0 sm:bg-transparent sm:px-0 sm:py-0">
+                  <p className="inter-medium-font text-[11px] uppercase tracking-wide text-slate-400 mb-0.5">BMI</p>
+                  <p className="inter-semibold-font text-[14px] text-[#47317c]">{bmi?.bmi?.toFixed(1)}</p>
+                </div>
+              </div>
+            {/* </div> */}
 
             {/* Confirm & Review Buttons */}
             <div className="space-y-3">

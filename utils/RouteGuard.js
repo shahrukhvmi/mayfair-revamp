@@ -6,16 +6,18 @@ import PageLoader from "@/Components/PageLoader/PageLoader";
 
 export default function RouteGuard({ children }) {
   const router = useRouter();
-  const { token, review } = useAuthStore();
+  const { token, review, hasHydrated } = useAuthStore();
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    if (!hasHydrated) return; // Zustand hydrate hone ka wait karo
+
     const path = router.pathname;
     const isPublic = publicRoutes.includes(path);
     const isLogin = path === loginRoute;
 
     if (!isPublic && !token) {
-      router.push("/login/");
+      router.push("/login");
     } else if (isLogin && token && review) {
       router.push("/review");
     } else if (isLogin && token) {
@@ -23,15 +25,10 @@ export default function RouteGuard({ children }) {
     } else {
       setLoading(false);
     }
-  }, [router.pathname, token, loginRoute]);
+  }, [router.pathname, token, hasHydrated]);
 
   if (loading)
-    return (
-      <>
-        {" "}
-        <PageLoader />
-      </>
-    );
+    return <PageLoader />;
 
   return children;
 

@@ -88,7 +88,7 @@ export default function SignUp() {
                 <TextField
                   label="First Name"
                   name="firstName"
-                  placeholder="First Name"
+                  placeholder="Enter your first name"
                   register={register}
                   required
                   errors={errors}
@@ -96,23 +96,25 @@ export default function SignUp() {
                 <TextField
                   label="Last Name"
                   name="lastName"
-                  placeholder="Last Name"
+                  placeholder="Enter your last name"
                   register={register}
                   required
                   errors={errors}
                 />
 
-                <NextButton
-                  label="Next"
-                  disabled={!isValid} // ✅ disables until valid
-                  type="submit"
-                />
+                <div className="mt-4 space-y-3">
+                  <NextButton
+                    label="Next"
+                    disabled={!isValid}
+                    type="submit"
+                  />
+                  <BackButton
+                    label="Back"
+                    className="flex justify-center mt-1"
+                    onClick={() => router.push("/acknowledgment")}
+                  />
+                </div>
               </form>
-              <BackButton
-                label="Back"
-                className="mt-3"
-                onClick={() => router.push("/acknowledgment")}
-              />
 
               {showLoader && (
                 <div className="absolute inset-0 z-20 flex justify-center items-center bg-white/60 rounded-lg cursor-not-allowed">

@@ -18,7 +18,7 @@ export default function ResetForm({ register, handleSubmit, errors, onSubmit, is
             id="password"
             type={showPassword ? "text" : "password"}
             onPaste={(e) => e.preventDefault()}
-            placeholder="New Password"
+            placeholder="Create a new password"
             {...register("password", {
               required: "Password is required",
               minLength: {
@@ -47,7 +47,7 @@ export default function ResetForm({ register, handleSubmit, errors, onSubmit, is
             id="password_confirmation"
             type={showConfirm ? "text" : "password"}
             onPaste={(e) => e.preventDefault()}
-            placeholder="Confirm Password"
+            placeholder="Re-enter your new password"
             {...register("password_confirmation", {
               required: "Please confirm your password",
               validate: (val) => val === getValues("password") || "Passwords do not match",

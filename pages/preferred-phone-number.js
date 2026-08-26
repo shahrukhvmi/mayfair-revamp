@@ -92,33 +92,47 @@ export default function SignUp() {
                   }}
                   render={({ field }) => (
                     <div className="mb-4">
-                      <label
-                        htmlFor="phoneNo"
-                        className="bold-font paragraph mb-2 relative"
-                      >
-                        Phone Number{" "}
-                        <span className="text-red-500 absolute  m-1 niba-semibold-font">
-                          {" "}
-                          *
-                        </span>
+                      <label htmlFor="phoneNo" className="inter-medium-font mb-1.5 block text-[13px] text-slate-700">
+                        Phone Number <span className="text-red-500">*</span>
                       </label>
 
-                      <div
-                        className={`w-full text-black px-3 py-4 border rounded-sm placeholder-gray-400 
-          focus-within:ring-2 focus-within:ring-violet-300 focus-within:border-violet-800
-          ${errors.phoneNo ? "border-red-500" : "border-black"}
-        `}
-                      >
+                      <div className={`w-full border-b-2 pb-1 transition-colors duration-200
+                        ${errors.phoneNo ? "border-red-400" : "border-slate-200 focus-within:border-[#47317c]"}`}>
                         <PhoneInput
                           {...field}
                           country="gb"
-                          placeholder="Enter your number"
-                          inputStyle={{ border: "none", width: "100%" }}
+                          placeholder="e.g. 7700 900123"
+                          containerStyle={{ width: "100%" }}
+                          inputStyle={{
+                            border: "none",
+                            width: "100%",
+                            background: "transparent",
+                            fontSize: "14px",
+                            color: "#1e293b",
+                            paddingLeft: "52px",
+                            height: "40px",
+                            boxShadow: "none",
+                            outline: "none",
+                          }}
+                          buttonStyle={{
+                            border: "none",
+                            background: "transparent",
+                            paddingLeft: "0",
+                          }}
+                          dropdownStyle={{
+                            borderRadius: "12px",
+                            border: "1px solid #e2e8f0",
+                            boxShadow: "0 8px 24px rgba(71,49,124,0.10)",
+                            fontSize: "13px",
+                            fontFamily: "inherit",
+                            marginTop: "6px",
+                            color: "#1e293b",
+                          }}
                         />
                       </div>
 
                       {errors.phoneNo && (
-                        <p className="text-red-500 text-sm mt-1">
+                        <p className="inter-reg-font mt-1.5 text-[12px] text-red-500">
                           {errors.phoneNo.message}
                         </p>
                       )}
