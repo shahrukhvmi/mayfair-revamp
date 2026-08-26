@@ -78,11 +78,7 @@ export default function PersonalDetails() {
       return "Foundayo (Orforglipron) is not recommended for individuals above 85 years of age";
     }
 
-<<<<<<< HEAD
     if (productId === WegovyPillProductId && isOver85) {
-=======
-    if (productId === 11 && isOver85) {
->>>>>>> 96dcfe2ed5d5480802b276964fb9cfbf892f5f7c
       return "Wegovy Pill is not recommended for individuals above 85 years of age";
     }
 
