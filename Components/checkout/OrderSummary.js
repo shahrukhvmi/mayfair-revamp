@@ -441,9 +441,9 @@ const OrderSummary = ({
                               <span className="inter-medium-font rounded-full bg-emerald-100 px-2 py-0.5 text-[10px] text-emerald-700">Applied</span>
                             </p>
                             <p className="inter-medium-font mt-0.5 text-[11.5px] text-emerald-700">
-                              - £{Coupon?.Data?.discount}{" "}
-                              {Coupon?.Data?.type === "Percent" &&
-                                `(${Coupon?.Data?.discount}% off)`}
+                               {Coupon?.Data?.type === "Percent"
+                                ? `${Coupon?.Data?.discount}% Off`
+                                : ` - £${Coupon?.Data?.discount}`}
                             </p>
                           </div>
                         </div>
