@@ -352,7 +352,7 @@ export default function DosageSelection() {
               transition={{ type: "spring", stiffness: 300, damping: 28 }}
               className="max-h-[calc(100dvh-48px)] w-full max-w-md overflow-y-auto rounded-2xl bg-white shadow-[0_24px_64px_rgba(71,49,124,0.18)]"
             >
-              <div className="border-b border-[#47317c]/[0.07] bg-[#f5f2fc] px-6 py-5">
+              <div className="bg-[#f5f2fc] px-6 py-5 border-b border-[#47317c]/[0.07]">
                 <h2 className="inter-semibold-font text-[18px] text-slate-900">
                   Dosage Confirmation
                 </h2>
@@ -364,21 +364,19 @@ export default function DosageSelection() {
                   </p>
                 </div>
               )}
-              <div className="flex justify-center px-6 pb-6 pt-1">
-                <div className="w-full max-w-[220px]">
-                  <NextButton
-                    type="button"
-                    className="shadow-[0_6px_16px_rgba(71,49,124,0.18)]"
-                    label={
-                      productId == FoundayoProductId ||
-                      productId == WegovyPillProductId
-                        ? "I confirm this dose"
-                        : "I Confirm"
-                    }
-                    onClick={() => setShowDoseModal(false)}
-                  />
-                </div>
-              </div>
+              <NextButton
+                label={productId == FoundayoProductId || productId == WegovyPillProductId ? "I confirm this dose" : " I Confirm"}
+                onClick={() => {
+                  setShowDoseModal(false);
+                }}
+              />
+
+              {/* <button
+                onClick={() => setShowDoseModal(false)}
+                className="w-full mt-2 border border-gray-300 py-2 px-4 rounded text-gray-600 hover:bg-gray-100"
+              >
+                Cancel
+              </button> */}
             </motion.div>
           </motion.div>
         )}
@@ -410,7 +408,14 @@ export default function DosageSelection() {
                   </span>
                 )}
                 <p className="inter-medium-font mt-2 text-[14px] text-slate-500">
-                  From <span className="inter-semibold-font text-[#47317c]">£{parseFloat(variation?.price || 0).toFixed(2)}</span>
+                  From <span>
+                    £
+                    {parseFloat(
+                      variation?.name === "Foundayo (Orforglipron)"
+                        ? variation?.pre_launch_price || 0
+                        : variation?.price || 0
+                    ).toFixed(2)}
+                  </span>
                 </p>
               </div>
             </div>
@@ -421,85 +426,85 @@ export default function DosageSelection() {
                 Choose your dosage
               </h2>
 
-                    {variation?.variations
-                      ?.sort((a, b) => {
-                        const aOutOfStock = a?.stock?.status === 0;
-                        const bOutOfStock = b?.stock?.status === 0;
-                        const qOutOfStock = b?.stock?.quantity === 0;
-                        const qaOutOfStock = a?.stock?.quantity === 0;
+              {variation?.variations
+                ?.sort((a, b) => {
+                  const aOutOfStock = a?.stock?.status === 0;
+                  const bOutOfStock = b?.stock?.status === 0;
+                  const qOutOfStock = b?.stock?.quantity === 0;
+                  const qaOutOfStock = a?.stock?.quantity === 0;
 
-                        // Out of stock ko neeche le jao
-                        if (qaOutOfStock && !qOutOfStock) return 1;
-                        if (!qaOutOfStock && qOutOfStock) return -1;
-                        if (aOutOfStock && !bOutOfStock) return 1;
-                        if (!aOutOfStock && bOutOfStock) return -1;
-                        return 0;
-                      })
-                      .map((dose, index) => {
-                        const cartDose = items.doses.find(
-                          (item) => item.id === dose.id,
-                        );
-                        const cartQty = cartDose?.qty || 0;
+                  // Out of stock ko neeche le jao
+                  if (qaOutOfStock && !qOutOfStock) return 1;
+                  if (!qaOutOfStock && qOutOfStock) return -1;
+                  if (aOutOfStock && !bOutOfStock) return 1;
+                  if (!aOutOfStock && bOutOfStock) return -1;
+                  return 0;
+                })
+                .map((dose, index) => {
+                  const cartDose = items.doses.find(
+                    (item) => item.id === dose.id,
+                  );
+                  const cartQty = cartDose?.qty || 0;
 
-                        const is72mgWegovy =
-                          dose?.name === "7.2mg" && productId == 1;
-                        const is72mgSelected = is72mgWegovy && cartQty > 0;
+                  const is72mgWegovy =
+                    dose?.name === "7.2mg" && productId == 1;
+                  const is72mgSelected = is72mgWegovy && cartQty > 0;
 
-                        return (
-                          <React.Fragment key={index}>
-                            <Dose
-                              doseData={dose}
-                              allow={allowed}
-                              qty={cartQty}
-                              totalSelectedQty={totalSelectedQty}
-                              isSelected={cartQty > 0}
-                              onAdd={() => handleAddDose(dose)}
-                              onIncrement={() =>
-                                increaseQuantity(dose.id, "dose")
-                              }
-                              onDecrement={() =>
-                                decreaseQuantity(dose.id, "dose")
-                              }
-                            />
+                  return (
+                    <React.Fragment key={index}>
+                      <Dose
+                        doseData={dose}
+                        allow={allowed}
+                        qty={cartQty}
+                        totalSelectedQty={totalSelectedQty}
+                        isSelected={cartQty > 0}
+                        onAdd={() => handleAddDose(dose)}
+                        onIncrement={() =>
+                          increaseQuantity(dose.id, "dose")
+                        }
+                        onDecrement={() =>
+                          decreaseQuantity(dose.id, "dose")
+                        }
+                      />
 
-                            {is72mgSelected && (
-                              <motion.div
-                                initial={{ opacity: 0, y: -5 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                className="mt-3"
-                              >
-                                <div className="rounded-xl bg-gradient-to-r from-amber-50 to-orange-50 p-3">
-                                  <div className="flex gap-3">
-                                    <HiOutlineInformationCircle className="mt-0.5 h-5 w-5 text-amber-600" />
+                      {is72mgSelected && (
+                        <motion.div
+                          initial={{ opacity: 0, y: -5 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          className="mt-3"
+                        >
+                          <div className="rounded-xl bg-gradient-to-r from-amber-50 to-orange-50 p-3">
+                            <div className="flex gap-3">
+                              <HiOutlineInformationCircle className="mt-0.5 h-5 w-5 text-amber-600" />
 
-                                    <div>
-                                      <p className="text-sm font-semibold text-gray-900">
-                                        7.2mg Pack Information
-                                      </p>
+                              <div>
+                                <p className="text-sm font-semibold text-gray-900">
+                                  7.2mg Pack Information
+                                </p>
 
-                                      <p className="mt-1 text-sm text-gray-600">
-                                        Includes 4 single-dose pens. Other
-                                        strengths are supplied as 1 pen
-                                        containing 4 doses.
-                                      </p>
-                                    </div>
-                                  </div>
-                                </div>
-                              </motion.div>
-                            )}
-                          </React.Fragment>
-                        );
-                      })}
+                                <p className="mt-1 text-sm text-gray-600">
+                                  Includes 4 single-dose pens. Other
+                                  strengths are supplied as 1 pen
+                                  containing 4 doses.
+                                </p>
+                              </div>
+                            </div>
+                          </div>
+                        </motion.div>
+                      )}
+                    </React.Fragment>
+                  );
+                })}
             </div>
 
             {isExpiryRequired && (
               <div className="mt-4 rounded-xl border border-slate-100 bg-[#FBFBFD] p-4">
                 <label className="flex cursor-pointer items-start gap-3">
-                  <input
-                    type="checkbox"
-                    className="hidden"
+                  <input type="checkbox" className="hidden"
                     {...register("terms", {
-                      required: "Please confirm that you have read and acknowledged the expiry information.",
+                      required: isExpiryRequired
+                        ? "Please confirm that you have read and acknowledged the expiry information."
+                        : false,
                     })}
                   />
                   <div className={`mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-[5px] border-2 transition-all duration-150 ${expiryConfirmed ? "border-[#47317c] bg-[#47317c]" : "border-slate-300 bg-white"}`}>
@@ -518,7 +523,6 @@ export default function DosageSelection() {
                 )}
               </div>
             )}
-            
 
             {Array.isArray(variation?.addons) && variation?.addons.length > 0 && productId != 7 && (
               <div className="mt-5 overflow-hidden rounded-2xl border border-[#47317c]/[0.08] bg-white px-5 py-5 shadow-[0_4px_20px_rgba(71,49,124,0.10)]">

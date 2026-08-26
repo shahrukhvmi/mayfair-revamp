@@ -357,16 +357,16 @@ console.log("authUserDetail", authUserDetail);
             {/* Row 2: card + list — same grid row so heights are equal */}
             <div className="contents">
 
-              {/* Left: Reorder card — horizontal */}
+              {/* Left: Reorder card — compact horizontal layout */}
               <div className="order-2 flex flex-col pb-5 lg:order-3 lg:col-span-6 lg:pb-0">
-                <div className="flex flex-1 flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white sm:flex-row">
-                  {/* Thumbnail — full height */}
-                  <div className="flex h-[150px] w-full shrink-0 items-center justify-center border-b border-slate-100 bg-[#F1F5F9] sm:h-auto sm:w-[160px] sm:border-b-0 sm:border-r lg:w-[120px] xl:w-[160px] 2xl:w-[200px]">
+                <div className="flex flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white sm:flex-row lg:h-[210px] 2xl:h-[220px]">
+                  {/* Thumbnail */}
+                  <div className="flex h-[150px] w-full shrink-0 items-center justify-center border-b border-slate-100 bg-[#F1F5F9] sm:h-auto sm:w-[150px] sm:border-b-0 sm:border-r lg:w-[130px] xl:w-[150px] 2xl:w-[170px]">
                     {currentTreatment?.img ? (
                       <img
                         src={currentTreatment.img}
                         alt={currentTreatment?.name}
-                        className="h-[120px] w-[120px] object-contain lg:h-[100px] lg:w-[100px] xl:h-[120px] xl:w-[120px] 2xl:h-[140px] 2xl:w-[140px]"
+                        className="h-[110px] w-[110px] object-contain lg:h-[96px] lg:w-[96px] xl:h-[110px] xl:w-[110px] 2xl:h-[120px] 2xl:w-[120px]"
                       />
                     ) : (
                       <Pill size={48} strokeWidth={1.5} className="text-slate-300" />
@@ -374,7 +374,7 @@ console.log("authUserDetail", authUserDetail);
                   </div>
 
                   {/* Info + price/button */}
-                  <div className="flex min-w-0 flex-1 flex-col items-stretch justify-between gap-4 p-4 sm:flex-row sm:items-center sm:gap-5 sm:p-5 lg:flex-col lg:items-stretch lg:gap-4 lg:p-4 xl:flex-row xl:items-center xl:gap-5 2xl:gap-6 2xl:p-6">
+                  <div className="flex min-w-0 flex-1 flex-col items-stretch justify-between gap-4 p-4 sm:flex-row sm:items-center sm:gap-5 sm:p-5 lg:p-4 xl:p-5 2xl:gap-6">
                     {/* Left info */}
                     <div className="min-w-0">
                       <div className="flex items-center gap-1.5 mb-3">
@@ -392,7 +392,7 @@ console.log("authUserDetail", authUserDetail);
                     </div>
 
                     {/* Right: price stacked above button */}
-                    <div className="flex shrink-0 items-end justify-between gap-3 sm:flex-col sm:justify-start lg:flex-row lg:justify-between xl:flex-col xl:justify-start">
+                    <div className="flex shrink-0 items-end justify-between gap-3 sm:flex-col sm:justify-start">
                       {currentTreatmentDisplayPrice && (
                         <div className="text-right">
                           <p className="inter-reg-font text-[10px] uppercase tracking-[0.1em] text-slate-400">From</p>
