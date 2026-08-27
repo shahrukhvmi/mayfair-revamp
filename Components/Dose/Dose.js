@@ -145,7 +145,7 @@ const Dose = ({
   const isFoundayo = productName === "foundayo (orforglipron)";
 
   // Pre-launch price sirf in 2 doses ke liye
-  const preLaunchDoses = ["0.8mg", "2.5mg"];
+  const preLaunchDoses = ["0.8mg", "2.5mg", "5.5mg", "9mg", "14.5mg", "17.2mg" ];
 
   const isPreLaunchDose = preLaunchDoses.includes(doseName);
 
