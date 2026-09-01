@@ -133,35 +133,35 @@ const Dose = ({
     }
   };
 
-  const productName = String(doseData?.product_name || "")
-    .trim()
-    .toLowerCase();
+  // const productName = String(doseData?.product_name || "")
+  //   .trim()
+  //   .toLowerCase();
 
-  const doseName = String(doseData?.name || "")
-    .trim()
-    .toLowerCase()
-    .replace(/\s+/g, "");
+  // const doseName = String(doseData?.name || "")
+  //   .trim()
+  //   .toLowerCase()
+  //   .replace(/\s+/g, "");
 
-  const isFoundayo = productName === "foundayo (orforglipron)";
+  // const isFoundayo = productName === "foundayo (orforglipron)";
 
-  // Pre-launch price sirf in 2 doses ke liye
-  const preLaunchDoses = ["0.8mg", "2.5mg", "5.5mg", "9mg", "14.5mg", "17.2mg" ];
+  // // Pre-launch price sirf in 2 doses ke liye
+  // const preLaunchDoses = ["0.8mg", "2.5mg", "5.5mg", "9mg", "14.5mg", "17.2mg" ];
 
-  const isPreLaunchDose = preLaunchDoses.includes(doseName);
+  // const isPreLaunchDose = preLaunchDoses.includes(doseName);
 
-  const price = Number(doseData?.price || 0);
-  const preLaunchPrice = Number(doseData?.pre_launch_price || 0);
+  // const price = Number(doseData?.price || 0);
+  // const preLaunchPrice = Number(doseData?.pre_launch_price || 0);
 
-  const shouldUsePreLaunchPrice =
-    isFoundayo &&
-    isPreLaunchDose &&
-    preLaunchPrice > 0;
+  // const shouldUsePreLaunchPrice =
+  //   isFoundayo &&
+  //   isPreLaunchDose &&
+  //   preLaunchPrice > 0;
 
-  const isPriceComingSoon =
-    isFoundayo &&
-    isPreLaunchDose &&
-    price <= 0 &&
-    !shouldUsePreLaunchPrice;
+  // const isPriceComingSoon =
+  //   isFoundayo &&
+  //   isPreLaunchDose &&
+  //   price <= 0 &&
+  //   !shouldUsePreLaunchPrice;
 
   return (
     <>
@@ -281,13 +281,13 @@ const Dose = ({
 
           {/* Right Side - Price and Quantity */}
           <div className="flex items-center justify-end gap-3 w-full sm:w-auto">
-            {/* <span
+            <span
               className={`font-semibold text-md sm:text-lg ${isSelected ? "text-primary" : "text-gray-700"}`}
             >
               £{parseFloat(doseData?.price).toFixed(2)}
-            </span> */}
+            </span>
 
-            <span
+            {/* <span
               className={`font-semibold text-md sm:text-lg ${isSelected ? "text-primary" : "text-gray-700"
                 }`}
             >
@@ -310,7 +310,7 @@ const Dose = ({
                   £{price.toFixed(2)}
                 </span>
               )}
-            </span>
+            </span> */}
 
             {isSelected && (
               <>

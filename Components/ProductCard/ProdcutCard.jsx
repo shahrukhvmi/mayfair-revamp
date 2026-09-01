@@ -164,8 +164,8 @@ const ProductCard = ({
                 From
               </span>
               <span className="text-xs mont-bold-font  tracking-wide text-white">
-                {title === "Foundayo (Orforglipron)" ? `£${pre_launch_price}` : `£${price}`}
-                {/* £{price} */}
+                {/* {title === "Foundayo (Orforglipron)" ? `£${pre_launch_price}` : `£${price}`} */}
+                £{price}
               </span>
             </div>
           </div>

@@ -184,35 +184,35 @@ export default function DosageSelection() {
 
     // START FOUNDAYO PRE-LAUNCH PRICE LOGIC ⚠️⚠️⚠️
 
-    const productName = String(dose?.product_name || "")
-      .trim()
-      .toLowerCase();
+    // const productName = String(dose?.product_name || "")
+    //   .trim()
+    //   .toLowerCase();
 
-    const doseName = String(dose?.name || "")
-      .trim()
-      .toLowerCase()
-      .replace(/\s+/g, "");
+    // const doseName = String(dose?.name || "")
+    //   .trim()
+    //   .toLowerCase()
+    //   .replace(/\s+/g, "");
 
-    const isFoundayo =
-      Number(productId) === FoundayoProductId ||
-      productName === "foundayo (orforglipron)";
+    // const isFoundayo =
+    //   Number(productId) === FoundayoProductId ||
+    //   productName === "foundayo (orforglipron)";
 
-    const preLaunchDoses = ["0.8mg", "2.5mg"];
+    // const preLaunchDoses = ["0.8mg", "2.5mg"];
 
-    const isPreLaunchDose = preLaunchDoses.includes(doseName);
+    // const isPreLaunchDose = preLaunchDoses.includes(doseName);
 
-    const regularPrice = Number(dose?.price || 0);
-    const preLaunchPrice = Number(dose?.pre_launch_price || 0);
+    // const regularPrice = Number(dose?.price || 0);
+    // const preLaunchPrice = Number(dose?.pre_launch_price || 0);
 
-    const shouldUsePreLaunchPrice =
-      isFoundayo &&
-      isPreLaunchDose &&
-      Number.isFinite(preLaunchPrice) &&
-      preLaunchPrice > 0;
+    // const shouldUsePreLaunchPrice =
+    //   isFoundayo &&
+    //   isPreLaunchDose &&
+    //   Number.isFinite(preLaunchPrice) &&
+    //   preLaunchPrice > 0;
 
-    const finalPrice = shouldUsePreLaunchPrice
-      ? preLaunchPrice
-      : regularPrice;
+    // const finalPrice = shouldUsePreLaunchPrice
+    //   ? preLaunchPrice
+    //   : regularPrice;
 
     // END FOUNDAYO PRE-LAUNCH PRICE LOGIC ⚠️⚠️⚠️
 
@@ -225,8 +225,7 @@ export default function DosageSelection() {
         id: dose.id,
         type: "dose",
         name: dose.name,
-        price: finalPrice,
-        // price: parseInt(dose?.price),
+        price: parseInt(dose?.price),
         allowed: parseInt(dose.allowed),
         item_id: dose.id,
         product: dose?.product_name || "Dose Product",
@@ -253,8 +252,7 @@ export default function DosageSelection() {
         id: dose.id,
         type: "dose",
         name: dose.name,
-        price: finalPrice,
-        // price: parseInt(dose?.price),
+        price: parseInt(dose?.price),
         allowed: parseInt(dose.allowed),
         item_id: dose.id,
         product: dose?.product_name || "Dose Product",
@@ -419,9 +417,7 @@ export default function DosageSelection() {
                         <span>
                           £
                           {parseFloat(
-                            variation?.name === "Foundayo (Orforglipron)"
-                              ? variation?.pre_launch_price || 0
-                              : variation?.price || 0
+                          variation?.price || 0
                           ).toFixed(2)}
                         </span>
                       </span>
