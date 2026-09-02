@@ -56,6 +56,7 @@ const ProductSelection = ({ showProductSelection }) => {
   const [productData, setProductData] = useState(null);
   const [showModal, setShowModal] = useState(showProductSelection);
   const [selectedProductId, setSelectedProductId] = useState(null); // NEW
+  const [selectedTreatmentType, setSelectedTreatmentType] = useState(null);
   const [isButtonLoading, setIsButtonLoading] = useState(false);
   const [redirection, setRedirection] = useState("");
 
@@ -64,7 +65,11 @@ const ProductSelection = ({ showProductSelection }) => {
   const { setProductId, productId } = useProductId();
   const { setBmi, clearBmi } = useBmiStore();
   const { setCheckout, clearCheckout } = useCheckoutStore();
-  const { setConfirmationInfo, clearConfirmationInfo } =
+  const {
+    setConfirmationInfo,
+    clearConfirmationInfo,
+    setConsentResetProductId,
+  } =
     useConfirmationInfoStore();
   const { setGpDetails, clearGpDetails } = useGpDetailsStore();
   const { setMedicalInfo, clearMedicalInfo } = useMedicalInfoStore();
@@ -147,7 +152,11 @@ const ProductSelection = ({ showProductSelection }) => {
       setReorder(false);
     }
     console.log(treatment, "treatment-name");
-    setSelectedProductId((prev) => (prev === id ? null : id));
+    setSelectedProductId((prev) => {
+      const isDeselecting = prev === id;
+      setSelectedTreatmentType(isDeselecting ? null : treatment);
+      return isDeselecting ? null : id;
+    });
   };
 
   //   useEffect(() => {
@@ -160,6 +169,14 @@ const ProductSelection = ({ showProductSelection }) => {
   const hanlePrevData = () => {
     // setShowModal(false);
     setIsButtonLoading(true);
+    const productChanged =
+      productId != null && String(productId) !== String(selectedProductId);
+    // Reordering the existing treatment reuses its saved consent. Only a
+    // genuinely new treatment invalidates the previous product consent.
+    if (productChanged && selectedTreatmentType === "new") {
+      clearConfirmationInfo();
+      setConsentResetProductId(selectedProductId);
+    }
     setProductId(selectedProductId);
 
     Router.push(redirection);

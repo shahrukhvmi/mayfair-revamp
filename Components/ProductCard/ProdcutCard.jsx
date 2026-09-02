@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { useRouter } from "next/router";
 import { useMutation } from "@tanstack/react-query";
 
@@ -18,6 +18,7 @@ import useReorder from "@/store/useReorderStore";
 import useReturning from "@/store/useReturningPatient";
 import useShippingOrBillingStore from "@/store/shipingOrbilling";
 import useSignupStore from "@/store/signupStore";
+import useConfirmationQuestionsStore from "@/store/confirmationQuestionStore";
 
 import ProductGridCard from "./ProductGridCard";
 import ProductListCard from "./ProductListCard";
@@ -37,16 +38,22 @@ const ProductCard = ({
   const router = useRouter();
 
   const [isButtonLoading, setIsButtonLoading] = useState(false);
+  const shouldResetConsentRef = useRef(false);
 
-  const { setProductId } = useProductId();
+  const { productId: currentProductId, setProductId } = useProductId();
   const { setReorder } = useReorder();
   const { clearCoupon } = useCouponStore();
 
   const { setBmi, clearBmi } = useBmiStore();
   const { setCheckout, clearCheckout } = useCheckoutStore();
 
-  const { setConfirmationInfo, clearConfirmationInfo } =
+  const {
+    setConfirmationInfo,
+    clearConfirmationInfo,
+    setConsentResetProductId,
+  } =
     useConfirmationInfoStore();
+  const { clearConfirmationQuestions } = useConfirmationQuestionsStore();
 
   const { setGpDetails, clearGpDetails } = useGpDetailsStore();
   const { setMedicalInfo, clearMedicalInfo } = useMedicalInfoStore();
@@ -75,6 +82,7 @@ const ProductCard = ({
         clearBmi();
         clearCheckout();
         clearConfirmationInfo();
+        clearConfirmationQuestions();
         clearGpDetails();
         clearMedicalInfo();
         clearPatientInfo();
@@ -85,7 +93,12 @@ const ProductCard = ({
       } else if (data?.data) {
         setBmi(data?.data?.data?.bmi);
         setCheckout(data?.data?.data?.checkout);
-        setConfirmationInfo(data?.data?.data?.confirmationInfo);
+        if (shouldResetConsentRef.current) {
+          clearConfirmationInfo();
+          clearConfirmationQuestions();
+        } else {
+          setConfirmationInfo(data?.data?.data?.confirmationInfo);
+        }
         setGpDetails(data?.data?.data?.gpdetails);
         setMedicalInfo(data?.data?.data?.medicalInfo);
         setPatientInfo(data?.data?.data?.patientInfo);
@@ -115,12 +128,14 @@ const ProductCard = ({
       }
 
       setIsButtonLoading(false);
+      shouldResetConsentRef.current = false;
     },
 
     onError: (error) => {
       console.log("error", error?.response?.data?.errors?.email);
 
       setIsButtonLoading(false);
+      shouldResetConsentRef.current = false;
     },
   });
 
@@ -129,6 +144,11 @@ const ProductCard = ({
       return;
     }
 
+    shouldResetConsentRef.current =
+      currentProductId != null && String(currentProductId) !== String(id);
+    if (shouldResetConsentRef.current) {
+      setConsentResetProductId(id);
+    }
     setProductId(id);
     setIsButtonLoading(true);
 

@@ -21,6 +21,18 @@ import { usePathname } from "next/navigation";
 import useAuthStore from "@/store/authStore";
 import useSignupStore from "@/store/signupStore";
 import UploadTopPrompt from "@/Components/UploadTopPrompt/UploadTopPrompt";
+import { userConsultationApi } from "@/api/consultationApi";
+import useBmiStore from "@/store/bmiStore";
+import useCheckoutStore from "@/store/checkoutStore";
+import useConfirmationInfoStore from "@/store/confirmationInfoStore";
+import useGpDetailsStore from "@/store/gpDetailStore";
+import useMedicalInfoStore from "@/store/medicalInfoStore";
+import usePatientInfoStore from "@/store/patientInfoStore";
+import useLastBmi from "@/store/useLastBmiStore";
+import lastOrderStore from "@/store/lastOrderStore";
+import useShippingOrBillingStore from "@/store/shipingOrbilling";
+import useReturning from "@/store/useReturningPatient";
+import useConfirmationQuestionsStore from "@/store/confirmationQuestionStore";
 
 /* ── Skeleton ── */
 const SkeletonCard = ({ viewMode = "list" }) => {
@@ -156,11 +168,35 @@ const MyAccount = () => {
     return false;
   });
 
-  const { authUserDetail, setIsReturning } = useAuthUserDetailStore();
+  const {
+    authUserDetail,
+    setAuthUserDetail,
+    clearAuthUserDetail,
+    setIsReturning,
+  } = useAuthUserDetailStore();
   const { setReorderBackProcess } = useReorderBackProcessStore();
   const { setProductId } = useProductId();
   const { setReorder } = useReorder();
   const { clearCoupon } = useCouponStore();
+  const { setBmi, clearBmi } = useBmiStore();
+  const { setCheckout, clearCheckout } = useCheckoutStore();
+  const { setConfirmationInfo, clearConfirmationInfo } =
+    useConfirmationInfoStore();
+  const { clearConfirmationQuestions } = useConfirmationQuestionsStore();
+  const { setGpDetails, clearGpDetails } = useGpDetailsStore();
+  const { setMedicalInfo, clearMedicalInfo } = useMedicalInfoStore();
+  const { setPatientInfo, clearPatientInfo } = usePatientInfoStore();
+  const { setLastBmi } = useLastBmi();
+  const { setLastOrder, clearLastOrder } = lastOrderStore();
+  const { setIsReturningPatient } = useReturning();
+  const {
+    setBilling,
+    setShipping,
+    setCheckShippingForAccordion,
+    setCheckBillingForAccordion,
+    clearShipping,
+    clearBilling,
+  } = useShippingOrBillingStore();
 
   useEffect(() => { setReorderBackProcess(false); }, [setReorderBackProcess]);
 console.log("authUserDetail", authUserDetail);
@@ -201,25 +237,74 @@ console.log("authUserDetail", authUserDetail);
       .sort((a, b) => (a?.sequence || 0) - (b?.sequence || 0));
   }, [productData?.products, reorderProductIds]);
 
-  const { firstName } = useSignupStore();
+  const { firstName, setFirstName, setLastName } = useSignupStore();
   const displayName = authUserDetail?.fname?.trim() || firstName?.trim() || "Patient";
   const displayEmail = authUserDetail?.email?.trim() || "Not available";
   const lastOrderDate = currentTreatment?.lastOrderDate || currentTreatment?.last_order_date || currentTreatment?.last_order?.created_at || "Not available";
   const currentTreatmentDisplayPrice = currentTreatment?.pre_launch_price || currentTreatment?.price || null;
 
-  const handleReorder = async (productId) => {
-    if (!productId || isReorderLoading) return;
-    try {
-      setIsReorderLoading(true);
-      setProductId(productId);
+  const reorderConsultationMutation = useMutation(userConsultationApi, {
+    onSuccess: (response) => {
+      const consultationData = response?.data?.data;
+
+      if (consultationData == null) {
+        clearBmi();
+        clearCheckout();
+        clearConfirmationInfo();
+        clearConfirmationQuestions();
+        clearGpDetails();
+        clearMedicalInfo();
+        clearPatientInfo();
+        clearBilling();
+        clearShipping();
+        clearAuthUserDetail();
+        clearLastOrder();
+      } else {
+        setBmi(consultationData?.bmi);
+        setCheckout(consultationData?.checkout);
+        // This is the patient's current treatment, so its previously completed
+        // consent must remain valid during the no-change reorder path.
+        setConfirmationInfo(consultationData?.confirmationInfo);
+        setGpDetails(consultationData?.gpdetails);
+        setMedicalInfo(consultationData?.medicalInfo);
+        setPatientInfo(consultationData?.patientInfo);
+        setShipping(consultationData?.shipping);
+        setCheckShippingForAccordion(consultationData?.shipping);
+        setBilling(consultationData?.billing);
+        setCheckBillingForAccordion(consultationData?.billing);
+        setAuthUserDetail(consultationData?.auth_user);
+        setLastBmi(consultationData?.bmi);
+        setFirstName(consultationData?.auth_user?.fname);
+        setLastName(consultationData?.auth_user?.lname);
+        setIsReturning(consultationData?.isReturning);
+        setIsReturningPatient(consultationData?.isReturning);
+        setLastOrder(consultationData?.last_order);
+      }
+
       setReorder(true);
       clearCoupon();
       setReorderBackProcess(false);
-      await router.push("/re-order");
-    } catch {
-      toast.error("Unable to start the reorder process.");
       setIsReorderLoading(false);
-    }
+      router.push("/re-order");
+    },
+    onError: (error) => {
+      toast.error(
+        error?.response?.data?.errors?.email ||
+          "Unable to load your previous consultation. Please try again.",
+      );
+      setIsReorderLoading(false);
+    },
+  });
+
+  const handleReorder = (productId) => {
+    if (!productId || isReorderLoading) return;
+
+    setIsReorderLoading(true);
+    setProductId(productId);
+    reorderConsultationMutation.mutate({
+      clinic_id: 1,
+      product_id: productId,
+    });
   };
 
   useEffect(() => {

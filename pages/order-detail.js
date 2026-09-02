@@ -52,6 +52,14 @@ const formatCurrency = (value) => {
   return Number.isNaN(n) ? value || "0.00" : n.toFixed(2);
 };
 
+const formatPercentage = (value) => {
+  const percentage = Number(value);
+  if (!Number.isFinite(percentage)) return "0";
+  return percentage.toLocaleString("en-GB", {
+    maximumFractionDigits: 2,
+  });
+};
+
 const formatDate = (value) => {
   if (!value) return "N/A";
   if (moment(value, "DD-MM-YYYY", true).isValid())
@@ -230,6 +238,12 @@ const OrderDetail = () => {
   const shipmentFee   = currentOrder?.shippment_weight;
   const total         = currentOrder?.total_price;
   const discountData  = currentOrder?.consultation?.fields?.checkout?.discount;
+  const isPercentageDiscount = ["percent", "percentage"].includes(
+    String(discountData?.type || "").toLowerCase(),
+  );
+  const hasDiscount =
+    Number(discountData?.discount) > 0 ||
+    Number(discountData?.discount_value) > 0;
   const formattedDate = formatDate(date);
   const formattedDob  = formatDate(patientData?.dob);
 
@@ -399,18 +413,25 @@ const OrderDetail = () => {
                             </tr>
                           ))}
 
-                          {discountData?.discount > 0 && (
+                          {hasDiscount && (
                             <>
                               <tr className="border-b border-[#47317c]/[0.06] bg-[#faf9fc]/60">
                                 <td className="px-5 py-4">
-                                  <span className="inter-medium-font text-[13px] lg:text-[14px] text-slate-600">Discount</span>
+                                  <span className="inter-medium-font text-[13px] text-slate-600 lg:text-[14px]">
+                                    Discount
+                                    {isPercentageDiscount
+                                      ? ` (${formatPercentage(discountData?.discount)}%)`
+                                      : ""}
+                                  </span>
                                 </td>
                                 <td />
                                 <td className="px-5 py-4 text-right">
-                                  <span className="inter-medium-font text-[13px] lg:text-[14px] text-emerald-600">
-                                    {discountData?.type === "Fixed"
-                                      ? `-£${formatCurrency(discountData?.discount_value)}`
-                                      : `-${parseFloat(discountData?.discount_value).toFixed(1)}%`}
+                                  <span className="inter-semibold-font text-[13px] text-emerald-600 lg:text-[14px]">
+                                    -£{formatCurrency(
+                                      isPercentageDiscount
+                                        ? discountData?.discount_value
+                                        : discountData?.discount,
+                                    )}
                                   </span>
                                 </td>
                               </tr>
@@ -491,14 +512,21 @@ const OrderDetail = () => {
 
                       <div className="border-t border-[#47317c]/[0.07] bg-[#faf9fc] p-4">
                         <div className="space-y-3.5">
-                          {discountData?.discount > 0 && (
+                          {hasDiscount && (
                             <>
                               <div className="flex items-center justify-between gap-4">
-                                <span className="inter-reg-font text-[12px] text-slate-500">Discount</span>
-                                <span className="inter-medium-font text-[12px] text-emerald-600">
-                                  {discountData?.type === "Fixed"
-                                    ? `-£${formatCurrency(discountData?.discount_value)}`
-                                    : `-${parseFloat(discountData?.discount_value).toFixed(1)}%`}
+                                <span className="inter-reg-font text-[12px] text-slate-500">
+                                  Discount
+                                  {isPercentageDiscount
+                                    ? ` (${formatPercentage(discountData?.discount)}%)`
+                                    : ""}
+                                </span>
+                                <span className="inter-semibold-font text-[12px] text-emerald-600">
+                                  -£{formatCurrency(
+                                    isPercentageDiscount
+                                      ? discountData?.discount_value
+                                      : discountData?.discount,
+                                  )}
                                 </span>
                               </div>
                               <div className="flex items-center justify-between gap-4">

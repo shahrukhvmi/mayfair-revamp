@@ -13,14 +13,20 @@ import useConfirmationInfoStore from "@/store/confirmationInfoStore";
 import MetaLayout from "@/Meta/MetaLayout";
 import { meta_url } from "@/config/constants";
 import { MdCheckBox, MdCheckBoxOutlineBlank } from "react-icons/md";
-import normalizeConfirmationInfo from "@/utils/normalizeConfirmationInfo";
+import useProductId from "@/store/useProductIdStore";
 
 export default function PatientConsent() {
   const router = useRouter();
   const [showLoader, setShowLoader] = useState(false);
 
   const { confirmationQuestions } = useConfirmationQuestionsStore();
-  const { confirmationInfo, setConfirmationInfo } = useConfirmationInfoStore();
+  const {
+    confirmationInfo,
+    setConfirmationInfo,
+    consentResetProductId,
+    clearConsentResetProductId,
+  } = useConfirmationInfoStore();
+  const { productId } = useProductId();
   const [questions, setQuestions] = useState([]);
 
   const {
@@ -36,10 +42,13 @@ export default function PatientConsent() {
   // Load questions → prefer confirmationInfo
   useEffect(() => {
     if (confirmationQuestions?.length) {
+      const requiresFreshConsent =
+        consentResetProductId != null &&
+        String(consentResetProductId) === String(productId);
       const initialized = confirmationQuestions.map((q) => {
-        const existingAnswer = confirmationInfo?.find(
-          (item) => item.id === q.id,
-        );
+        const existingAnswer = requiresFreshConsent
+          ? null
+          : confirmationInfo?.find((item) => item.id === q.id);
 
         return {
           ...q,
@@ -78,9 +87,8 @@ export default function PatientConsent() {
   console.log(questions, "questions");
 
   const onSubmit = async () => {
-    setConfirmationInfo(
-      normalizeConfirmationInfo(questions, confirmationQuestions),
-    );
+    setConfirmationInfo(questions);
+    clearConsentResetProductId();
 
     setShowLoader(true);
     await new Promise((resolve) => setTimeout(resolve, 500));
