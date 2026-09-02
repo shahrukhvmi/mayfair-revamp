@@ -2,7 +2,7 @@
 
 import { motion, useReducedMotion } from "framer-motion";
 
-export default function PageLoader() {
+export default function PageLoader({ message = "" }) {
   const reduceMotion = useReducedMotion();
 
   return (
@@ -15,7 +15,7 @@ export default function PageLoader() {
       <motion.div
         initial={reduceMotion ? false : { opacity: 0, scale: 0.94 }}
         animate={{ opacity: 1, scale: 1 }}
-        className="relative flex min-w-[190px] flex-col items-center gap-3 px-5 py-4"
+        className="relative flex w-full max-w-[380px] flex-col items-center gap-3 px-5 py-4 text-center"
       >
         <motion.span
           aria-hidden="true"
@@ -73,6 +73,12 @@ export default function PageLoader() {
             />
           ))}
         </div>
+
+        {message ? (
+          <p className="inter-medium-font mt-2 px-3 text-[15px] leading-6 text-[#312747] drop-shadow-[0_1px_0_rgba(255,255,255,0.8)]">
+            {message}
+          </p>
+        ) : null}
 
         <span className="sr-only">Loading, please wait</span>
       </motion.div>

@@ -92,16 +92,11 @@ const UploadBox = ({
   // };
 
   return (
-    <>
-      <div className="flex flex-col">
-        <div className="flex flex-col items-center w-full px-3">
-          {/* ✅ Wrapper relative rakho */}
-          <div className="w-full relative">
-            <label className="w-full cursor-pointer">
+    <div className="w-full">
+      <div className="relative w-full">
+            <label className="block w-full cursor-pointer rounded-xl focus-within:ring-2 focus-within:ring-[#47317c]/25 focus-within:ring-offset-2">
               <div
-                className="border-2 border-dashed border-purple-400 rounded-2xl p-2R 
-                   hover:border-purple-600 hover:shadow-md transition-all duration-300 ease-in-out
-                   flex flex-col items-center justify-center text-center relative min-h-[140px] bg-white"
+                className="relative flex min-h-[164px] flex-col items-center justify-center rounded-xl border-2 border-dashed border-[#9b87c8] bg-[#f8f6fc] px-5 py-6 text-center transition-all duration-200 hover:border-[#47317c] hover:bg-[#f4f1fa]"
               >
                 <input
                   ref={inputRef}
@@ -113,35 +108,38 @@ const UploadBox = ({
 
                 {loadingPhoto ? (
                   <div className="flex flex-col items-center justify-center">
-                    <AiOutlineLoading3Quarters className="animate-spin text-purple-600 w-7 h-7 mb-3" />
-                    <p className="text-gray-700 text-sm reg-font">
+                    <div className="mb-3 flex h-11 w-11 items-center justify-center rounded-full bg-white shadow-sm ring-1 ring-[#47317c]/10">
+                      <AiOutlineLoading3Quarters className="h-5 w-5 animate-spin text-[#47317c]" />
+                    </div>
+                    <p className="inter-medium-font text-sm text-slate-700">
                       Uploading...
                     </p>
                   </div>
                 ) : !photo ? (
                   <div className="flex flex-col items-center justify-center">
-                    <FiUpload className="text-purple-600 w-7 h-7 mb-3" />
-                    <p className="text-gray-700 text-sm reg-font">
-                      Click here
-                      <br />
-                      <span className="text-gray-400 text-xs">
-                        to upload image
-                      </span>
+                    <div className="mb-3 flex h-11 w-11 items-center justify-center rounded-full bg-white text-[#47317c] shadow-sm ring-1 ring-[#47317c]/10">
+                      <FiUpload className="h-5 w-5" />
+                    </div>
+                    <p className="inter-semibold-font text-[14px] text-slate-800">
+                      Choose a full-body photo
+                    </p>
+                    <p className="inter-reg-font mt-1 text-[12px] leading-5 text-slate-500">
+                      Tap to browse files from your device
                     </p>
                   </div>
                 ) : (
-                  <div className="flex flex-col items-center relative">
+                  <div className="relative flex w-full flex-col items-center">
                     {photo?.type === "application/pdf" ? (
-                      <div className="flex flex-col items-center justify-center w-[200px] h-40 my-3 bg-gray-50 rounded-lg border border-gray-200">
+                      <div className="my-1 flex h-36 w-full max-w-[240px] flex-col items-center justify-center rounded-xl border border-slate-200 bg-white">
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
-                          className="w-10 h-10 text-red-500 mb-2"
+                          className="mb-2 h-9 w-9 text-red-500"
                           viewBox="0 0 24 24"
                           fill="currentColor"
                         >
                           <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm-1 1.5L18.5 9H13V3.5zM6 20V4h5v7h7v9H6z" />
                         </svg>
-                        <p className="text-xs text-gray-600 reg-font text-center px-2 truncate w-full text-center">
+                        <p className="inter-reg-font w-full truncate px-3 text-center text-xs text-slate-600">
                           {photo?.name}
                         </p>
                       </div>
@@ -149,7 +147,7 @@ const UploadBox = ({
                       <img
                         src={photoUrl}
                         alt={`${label} preview`}
-                        className="w-[200px] h-40 object-contain rounded-lg my-3"
+                        className="my-1 h-36 w-full max-w-[240px] rounded-xl bg-white object-contain shadow-sm ring-1 ring-slate-200"
                       />
                     )}
                   </div>
@@ -166,31 +164,17 @@ const UploadBox = ({
                   e.stopPropagation();
                   onRemove(type);
                 }}
-                className="absolute -top-2 -right-2 z-10 bg-red-500 hover:bg-red-600 
-                           text-white rounded-full w-7 h-7 flex items-center justify-center 
-                           shadow-md transition-all duration-200 cursor-pointer"
+                className="absolute -right-2 -top-2 z-10 flex h-8 w-8 cursor-pointer items-center justify-center rounded-full bg-white text-red-600 shadow-md ring-1 ring-red-100 transition-colors duration-200 hover:bg-red-50"
                 title="Remove photo"
               >
-                <RxCross2 className="w-4 h-4" />
+                <RxCross2 className="h-4 w-4" />
               </button>
             )}
-          </div>
-
-          <p className="text-xs text-gray-500 mt-2 text-center italic">
-            {suggestion}
-          </p>
-        </div>
-
-        <div className="flex flex-col items-center w-full">
-          <p className="text-gray-800 text-[12px] mt-2 text-center medium-font">
-            Supported formats:{" "}
-            <span className="text-gray-700 thin-font">
-              .jpeg, .png, .webp, .heic, .heif, .avif, .pdf
-            </span>
-          </p>
-        </div>
       </div>
-    </>
+      <p className="inter-reg-font mt-3 text-center text-[11px] leading-5 text-slate-500">
+        JPEG, PNG, WEBP, HEIC, HEIF, AVIF or PDF · Maximum 30 MB
+      </p>
+    </div>
   );
 };
 
@@ -530,22 +514,9 @@ const PhotoUpload = () => {
       <StepsHeader />
       <MetaLayout canonical={`${meta_url}photo-upload/`} />
       {loading && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex justify-center items-center z-[9999]">
-          <div className="flex flex-col items-center">
-            <p className="text-white text-lg reg-font">
-              <PageLoader />
-            </p>
-            <br />
-            <br />
-            <br />
-            <br />
-            <p className="reg-font text-gray-200 px-2 text-center">
-              Please wait while your image is being uploaded...
-            </p>
-          </div>
-        </div>
+        <PageLoader message="Please wait while your photo is being uploaded..." />
       )}
-      <div className="my-14">
+      <main className="min-h-[calc(100vh-66px)] bg-[#FBFBFD] px-4 py-8 sm:py-12">
         <AnimatePresence>
           {open && (
             <motion.div
@@ -559,7 +530,7 @@ const PhotoUpload = () => {
                 animate={{ y: 0, opacity: 1 }}
                 exit={{ y: 50, opacity: 0 }}
                 transition={{ type: "spring", stiffness: 200, damping: 20 }}
-                className="relative bg-white/90 backdrop-blur-md rounded-2xl shadow-lg p-8 max-w-md w-full border border-white/30"
+                className="relative mx-4 w-full max-w-md rounded-2xl border border-[#47317c]/10 bg-white p-7 shadow-[0_20px_60px_rgba(30,20,60,0.18)] sm:p-8"
               >
                 {/* Animated Check Icon */}
                 <motion.div
@@ -568,20 +539,16 @@ const PhotoUpload = () => {
                   transition={{ type: "spring", stiffness: 250, damping: 15 }}
                   className="flex justify-center mb-4"
                 >
-                  <FaCheckCircle
-                    className="text-primary"
-                    color="text-[#c9b2ed]"
-                    size={80}
-                  />
+                  <FaCheckCircle className="text-[#47317c]" size={64} />
                 </motion.div>
 
                 {/* Title */}
-                <h2 className="text-2xl font-bold text-center text-primary">
+                <h2 className="inter-semibold-font text-center text-[22px] text-slate-900">
                   Image successfully uploaded
                 </h2>
 
                 {/* Message */}
-                <p className="text-md text-black text-center mt-3 mb-6 reg-font">
+                <p className="inter-reg-font mb-6 mt-3 text-center text-[14px] leading-6 text-slate-600">
                   {!idVerificationUpload
                     ? "Your full body photo have been uploaded and are now under review by our prescribers. You need to complete the ID verification to proceed. Please click the button below to continue."
                     : "Your full body photo have been uploaded and are now under review by our prescribers. We'll approve your order once the review is complete and notify you straight away."}
@@ -601,64 +568,70 @@ const PhotoUpload = () => {
         </AnimatePresence>
         <form
           onSubmit={handleSubmit(onSubmit)}
-          className="max-w-3xl mx-auto my-auto px-6 sm:px-32 py-10 bg-white shadow-2xl rounded-3xl border border-gray-100"
+          className="mx-auto w-full max-w-[620px] rounded-2xl border border-[#47317c]/10 bg-white px-5 py-6 shadow-[0_12px_36px_rgba(71,49,124,0.09)] sm:px-8 sm:py-8"
         >
-          <div className="mb-8 max-w-2xl mx-auto text-left">
+          <div className="mb-6 text-left">
             {/* Heading */}
             {/* <h2 className="subHeading niba-semibold-font mb-2 border-b pb-3">
                             Please upload a <span className='niba-bold-font text-black' >full body</span> picture of yourself
                         </h2> */}
 
-            <h2 className="subHeading !text-black bold-font mb-3 border-b pb-3">
+            <h1 className="inter-semibold-font text-[21px] leading-[1.3] tracking-[-0.02em] text-slate-900 sm:text-[23px]">
               Submit your photo for prescriber review
-            </h2>
+            </h1>
 
             {/* Description */}
-            <p className="text-gray-700 mb-1 reg-font">
+            <p className="inter-reg-font mt-2 text-[13.5px] leading-6 text-slate-500">
               Please upload a <span className="bold-font">full body</span>{" "}
               picture of yourself.
             </p>
 
             {/* Bullet Points */}
-            <ul className="list-disc pl-6 text-gray-800 text-sm space-y-2 font-normal font-sans pt-2 my-10 sm:my-0">
+            <div className="mt-5 rounded-xl border border-[#47317c]/10 bg-[#f8f6fc] px-4 py-3.5">
+              <p className="inter-semibold-font mb-2 text-[13px] text-slate-800">Why we need this</p>
+              <ul className="inter-reg-font list-disc space-y-2 pl-5 text-[12.5px] leading-5 text-slate-600 marker:text-[#47317c]">
               <li>We will only ask for this once.</li>
               <li>
                 We realise it's inconvenient, but this is a regulatory
                 requirement designed for your safety and to prevent
                 inappropriate use.
               </li>
-            </ul>
+              </ul>
+            </div>
           </div>
 
           {/* Example Images */}
-          <div className="flex justify-center  sm:gap-4 mb-8">
-            <div className="flex flex-col items-center bg-white shadow-sm rounded-md mx-0 sm:mx-3 border-1">
+          <div className="mb-6">
+            <p className="inter-semibold-font mb-3 text-[13px] text-slate-800">Photo guidance</p>
+            <div className="grid grid-cols-3 gap-2 sm:gap-3">
+            <div className="relative overflow-hidden rounded-xl border-2 border-emerald-400 bg-white">
               <Image
                 src={FullBody}
-                alt="correct"
-                className="w-28 h-40 object-cover rounded-lg"
+                alt="Correct full-body photo example"
+                className="aspect-[3/4] h-auto w-full object-cover"
               />
-              {/* <span className="text-green-500 font-bold my-1"><FaCheck size={18} /></span> */}
+              <span className="inter-semibold-font absolute bottom-1.5 left-1.5 inline-flex items-center gap-1 rounded-md bg-white/95 px-1.5 py-1 text-[10px] text-emerald-700 shadow-sm"><FaCheck size={10} /> Good</span>
             </div>
-            <div className="flex flex-col items-center bg-white shadow-sm rounded-md mx-0 sm:mx-3 border-1">
+            <div className="relative overflow-hidden rounded-xl border border-slate-200 bg-white">
               <Image
                 src={FaceX}
-                alt="incorrect"
-                className="w-28 h-40 object-cover rounded-lg"
+                alt="Incorrect close-up photo example"
+                className="aspect-[3/4] h-auto w-full object-cover"
               />
-              {/* <span className="text-red-500 font-bold my-1"><RxCross2 size={18} /></span> */}
+              <span className="inter-semibold-font absolute bottom-1.5 left-1.5 inline-flex items-center gap-1 rounded-md bg-white/95 px-1.5 py-1 text-[10px] text-red-600 shadow-sm"><RxCross2 size={10} /> Avoid</span>
             </div>
-            <div className="flex flex-col items-center bg-white shadow-sm rounded-md mx-0 sm:mx-3 border-1">
+            <div className="relative overflow-hidden rounded-xl border border-slate-200 bg-white">
               <Image
                 src={HalfBodyX}
-                alt="incorrect"
-                className="w-28 h-40 object-cover rounded-lg"
+                alt="Incorrect half-body photo example"
+                className="aspect-[3/4] h-auto w-full object-cover"
               />
-              {/* <span className="text-red-500 font-bold my-1"><RxCross2 size={18} /></span> */}
+              <span className="inter-semibold-font absolute bottom-1.5 left-1.5 inline-flex items-center gap-1 rounded-md bg-white/95 px-1.5 py-1 text-[10px] text-red-600 shadow-sm"><RxCross2 size={10} /> Avoid</span>
+            </div>
             </div>
           </div>
 
-          <div className="flex flex-wrap sm:flex-nowrap justify-center gap-6 mb-8">
+          <div className="mb-6">
             <Controller
               name="frontPhoto"
               control={control}
@@ -698,16 +671,15 @@ const PhotoUpload = () => {
                     /> */}
           </div>
 
-          <div className="w-full flex justify-center">
+          <div className="w-full">
             <button
               type="submit"
               disabled={loading || !frontPhoto}
-              className={`reg-font px-6 py-3 rounded-full text-white font-semibold text-sm transition-all duration-150 ease-in-out
-      flex items-center justify-center 
+              className={`inter-semibold-font flex min-h-[54px] w-full items-center justify-center rounded-xl px-6 py-3 text-[15px] text-white transition-all duration-200
       ${
         loading || !frontPhoto
-          ? "bg-gray-300 cursor-not-allowed"
-          : "bg-[#47317c] hover:bg-[#3a2766] border-2 border-[#47317c] cursor-pointer"
+          ? "cursor-not-allowed bg-slate-200 text-slate-400"
+          : "cursor-pointer bg-[#47317c] shadow-[0_8px_20px_rgba(71,49,124,0.18)] hover:bg-[#392765] active:scale-[0.99]"
       }
     `}
             >
@@ -715,7 +687,7 @@ const PhotoUpload = () => {
             </button>
           </div>
         </form>
-      </div>
+      </main>
     </>
   );
 };

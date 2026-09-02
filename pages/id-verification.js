@@ -27,6 +27,7 @@ import useImageUploadStore from "@/store/useImageUploadStore ";
 import MUISelectField from "@/Components/SelectField/SelectField";
 import { heicTo, isHeic } from "heic-to"; // ✅ import heic converter
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
+import PageLoader from "@/Components/PageLoader/PageLoader";
 
 const IdVerification = () => {
 
@@ -360,6 +361,9 @@ const IdVerification = () => {
     <>
       <StepsHeader />
       <MetaLayout canonical={`${meta_url}photo-upload/`} />
+      {loading && (
+        <PageLoader message="Please wait while your ID images are being uploaded..." />
+      )}
       <div className="my-14">
         <AnimatePresence>
           {open && (
