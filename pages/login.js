@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 import NextButton from "@/Components/NextButton/NextButton";
 import { useRouter } from "next/router";
 import PageLoader from "@/Components/PageLoader/PageLoader";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import FormWrapper from "@/Components/FormWrapper/FormWrapper";
 import PageAnimationWrapper from "@/Components/PageAnimationWrapper/PageAnimationWrapper";
 import StepsHeader from "@/layout/stepsHeader";
@@ -25,7 +25,7 @@ import MetaLayout from "@/Meta/MetaLayout";
 import { meta_url } from "@/config/constants";
 import useReturning from "@/store/useReturningPatient";
 import useCartStore from "@/store/useCartStore";
-import { useParams, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import useAbandonCardStore from "@/store/abandonCardStore";
 import useProductId from "@/store/useProductIdStore";
 
@@ -41,6 +41,7 @@ export default function LoginScreen() {
   const { setImpersonate } = useImpersonate();
   const { setAuthUserDetail } = useAuthUserDetailStore();
   const router = useRouter();
+  const hasRedirected = useRef(false);
   const { abandonCard, setAbandonCard, hasHydrated } = useAbandonCardStore();
   const { setProductId } = useProductId();
   const {
@@ -62,17 +63,15 @@ export default function LoginScreen() {
 
   const searchParams = useSearchParams();
   const { setOrderId } = useCartStore();
-  const params = useParams();
-
   useEffect(() => {
-    const orderId = searchParams.get("order_id");
-    const review = searchParams.get("review") === "true";
-    console.log(review, "review param");
-    if (orderId) setOrderId(orderId);
-    if (review) setReview(review);
+    if (!router.isReady) return;
 
-    console.log("review:", review);
-  }, [searchParams, params, setOrderId, setEmail]);
+    const orderId = router.query.order_id;
+    const isReviewLink = router.query.review === "true";
+
+    if (orderId) setOrderId(orderId);
+    setReview(isReviewLink);
+  }, [router.isReady, router.query.order_id, router.query.review, setOrderId, setReview]);
 
   const loginMutation = useMutation(Login, {
     onSuccess: (data) => {
@@ -202,11 +201,16 @@ export default function LoginScreen() {
 
     // ✅ NORMAL FLOW
     if (review) {
-      router.replace("/review");
+      const orderId = router.query.order_id;
+      router.replace(
+        orderId
+          ? { pathname: "/review", query: { order_id: orderId } }
+          : "/review",
+      );
     } else {
       router.replace("/dashboard");
     }
-  }, [token, review, abandonCard?.type]);
+  }, [token, review, abandonCard?.type, router.query.order_id]);
 
   // abandonCard get Url; ⚠️⚠️////////////////////////////////////////////////////////
 

@@ -10,7 +10,7 @@ export default function RouteGuard({ children }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!hasHydrated) return; // Zustand hydrate hone ka wait karo
+    if (!hasHydrated || !router.isReady) return; // Zustand aur URL query dono ka wait karo
 
     const path = router.pathname;
     const isPublic = publicRoutes.includes(path);
@@ -18,14 +18,23 @@ export default function RouteGuard({ children }) {
 
     if (!isPublic && !token) {
       router.push("/login");
-    } else if (isLogin && token && review) {
-      router.push("/review");
+    } else if (
+      isLogin &&
+      token &&
+      (router.query.review === "true" || review)
+    ) {
+      const orderId = router.query.order_id;
+      router.replace(
+        orderId
+          ? { pathname: "/review", query: { order_id: orderId } }
+          : "/review",
+      );
     } else if (isLogin && token) {
       router.push("/dashboard");
     } else {
       setLoading(false);
     }
-  }, [router.pathname, token, hasHydrated]);
+  }, [router.isReady, router.pathname, router.query.order_id, router.query.review, token, review, hasHydrated]);
 
   if (loading)
     return <PageLoader />;

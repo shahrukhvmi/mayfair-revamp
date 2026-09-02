@@ -35,6 +35,7 @@ export default function ReviewScreen() {
 
   // 🔹 ONLY ADDITION
   const { orderId } = useCartStore();
+  const reviewOrderId = router.query.order_id || orderId;
 
   React.useEffect(() => {
     setReview(false);
@@ -61,7 +62,7 @@ export default function ReviewScreen() {
         company_id: 1,
         review_feedback,
         review_source,
-        order_id: orderId,
+        order_id: reviewOrderId,
       });
     } catch (err) {
       console.log(err?.response?.data?.errors?.order_id || "error-testing");
@@ -81,9 +82,9 @@ export default function ReviewScreen() {
      PAGE VIEW TRACK (ADDED)
   ============================= */
   useEffect(() => {
-    if (!orderId) return;
+    if (!reviewOrderId) return;
     sendReview({ review: true });
-  }, [orderId]);
+  }, [reviewOrderId]);
 
   /* =============================
      PARALLAX EFFECT (UNCHANGED)
