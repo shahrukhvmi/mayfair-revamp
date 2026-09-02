@@ -25,7 +25,7 @@ import MetaLayout from "@/Meta/MetaLayout";
 import { meta_url } from "@/config/constants";
 import useReturning from "@/store/useReturningPatient";
 import useCartStore from "@/store/useCartStore";
-import { useSearchParams } from "next/navigation";
+import { useParams, useSearchParams } from "next/navigation";
 import useAbandonCardStore from "@/store/abandonCardStore";
 import useProductId from "@/store/useProductIdStore";
 
@@ -63,15 +63,14 @@ export default function LoginScreen() {
 
   const searchParams = useSearchParams();
   const { setOrderId } = useCartStore();
+  const params = useParams();
+
   useEffect(() => {
-    if (!router.isReady) return;
-
-    const orderId = router.query.order_id;
-    const isReviewLink = router.query.review === "true";
-
+    const orderId = searchParams.get("order_id");
+    const review = searchParams.get("review") === "true";
     if (orderId) setOrderId(orderId);
-    setReview(isReviewLink);
-  }, [router.isReady, router.query.order_id, router.query.review, setOrderId, setReview]);
+    if (review) setReview(review);
+  }, [searchParams, params, setOrderId, setEmail]);
 
   const loginMutation = useMutation(Login, {
     onSuccess: (data) => {
@@ -201,16 +200,11 @@ export default function LoginScreen() {
 
     // ✅ NORMAL FLOW
     if (review) {
-      const orderId = router.query.order_id;
-      router.replace(
-        orderId
-          ? { pathname: "/review", query: { order_id: orderId } }
-          : "/review",
-      );
+      router.replace("/review");
     } else {
       router.replace("/dashboard");
     }
-  }, [token, review, abandonCard?.type, router.query.order_id]);
+  }, [token, review, abandonCard?.type]);
 
   // abandonCard get Url; ⚠️⚠️////////////////////////////////////////////////////////
 

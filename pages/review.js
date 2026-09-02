@@ -19,6 +19,7 @@ import BackButton from "@/Components/BackButton/BackButton";
 import MetaLayout from "@/Meta/MetaLayout";
 import { meta_url } from "@/config/constants";
 import StepsHeader from "@/layout/stepsHeader";
+import PageLoader from "@/Components/PageLoader/PageLoader";
 
 export default function ReviewScreen() {
   const { token, setReview } = useAuthStore();
@@ -29,13 +30,13 @@ export default function ReviewScreen() {
   const [fade, setFade] = useState(false);
   const [feedback, setFeedback] = useState("");
   const [reviewDisabled, setReviewDisabled] = useState(null);
+  const [isReviewLoading, setIsReviewLoading] = useState(true);
 
   const happyRef = useRef(null);
   const sadRef = useRef(null);
 
   // 🔹 ONLY ADDITION
   const { orderId } = useCartStore();
-  const reviewOrderId = router.query.order_id || orderId;
 
   React.useEffect(() => {
     setReview(false);
@@ -62,7 +63,7 @@ export default function ReviewScreen() {
         company_id: 1,
         review_feedback,
         review_source,
-        order_id: reviewOrderId,
+        order_id: orderId,
       });
     } catch (err) {
       console.log(err?.response?.data?.errors?.order_id || "error-testing");
@@ -82,9 +83,19 @@ export default function ReviewScreen() {
      PAGE VIEW TRACK (ADDED)
   ============================= */
   useEffect(() => {
-    if (!reviewOrderId) return;
-    sendReview({ review: true });
-  }, [reviewOrderId]);
+    if (!orderId) {
+      setIsReviewLoading(false);
+      return;
+    }
+
+    const validateOrderForReview = async () => {
+      setIsReviewLoading(true);
+      await sendReview({ review: true });
+      setIsReviewLoading(false);
+    };
+
+    validateOrderForReview();
+  }, [orderId]);
 
   /* =============================
      PARALLAX EFFECT (UNCHANGED)
@@ -146,6 +157,11 @@ export default function ReviewScreen() {
     <>
       <MetaLayout canonical={`${meta_url}review/`} noIndex />
       <StepsHeader />
+      {isReviewLoading ? (
+        <div className="flex min-h-[calc(100vh-72px)] items-center justify-center bg-[#fbfbfd]">
+          <PageLoader />
+        </div>
+      ) : (
       <section className="review-container ">
         <div className="review-shell">
           <ApplicationLogo className="mx-auto w-46 mb-6 review-logo" />
@@ -316,6 +332,7 @@ export default function ReviewScreen() {
           )}
         </div>
       </section>
+      )}
     </>
   );
 }
