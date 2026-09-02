@@ -133,35 +133,35 @@ const Dose = ({
     }
   };
 
-  const productName = String(doseData?.product_name || "")
-    .trim()
-    .toLowerCase();
+  // const productName = String(doseData?.product_name || "")
+  //   .trim()
+  //   .toLowerCase();
 
-  const doseName = String(doseData?.name || "")
-    .trim()
-    .toLowerCase()
-    .replace(/\s+/g, "");
+  // const doseName = String(doseData?.name || "")
+  //   .trim()
+  //   .toLowerCase()
+  //   .replace(/\s+/g, "");
 
-  const isFoundayo = productName === "foundayo (orforglipron)";
+  // const isFoundayo = productName === "foundayo (orforglipron)";
 
-  // Pre-launch price sirf in 2 doses ke liye
-  const preLaunchDoses = ["0.8mg", "2.5mg"];
+  // // Pre-launch price sirf in 2 doses ke liye
+  // const preLaunchDoses = ["0.8mg", "2.5mg", "5.5mg", "9mg", "14.5mg", "17.2mg" ];
 
-  const isPreLaunchDose = preLaunchDoses.includes(doseName);
+  // const isPreLaunchDose = preLaunchDoses.includes(doseName);
 
-  const price = Number(doseData?.price || 0);
-  const preLaunchPrice = Number(doseData?.pre_launch_price || 0);
+  // const price = Number(doseData?.price || 0);
+  // const preLaunchPrice = Number(doseData?.pre_launch_price || 0);
 
-  const shouldUsePreLaunchPrice =
-    isFoundayo &&
-    isPreLaunchDose &&
-    preLaunchPrice > 0;
+  // const shouldUsePreLaunchPrice =
+  //   isFoundayo &&
+  //   isPreLaunchDose &&
+  //   preLaunchPrice > 0;
 
-  const isPriceComingSoon =
-    isFoundayo &&
-    isPreLaunchDose &&
-    price <= 0 &&
-    !shouldUsePreLaunchPrice;
+  // const isPriceComingSoon =
+  //   isFoundayo &&
+  //   isPreLaunchDose &&
+  //   price <= 0 &&
+  //   !shouldUsePreLaunchPrice;
 
   return (
     <>
@@ -281,25 +281,8 @@ const Dose = ({
               className={`inter-semibold-font shrink-0 text-[16px] ${isSelected ? "text-[#47317c]" : "text-slate-700"
                 }`}
             >
-              {isPriceComingSoon ? (
-                <span className="text-primary text-sm font-semibold">
-                  Price is coming soon
-                </span>
-              ) : shouldUsePreLaunchPrice ? (
-                <span className="flex items-center gap-2">
-                  <span className="text-sm font-medium text-gray-500 line-through">
-                    £{price.toFixed(2)}
-                  </span>
+              £{parseFloat(doseData?.price).toFixed(2)}
 
-                  <span className="font-bold text-primary">
-                    £{preLaunchPrice.toFixed(2)}
-                  </span>
-                </span>
-              ) : (
-                <span className="font-bold text-primary">
-                  £{price.toFixed(2)}
-                </span>
-              )}
             </span>
             {isSelected && (
               <>

@@ -15,6 +15,7 @@ import usePatientInfoStore from "@/store/patientInfoStore";
 import useProductId from "@/store/useProductIdStore";
 import { trackCustomerLabsPurchased } from "@/config/CustomerLabs";
 import patientSource from "@/api/patientSource";
+import useReturning from "@/store/useReturningPatient";
 
 const ThankYou = () => {
   const { orderId, checkOut, setOrderId, setCheckOut } = useCartStore();
@@ -24,6 +25,9 @@ const ThankYou = () => {
   const { userData } = useUserDataStore();
   const { patientInfo } = usePatientInfoStore();
   const { productId } = useProductId();
+  const { isReturningPatient } = useReturning();
+
+  // console.log(isReturningPatient, "isReturningPatient");
 
   // useEffect(() => {
 
@@ -91,8 +95,8 @@ const ThankYou = () => {
         const addonsString =
           addonItems.length > 0
             ? addonItems
-                .map((item) => `${item?.name} x${item?.quantity || 1}`)
-                .join(", ")
+              .map((item) => `${item?.name} x${item?.quantity || 1}`)
+              .join(", ")
             : "None";
 
         // Build productProperties array for CL
@@ -276,7 +280,7 @@ const ThankYou = () => {
                         {checkOut?.discount?.type === "Percent"
                           ? ` (${parseInt(checkOut?.discount?.discount)}%)`
                           : checkOut?.discount?.type &&
-                            ` (${checkOut?.discount?.type})`}
+                          ` (${checkOut?.discount?.type})`}
                         {checkOut?.discount?.code &&
                           ` - Code: ${checkOut?.discount?.code}`}
                       </td>
@@ -372,15 +376,24 @@ const ThankYou = () => {
                 </p>
                 <p className="inter-reg-font my-3 text-[13px] leading-relaxed text-slate-600">
                   {" "}
-                  Once your photo has been reviewed and approved, your order
-                  will be processed and dispensed by our pharmacy.
+                  Please upload a clear, recent full-body photograph. This
+                  is one of the methods we use to verify your BMI and ensure
+                  that your treatment remains safe and appropriate for you.
                 </p>
                 <p className="inter-reg-font my-3 text-[13px] leading-relaxed text-slate-600">
                   {" "}
-                  Your privacy is important to us — all photos are stored
-                  securely, encrypted, and handled in strict confidence in line
-                  with data protection regulations.
+                  Once your photo has been reviewed and approved by our
+                  clinical team, your order will be processed and dispensed
+                  by our pharmacy.
                 </p>
+                <p className="thin-font text-gray-700 my-3 ">
+                  {" "}
+                  Your privacy is important to us, therefore all photos are
+                  stored securely, encrypted, and handled in strict
+                  confidence in accordance with applicable data protection
+                  regulations.
+                </p>
+
               </blockquote>
 
               <div className="my-6 flex justify-center ">
@@ -441,7 +454,7 @@ const ThankYou = () => {
                   className=""
                   onClick={handleGoBack}
                   label="Continue to view order details"
-                  // disabled={!imageUploaded}
+                // disabled={!imageUploaded}
                 />
               </div>
             </>
