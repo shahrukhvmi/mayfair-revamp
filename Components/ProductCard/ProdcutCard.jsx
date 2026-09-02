@@ -140,14 +140,13 @@ const ProductCard = ({
 
   const isOutOfStock = !status;
 
-  const isFoundayo = title?.trim() === "Foundayo (Orforglipron)";
-  const hasPreLaunchPrice =
-    pre_launch_price !== null &&
-    pre_launch_price !== undefined &&
-    pre_launch_price !== "" &&
-    pre_launch_price !== "N/A";
-  const displayPrice =
-    isFoundayo && hasPreLaunchPrice ? pre_launch_price : price;
+  // const isFoundayo = title?.trim() === "Foundayo (Orforglipron)";
+  // const hasPreLaunchPrice =
+  //   pre_launch_price !== null &&
+  //   pre_launch_price !== undefined &&
+  //   pre_launch_price !== "" &&
+  //   pre_launch_price !== "N/A";
+  const displayPrice = price;
   const hasPrice =
     displayPrice !== null &&
     displayPrice !== undefined &&
