@@ -12,6 +12,8 @@
 
 //https://mayfair.netlify.app/login/?review=true&order_id=346037
 
+// https://www.onlineweightlossclinic.co.uk/start-consultation/login/?product_id=7&fromemail=testadmin88@gmail.com&type=abandoned-cart&eid=52
+
 const FoundayoProductId =8;
 const WegovyPillProductId = 7;
 const serverType = process.env.NEXT_PUBLIC_SERVER_TYPE;
