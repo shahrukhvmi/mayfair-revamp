@@ -31,6 +31,7 @@ import useLastBmi from "@/store/useLastBmiStore";
 import useUserDataStore from "@/store/userDataStore";
 import lastOrderStore from "@/store/lastOrderStore";
 import useAbandonCardStore from "@/store/abandonCardStore";
+import normalizeConfirmationInfo from "@/utils/normalizeConfirmationInfo";
 
 const OrderSummary = ({
   isConcentCheck,
@@ -67,7 +68,8 @@ const OrderSummary = ({
 
   const { clearCheckout } = useCheckoutStore();
   const { clearMedicalQuestions } = useMedicalQuestionsStore();
-  const { clearConfirmationQuestions } = useConfirmationQuestionsStore();
+  const { confirmationQuestions, clearConfirmationQuestions } =
+    useConfirmationQuestionsStore();
 
   const { clearToken } = useAuthStore();
   const { setIsPasswordReset } = usePasswordReset();
@@ -185,9 +187,16 @@ const OrderSummary = ({
         setIsButtonLoading(false);
         Object.keys(errors).forEach((key) => {
           const errorMessage = errors[key];
+          const showError = (message) =>
+            toast.error(
+              String(message).includes("confirmationInfo") &&
+                String(message).includes("checklist")
+                ? "Please review and confirm the patient consent statements before checkout."
+                : message,
+            );
           Array.isArray(errorMessage)
-            ? errorMessage.forEach((msg) => toast.error(msg))
-            : toast.error(errorMessage);
+            ? errorMessage.forEach(showError)
+            : showError(errorMessage);
         });
       } else if (singleOutOfStock && typeof singleOutOfStock === "object") {
         setIsButtonLoading(false);
@@ -272,7 +281,10 @@ const OrderSummary = ({
       medicalInfo,
       gpdetails,
       bmi,
-      confirmationInfo,
+      confirmationInfo: normalizeConfirmationInfo(
+        confirmationInfo,
+        confirmationQuestions,
+      ),
       reorder_concent: null,
       product_id: productId,
     };

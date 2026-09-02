@@ -153,32 +153,35 @@ const Checkout = () => {
 
       <div className="min-h-[calc(100vh-66px)] bg-[#FBFBFD]">
       <div className="max-w-2xl mx-auto px-4 pb-14 space-y-6">
-        <div ref={headingRef} className="px-0 pt-6 sm:px-6 sm:pt-8">
-          <div className="mb-5 flex justify-start">
+        <div ref={headingRef} className="pt-6 sm:pt-8">
+          <div className="sm:grid sm:grid-cols-[82px_minmax(0,1fr)_82px] sm:items-center sm:gap-2">
             <button
               type="button"
               onClick={back}
-              className="inter-medium-font inline-flex cursor-pointer items-center gap-1.5 py-1 text-[13px] text-slate-500 transition-colors duration-150 hover:text-[#47317c] focus-visible:outline-none focus-visible:text-[#47317c]"
+              className="inter-medium-font mb-2 inline-flex min-h-11 cursor-pointer items-center justify-start gap-1.5 px-0 text-[13px] text-[#47317c] transition-colors duration-200 hover:text-[#392765] focus-visible:rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#47317c]/25 focus-visible:ring-offset-2 sm:mb-0 sm:min-h-9 sm:w-auto sm:justify-self-start sm:px-1"
               aria-label="Back to dosage selection"
             >
-              <ArrowLeft size={14} strokeWidth={1.8} />
+              <ArrowLeft size={15} strokeWidth={2} />
               <span>Back</span>
             </button>
-          </div>
-
-          <div className="text-center">
-            <h1 className="inter-bold-font mb-2 text-[22px] text-slate-900 sm:text-[26px]">
+            <h1
+              className={`inter-bold-font text-center text-slate-900 ${
+                reorder
+                  ? "text-[19px] leading-tight sm:whitespace-nowrap sm:text-[30px]"
+                  : "text-[19px] leading-tight sm:text-[30px]"
+              }`}
+            >
               {reorder ? (
-                <>
-                  Confirm your treatment
-                  <br />
-                  re-order
-                </>
+                "Confirm your treatment re-order"
               ) : (
                 "Checkout to kick-start your weight loss journey"
               )}
             </h1>
-            <p className="inter-reg-font mb-6 text-[13.5px] text-slate-500">
+            <span className="hidden sm:block" aria-hidden="true" />
+          </div>
+
+          <div className="text-center sm:grid sm:grid-cols-[82px_minmax(0,1fr)_82px] sm:gap-2">
+            <p className="inter-reg-font mt-3 text-[13.5px] leading-5 text-slate-500 sm:col-start-2">
               {reorder
                 ? "You're almost done. Complete your checkout to continue your weight loss journey without interruption."
                 : "Complete your details below to secure your consultation. If you decide not to proceed after your consult for any reason, you will be fully refunded."}

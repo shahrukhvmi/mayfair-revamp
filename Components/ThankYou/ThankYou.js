@@ -386,7 +386,7 @@ const ThankYou = () => {
                   clinical team, your order will be processed and dispensed
                   by our pharmacy.
                 </p>
-                <p className="thin-font text-gray-700 my-3 ">
+                <p className="inter-reg-font text-gray-700 my-3 ">
                   {" "}
                   Your privacy is important to us, therefore all photos are
                   stored securely, encrypted, and handled in strict

@@ -9,6 +9,7 @@ import usePatientInfoStore from "@/store/patientInfoStore";
 import useBmiStore from "@/store/bmiStore";
 import useMedicalInfoStore from "@/store/medicalInfoStore";
 import useConfirmationInfoStore from "@/store/confirmationInfoStore";
+import normalizeConfirmationInfo from "@/utils/normalizeConfirmationInfo";
 import useGpDetailsStore from "@/store/gpDetailStore";
 import sendStepData from "@/api/stepsDataApi";
 import { useMutation } from "@tanstack/react-query";
@@ -328,7 +329,7 @@ const ReviewAnswers = () => {
       },
       bmi: bmi,
       gpdetails: gpdetails,
-      confirmationInfo: confirmationInfo,
+      confirmationInfo: normalizeConfirmationInfo(confirmationInfo),
       medicalInfo: formattedMedicalInfo,
       pid: productId,
     };

@@ -13,6 +13,7 @@ import useConfirmationInfoStore from "@/store/confirmationInfoStore";
 import MetaLayout from "@/Meta/MetaLayout";
 import { meta_url } from "@/config/constants";
 import { MdCheckBox, MdCheckBoxOutlineBlank } from "react-icons/md";
+import normalizeConfirmationInfo from "@/utils/normalizeConfirmationInfo";
 
 export default function PatientConsent() {
   const router = useRouter();
@@ -77,7 +78,9 @@ export default function PatientConsent() {
   console.log(questions, "questions");
 
   const onSubmit = async () => {
-    setConfirmationInfo(questions);
+    setConfirmationInfo(
+      normalizeConfirmationInfo(questions, confirmationQuestions),
+    );
 
     setShowLoader(true);
     await new Promise((resolve) => setTimeout(resolve, 500));

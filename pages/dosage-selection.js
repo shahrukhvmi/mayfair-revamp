@@ -384,8 +384,8 @@ export default function DosageSelection() {
       <div className="min-h-screen bg-[#FBFBFD] px-4 pb-44 sm:px-6 lg:px-8">
         <div className="mx-auto w-full max-w-xl py-8">
 
-          <h1 className="inter-semibold-font mb-6 text-center text-[22px] text-slate-900">
-            You’re ready to start your personal weight loss journey
+          <h1 className="inter-semibold-font mb-6 text-center text-[26px] sm:text-[30px] text-slate-900">
+            You’re ready to start your personal <br /> weight loss journey
           </h1>
 
           <form onSubmit={handleSubmit(onSubmit)}>
@@ -407,11 +407,7 @@ export default function DosageSelection() {
                 <p className="inter-medium-font mt-2 text-[14px] text-slate-500">
                   From <span>
                     £
-                    {parseFloat(
-                      variation?.name === "Foundayo (Orforglipron)"
-                        ? variation?.pre_launch_price || 0
-                        : variation?.price || 0
-                    ).toFixed(2)}
+                    {parseFloat(variation?.price || 0).toFixed(2)}
                   </span>
                 </p>
               </div>

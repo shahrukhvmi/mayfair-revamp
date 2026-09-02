@@ -13,6 +13,7 @@ import sendStepData from "@/api/stepsDataApi";
 import { useMutation } from "@tanstack/react-query";
 import useMedicalInfoStore from "@/store/medicalInfoStore";
 import useConfirmationInfoStore from "@/store/confirmationInfoStore";
+import normalizeConfirmationInfo from "@/utils/normalizeConfirmationInfo";
 import useProductId from "@/store/useProductIdStore";
 import useGpDetailsStore from "@/store/gpDetailStore";
 import useSignupStore from "@/store/signupStore";
@@ -174,7 +175,7 @@ const ConfirmationSummary = () => {
       },
       bmi: bmi,
       gpdetails: gpdetails,
-      confirmationInfo: confirmationInfo,
+      confirmationInfo: normalizeConfirmationInfo(confirmationInfo),
       medicalInfo: formattedMedicalInfo,
       pid: productId,
     };
