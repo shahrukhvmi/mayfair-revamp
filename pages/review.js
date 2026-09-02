@@ -142,7 +142,7 @@ export default function ReviewScreen() {
         path: "../images/sad-emoji.json",
       });
     }
-  }, [mode]);
+  }, [mode, isReviewLoading]);
 
   const transition = (text, next) => {
     setFade(true);
