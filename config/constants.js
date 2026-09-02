@@ -10,6 +10,8 @@
 // export default { app_url };
 // CONSTANT FILE
 
+//https://mayfair.netlify.app/login/?review=true&order_id=346037
+
 const FoundayoProductId =8;
 const WegovyPillProductId = 7;
 const serverType = process.env.NEXT_PUBLIC_SERVER_TYPE;
