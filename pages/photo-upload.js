@@ -184,7 +184,7 @@ const PhotoUpload = () => {
 
   const logError = (message) => {
     toast.error(message);
-    UploadPhotoLogs({ message }).catch((err) =>);
+    UploadPhotoLogs({ message }).catch(() => {});
   };
 
   const frontPhotoInputRef = React.useRef(null);
