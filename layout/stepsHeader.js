@@ -298,7 +298,7 @@ const StepsHeader = ({ isOpen, toggleSidebar }) => {
             )}
 
             <Link href={redirectTo} className="flex shrink-0 items-center">
-              <ApplicationLogo width={148} height={56} />
+              <ApplicationLogo width={148} height={56} priority style={{ width: "auto", height: "auto" }} />
             </Link>
           </div>
 

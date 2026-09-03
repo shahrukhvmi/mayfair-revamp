@@ -17,7 +17,7 @@
 const FoundayoProductId =8;
 const WegovyPillProductId = 7;
 const serverType = process.env.NEXT_PUBLIC_SERVER_TYPE;
-console.log(serverType, "SERVERRRrrrrrrrr");
+// console.log(serverType, "SERVERRRrrrrrrrr");
 let app_url = "";
 let passwordlink = "";
 let meta_url = "";
@@ -28,7 +28,7 @@ switch (serverType) {
     meta_url = "http://localhost:3000/";
     break;
   case "staging":
-    console.log("STAGING WORKING");
+    // console.log("STAGING WORKING");
     app_url = "https://staging.mayfairweightlossclinic.co.uk/api";
     passwordlink =
       "https://staging.mayfairweightlossclinic.co.uk/start-consultation/email-confirmation";

@@ -79,29 +79,29 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
           {navItems.map(({ href, label, icon: Icon, key, match }) => {
             const active = match.some((path) => currentPath.startsWith(path));
             return (
-              <Link href={href} legacyBehavior key={key}>
-                <a
-                  onClick={toggleSidebar}
-                  aria-current={active ? "page" : undefined}
-                  className={`
-                    ${key} group flex items-center gap-2.5
-                    rounded-md px-3 py-2.5 2xl:px-4 2xl:py-3 no-underline outline-none
-                    transition-all duration-150
-                    ${active
-                      ? "bg-[#47317c]/[0.09] text-[#47317c]"
-                      : "text-slate-500 hover:bg-slate-50 hover:text-slate-800"
-                    }
-                  `}
-                >
-                  <Icon
-                    size={15}
-                    strokeWidth={active ? 2.2 : 1.8}
-                    className={active ? "text-[#47317c]" : "text-slate-400 group-hover:text-slate-600"}
-                  />
-                  <span className={`inter-medium-font text-[13px] lg:text-[14px] 2xl:text-[16px] leading-none ${active ? "text-[#47317c]" : ""}`}>
-                    {label}
-                  </span>
-                </a>
+              <Link
+                href={href}
+                key={key}
+                onClick={toggleSidebar}
+                aria-current={active ? "page" : undefined}
+                className={`
+                  ${key} group flex items-center gap-2.5
+                  rounded-md px-3 py-2.5 2xl:px-4 2xl:py-3 no-underline outline-none
+                  transition-all duration-150
+                  ${active
+                    ? "bg-[#47317c]/[0.09] text-[#47317c]"
+                    : "text-slate-500 hover:bg-slate-50 hover:text-slate-800"
+                  }
+                `}
+              >
+                <Icon
+                  size={15}
+                  strokeWidth={active ? 2.2 : 1.8}
+                  className={active ? "text-[#47317c]" : "text-slate-400 group-hover:text-slate-600"}
+                />
+                <span className={`inter-medium-font text-[13px] lg:text-[14px] 2xl:text-[16px] leading-none ${active ? "text-[#47317c]" : ""}`}>
+                  {label}
+                </span>
               </Link>
             );
           })}

@@ -9,7 +9,7 @@ const ApplicationLogo = ({ logoUrl, priority = false, ...props }) => {
     <Image
       src={logoSrc}
       alt="Logo"
-      priority={priority} // ✅ Now you can control this from parent
+      priority={priority}
       {...props}
     />
   );
