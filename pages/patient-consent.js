@@ -127,7 +127,7 @@ export default function PatientConsent() {
 
                   <div className="divide-y divide-slate-200">
                     {questions.map((q) => {
-                      const selectedAnswer = watch(`responses[${q.id}].answer`);
+                      const selectedAnswer = watch(`responses[${q.id}].answer`) ?? false;
 
                       return (
                         <article key={q.id} className="py-5 first:pt-4">
