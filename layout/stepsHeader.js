@@ -252,19 +252,21 @@ const StepsHeader = ({ isOpen, toggleSidebar }) => {
       )} */}
 
       {impersonate && (
-        <div className="mont-medium-font flex flex-col items-center justify-center gap-2 bg-red-500 px-4 py-2.5 text-center text-[12px] text-white sm:flex-row">
+        <div className="inter-medium-font flex items-center justify-center gap-3 bg-gradient-to-r from-[#47317c] to-[#6b4faa] px-4 py-2 text-[12.5px] text-white/95 shadow-sm">
           <div className="flex items-center gap-2">
-            <Copy size={15} strokeWidth={2} />
-            <span>You are impersonating another user.</span>
+            <span className="flex h-5 w-5 items-center justify-center rounded-full bg-white/15">
+              <Copy size={11} strokeWidth={2.2} />
+            </span>
+            <span>You are impersonating another user</span>
           </div>
-
+          <span className="hidden h-3.5 w-px bg-white/25 sm:block" />
           <button
             type="button"
-            className="mont-semibold-font flex cursor-pointer items-center gap-1.5 text-[11px] underline transition-colors hover:text-red-100"
+            className="inter-semibold-font flex cursor-pointer items-center gap-1.5 rounded-full bg-white/15 px-3 py-1 text-[11px] tracking-wide text-white transition-all hover:bg-white/25"
             onClick={handleRemovedImpersonate}
           >
-            <UserCheck size={14} strokeWidth={2} />
-            Stop impersonation
+            <UserCheck size={12} strokeWidth={2.2} />
+            Stop
           </button>
         </div>
       )}
@@ -298,7 +300,7 @@ const StepsHeader = ({ isOpen, toggleSidebar }) => {
             )}
 
             <Link href={redirectTo} className="flex shrink-0 items-center">
-              <ApplicationLogo width={148} height={56} priority style={{ width: "auto", height: "auto" }} />
+              <ApplicationLogo width={148} height={56} priority style={{ width: 148, height: "auto" }} />
             </Link>
           </div>
 
