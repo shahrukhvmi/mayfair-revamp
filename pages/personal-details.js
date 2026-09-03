@@ -26,7 +26,6 @@ export default function PersonalDetails() {
   const { patientInfo, setPatientInfo } = usePatientInfoStore();
   const { productId } = useProductId();
 
-  console.log(patientInfo, "patientInfo");
 
   const {
     register,
@@ -69,7 +68,6 @@ export default function PersonalDetails() {
     // Agar aaj 85th birthday ke baad hai — block karo
     const isOver85 = today > eightyFifthBirthday;
 
-    console.log(productId, age, "product id & Age");
 
     if (productId === 1 && isOver85) {
       return "Wegovy (Semaglutide) is not recommended for individuals above 85 years of age";

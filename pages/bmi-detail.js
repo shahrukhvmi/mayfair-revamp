@@ -28,7 +28,6 @@ export default function BmiDetail() {
   const { isReturningPatient } = useReturning();
   const router = useRouter();
 
-  console.log(lastBmi, "lastBmi");
 
   const {
     control,
@@ -178,7 +177,6 @@ export default function BmiDetail() {
       bmiConsent: consent,
     });
 
-    console.log("Form Submitted:", consent);
 
     setShowLoader(true);
 

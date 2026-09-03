@@ -38,7 +38,6 @@ export default function SignUp() {
 
   // 🛒 Set default values from Zustand on load
   useEffect(() => {
-    console.log(firstName, "FirstName");
 
     setValue("firstName", firstName);
     setValue("lastName", lastName);
@@ -52,7 +51,6 @@ export default function SignUp() {
   }, [firstName, lastName, setValue, trigger]);
 
   const onSubmit = async (data) => {
-    console.log("Form Data:", data);
     // 🛒 Update Zustand with latest values
     setFirstName(data.firstName);
     setLastName(data.lastName);

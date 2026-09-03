@@ -42,7 +42,6 @@ const Step6 = () => {
   const showConsentBox = personalUse === "yes" && decisionCapacity === "yes";
 
   const onSubmit = async (data) => {
-    console.log("Form Data:", data);
     setShowLoader(true);
     await new Promise((resolve) => setTimeout(resolve, 500)); // Wait 2s
     router.push("/step7");

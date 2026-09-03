@@ -88,12 +88,10 @@ const ProductSelection = ({ showProductSelection }) => {
   const { isFromReorder } = useReorderButtonStore();
   const { setReorder } = useReorder();
 
-  console.log(firstName, lastName, "product selection");
   /* ───────────────  products mutation ────────────── */
   const getProducts = useMutation(GetProductsApi, {
     onSuccess: (res) => {
       const resData = res?.data?.data || {};
-      console.log(resData, "resData");
       setProductData(resData);
       setIsLoading(false);
     },
@@ -138,7 +136,6 @@ const ProductSelection = ({ showProductSelection }) => {
 
   /* ───────────────  product selection handler ────────────── */
   const handleProductSelect = (id, treatment) => {
-    console.log(id, "id: check");
     if (isFromReorder) {
       if (treatment == "reorder") {
         setRedirection("/re-order");
@@ -151,7 +148,6 @@ const ProductSelection = ({ showProductSelection }) => {
       setRedirection("/personal-details");
       setReorder(false);
     }
-    console.log(treatment, "treatment-name");
     setSelectedProductId((prev) => {
       const isDeselecting = prev === id;
       setSelectedTreatmentType(isDeselecting ? null : treatment);

@@ -135,11 +135,9 @@ const TopToastExplanation = () => {
   const GetEvidence = async () => {
     try {
       const res = await GetPrescriptionEvidence({ token });
-      console.log("Prescription Evidence Status", res);
       setExplainenationEvidence(res?.data?.require_evidence);
       setExplainenationEvidenceDetails(res?.data);
     } catch (error) {
-      console.error("Failed to fetch prescription evidence status:", error);
     }
   };
   const onSubmit = async (data) => {

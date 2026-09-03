@@ -83,7 +83,6 @@ export default function GatherData() {
   // Variations fetch mutation
   const variationMutation = useMutation(getVariationsApi, {
     onSuccess: (data) => {
-      console.log(data, "getVariationsApi");
       if (data) {
         clearCart();
         // toast.success("User registered successfully!");
@@ -133,7 +132,6 @@ export default function GatherData() {
   useEffect(() => {
     setShowLoader(true);
     if (productId != null) {
-      // console.log("Api Run");
       variationMutation.mutate({ id: productId, data: {} });
     }
   }, [productId]);
@@ -142,8 +140,6 @@ export default function GatherData() {
 
   const consultationMutation = useMutation(userConsultationApi, {
     onSuccess: (data) => {
-      console.log(data, "Dataaaaaaaaaa");
-      console.log(data?.data?.data?.extra, "extraextra");
       setExtra(data?.data?.data?.extra);
 
       if (data?.data?.data == null) {
@@ -181,7 +177,6 @@ export default function GatherData() {
     },
     onError: (error) => {
       // setLoading(false);
-      console.log("error", error?.response?.data?.errors?.email);
       if (error) {
         setShowLoader(false);
       }

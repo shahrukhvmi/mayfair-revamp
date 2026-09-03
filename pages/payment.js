@@ -29,14 +29,12 @@ const Payment = () => {
         const data = await res.json();
 
         // ✅ Log full response
-        console.log("Payment Data API Response:", data?.paymentData);
 
         if (data?.paymentData) {
           setPaymentData(data.paymentData);
         }
       } catch (err) {
         setShowLoader(false);
-        console.error("Error fetching paymentData:", err);
       }
     };
 

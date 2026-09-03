@@ -116,7 +116,6 @@ export default function Shipping({ shipmentCountries = [] }) {
         toast.error("Invalid post code.");
       }
     } catch (error) {
-      console.error("Postcode API error:", error);
 
       toast.error("Something went wrong while fetching address.");
     } finally {

@@ -132,7 +132,6 @@ const ProductCard = ({
     },
 
     onError: (error) => {
-      console.log("error", error?.response?.data?.errors?.email);
 
       setIsButtonLoading(false);
       shouldResetConsentRef.current = false;

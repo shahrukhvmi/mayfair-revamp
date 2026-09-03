@@ -91,7 +91,6 @@ export default function ResidentialAddress() {
         toast.error("No address found");
       }
     } catch (error) {
-      console.error("Ideal Postcodes error:", error);
       toast.error("Address lookup failed");
     } finally {
       setAddressSearchLoading(false);

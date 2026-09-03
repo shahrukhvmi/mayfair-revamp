@@ -66,7 +66,6 @@ export default function ReviewScreen() {
         order_id: orderId,
       });
     } catch (err) {
-      console.log(err?.response?.data?.errors?.order_id || "error-testing");
 
       if (err?.response?.data?.errors?.order_id) {
         setReviewDisabled(true);
@@ -75,7 +74,6 @@ export default function ReviewScreen() {
         );
       }
 
-      console.error("TrackReview error:", err);
     }
   };
 

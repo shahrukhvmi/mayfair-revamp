@@ -39,7 +39,6 @@ const Checkout = () => {
 
   const [showThankYouModal, setShowThankYouModal] = useState(false);
   const router = useRouter();
-  // console.log(isPostalCheck, "isPostalCheck")
   const personalRef = useRef(null);
   const addressRef = useRef(null);
   const billingRef = useRef(null);
@@ -109,7 +108,6 @@ const Checkout = () => {
     router.push("/dosage-selection");
   };
 
-  console.log(showResetPassword, "showResetPassword");
   return (
     <>
       <MetaLayout canonical={`${meta_url}checkout/`} />

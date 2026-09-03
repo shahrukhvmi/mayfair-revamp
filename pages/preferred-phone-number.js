@@ -21,7 +21,6 @@ export default function SignUp() {
 
   const { patientInfo, setPatientInfo } = usePatientInfoStore();
 
-  console.log(patientInfo?.phoneNo, "patientInfo");
 
   const {
     register,
@@ -43,7 +42,6 @@ export default function SignUp() {
   }, [patientInfo]);
 
   const onSubmit = async (data) => {
-    console.log("Form Data:", data);
     setPatientInfo({
       ...patientInfo, // 🧠 keep old data
       phoneNo: data?.phoneNo, // 🆕 update or add phoneNo

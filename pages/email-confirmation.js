@@ -111,7 +111,6 @@ export default function EmailConfirmation() {
         onClose={closeLoginModal}
         isLoading={showLoader}
         onLogin={async (data) => {
-          console.log(data, "dfkjdskjjkffskj");
           setShowLoader(true);
           try {
             const response = await loginMutation.mutateAsync({

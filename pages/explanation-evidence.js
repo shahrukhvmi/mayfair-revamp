@@ -143,7 +143,6 @@ const ExplanationEvidence = () => {
       }
     } catch (err) {
       toast.error(err.response.data.errors.evidence || "Submission failed.");
-      console.error(err.response.data.errors.evidence, "Evidence upload error");
     } finally {
       setLoading(false);
     }

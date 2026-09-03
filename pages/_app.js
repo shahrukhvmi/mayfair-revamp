@@ -196,7 +196,6 @@ function saveStoredAttribution(attribution) {
       localStorage.setItem("utm_campaign", firstTouch.utm_campaign || "none");
     }
   } catch (error) {
-    console.error("Unable to save attribution:", error);
   }
 }
 
@@ -207,7 +206,6 @@ export function clearAttribution() {
     localStorage.removeItem("utm_medium");
     localStorage.removeItem("utm_campaign");
   } catch (error) {
-    console.error("Unable to clear attribution:", error);
   }
 }
 
@@ -455,13 +453,11 @@ function initializeAttribution() {
   );
 
   if (isIPGReferrer) {
-    console.log("IPG referrer — attribution update skipped");
     return;
   }
 
   // ── Internal referrer — last touch update nahi hoga ──
   if (currentTouch.is_internal_referrer) {
-    console.log("Internal referrer — attribution update skipped");
     if (!storedAttribution?.first_touch) {
       saveStoredAttribution({
         first_touch: currentTouch,
@@ -507,11 +503,7 @@ export default function App({ Component, pageProps }) {
       const saved = JSON.parse(
         localStorage.getItem(ATTRIBUTION_STORAGE_KEY) || "null",
       );
-      console.log("=== MAYFAIR ATTRIBUTION DEBUG ===");
-      console.log("First Touch:", saved?.first_touch);
-      console.log("Last Touch:", saved?.last_touch);
     } catch (error) {
-      console.error("Unable to read attribution:", error);
     }
   }, []);
 

@@ -55,7 +55,6 @@ export default function ConfirmEthnicity() {
   }, [patientInfo, setValue, patientInfo?.ethnicity]);
 
   const onSubmit = async (data) => {
-    console.log("Form Data:", data);
 
     setPatientInfo({
       ...patientInfo, // 🧠 keep old data

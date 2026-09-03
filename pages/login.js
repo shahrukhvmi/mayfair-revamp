@@ -75,7 +75,6 @@ export default function LoginScreen() {
   const loginMutation = useMutation(Login, {
     onSuccess: (data) => {
       const user = data?.data?.data;
-      console.log(user, "user");
       if (user) {
         setUserData(user);
         setToken(user?.token);
@@ -94,7 +93,6 @@ export default function LoginScreen() {
       }
     },
     onError: (error) => {
-      console.log(error?.response?.data?.errors, "sdseds");
 
       const errorObj = error?.response?.data?.errors;
 
@@ -115,7 +113,6 @@ export default function LoginScreen() {
   const impersonateLoginMutation = useMutation(impersonateLogin, {
     onSuccess: (data) => {
       const user = data?.data?.data;
-      console.log(user, "user");
       if (user) {
         setUserData(user);
         setAuthUserDetail(user);
@@ -133,7 +130,6 @@ export default function LoginScreen() {
       }
     },
     onError: (error) => {
-      console.log(error?.response?.data?.errors, "sdseds");
 
       const errorObj = error?.response?.data?.errors;
 
@@ -184,13 +180,11 @@ export default function LoginScreen() {
     setEmail(data?.email);
     loginMutation.mutate(formData);
   };
-  console.log(review, "review");
   useEffect(() => {
     if (!token) return;
 
     // 🔥 FIRST PRIORITY: abandoned cart
     if (abandonCard?.type === "abandoned-cart") {
-      console.log("check1");
       router.replace("/gathering-data");
       return;
     }
@@ -224,7 +218,6 @@ export default function LoginScreen() {
         eid,
       });
     } else {
-      console.log("⛔ SKIPPED STORE UPDATE");
     }
   }, [searchParams, abandonCard]);
 
@@ -357,7 +350,6 @@ export default function LoginScreen() {
             setShowLoader(false);
 
             if (abandonCard?.type) {
-              console.log("check2");
               router.push("/gathering-data");
             } else {
               router.push("/dashboard");

@@ -227,7 +227,7 @@ const OrderDetail = () => {
     setLoading(true);
     getOrderByIdApi(orderId)
       .then((response) => { setOrder(response?.data); setLoading(false); })
-      .catch((error) => { console.error("Failed to load order:", error); setLoading(false); });
+      .catch((error) => { setLoading(false); });
   }, [orderId]);
 
   const currentOrder  = order?.data?.order;

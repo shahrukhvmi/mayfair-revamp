@@ -56,7 +56,6 @@ const ConfirmationSummary = () => {
   const { productId, clearProductId } = useProductId();
   const { setLastBmi, clearLastBmi } = useLastBmi();
   const { clearUserData, userData } = useUserDataStore();
-  console.log(userData, "userdata in confirmation summary");
   //To get firstname and lastName from signup store
   const {
     clearFirstName,
@@ -68,16 +67,13 @@ const ConfirmationSummary = () => {
     email
   } = useSignupStore();
 
-  console.log(bmi);
 
   // Customer lab data mutation
 
   const stepsDataMutation = useMutation(sendStepData, {
     onSuccess: (data) => {
-      console.log(data, "dataaaaaaaaaaaaaa");
 
       if (data?.data?.lastConsultation) {
-        console.log(data?.data?.lastConsultation?.fields, "data?.data?.data");
         setBmi(data?.data?.lastConsultation?.fields?.bmi);
         setConfirmationInfo(
           data?.data?.lastConsultation?.fields?.confirmationInfo,
@@ -97,7 +93,6 @@ const ConfirmationSummary = () => {
       // setLoading(false);
       setShowLoader(false);
       if (error) {
-        console.log("error", error?.response?.data?.message);
         if (error?.response?.data?.message == "Unauthenticated.") {
           toast.error("Session Expired");
           clearBmi();
@@ -122,7 +117,6 @@ const ConfirmationSummary = () => {
           clearConfirmationEmail();
           router.push("/login");
         } else if (error?.response?.data?.original?.errors) {
-          console.log(error?.response?.data?.original?.errors, "error");
           // toast.error("Something went wrong");
           // toast.error(error?.response?.data?.original?.errors);
           const errorMessages = error?.response?.data?.original?.errors;
@@ -195,7 +189,6 @@ const ConfirmationSummary = () => {
     }
   };
 
-  console.log("patientInfo", patientInfo);
   return (
     <>
       <MetaLayout canonical={`${meta_url}confirmation-summary/`} />

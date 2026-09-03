@@ -134,7 +134,6 @@ export default function Billing({ billingCountries = [] }) {
         toast.error("Invalid post code.");
       }
     } catch (error) {
-      console.error("Postcode API error:", error);
 
       toast.error("Something went wrong while fetching address.");
     } finally {

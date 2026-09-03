@@ -222,10 +222,8 @@ const ReviewAnswers = () => {
   //Send All steps data
   const stepsDataMutation = useMutation(sendStepData, {
     onSuccess: (data) => {
-      console.log(data, "Medical Questions");
 
       if (data?.data?.lastConsultation) {
-        console.log(data?.data?.lastConsultation?.fields, "data?.data?.data");
         setBmi(data?.data?.lastConsultation?.fields?.bmi);
         setConfirmationInfo(
           data?.data?.lastConsultation?.fields?.confirmationInfo,
@@ -241,7 +239,6 @@ const ReviewAnswers = () => {
     },
     onError: (error) => {
       // setLoading(false);
-      console.log("error", error?.response?.data?.message);
       if (error) {
         if (error?.response?.data?.message == "Unauthenticated.") {
           toast.error("Session Expired");
@@ -267,7 +264,6 @@ const ReviewAnswers = () => {
           clearConfirmationEmail();
           router.push("/login");
         } else if (error?.response?.data?.original?.errors) {
-          console.log(error?.response?.data?.original?.errors, "error");
           // toast.error("Something went wrong");
           // toast.error(error?.response?.data?.original?.errors);
           setShowLoader(false);

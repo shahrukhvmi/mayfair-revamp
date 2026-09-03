@@ -23,8 +23,6 @@ export default function PregnancyCheck() {
   const router = useRouter();
   const { patientInfo, setPatientInfo } = usePatientInfoStore();
 
-  console.log(patientInfo, "patientInfo");
-
   const {
     register,
     handleSubmit,
@@ -50,7 +48,6 @@ export default function PregnancyCheck() {
   }, [patientInfo?.pregnancy, trigger]);
 
   const onSubmit = async (data) => {
-    console.log("Form Data:", data);
     setPatientInfo({
       ...patientInfo, // 🧠 keep old data
       pregnancy: data.pregnancy,

@@ -84,7 +84,6 @@ export default function PatientConsent() {
     (q) => watch(`responses[${q.id}].answer`) === true,
   );
 
-  console.log(questions, "questions");
 
   const onSubmit = async () => {
     setConfirmationInfo(questions);
@@ -96,8 +95,6 @@ export default function PatientConsent() {
   };
 
   useEffect(() => {
-    console.log("confirmationQuestions", confirmationQuestions);
-    console.log("questions state", questions);
   }, [confirmationQuestions, questions]);
   return (
     <>

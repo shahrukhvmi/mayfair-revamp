@@ -36,10 +36,8 @@ const MyProfile = () => {
   // GET Profile
   const getProfileDataMutation = useMutation(getProfileData, {
     onSuccess: (res) => {
-      console.log(res, "res res res");
       const user = res?.data?.profile?.user;
       if (user) {
-        console.log(user);
 
         setValue("firstname", user.fname || "");
         setValue("lastname", user.lname || "");
@@ -77,7 +75,6 @@ const MyProfile = () => {
 
   const onSubmit = (data) => {
     setLoading(true);
-    console.log("Submitting data:", data);
     sendProfileDataMutation.mutate(data);
   };
 

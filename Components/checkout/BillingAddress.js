@@ -210,7 +210,6 @@ export default function BillingAddress({
       }
     } catch (error) {
       setAddressSearchLoading(false);
-      console.log("API error:", error);
       // setIsPostalCheck(isPostalCodeNotValid);
       // setIsPostalCodeNotValid(isPostalCodeNotValid);
     }

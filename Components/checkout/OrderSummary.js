@@ -98,14 +98,12 @@ const OrderSummary = ({
       });
       if (res?.data?.status === true) {
         toast.success("Coupon applied successfully!");
-        console.log(res, "coupon");
         setCoupon(res.data);
         setDiscountCode("");
       }
     } catch (error) {
       const err = error?.response?.data?.errors?.Coupon;
       if (err) {
-        console.log(err, "coupon error");
         toast.error(err);
         clearCoupon();
       } else {
@@ -151,13 +149,11 @@ const OrderSummary = ({
       }
     },
     onError: (error) => {
-      console.log(error, "dsfdsdsdfsdf");
       const errors = error?.response?.data?.original?.errors;
       const product_error = error?.response?.data?.errors?.Product;
       const singleOutOfStock = error?.response?.data?.errors?.OutOfStock;
 
       if (error?.response?.data?.message == "Unauthenticated.") {
-        console.log("error here");
         toast.error("Session Expired");
         clearBmi();
         clearCheckout();
@@ -209,11 +205,9 @@ const OrderSummary = ({
         router.push("/gathering-data");
       } else if (singleOutOfStock && typeof singleOutOfStock != "object") {
         toast.error(singleOutOfStock);
-        console.log("from single Out Of stock");
         router.push("/gathering-data");
         setIsButtonLoading(false);
       } else {
-        console.log("from other errors");
         toast.error(product_error);
         setIsButtonLoading(false);
       }
@@ -291,8 +285,6 @@ const OrderSummary = ({
 
     checkoutMutation.mutate(formData);
   };
-
-  // console.log(isPostalCheck, "22sasdsdsdsd");
 
   return (
     <>

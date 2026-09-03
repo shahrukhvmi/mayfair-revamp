@@ -32,19 +32,14 @@ const MedicalQuestions = () => {
   // Load questions → prefer medicalInfo first
   useEffect(() => {
     if (medicalInfo && medicalInfo.length) {
-      console.log("✅ Loading questions from medicalInfo (saved user answers)");
       setQuestions(medicalInfo);
     } else if (medicalQuestions && medicalQuestions.length) {
-      console.log(
-        "🟡 Loading questions from medicalQuestions (API or fallback)"
-      );
       const initialized = medicalQuestions.map((q) => ({
         ...q,
         subfield_response: "",
       }));
       setQuestions(initialized);
     } else {
-      console.log("❌ No questions found");
     }
   }, [medicalQuestions, medicalInfo]);
 

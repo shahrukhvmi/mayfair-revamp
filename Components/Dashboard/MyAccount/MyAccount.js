@@ -199,7 +199,6 @@ const MyAccount = () => {
   } = useShippingOrBillingStore();
 
   useEffect(() => { setReorderBackProcess(false); }, [setReorderBackProcess]);
-console.log("authUserDetail", authUserDetail);
   const getProducts = useMutation(GetProductsApi, {
     onSuccess: (response) => {
       const data = response?.data?.data || {};

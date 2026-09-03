@@ -150,7 +150,6 @@ export default function GpDetail() {
         setSearchResults(response.data.value);
       }
     } catch (err) {
-      console.error("Postal search failed", err);
       setSearchResults([]);
     } finally {
       setSearchLoading(false);
@@ -158,7 +157,6 @@ export default function GpDetail() {
   };
 
   const handleSelectAddress = (address) => {
-    console.log(address, "Select GP Address");
 
     setValue("gpName", address.OrganisationName || "");
     setValue("addressLine1", address.Address1 || "");

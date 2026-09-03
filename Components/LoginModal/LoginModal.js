@@ -38,7 +38,6 @@ export default function LoginModal({ show = false, onClose = () => {}, onLogin =
 
   // }, [mode]);
 
-  console.log(mode, "mode");
   const [forceVisible, setForceVisible] = useState(false);
   const [showLoginMsg, setShowLoginMsg] = useState(false);
   const [localLoading, setLocalLoading] = useState(false);
@@ -53,7 +52,6 @@ export default function LoginModal({ show = false, onClose = () => {}, onLogin =
       setLocalLoading(false);
     },
     onError: (error) => {
-      console.log("Login error:", error);
 
       const errors = error?.response?.data?.errors;
 

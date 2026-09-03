@@ -79,10 +79,8 @@ export default function StepsInformation() {
   /* ───────────────  product id store ────────────── */
   const consultationMutation = useMutation(userConsultationApi, {
     onSuccess: (data) => {
-      console.log(data, "Dataaaaaaaaaa");
 
       if (data?.data?.data == null) {
-        console.log("true");
         clearBmi();
         clearCheckout();
         clearConfirmationInfo();
@@ -119,7 +117,6 @@ export default function StepsInformation() {
     },
     onError: (error) => {
       // setLoading(false);
-      console.log("error", error?.response?.data?.message);
       if (error?.response?.data?.message == "Unauthenticated.") {
         toast.error("Session Expired");
         clearBmi();
@@ -147,12 +144,10 @@ export default function StepsInformation() {
     },
   });
 
-  console.log(showProductSelection, "showProductSelection");
 
   /* ───────────────  medical questions mutation ────────────── */
   const medicalQuestionsMutation = useMutation(postMedicalQuestions, {
     onSuccess: (data) => {
-      console.log(data, "Medical Questions");
 
       if (data) {
         setMedicalQuestions(data?.data?.data?.medical_question);

@@ -41,7 +41,6 @@ const Dose = ({
       // }
     },
     onError: (error) => {
-      console.log(error, "This is error");
     },
   });
   const { productId } = useProductId();
@@ -103,7 +102,6 @@ const Dose = ({
       onDoseRemoved(doseData?.id);
     }
 
-    console.log(abandonCartId, "aasasa");
     // RemoveAbandonCartMutation.mutate({ notification_id: abandonCartId });
   };
 
@@ -116,7 +114,6 @@ const Dose = ({
         pid: dose.pivot?.pid,
       });
 
-      console.log(response, "response from get notified");
 
       if (response?.data?.status === true) {
         toast.success(response?.data?.message);

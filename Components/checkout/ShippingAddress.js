@@ -69,10 +69,6 @@ export default function ShippingAddress({
 
   const sameAsShippingValue = watch("same_as_shipping");
   useEffect(() => {
-    console.log(
-      sameAsShippingValue,
-      "sameAsShippingValue From ShippingAddress",
-    );
 
     if (typeof setIsBillingCheck === "function") {
       setIsBillingCheck(!!sameAsShippingValue);
@@ -179,7 +175,6 @@ export default function ShippingAddress({
       }
     } catch (error) {
       setAddressSearchLoading(false);
-      console.log("API error:", error);
       // setIsPostalCheck(isPostalCodeNotValid);
       // setIsPostalCodeNotValid(isPostalCodeNotValid);
     }
@@ -359,7 +354,7 @@ export default function ShippingAddress({
                 </div>
               )}
             />
-            {/* {console.log(isPostalCodeNotValid, "isPostalCodeNotValid")}  */}
+            {/* {}  */}
             <div className="relative">
               <TextField
                 label="Post code"

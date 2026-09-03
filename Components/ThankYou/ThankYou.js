@@ -27,8 +27,6 @@ const ThankYou = () => {
   const { productId } = useProductId();
   const { isReturningPatient } = useReturning();
 
-  // console.log(isReturningPatient, "isReturningPatient");
-
   // useEffect(() => {
 
   //   if (!checkOut || Object.keys(checkOut).length === 0) {
@@ -48,10 +46,6 @@ const ThankYou = () => {
 
         setImageUploaded(res?.data?.status);
       } catch (error) {
-        console.error(
-          "Failed to fetch image status:",
-          error?.response?.data?.errors?.Order,
-        );
       }
     };
 
@@ -144,9 +138,7 @@ const ThankYou = () => {
             localStorage.removeItem("utm_medium");
             localStorage.removeItem("utm_campaign");
 
-            console.log("✅ Mayfair attribution sent");
           } catch (attributionError) {
-            console.error("Attribution API failed:", attributionError);
           }
         }
 
@@ -182,7 +174,6 @@ const ThankYou = () => {
           error?.response?.data?.errors?.Order || "An error occurred",
         );
         router.replace("/dashboard");
-        console.error("Failed to fetch user order:", error);
       }
     };
 

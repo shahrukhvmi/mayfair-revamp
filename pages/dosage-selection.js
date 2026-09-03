@@ -37,10 +37,8 @@ export default function DosageSelection() {
   const { addToCart, increaseQuantity, decreaseQuantity, items, totalAmount } =
     useCartStore();
   const { productId } = useProductId();
-  console.log(productId, "productId in dosage selection");
   const { reorder } = useReorder();
 
-  console.log(items, "items");
 
   const {
     register,
@@ -82,13 +80,11 @@ export default function DosageSelection() {
     onSuccess: (data) => {
       if (data) {
         // router.push("/checkout");
-        console.log(data, "This is Abandon Cart Data");
       }
     },
     onError: (error) => {
       if (error) {
         // router.push("/checkout");
-        console.log(error, "This is error");
       }
     },
   });
@@ -117,7 +113,6 @@ export default function DosageSelection() {
     }
 
     const sortedVariations = [...variations].sort((a, b) => {
-      console.log(a, b, "sfkjefjfsj");
       const aMg = parseFloat(a.name);
       const bMg = parseFloat(b.name);
       return aMg - bMg;

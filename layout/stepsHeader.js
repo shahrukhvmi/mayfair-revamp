@@ -235,7 +235,6 @@ const StepsHeader = ({ isOpen, toggleSidebar }) => {
         setExplainenationEvidence(res?.data?.require_evidence);
         setExplainenationEvidenceDetails(res?.data);
       } catch (error) {
-        console.error("Failed to fetch prescription evidence status:", error);
       }
     };
 

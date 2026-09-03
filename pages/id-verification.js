@@ -65,7 +65,6 @@ const IdVerification = () => {
     });
   };
 
-
   const toBase64 = (file) =>
     new Promise((resolve, reject) => {
       const reader = new FileReader();
@@ -73,8 +72,6 @@ const IdVerification = () => {
       reader.onload = () => resolve(reader.result.split(",")[1]); // remove `data:image/...;base64,`
       reader.onerror = reject;
     });
-
-
 
   const GO = useRouter();
   const [open, setOpen] = useState(false);
@@ -118,13 +115,10 @@ const IdVerification = () => {
     const fetchImageStatus = async () => {
       try {
         const res = await GetIdVerification({ order_id: orderId });
-        console.log("Image Upload Response", res);
 
         setIdVerificationUpload(res?.data?.status);
         setImagesSend(res?.data?.status);
-        console.log(res, "Image Upload Status");
       } catch (error) {
-        console.error("Failed to fetch image status:", error);
       }
     };
 
@@ -135,12 +129,9 @@ const IdVerification = () => {
     const fetchImageStatus = async () => {
       try {
         const res = await GetImageIsUplaod({ order_id: orderId });
-        console.log("Image Upload Response", res);
         setImageUploaded(res?.data?.status);
         setImagesSend(res?.data?.status);
-        console.log(res, "Image Upload Status");
       } catch (error) {
-        console.error("Failed to fetch image status:", error);
       }
     };
     if (orderId) fetchImageStatus();
@@ -175,7 +166,6 @@ const IdVerification = () => {
             e.target.value = "";
             return;
           }
-          console.log("HEIC conversion failed — using original file instead.");
         }
       }
 
@@ -199,8 +189,6 @@ const IdVerification = () => {
     }
   };
 
-
-
   const onSubmit = async (data) => {
     try {
       if (!data.frontPhoto) {
@@ -223,8 +211,6 @@ const IdVerification = () => {
         payload.side = sideBase64; // ✅ Only include if uploaded
       }
 
-      console.log(payload, "Form Data");
-
       const res = await IdVerificationUpload(payload);
 
       if (res?.status === 200) {
@@ -234,7 +220,6 @@ const IdVerification = () => {
         );
       }
     } catch (error) {
-      console.log(error?.response?.data?.errors?.front, "Upload Error");
 
       if (error?.response?.data?.errors?.front) {
         toast.error(error?.response?.data?.errors?.front)
@@ -254,7 +239,6 @@ const IdVerification = () => {
       setLoading(false);
     }
   };
-
 
   const handleRedirect = () => {
     if (!imageUploaded) {
@@ -285,7 +269,6 @@ const IdVerification = () => {
 
     return (
       <>
-
 
         <div className="flex flex-col items-center w-full px-3">
           <label className="w-full cursor-pointer">
