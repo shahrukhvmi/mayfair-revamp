@@ -598,10 +598,9 @@ const PhotoUpload = () => {
             <div className="relative overflow-hidden rounded-xl border border-slate-200 bg-white">
               <Image
                 src={FaceX}
-                alt="Incorrect close-up photo example"
+                alt="Close-up photo example"
                 className="aspect-[3/4] h-auto w-full object-cover"
               />
-              <span className="inter-semibold-font absolute bottom-1.5 left-1.5 inline-flex items-center gap-1 rounded-md bg-white/95 px-1.5 py-1 text-[10px] text-red-600 shadow-sm"><RxCross2 size={10} /> Avoid</span>
             </div>
             <div className="relative overflow-hidden rounded-xl border border-slate-200 bg-white">
               <Image

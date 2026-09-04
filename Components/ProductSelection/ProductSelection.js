@@ -240,7 +240,7 @@ const ProductSelection = ({ showProductSelection }) => {
                         buttonText={
                           selectedProductId === p?.id
                             ? "Selected"
-                            : "Start Consultation"
+                            : "Select Treatment"
                         }
                         isSelected={selectedProductId === p?.id}
                         onClick={() => handleProductSelect(p?.id, "new")}
