@@ -14,6 +14,7 @@ import MetaLayout from "@/Meta/MetaLayout";
 import { meta_url } from "@/config/constants";
 import { MdCheckBox, MdCheckBoxOutlineBlank } from "react-icons/md";
 import useProductId from "@/store/useProductIdStore";
+import useReorder from "@/store/useReorderStore";
 
 export default function PatientConsent() {
   const router = useRouter();
@@ -27,6 +28,7 @@ export default function PatientConsent() {
     clearConsentResetProductId,
   } = useConfirmationInfoStore();
   const { productId } = useProductId();
+  const { reorder, reorderStatus } = useReorder();
   const [questions, setQuestions] = useState([]);
 
   const {
@@ -43,8 +45,10 @@ export default function PatientConsent() {
   useEffect(() => {
     if (confirmationQuestions?.length) {
       const requiresFreshConsent =
-        consentResetProductId != null &&
-        String(consentResetProductId) === String(productId);
+        !reorder ||
+        reorderStatus ||
+        (consentResetProductId != null &&
+          String(consentResetProductId) === String(productId));
       const initialized = confirmationQuestions.map((q) => {
         const existingAnswer = requiresFreshConsent
           ? null
@@ -60,7 +64,14 @@ export default function PatientConsent() {
     } else {
       setQuestions([]);
     }
-  }, [confirmationQuestions]);
+  }, [
+    confirmationQuestions,
+    confirmationInfo,
+    consentResetProductId,
+    productId,
+    reorder,
+    reorderStatus,
+  ]);
 
   // Prefill form fields
   useEffect(() => {

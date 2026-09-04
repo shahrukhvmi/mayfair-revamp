@@ -221,7 +221,8 @@ const Dose = ({
         {/* </div> */}
         <div
           onClick={isOutOfStock || isAllowExceeded ? undefined : handleAdd}
-          className={`relative mt-5 flex flex-col items-start justify-between gap-3 rounded-[14px] border p-3.5 transition-all duration-200 sm:flex-row sm:items-center sm:gap-0 sm:p-4
+          className={`relative mt-5 flex justify-between rounded-[14px] border p-3.5 transition-all duration-200 sm:p-4
+            ${isSelected ? "flex-col items-start gap-3 sm:flex-row sm:items-center sm:gap-0" : "flex-row items-center gap-3"}
             ${isOutOfStock
               ? "cursor-not-allowed border-slate-200 bg-slate-50/80"
               : isSelected
@@ -247,7 +248,7 @@ const Dose = ({
           )}
 
           {/* Left Side */}
-          <div className={`flex w-full min-w-0 items-start gap-2.5 transition-opacity sm:w-auto sm:items-center sm:gap-3 ${isOutOfStock || (!isSelected && isAllowExceeded) ? "opacity-60 grayscale" : ""}`}>
+          <div className={`flex min-w-0 items-start gap-2.5 transition-opacity sm:items-center sm:gap-3 ${isSelected ? "w-full sm:w-auto" : "w-auto flex-1"} ${isOutOfStock || (!isSelected && isAllowExceeded) ? "opacity-60 grayscale" : ""}`}>
             <div className={`mt-0.5 flex h-[18px] w-[18px] shrink-0 items-center justify-center rounded-[5px] border-2 transition-all duration-150 sm:h-5 sm:w-5
               ${isSelected ? "border-[#47317c] bg-[#47317c]" : "border-slate-300 bg-white"}`}>
               {isSelected && (
@@ -273,7 +274,7 @@ const Dose = ({
           </div>
 
           {/* Right Side */}
-          <div className={`flex w-full items-center gap-2 border-t border-slate-100 pt-3 transition-opacity sm:w-auto sm:gap-3 sm:border-t-0 sm:pt-0 ${isSelected ? "justify-between" : "justify-end"} ${isOutOfStock || (!isSelected && isAllowExceeded) ? "opacity-60 grayscale" : ""}`}>
+          <div className={`flex items-center gap-2 transition-opacity sm:w-auto sm:gap-3 ${isSelected ? "w-full justify-between border-t border-slate-100 pt-3 sm:border-t-0 sm:pt-0" : "w-auto justify-end border-0 p-0"} ${isOutOfStock || (!isSelected && isAllowExceeded) ? "opacity-60 grayscale" : ""}`}>
             <span
               className={`inter-semibold-font shrink-0 text-[16px] ${isSelected ? "text-[#47317c]" : "text-slate-700"
                 }`}

@@ -25,17 +25,27 @@ import {
 } from "react-icons/hi";
 import useAbandonCardStore from "@/store/abandonCardStore";
 import PageLoader from "@/Components/PageLoader/PageLoader";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import { LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
+import { format } from "date-fns";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 
 export default function DosageSelection() {
-  const [shownDoseIds, setShownDoseIds] = useState([]);
   const [isButtonLoading, setIsButtonLoading] = useState(false);
   const [abandonData, setAbandonData] = useState([]);
   const router = useRouter();
   // const {  } = useCartStore();
-  const { addToCart, increaseQuantity, decreaseQuantity, items, totalAmount } =
-    useCartStore();
+  const {
+    addToCart,
+    increaseQuantity,
+    decreaseQuantity,
+    removeItemCompletely,
+    setConsentGiven,
+    items,
+    totalAmount,
+  } = useCartStore();
   const { productId } = useProductId();
   const { reorder } = useReorder();
 
@@ -70,11 +80,22 @@ export default function DosageSelection() {
     }
   }, [variation?.name, variation?.show_expiry, clearErrors, setValue]);
 
+  useEffect(() => {
+    items.doses.forEach((dose) => {
+      if (dose.product_concent && !dose.consentGiven) {
+        removeItemCompletely(dose.id, "dose");
+      }
+    });
+  }, []);
+
   const expiryConfirmed = watch("terms");
 
   const allowed = variation?.allowed;
   const [showDoseModal, setShowDoseModal] = useState(false);
   const [selectedDose, setSelectedDose] = useState(null);
+  const [prevMedication, setPrevMedication] = useState("");
+  const [prevDose, setPrevDose] = useState("");
+  const [lastTakenDate, setLastTakenDate] = useState(null);
   const { abandonCard, extra } = useAbandonCardStore();
   const abandonCartMutation = useMutation(abandonCart, {
     onSuccess: (data) => {
@@ -279,20 +300,14 @@ export default function DosageSelection() {
         eid: dose.id,
         pid: productId || abandonCard?.productId,
       });
-      // ✅ ✅ ✅ Check if modal was already shown for this dose
-      if (!shownDoseIds.includes(dose.id)) {
-        setSelectedDose({
-          ...dose,
-          productConcent: generateProductConcent(
-            variation?.variations,
-            dose?.name,
-          ),
-        });
-        setShowDoseModal(true);
-
-        // ✅ ✅ ✅ Mark this dose as shown
-        setShownDoseIds((prev) => [...prev, dose.id]);
-      }
+      setSelectedDose({
+        ...dose,
+        productConcent: generateProductConcent(
+          variation?.variations,
+          dose?.name,
+        ),
+      });
+      setShowDoseModal(true);
     }
   };
 
@@ -343,25 +358,130 @@ export default function DosageSelection() {
               animate={{ y: 0, opacity: 1 }}
               exit={{ y: 60, opacity: 0 }}
               transition={{ type: "spring", stiffness: 300, damping: 28 }}
-              className="max-h-[calc(100dvh-48px)] w-full max-w-md overflow-y-auto rounded-2xl bg-white shadow-[0_24px_64px_rgba(71,49,124,0.18)]"
+              className="max-h-[calc(100dvh-48px)] w-full max-w-md overflow-y-auto rounded-[22px] border border-white/80 bg-white shadow-[0_28px_80px_rgba(30,20,60,0.22)]"
             >
-              <div className="border-b border-[#47317c]/[0.07] bg-[#f5f2fc] px-6 py-5">
-                <h2 className="inter-semibold-font text-[18px] text-slate-900">
+              <div className="relative border-b border-slate-100 bg-white px-6 py-5 pr-16">
+                <h2 className="inter-semibold-font text-[19px] tracking-[-0.01em] text-slate-900">
                   Dosage Confirmation
                 </h2>
-              </div>
-              {selectedDose?.productConcent && (
-                <div className="px-6 py-5">
-                  <p className="inter-reg-font text-[13.5px] leading-relaxed text-slate-600">
-                    {selectedDose?.productConcent}
-                  </p>
-                </div>
-              )}
-              <div className="px-6 pb-6 pt-1">
                 <button
                   type="button"
-                  onClick={() => setShowDoseModal(false)}
-                  className="inter-medium-font inline-flex min-h-11 w-full cursor-pointer items-center justify-center rounded-xl bg-[#47317c] px-5 py-2.5 text-[14px] text-white shadow-[0_6px_16px_rgba(71,49,124,0.20)] transition-all duration-150 hover:bg-[#3d2a6b] active:scale-[0.98]"
+                  aria-label="Close dosage confirmation"
+                  onClick={() => {
+                    removeItemCompletely(selectedDose?.id, "dose");
+                    setPrevMedication("");
+                    setPrevDose("");
+                    setLastTakenDate(null);
+                    setShowDoseModal(false);
+                  }}
+                  className="absolute right-4 top-1/2 flex h-9 w-9 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full border border-slate-200 bg-slate-50 text-slate-500 transition-all duration-150 hover:border-[#47317c]/20 hover:bg-[#f5f2fc] hover:text-[#47317c] active:scale-95"
+                >
+                  <svg width="13" height="13" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+                    <path d="M1.5 1.5L12.5 12.5M12.5 1.5L1.5 12.5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+                  </svg>
+                </button>
+              </div>
+              <div className="px-6 py-5">
+                {selectedDose?.productConcent && (
+                  <p className="inter-reg-font text-[13.5px] leading-[1.65] text-slate-600">
+                    {selectedDose?.productConcent}
+                  </p>
+                )}
+                <div className="mt-5 space-y-4">
+                  <div>
+                    <label className="inter-medium-font mb-1 block text-[13px] text-slate-700">
+                      Previous medication name
+                    </label>
+                    <input
+                      type="text"
+                      value={prevMedication}
+                      onChange={(e) => setPrevMedication(e.target.value)}
+                      placeholder="e.g. Ozempic, Mounjaro, Wegovy"
+                      className="inter-reg-font h-12 w-full rounded-xl border border-slate-200 bg-slate-50/50 px-3.5 text-[14px] text-slate-800 outline-none transition-all placeholder:text-slate-400 hover:border-slate-300 focus:border-[#47317c] focus:bg-white focus:ring-4 focus:ring-[#47317c]/[0.08]"
+                    />
+                  </div>
+                  <div>
+                    <label className="inter-medium-font mb-1 block text-[13px] text-slate-700">
+                      What dose were you on? (mg)
+                    </label>
+                    <input
+                      type="text"
+                      value={prevDose}
+                      onChange={(e) => setPrevDose(e.target.value)}
+                      placeholder="e.g. 2.5"
+                      className="inter-reg-font h-12 w-full rounded-xl border border-slate-200 bg-slate-50/50 px-3.5 text-[14px] text-slate-800 outline-none transition-all placeholder:text-slate-400 hover:border-slate-300 focus:border-[#47317c] focus:bg-white focus:ring-4 focus:ring-[#47317c]/[0.08]"
+                    />
+                  </div>
+                  <div>
+                    <label className="inter-medium-font mb-1 block text-[13px] text-slate-700">
+                      When did you last take it?
+                    </label>
+                    <LocalizationProvider dateAdapter={AdapterDateFns}>
+                      <DatePicker
+                        value={lastTakenDate}
+                        onChange={(date) => setLastTakenDate(date)}
+                        maxDate={new Date()}
+                        format="dd/MM/yyyy"
+                        slotProps={{
+                          popper: {
+                            sx: { zIndex: 10001 },
+                          },
+                          dialog: {
+                            sx: { zIndex: 10001 },
+                          },
+                          textField: {
+                            fullWidth: true,
+                            placeholder: "DD/MM/YYYY",
+                            sx: {
+                              "& .MuiOutlinedInput-root": {
+                                height: "48px",
+                                borderRadius: "12px",
+                                backgroundColor: "rgba(248, 250, 252, 0.5)",
+                                fontFamily: "var(--font-inter)",
+                                fontSize: "14px",
+                                transition: "all 150ms ease",
+                                "&:hover": { backgroundColor: "#fff" },
+                                "&.Mui-focused": {
+                                  backgroundColor: "#fff",
+                                  boxShadow: "0 0 0 4px rgba(71, 49, 124, 0.08)",
+                                },
+                              },
+                              "& .MuiOutlinedInput-notchedOutline": { borderColor: "#e2e8f0" },
+                              "& .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline": { borderColor: "#cbd5e1" },
+                              "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": { borderColor: "#47317c", borderWidth: "1px" },
+                              "& .MuiIconButton-root": { color: "#64748b" },
+                            },
+                          },
+                          desktopPaper: {
+                            sx: {
+                              borderRadius: "16px",
+                              boxShadow: "0 20px 50px rgba(30, 20, 60, 0.18)",
+                              "& .MuiPickersDay-root.Mui-selected": { backgroundColor: "#47317c" },
+                            },
+                          },
+                          mobilePaper: { sx: { borderRadius: "16px" } },
+                        }}
+                      />
+                    </LocalizationProvider>
+                  </div>
+                </div>
+              </div>
+              <div className="px-6 pb-6">
+                <button
+                  type="button"
+                  disabled={!prevMedication || !prevDose || !lastTakenDate}
+                  onClick={() => {
+                    setConsentGiven(selectedDose?.id, {
+                      medication_name: prevMedication,
+                      dosage: prevDose,
+                      dosage_time: format(lastTakenDate, "dd/MM/yyyy"),
+                    });
+                    setPrevMedication("");
+                    setPrevDose("");
+                    setLastTakenDate(null);
+                    setShowDoseModal(false);
+                  }}
+                  className="inter-semibold-font inline-flex min-h-12 w-full cursor-pointer items-center justify-center rounded-xl bg-[#47317c] px-5 py-3 text-[14px] text-white shadow-[0_8px_20px_rgba(71,49,124,0.22)] transition-all duration-150 hover:-translate-y-0.5 hover:bg-[#3d2a6b] hover:shadow-[0_10px_24px_rgba(71,49,124,0.28)] active:translate-y-0 active:scale-[0.99] disabled:cursor-not-allowed disabled:bg-[#c8c1da] disabled:shadow-none disabled:hover:translate-y-0"
                 >
                   {productId == FoundayoProductId ||
                   productId == WegovyPillProductId
