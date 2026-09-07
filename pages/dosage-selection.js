@@ -56,29 +56,26 @@ export default function DosageSelection() {
     clearErrors,
     setValue,
     watch,
-    formState: { isValid, errors },
+    formState: { errors },
   } = useForm({
     mode: "onChange",
+    shouldUnregister: true,
     defaultValues: { terms: false },
   });
 
-  const [isExpiryRequired, setIsExpiryRequired] = useState(false);
   // Variation From zustand
   const { variation } = useVariationStore();
 
-  // ✅ useEffect to check if `product?.show_expiry` is `0` or `1`
+  const isExpiryRequired = (variation?.variations || []).some(
+    (dose) => Boolean(dose?.expiry),
+  );
+
   useEffect(() => {
-    if (
-      variation?.name === "Mounjaro (Tirzepatide)" ||
-      variation?.show_expiry === 1
-    ) {
-      setIsExpiryRequired(true);
-    } else {
-      setIsExpiryRequired(false);
+    if (!isExpiryRequired) {
       clearErrors("terms");
       setValue("terms", false);
     }
-  }, [variation?.name, variation?.show_expiry, clearErrors, setValue]);
+  }, [isExpiryRequired, clearErrors, setValue]);
 
   useEffect(() => {
     items.doses.forEach((dose) => {
@@ -330,13 +327,14 @@ export default function DosageSelection() {
 
   // 🔥⚠️⚠️⚠️⚠️⚠️Abandone card selected dose auto add krne k liye useEffect ⚠️⚠️⚠️⚠️⚠️
   useEffect(() => {
+    if (!router.isReady || router.query.checkoutRecovery === "1") return;
     if (!abandonCard || !extra) return;
     if (!variation?.variations) return;
 
     if (abandonCard?.type === "abandoned-cart") {
       handleAddDose(extra);
     }
-  }, [abandonCard, extra]);
+  }, [abandonCard, extra, router.isReady, router.query.checkoutRecovery]);
 
   const back = () => {
     router.push("/confirmation-summary");
@@ -680,7 +678,7 @@ export default function DosageSelection() {
           </div>
 
           {/* Action row */}
-          {(totalSelectedQty() === 0 || !isValid) && (
+          {(totalSelectedQty() === 0 || (isExpiryRequired && !expiryConfirmed)) && (
             <p className="inter-medium-font mb-2 text-center text-[12px] text-slate-500">
               {totalSelectedQty() === 0
                 ? "Select at least one dose to continue."
@@ -701,7 +699,7 @@ export default function DosageSelection() {
                     className="h-5 w-5 rounded-full border-2 border-white border-t-transparent" />
                 </div>
               ) : (
-                <NextButton onClick={handleSubmit(onSubmit)} disabled={totalSelectedQty() === 0 || !isValid} label="Proceed to Checkout" />
+                <NextButton onClick={handleSubmit(onSubmit)} disabled={totalSelectedQty() === 0 || (isExpiryRequired && !expiryConfirmed)} label="Proceed to Checkout" />
               )}
             </div>
           </div>

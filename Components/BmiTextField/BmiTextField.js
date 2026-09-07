@@ -29,7 +29,7 @@ const BmiTextField = ({
         disabled={disabled}
         {...fieldProps}
         onBlur={onBlur}
-        className={`inter-reg-font w-full border-0 border-b-2 bg-transparent px-0 py-3 text-[15px] text-slate-900 placeholder:text-slate-400 transition-colors duration-200 focus:outline-none focus:ring-0
+        className={`inter-reg-font w-full border-0 border-b-2 bg-transparent px-1 py-3 text-[15px] text-slate-900 placeholder:text-slate-400 transition-colors duration-200 focus:outline-none focus:ring-0
           ${errors[name] ? "border-red-400 focus:border-red-500" : "border-slate-200 focus:border-[#47317c]"}
           ${(readOnly || disabled) ? "cursor-not-allowed opacity-50" : ""}
         `}

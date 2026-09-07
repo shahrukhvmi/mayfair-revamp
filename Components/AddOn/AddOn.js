@@ -50,7 +50,8 @@ const AddOn = ({ addon, onAdd, onIncrement, onDecrement, isSelected, quantity })
     <>
       <div
         onClick={!isOutOfStock && !isSelected ? handleAdd : undefined}
-        className={`relative mt-5 flex flex-col items-start justify-between gap-3 rounded-[14px] border p-4 transition-all duration-200 sm:flex-row sm:items-center sm:gap-0
+        className={`relative mt-5 flex justify-between gap-3 rounded-[14px] border p-4 transition-all duration-200 sm:flex-row sm:items-center sm:gap-0
+          ${isSelected ? "flex-col items-start" : "flex-row items-center"}
           ${isOutOfStock
             ? "cursor-not-allowed border-slate-200 bg-slate-50/80"
             : isSelected
@@ -68,7 +69,7 @@ const AddOn = ({ addon, onAdd, onIncrement, onDecrement, isSelected, quantity })
         )}
 
         {/* Left Content */}
-        <div className={`flex items-start gap-3 transition-opacity sm:items-center ${isOutOfStock ? "opacity-60 grayscale" : ""}`}>
+        <div className={`flex min-w-0 items-start gap-3 transition-opacity sm:items-center ${isOutOfStock ? "opacity-60 grayscale" : ""}`}>
           <div className={`mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-[5px] border-2 transition-all duration-150
             ${isSelected ? "border-[#47317c] bg-[#47317c]" : "border-slate-300 bg-white"}`}>
             {isSelected && (
@@ -84,7 +85,7 @@ const AddOn = ({ addon, onAdd, onIncrement, onDecrement, isSelected, quantity })
         </div>
 
         {/* Right Content */}
-        <div className={`flex w-full items-center justify-end gap-3 transition-opacity sm:w-auto ${isOutOfStock ? "opacity-60 grayscale" : ""}`}>
+        <div className={`flex shrink-0 items-center justify-end gap-3 transition-opacity sm:w-auto ${isSelected ? "w-full" : "w-auto"} ${isOutOfStock ? "opacity-60 grayscale" : ""}`}>
           <span className={`inter-semibold-font text-[16px] ${isSelected ? "text-[#47317c]" : "text-slate-900"}`}>
             £{parseFloat(addon?.price).toFixed(2)}
           </span>
