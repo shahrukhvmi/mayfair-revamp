@@ -118,8 +118,8 @@ const UploadTopPrompt = ({ isLoading = false }) => {
       <div className="w-full">
         <AlertBanner
           icon={IdCard}
-          title="Upload your ID"
-          description="Please upload your ID verification to complete your order."
+          title="Verify Your Identity"
+          description="Please upload a valid ID to verify your identity and complete your order."
           buttonText="Upload ID"
           href="/id-verification"
         />

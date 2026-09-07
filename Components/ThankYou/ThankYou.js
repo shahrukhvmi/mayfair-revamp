@@ -3,8 +3,10 @@ import { useRouter } from "next/router";
 import { HiBadgeCheck } from "react-icons/hi";
 import NextButton from "../NextButton/NextButton";
 import useCartStore from "@/store/useCartStore";
-import { RiErrorWarningLine } from "react-icons/ri";
+import { ChevronRight, UploadCloud, Camera, IdCard, ShieldCheck, ClipboardCheck } from "lucide-react";
 import useImageUploadStore from "@/store/useImageUploadStore ";
+import useIdVerificationUploadStore from "@/store/useIdVerificationUploadStore";
+import { GetIdVerification } from "@/api/IdVerificationApi";
 import GetImageIsUplaod from "@/api/GetImageIsUplaod";
 import GetUserOrderApi from "@/api/GetUserOrderApi";
 import useAuthStore from "@/store/authStore";
@@ -16,6 +18,37 @@ import useProductId from "@/store/useProductIdStore";
 import { trackCustomerLabsPurchased } from "@/config/CustomerLabs";
 import patientSource from "@/api/patientSource";
 import useReturning from "@/store/useReturningPatient";
+
+const VerificationCard = ({ icon: Icon, title, description, label, onClick }) => (
+  <section className="w-full overflow-hidden rounded-2xl border border-amber-200/70 bg-amber-50/40 shadow-[0_1px_4px_rgba(180,83,9,0.06)]">
+    <div className="flex w-full flex-col gap-4 p-4 sm:p-5 lg:flex-row lg:items-center lg:justify-between">
+      <div className="flex min-w-0 flex-1 items-center gap-3.5">
+        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-amber-50 text-amber-500">
+          <Icon aria-hidden="true" size={18} strokeWidth={2} />
+        </div>
+        <div className="min-w-0 flex-1">
+          <div className="mb-0.5 flex items-center gap-2">
+            <span className="inter-medium-font inline-flex items-center rounded-full border border-amber-200 bg-amber-50 px-2 py-0.5 text-[10px] uppercase tracking-[0.1em] text-amber-600">
+              Action required
+            </span>
+          </div>
+          <h3 className="inter-semibold-font text-[14px] leading-snug text-slate-900">{title}</h3>
+          <p className="inter-reg-font mt-0.5 text-[12.5px] text-slate-500">{description}</p>
+        </div>
+      </div>
+
+      <button
+        type="button"
+        onClick={onClick}
+        className="inter-medium-font group inline-flex min-h-[38px] w-full shrink-0 cursor-pointer items-center justify-center gap-1.5 rounded-xl border border-amber-200 bg-amber-50 px-5 py-2 text-[12.5px] text-amber-600 transition-all duration-150 hover:bg-amber-100 active:scale-[0.98] lg:w-auto lg:min-w-[140px]"
+      >
+        <UploadCloud aria-hidden="true" size={14} strokeWidth={2.2} />
+        <span>{label}</span>
+        <ChevronRight aria-hidden="true" size={13} strokeWidth={2.5} className="shrink-0 transition-transform duration-150 group-hover:translate-x-0.5" />
+      </button>
+    </div>
+  </section>
+);
 
 const ThankYou = () => {
   const { orderId, checkOut, setOrderId, setCheckOut } = useCartStore();
@@ -39,18 +72,27 @@ const ThankYou = () => {
   // }
   const GO = useRouter();
   const { imageUploaded, setImageUploaded } = useImageUploadStore();
+  const { idVerificationUpload, setIdVerificationUpload } = useIdVerificationUploadStore();
   useEffect(() => {
     const fetchImageStatus = async () => {
       try {
-        const res = await GetImageIsUplaod({ order_id: orderId });
+        const [imageResult, idResult] = await Promise.allSettled([
+          GetImageIsUplaod({ order_id: orderId }),
+          GetIdVerification(),
+        ]);
 
-        setImageUploaded(res?.data?.status);
+        if (imageResult.status === "fulfilled") {
+          setImageUploaded(imageResult.value?.data?.status);
+        }
+        if (idResult.status === "fulfilled") {
+          setIdVerificationUpload(idResult.value?.data?.status);
+        }
       } catch (error) {
       }
     };
 
     if (orderId) fetchImageStatus();
-  }, [orderId]);
+  }, [orderId, setImageUploaded, setIdVerificationUpload]);
 
   useEffect(() => {
     const fetchUserOrder = async () => {
@@ -350,57 +392,46 @@ const ThankYou = () => {
               </table>
             </div>
           </div>
-          {!imageUploaded && (
-            <>
-              <blockquote
-                className={`rounded-xl border border-[#47317c]/10 bg-[#47317c]/[0.035] p-5 ${imageUploaded ? "my-6" : ""}`}
-              >
-                <h2 className="inter-semibold-font mb-2 text-[15px] text-slate-900">
-                  Photo Upload Request:
-                </h2>{" "}
-                <p className="inter-reg-font text-[13px] leading-relaxed text-slate-600">
-                  {" "}
-                  To complete your order, please upload a clear, recent
-                  full-body photo as part of our prescription approval process.
-                  This helps our prescribers verify your BMI and ensure the safe
-                  and appropriate supply of your treatment.
-                </p>
-                <p className="inter-reg-font my-3 text-[13px] leading-relaxed text-slate-600">
-                  {" "}
-                  Please upload a clear, recent full-body photograph. This
-                  is one of the methods we use to verify your BMI and ensure
-                  that your treatment remains safe and appropriate for you.
-                </p>
-                <p className="inter-reg-font my-3 text-[13px] leading-relaxed text-slate-600">
-                  {" "}
-                  Once your photo has been reviewed and approved by our
-                  clinical team, your order will be processed and dispensed
-                  by our pharmacy.
-                </p>
-                <p className="inter-reg-font text-gray-700 my-3 ">
-                  {" "}
-                  Your privacy is important to us, therefore all photos are
-                  stored securely, encrypted, and handled in strict
-                  confidence in accordance with applicable data protection
-                  regulations.
-                </p>
-
-              </blockquote>
-
-              <div className="my-6 flex justify-center ">
-                <button
-                  className="inter-semibold-font flex w-full cursor-pointer items-center gap-2.5 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-left text-[13px] leading-relaxed text-amber-900 transition-colors hover:bg-amber-100"
-                  onClick={handleGoUpload}
-                >
-                  <RiErrorWarningLine
-                    className="shrink-0 text-amber-700"
-                    size={20}
-                  />
-                  Click here to upload your full-body image to complete your
-                  order
-                </button>
+          {(!imageUploaded || !idVerificationUpload) && (
+            <section aria-labelledby="verification-heading" className="space-y-4">
+              <div className="flex items-start gap-3">
+                <ClipboardCheck aria-hidden="true" size={22} strokeWidth={1.7} className="mt-0.5 shrink-0 text-[#47317c]" />
+                <div>
+                  <h2 id="verification-heading" className="inter-semibold-font text-[18px] tracking-[-0.02em] text-slate-900">
+                    Your next step: verification
+                  </h2>
+                  <p className="inter-reg-font mt-1 text-[13px] leading-relaxed text-slate-500">
+                    Please complete the uploads below so our clinical team can review your order.
+                  </p>
+                </div>
               </div>
-            </>
+
+              <div className="flex flex-col gap-3">
+                {!imageUploaded && (
+                  <VerificationCard
+                    icon={Camera}
+                    title="Upload your photo"
+                    description="Please upload your Photo verification to complete your order."
+                    label="Upload photo"
+                    onClick={handleGoUpload}
+                  />
+                )}
+                {!idVerificationUpload && (
+                  <VerificationCard
+                    icon={IdCard}
+                    title="Verify Your Identity"
+                    description="Please upload a valid ID to verify your identity and complete your order."
+                    label="Upload ID"
+                    onClick={() => GO.push("/id-verification")}
+                  />
+                )}
+              </div>
+
+              <p className="inter-reg-font flex items-start gap-2 text-[12px] leading-relaxed text-slate-500">
+                <ShieldCheck aria-hidden="true" size={17} strokeWidth={1.7} className="mt-0.5 shrink-0 text-teal-800" />
+                Your uploads are stored securely and handled confidentially as part of your clinical review.
+              </p>
+            </section>
           )}
 
           <div className="inter-reg-font space-y-4 text-left text-[13px] leading-relaxed text-slate-600">
