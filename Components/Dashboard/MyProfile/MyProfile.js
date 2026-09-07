@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { FormControl, MenuItem, FormHelperText, Select } from "@mui/material";
+import MUISelectField from "@/Components/SelectField/SelectField";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
 import MuiDatePickerField from "@/Components/DatePicker/DatePicker";
@@ -96,37 +96,29 @@ const MyProfile = () => {
         {/* Gender & DOB */}
         <div className="grid sm:grid-cols-2 gap-4 items-start">
           <div>
-            <label className="bold-font paragraph mb-2 relative">
-              Gender
-              <span className="text-red-500 absolute m-1 niba-semibold-font"> *</span>
-            </label>
-            <FormControl fullWidth error={!!errors.gender}>
               <Controller
                 name="gender"
                 control={control}
                 rules={{ required: "Gender is required" }}
                 render={({ field }) => (
-                  <Select
-                    {...field}
-                    displayEmpty
-                    size="small"
-                    fullWidth
-                    className="reg-font"
-                    sx={{
-                      height: 56,
-                      fontSize: "14px",
-                      color: "black",
-                      backgroundColor: "transparent",
-                    }}
-                  >
-                    <MenuItem value="">Select gender</MenuItem>
-                    <MenuItem value="male">Male</MenuItem>
-                    <MenuItem value="female">Female</MenuItem>
-                  </Select>
+                  <MUISelectField
+                    label="Gender"
+                    name={field.name}
+                    value={field.value}
+                    onChange={field.onChange}
+                    onBlur={field.onBlur}
+                    inputRef={field.ref}
+                    required
+                    placeholder="Select gender"
+                    placeholderDisabled={false}
+                    error={errors.gender?.message}
+                    options={[
+                      { value: "male", label: "Male" },
+                      { value: "female", label: "Female" },
+                    ]}
+                  />
                 )}
               />
-              {errors.gender && <FormHelperText>{errors.gender.message}</FormHelperText>}
-            </FormControl>
           </div>
 
           <div>

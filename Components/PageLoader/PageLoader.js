@@ -33,7 +33,7 @@ export default function PageLoader({ message = "" }) {
           className="relative overflow-hidden"
         >
           <img
-            src="/images/logo.svg"
+            src="../images/logo.svg"
             alt="Mayfair Weight Loss Clinic"
             className="h-auto w-[138px] select-none drop-shadow-[0_6px_12px_rgba(71,49,124,0.12)] sm:w-[150px]"
           />

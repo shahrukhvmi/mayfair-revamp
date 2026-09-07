@@ -181,6 +181,7 @@ export default function ResidentialAddress() {
                   {addressOptions.length > 0 && (
                     <MUISelectField
                       label="Select Your Address"
+                      variant="underline"
                       name="addressSelect"
                       value={selectedIndex}
                       required

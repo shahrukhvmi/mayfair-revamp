@@ -214,6 +214,7 @@ export default function Billing({ billingCountries = [] }) {
           render={({ field }) => (
             <MUISelectField
               label="Select Country"
+              variant="underline"
               name="billingCountry"
               value={field.value}
               required
@@ -280,6 +281,7 @@ className="absolute right-2 top-12.5 -translate-y-1/2 bg-[#47317c] hover:bg-[#39
           addressOptions.length > 0 && (
             <MUISelectField
               label="Select Your Address"
+              variant="underline"
               name="addressSelect"
               value={selectedIndex}
               required
@@ -392,28 +394,6 @@ className="absolute right-2 top-12.5 -translate-y-1/2 bg-[#47317c] hover:bg-[#39
           color: #64748b;
         }
 
-        .address-form .MuiInputBase-root {
-          min-height: 50px;
-          border-radius: 14px !important;
-          background: #ffffff;
-          font-family: var(--inter-reg) !important;
-          font-size: 13px !important;
-        }
-
-        .address-form .MuiOutlinedInput-notchedOutline {
-          border-color: rgba(71, 49, 124, 0.12) !important;
-        }
-
-        .address-form
-          .MuiInputBase-root:hover
-          .MuiOutlinedInput-notchedOutline {
-          border-color: rgba(71, 49, 124, 0.24) !important;
-        }
-
-        .address-form .Mui-focused .MuiOutlinedInput-notchedOutline {
-          border-color: #47317c !important;
-          border-width: 1px !important;
-        }
 
         .address-form input,
         .address-form select,

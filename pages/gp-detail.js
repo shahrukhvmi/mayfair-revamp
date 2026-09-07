@@ -305,6 +305,7 @@ export default function GpDetail() {
                     <div className="mt-4">
                       <MUISelectField
                         label="Select GP Address"
+                        variant="underline"
                         name="gpAddressSelect"
                         value={selectedIndex}
                         onChange={(e) => {

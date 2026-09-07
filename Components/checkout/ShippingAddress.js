@@ -4,6 +4,7 @@ import SectionWrapper from "./SectionWrapper";
 import SectionHeader from "./SectionHeader";
 import { FaSearch, FaShippingFast } from "react-icons/fa";
 import TextField from "@/Components/TextField/TextField";
+import MUISelectField from "@/Components/SelectField/SelectField";
 import PageLoader from "@/Components/PageLoader/PageLoader";
 // import { Client } from "getaddress-api";
 import useShippingOrBillingStore from "@/store/shipingOrbilling";
@@ -322,11 +323,14 @@ export default function ShippingAddress({
               control={control}
               rules={{ required: "Country is required" }}
               render={({ field }) => (
-                <div className="mb-4">
-                  <label className="inter-medium-font mb-1.5 block text-[13px] text-slate-700">
-                    Select Country <span className="text-red-500">*</span>
-                  </label>
-                  <select
+                  <MUISelectField
+                    label="Select Country"
+                    name={field.name}
+                    onBlur={field.onBlur}
+                    inputRef={field.ref}
+                    required
+                    placeholder="Select a country"
+                    placeholderDisabled={false}
                     value={field.value}
                     onChange={(e) => {
                       const id = e.target.value;
@@ -344,14 +348,10 @@ export default function ShippingAddress({
                         });
                       }
                     }}
-                    className="inter-reg-font w-full border-0 border-b-2 bg-transparent px-0 py-3 text-[15px] text-slate-900 focus:outline-none transition-colors duration-200 border-slate-200 focus:border-[#47317c] cursor-pointer"
-                  >
-                    <option value="">Select a country</option>
-                    {(shipmentCountries || []).map((c) => (
-                      <option key={c.id} value={c.id.toString()}>{c.name}</option>
-                    ))}
-                  </select>
-                </div>
+                    options={(shipmentCountries || []).map((c) => ({
+                      value: c.id.toString(), label: c.name,
+                    }))}
+                  />
               )}
             />
             {/* {}  */}
@@ -389,11 +389,11 @@ export default function ShippingAddress({
             </div>
             {/* !isPostalCodeNotValid &&  */}
             {!addressSearchLoading && addressOptions.length > 0 && (
-              <div className="mb-4">
-                <label className="inter-medium-font mb-1.5 block text-[13px] text-slate-700">
-                  Select Your Address <span className="text-red-500">*</span>
-                </label>
-                <select
+                <MUISelectField
+                  label="Select Your Address"
+                  name="shippingAddressSelect"
+                  required
+                  placeholder="Select an address"
                   value={selectedIndex}
                   onChange={(e) => {
                     const idx = e.target.value;
@@ -403,16 +403,11 @@ export default function ShippingAddress({
                     setValue("addresstwo", selected.line_2 || "", { shouldValidate: true });
                     setValue("city", selected.post_town || "", { shouldValidate: true });
                   }}
-                  className="inter-reg-font w-full border-0 border-b-2 bg-transparent px-0 py-3 text-[14px] text-slate-900 focus:outline-none transition-colors duration-200 border-slate-200 focus:border-[#47317c] cursor-pointer"
-                >
-                  <option value="">Select an address</option>
-                  {addressOptions.map((addr, idx) => (
-                    <option key={idx} value={idx}>
-                      {[addr.line_1, addr.line_2, addr.line_3, addr.post_town, addr.postcode].filter(Boolean).join(", ")}
-                    </option>
-                  ))}
-                </select>
-              </div>
+                  options={addressOptions.map((addr, idx) => ({
+                    value: idx.toString(),
+                    label: [addr.line_1, addr.line_2, addr.line_3, addr.post_town, addr.postcode].filter(Boolean).join(", "),
+                  }))}
+                />
             )}
 
             <TextField
