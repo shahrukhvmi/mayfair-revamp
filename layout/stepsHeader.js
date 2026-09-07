@@ -20,7 +20,6 @@ import {
 import ApplicationLogo from "@/config/ApplicationLogo";
 import LoginModal from "@/Components/LoginModal/LoginModal";
 import { Login } from "@/api/loginApi";
-import { GetPrescriptionEvidence } from "@/api/PrescriptionEvidenceApi";
 import Fetcher from "@/library/Fetcher";
 import useAbandonCardStore from "@/store/abandonCardStore";
 import useAuthStore from "@/store/authStore";
@@ -228,18 +227,18 @@ const StepsHeader = ({ isOpen, toggleSidebar }) => {
 
 
 
-  useEffect(() => {
-    const getEvidence = async () => {
-      try {
-        const res = await GetPrescriptionEvidence({ token });
-        setExplainenationEvidence(res?.data?.require_evidence);
-        setExplainenationEvidenceDetails(res?.data);
-      } catch (error) {
-      }
-    };
+  // useEffect(() => {
+  //   const getEvidence = async () => {
+  //     try {
+  //       const res = await GetPrescriptionEvidence({ token });
+  //       setExplainenationEvidence(res?.data?.require_evidence);
+  //       setExplainenationEvidenceDetails(res?.data);
+  //     } catch (error) {
+  //     }
+  //   };
 
-    getEvidence();
-  }, []);
+  //   getEvidence();
+  // }, []);
 
   const displayName = authUserDetail?.fname?.trim()
     ? authUserDetail.fname

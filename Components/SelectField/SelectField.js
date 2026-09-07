@@ -38,6 +38,24 @@ const MUISelectField = ({ label, name, value, onChange, onBlur, inputRef, option
           value={value}
           onChange={onChange}
           displayEmpty
+          MenuProps={{
+            slotProps: {
+              paper: {
+                sx: {
+                  maxHeight: "min(360px, calc(100dvh - 32px))",
+                  maxWidth: "calc(100vw - 32px)",
+                  borderRadius: "12px",
+                  border: "1px solid #e2e8f0",
+                  "& .MuiMenuItem-root": {
+                    whiteSpace: "normal",
+                    overflowWrap: "anywhere",
+                    padding: "10px 12px",
+                    lineHeight: 1.5,
+                  },
+                },
+              },
+            },
+          }}
           className={isUnderline ? "inter-reg-font" : "reg-font text-2xl"}
           input={<OutlinedInput />}
           sx={{

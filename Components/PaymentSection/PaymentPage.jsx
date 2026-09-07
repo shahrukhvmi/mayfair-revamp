@@ -26,13 +26,13 @@ const PaymentPage = ({ paymentData }) => {
   return (
     <AnimatePresence>
       <motion.div
-        className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/50 backdrop-blur-sm"
+        className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
       >
         <motion.div
-          className="bg-white p-8 rounded-2xl shadow-xl w-full max-w-md text-center flex flex-col items-center"
+          className="bg-white p-6 sm:p-8 rounded-2xl shadow-xl w-full max-w-md max-h-[calc(100dvh-32px)] overflow-y-auto text-center flex flex-col items-center"
           initial={{ scale: 0.95, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           exit={{ scale: 0.95, opacity: 0 }}

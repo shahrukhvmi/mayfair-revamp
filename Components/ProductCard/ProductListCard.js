@@ -14,8 +14,8 @@ const ProductListCard = ({
   return (
     <article
       className={`
-        group flex flex-wrap items-center gap-3 rounded-2xl border bg-white
-        px-3 py-3 sm:flex-nowrap sm:gap-4 sm:px-4 sm:py-3.5 2xl:px-5 2xl:py-4 transition-all duration-200
+        group grid grid-cols-[56px_minmax(0,1fr)] items-center gap-x-3 gap-y-2 rounded-2xl border bg-white
+        px-3 py-3 sm:flex sm:flex-nowrap sm:gap-4 sm:px-4 sm:py-3.5 2xl:px-5 2xl:py-4 transition-all duration-200
         ${isSelected
           ? "border-[#47317c] shadow-[0_0_0_3px_rgba(71,49,124,0.10)]"
           : isOutOfStock
@@ -26,7 +26,7 @@ const ProductListCard = ({
       aria-selected={isSelected}
     >
       {/* Image box */}
-      <div className="relative flex h-[56px] w-[56px] shrink-0 items-center justify-center overflow-hidden rounded-xl bg-slate-100 sm:h-[64px] sm:w-[64px] 2xl:h-[76px] 2xl:w-[76px]">
+      <div className="relative row-span-2 flex h-[56px] w-[56px] shrink-0 items-center justify-center overflow-hidden rounded-xl bg-slate-100 sm:h-[64px] sm:w-[64px] 2xl:h-[76px] 2xl:w-[76px]">
         {isOutOfStock && (
           <span className="absolute inset-0 flex items-center justify-center bg-white/70">
             <PackageX size={16} strokeWidth={1.8} className="text-red-400" />
@@ -57,7 +57,7 @@ const ProductListCard = ({
       </div>
 
       {/* Price + Button */}
-      <div className="flex w-full shrink-0 items-center justify-between gap-3 pl-[68px] sm:w-auto sm:justify-start sm:gap-4 sm:pl-0 2xl:gap-5">
+      <div className="col-start-2 flex w-full shrink-0 flex-wrap items-center justify-between gap-2 sm:w-auto sm:flex-nowrap sm:justify-start sm:gap-4 2xl:gap-5">
         <div className="flex items-baseline gap-1.5 text-right sm:block">
           <p className="inter-reg-font text-[10px] uppercase tracking-[0.1em] text-slate-400">From</p>
           <span className="inter-bold-font text-[16px] lg:text-[16px] 2xl:text-[20px] leading-tight text-[#47317c]">

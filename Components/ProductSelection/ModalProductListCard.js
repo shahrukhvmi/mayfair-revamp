@@ -58,18 +58,18 @@ const ModalProductListCard = ({
         )}
       </div>
 
-      <div className="min-w-0 flex-1">
+      <div className="min-w-0 sm:flex-1">
         {isOutOfStock && (
           <span className="inter-medium-font mb-1 inline-flex items-center gap-1 rounded-full bg-red-50 px-2 py-0.5 text-[10px] text-red-500">
             Out of stock
           </span>
         )}
-        <h3 className="inter-semibold-font min-h-[38px] break-words text-[13px] leading-[19px] text-slate-900 sm:min-h-0 sm:truncate sm:text-[14px] sm:leading-snug lg:text-[14px] 2xl:text-[16px]">
+        <h3 className="inter-semibold-font break-words text-[13px] leading-[19px] text-slate-900 sm:truncate sm:text-[14px] sm:leading-snug lg:text-[14px] 2xl:text-[16px]">
           {title}
         </h3>
       </div>
 
-      <div className="mt-auto flex w-full shrink-0 flex-col gap-2 sm:mt-0 sm:w-auto sm:flex-row sm:items-center sm:justify-start sm:gap-4 2xl:gap-5">
+      <div className="flex w-full shrink-0 flex-col gap-2 sm:w-auto sm:flex-row sm:items-center sm:justify-start sm:gap-4 2xl:gap-5">
         <div className="flex items-baseline gap-1.5 text-left sm:block sm:text-right">
           <p className="inter-reg-font text-[10px] uppercase tracking-[0.1em] text-slate-400">From</p>
           <span className="inter-bold-font text-[16px] leading-tight text-[#47317c] lg:text-[16px] 2xl:text-[20px]">

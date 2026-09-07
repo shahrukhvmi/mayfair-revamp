@@ -252,9 +252,9 @@ export default function LoginScreen() {
         </div>
       ) : (
         <>
-          <div className={`flex justify-center bg-[#FBFBFD] py-8 sm:py-16`}>
+          <div className={`flex justify-center bg-[#FBFBFD] px-4 py-8 sm:py-16`}>
             <div
-              className={`bg-white rounded-xl shadow-md w-full max-w-lg p-8`}
+              className={`bg-white rounded-xl shadow-md w-full max-w-lg p-5 sm:p-8`}
             >
               {/* Title */}
               <h1 className="niba-reg-font heading mb-2">Login</h1>
