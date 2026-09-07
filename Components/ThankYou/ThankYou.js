@@ -469,7 +469,7 @@ const ThankYou = () => {
               legislation around prescription-only medication.
             </p>
           </div>
-          {imageUploaded && (
+          {imageUploaded && idVerificationUpload && (
             <>
               <div className="">
                 <NextButton
