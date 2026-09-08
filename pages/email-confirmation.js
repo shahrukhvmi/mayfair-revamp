@@ -25,6 +25,7 @@ import useAuthUserDetailStore from "@/store/useAuthUserDetailStore";
 import MetaLayout from "@/Meta/MetaLayout";
 import { meta_url } from "@/config/constants";
 import useReturning from "@/store/useReturningPatient";
+import patientSource from "@/api/patientSource";
 
 export default function EmailConfirmation() {
   const [showLoader, setShowLoader] = useState(false);
@@ -41,7 +42,7 @@ export default function EmailConfirmation() {
     setEmail,
     setConfirmationEmail,
   } = useSignupStore();
-  const { setUserData } = useUserDataStore();
+  const { userData, setUserData } = useUserDataStore();
   const { token, setToken } = useAuthStore();
   const { setIsPasswordReset, isPasswordReset, setShowResetPassword } =
     usePasswordReset();
@@ -68,15 +69,45 @@ export default function EmailConfirmation() {
   }, [email, confirmationEmail, setValue, trigger]);
 
   const registerMutation = useMutation(registerUser, {
-    onSuccess: (data) => {
+    onSuccess: async (data) => {
       const user = data?.data?.data;
       setAuthUserDetail(user);
       setUserData(user);
       setToken(user?.token);
       setIsPasswordReset(true);
-      setIsReturningPatient(user?.isReturning)
+      setIsReturningPatient(user?.isReturning);
       Fetcher.axiosSetup.defaults.headers.common.Authorization = `Bearer ${user?.token}`;
-      router.push("/steps-information");
+
+      const stored = JSON.parse(
+        localStorage.getItem("mayfair_attribution") || "null",
+      );
+
+      if (stored) {
+        try {
+          await patientSource({
+            user_id: userData?.id,
+            type: "register",
+            first_touch: {
+              channel: stored.first_touch?.channel || "Direct",
+              source: stored.first_touch?.source || "direct",
+              medium: stored.first_touch?.medium || "none",
+              paid_status: stored.first_touch?.paid_status || "unknown",
+            },
+            last_touch: {
+              channel: stored.last_touch?.channel || "Direct",
+              source: stored.last_touch?.source || "direct",
+              medium: stored.last_touch?.medium || "none",
+              paid_status: stored.last_touch?.paid_status || "unknown",
+            },
+          });
+
+          console.log("✅ Attribution sent");
+        } catch (attributionError) {
+          console.error("Attribution API failed:", attributionError);
+        }
+      }
+
+      // router.push("/steps-information");
     },
     onError: (error) => {
       const emailError = error?.response?.data?.errors?.email;
@@ -118,7 +149,7 @@ export default function EmailConfirmation() {
               company_id: 1,
             });
             const user = response?.data?.data;
-            clg
+            clg;
             setIsPasswordReset(false);
             setUserData(user);
             setAuthUserDetail(user);
@@ -127,7 +158,7 @@ export default function EmailConfirmation() {
             setLastName(user?.lname);
             setEmail(user?.email);
             setShowResetPassword(user?.show_password_reset);
-            setIsReturningPatient(user?.isReturning)
+            setIsReturningPatient(user?.isReturning);
 
             toast.success("Login Successfully");
             Fetcher.axiosSetup.defaults.headers.common.Authorization = `Bearer ${user.token}`;
@@ -157,8 +188,9 @@ export default function EmailConfirmation() {
       >
         <PageAnimationWrapper>
           <div
-            className={`relative ${showLoader ? "pointer-events-none cursor-not-allowed" : ""
-              }`}
+            className={`relative ${
+              showLoader ? "pointer-events-none cursor-not-allowed" : ""
+            }`}
           >
             <form
               onSubmit={handleSubmit(handleSignupSubmit)}
@@ -184,8 +216,7 @@ export default function EmailConfirmation() {
                 required
                 validation={{
                   validate: (value) =>
-                    value === getValues("email") ||
-                    "Email address must match.",
+                    value === getValues("email") || "Email address must match.",
                 }}
                 errors={errors}
                 disablePaste

@@ -3,7 +3,14 @@ import { useRouter } from "next/router";
 import { HiBadgeCheck } from "react-icons/hi";
 import NextButton from "../NextButton/NextButton";
 import useCartStore from "@/store/useCartStore";
-import { ChevronRight, UploadCloud, Camera, IdCard, ShieldCheck, ClipboardCheck } from "lucide-react";
+import {
+  ChevronRight,
+  UploadCloud,
+  Camera,
+  IdCard,
+  ShieldCheck,
+  ClipboardCheck,
+} from "lucide-react";
 import useImageUploadStore from "@/store/useImageUploadStore ";
 import useIdVerificationUploadStore from "@/store/useIdVerificationUploadStore";
 import { GetIdVerification } from "@/api/IdVerificationApi";
@@ -19,7 +26,13 @@ import { trackCustomerLabsPurchased } from "@/config/CustomerLabs";
 import patientSource from "@/api/patientSource";
 import useReturning from "@/store/useReturningPatient";
 
-const VerificationCard = ({ icon: Icon, title, description, label, onClick }) => (
+const VerificationCard = ({
+  icon: Icon,
+  title,
+  description,
+  label,
+  onClick,
+}) => (
   <section className="w-full overflow-hidden rounded-2xl border border-amber-200/70 bg-amber-50/40 shadow-[0_1px_4px_rgba(180,83,9,0.06)]">
     <div className="flex w-full flex-col gap-4 p-4 sm:p-5 lg:flex-row lg:items-center lg:justify-between">
       <div className="flex min-w-0 flex-1 items-center gap-3.5">
@@ -32,8 +45,12 @@ const VerificationCard = ({ icon: Icon, title, description, label, onClick }) =>
               Action required
             </span>
           </div>
-          <h3 className="inter-semibold-font text-[14px] leading-snug text-slate-900">{title}</h3>
-          <p className="inter-reg-font mt-0.5 text-[12.5px] text-slate-500">{description}</p>
+          <h3 className="inter-semibold-font text-[14px] leading-snug text-slate-900">
+            {title}
+          </h3>
+          <p className="inter-reg-font mt-0.5 text-[12.5px] text-slate-500">
+            {description}
+          </p>
         </div>
       </div>
 
@@ -44,7 +61,12 @@ const VerificationCard = ({ icon: Icon, title, description, label, onClick }) =>
       >
         <UploadCloud aria-hidden="true" size={14} strokeWidth={2.2} />
         <span>{label}</span>
-        <ChevronRight aria-hidden="true" size={13} strokeWidth={2.5} className="shrink-0 transition-transform duration-150 group-hover:translate-x-0.5" />
+        <ChevronRight
+          aria-hidden="true"
+          size={13}
+          strokeWidth={2.5}
+          className="shrink-0 transition-transform duration-150 group-hover:translate-x-0.5"
+        />
       </button>
     </div>
   </section>
@@ -72,7 +94,8 @@ const ThankYou = () => {
   // }
   const GO = useRouter();
   const { imageUploaded, setImageUploaded } = useImageUploadStore();
-  const { idVerificationUpload, setIdVerificationUpload } = useIdVerificationUploadStore();
+  const { idVerificationUpload, setIdVerificationUpload } =
+    useIdVerificationUploadStore();
   useEffect(() => {
     const fetchImageStatus = async () => {
       try {
@@ -87,8 +110,7 @@ const ThankYou = () => {
         if (idResult.status === "fulfilled") {
           setIdVerificationUpload(idResult.value?.data?.status);
         }
-      } catch (error) {
-      }
+      } catch (error) {}
     };
 
     if (orderId) fetchImageStatus();
@@ -131,8 +153,8 @@ const ThankYou = () => {
         const addonsString =
           addonItems.length > 0
             ? addonItems
-              .map((item) => `${item?.name} x${item?.quantity || 1}`)
-              .join(", ")
+                .map((item) => `${item?.name} x${item?.quantity || 1}`)
+                .join(", ")
             : "None";
 
         // Build productProperties array for CL
@@ -161,6 +183,7 @@ const ThankYou = () => {
             await patientSource({
               user_id: userData?.id || null,
               order_id: clOrderId,
+              type: "order",
               first_touch: {
                 channel: stored.first_touch?.channel || "Direct",
                 source: stored.first_touch?.source || "direct",
@@ -179,9 +202,7 @@ const ThankYou = () => {
             localStorage.removeItem("utm_source");
             localStorage.removeItem("utm_medium");
             localStorage.removeItem("utm_campaign");
-
-          } catch (attributionError) {
-          }
+          } catch (attributionError) {}
         }
 
         trackCustomerLabsPurchased({
@@ -259,15 +280,24 @@ const ThankYou = () => {
               <table className="inter-reg-font min-w-full divide-y divide-slate-100 text-sm text-slate-700">
                 <thead className="inter-semibold-font bg-[#47317c]/[0.05] text-slate-700">
                   <tr>
-                    <th className="inter-semibold-font px-6 py-4 text-left">Items</th>
-                    <th className="inter-semibold-font px-6 py-4 text-right">Quantity</th>
-                    <th className="inter-semibold-font px-6 py-4 text-right">Amount</th>
+                    <th className="inter-semibold-font px-6 py-4 text-left">
+                      Items
+                    </th>
+                    <th className="inter-semibold-font px-6 py-4 text-right">
+                      Quantity
+                    </th>
+                    <th className="inter-semibold-font px-6 py-4 text-right">
+                      Amount
+                    </th>
                     <th className="px-6 py-4 text-right"></th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-100 bg-white">
                   {items?.map((item, index) => (
-                    <tr key={`addon-${index}`} className="transition-colors hover:bg-[#47317c]/[0.02]">
+                    <tr
+                      key={`addon-${index}`}
+                      className="transition-colors hover:bg-[#47317c]/[0.02]"
+                    >
                       <td className="inter-medium-font px-6 py-3 text-slate-900">
                         {item?.label || item?.product || "Add-on"}
                       </td>
@@ -313,7 +343,7 @@ const ThankYou = () => {
                         {checkOut?.discount?.type === "Percent"
                           ? ` (${parseInt(checkOut?.discount?.discount)}%)`
                           : checkOut?.discount?.type &&
-                          ` (${checkOut?.discount?.type})`}
+                            ` (${checkOut?.discount?.type})`}
                         {checkOut?.discount?.code &&
                           ` - Code: ${checkOut?.discount?.code}`}
                       </td>
@@ -380,7 +410,10 @@ const ThankYou = () => {
                   )}
 
                   <tr className="bg-[#47317c]/[0.055] font-bold text-slate-900">
-                    <td colSpan={2} className="inter-semibold-font px-6 py-3 text-right">
+                    <td
+                      colSpan={2}
+                      className="inter-semibold-font px-6 py-3 text-right"
+                    >
                       Total
                     </td>
                     <td className="inter-semibold-font px-6 py-3 text-right text-[#47317c]">
@@ -393,15 +426,27 @@ const ThankYou = () => {
             </div>
           </div>
           {(!imageUploaded || !idVerificationUpload) && (
-            <section aria-labelledby="verification-heading" className="space-y-4">
+            <section
+              aria-labelledby="verification-heading"
+              className="space-y-4"
+            >
               <div className="flex items-start gap-3">
-                <ClipboardCheck aria-hidden="true" size={22} strokeWidth={1.7} className="mt-0.5 shrink-0 text-[#47317c]" />
+                <ClipboardCheck
+                  aria-hidden="true"
+                  size={22}
+                  strokeWidth={1.7}
+                  className="mt-0.5 shrink-0 text-[#47317c]"
+                />
                 <div>
-                  <h2 id="verification-heading" className="inter-semibold-font text-[18px] tracking-[-0.02em] text-slate-900">
+                  <h2
+                    id="verification-heading"
+                    className="inter-semibold-font text-[18px] tracking-[-0.02em] text-slate-900"
+                  >
                     Your next step: verification
                   </h2>
                   <p className="inter-reg-font mt-1 text-[13px] leading-relaxed text-slate-500">
-                    Please complete the uploads below so our clinical team can review your order.
+                    Please complete the uploads below so our clinical team can
+                    review your order.
                   </p>
                 </div>
               </div>
@@ -428,8 +473,14 @@ const ThankYou = () => {
               </div>
 
               <p className="inter-reg-font flex items-start gap-2 text-[12px] leading-relaxed text-slate-500">
-                <ShieldCheck aria-hidden="true" size={17} strokeWidth={1.7} className="mt-0.5 shrink-0 text-teal-800" />
-                Your uploads are stored securely and handled confidentially as part of your clinical review.
+                <ShieldCheck
+                  aria-hidden="true"
+                  size={17}
+                  strokeWidth={1.7}
+                  className="mt-0.5 shrink-0 text-teal-800"
+                />
+                Your uploads are stored securely and handled confidentially as
+                part of your clinical review.
               </p>
             </section>
           )}
@@ -444,7 +495,9 @@ const ThankYou = () => {
               account.
             </p> */}
             <p>
-              <span className="inter-semibold-font text-slate-900">Delivery:</span>{" "}
+              <span className="inter-semibold-font text-slate-900">
+                Delivery:
+              </span>{" "}
               All orders, once approved, are shipped via next-day tracked
               delivery using either DPD or Royal Mail. Orders may take longer
               than one working day to approve due to the clinical checks
@@ -476,7 +529,7 @@ const ThankYou = () => {
                   className=""
                   onClick={handleGoBack}
                   label="Continue to view order details"
-                // disabled={!imageUploaded}
+                  // disabled={!imageUploaded}
                 />
               </div>
             </>
