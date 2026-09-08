@@ -107,7 +107,7 @@ export default function EmailConfirmation() {
         }
       }
 
-      // router.push("/steps-information");
+      router.push("/steps-information");
     },
     onError: (error) => {
       const emailError = error?.response?.data?.errors?.email;
