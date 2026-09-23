@@ -522,18 +522,17 @@ const ThankYou = () => {
               legislation around prescription-only medication.
             </p>
           </div>
-          {imageUploaded && idVerificationUpload && (
-            <>
-              <div className="">
-                <NextButton
-                  className=""
-                  onClick={handleGoBack}
-                  label="Continue to view order details"
-                  // disabled={!imageUploaded}
-                />
-              </div>
-            </>
-          )}
+
+          <>
+            <div className="">
+              <NextButton
+                className=""
+                onClick={handleGoBack}
+                label="Continue to view order details"
+                // disabled={!imageUploaded}
+              />
+            </div>
+          </>
         </div>
       </div>
     </div>
