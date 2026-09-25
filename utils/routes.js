@@ -16,6 +16,7 @@ export const publicRoutes = [
   "/preferred-phone-number",
   "/confirm-ethnicity",
   "/calculate-bmi",
+  "/pregnancy-check",
   "/bmi-detail",
   "/medical-questions",
   "/patient-consent",

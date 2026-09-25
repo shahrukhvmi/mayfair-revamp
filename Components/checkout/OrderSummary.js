@@ -32,6 +32,7 @@ import useUserDataStore from "@/store/userDataStore";
 import lastOrderStore from "@/store/lastOrderStore";
 import useAbandonCardStore from "@/store/abandonCardStore";
 import normalizeConfirmationInfo from "@/utils/normalizeConfirmationInfo";
+import { isPregnancyBlocked, PREGNANCY_BLOCK_MESSAGE } from "@/utils/patientChecks";
 
 const OrderSummary = ({
   isConcentCheck,
@@ -213,6 +214,10 @@ const OrderSummary = ({
       }
     },
   });
+  // Female patient jisne pregnancy question ka jawab "no" nahi diya (yes diya
+  // ya URL paste karke step skip kar diya) — payment allow nahi karna.
+  const pregnancyBlocked = isPregnancyBlocked(patientInfo);
+
   // hanlde payment ✔✔✔✌✌
   const handlePayment = () => {
     setIsButtonLoading(true);
@@ -501,14 +506,26 @@ const OrderSummary = ({
                       />
                     </div>
                   ) : (
-                    <NextButton
-                      disabled={
-                        !isConcentCheck || !isShippingCheck || !isBillingCheck
-                        // isPostalCheck
-                      }
-                      label="Proceed to Payment "
-                      onClick={handlePayment}
-                    />
+                    <>
+                      <NextButton
+                        disabled={
+                          !isConcentCheck ||
+                          !isShippingCheck ||
+                          !isBillingCheck ||
+                          pregnancyBlocked
+                          // isPostalCheck
+                        }
+                        label="Proceed to Payment "
+                        onClick={handlePayment}
+                      />
+                      {pregnancyBlocked && (
+                        <div className="mt-3 rounded-xl border border-red-100 bg-red-50 px-4 py-3">
+                          <p className="inter-reg-font text-[13px] leading-relaxed text-red-600">
+                            {PREGNANCY_BLOCK_MESSAGE}
+                          </p>
+                        </div>
+                      )}
+                    </>
                   )}
                 </div>
                 </div>

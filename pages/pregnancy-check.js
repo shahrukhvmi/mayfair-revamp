@@ -1,22 +1,16 @@
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
-import { FiCheck } from "react-icons/fi";
 
 import FormWrapper from "@/Components/FormWrapper/FormWrapper";
 import NextButton from "@/Components/NextButton/NextButton";
-import ProgressBar from "@/Components/ProgressBar/ProgressBar";
+import BackButton from "@/Components/BackButton/BackButton";
 import StepsHeader from "@/layout/stepsHeader";
-
-// ✅ Initialize Inter font here
-import { Inter } from "next/font/google";
 import PageAnimationWrapper from "@/Components/PageAnimationWrapper/PageAnimationWrapper";
 import PageLoader from "@/Components/PageLoader/PageLoader";
 import usePatientInfoStore from "@/store/patientInfoStore";
-import BackButton from "@/Components/BackButton/BackButton";
 import MetaLayout from "@/Meta/MetaLayout";
 import { meta_url } from "@/config/constants";
-const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 
 export default function PregnancyCheck() {
   const [showLoader, setShowLoader] = useState(false);
@@ -40,115 +34,125 @@ export default function PregnancyCheck() {
   const pregnancy = watch("pregnancy");
 
   useEffect(() => {
-    setValue("pregnancy", patientInfo?.pregnancy);
-
     if (patientInfo?.pregnancy) {
+      setValue("pregnancy", patientInfo.pregnancy);
       trigger(["pregnancy"]);
     }
-  }, [patientInfo?.pregnancy, trigger]);
+  }, [patientInfo?.pregnancy]);
 
-  const onSubmit = async (data) => {
+  // ✅ Select ke change pe hi state update — Next ka intezaar nahi.
+  // Warna user URL paste karke aage ja sakta hai bina answer kiye.
+  const handlePregnancyChange = (value) => {
     setPatientInfo({
       ...patientInfo, // 🧠 keep old data
-      pregnancy: data.pregnancy,
+      pregnancy: value,
     });
-    setShowLoader(true);
-    await new Promise((resolve) => setTimeout(resolve, 500)); // Wait 2s
-    router.push("/residential-address");
   };
 
-  const renderYesNo = (fieldName, value) => {
-    return (
-      <div className="flex gap-4 mt-4 w-full">
-        {["yes", "no"].map((option) => {
-          const isSelected = value === option;
-          return (
-            <label
-              key={option}
-              className={`reg-font flex items-center px-4 py-4 rounded-md border justify-start cursor-pointer transition-all duration-200 flex-1
-                ${
-                  isSelected
-                    ? option === "yes"
-                      ? "bg-violet-100 border-primary text-violet-700"
-                      : "bg-violet-100 border-primary text-violet-700"
-                    : "bg-white border-gray-300 hover:border-gray-400 text-gray-800"
-                }`}
-            >
-              <input
-                type="radio"
-                value={option}
-                {...register(fieldName, { required: true })}
-                className="hidden"
-              />
-              <div
-                className={`w-5 h-5 mr-2 rounded-md border flex items-center justify-start
-                  ${
-                    isSelected
-                      ? option === "yes"
-                        ? "bg-primary border-[#47317c] text-white"
-                        : "bg-primary border-[#47317c] text-white"
-                      : "border-gray-400 bg-white"
-                  }`}
-              >
-                {isSelected && <FiCheck className="text-md" />}
-              </div>
-              <span className="text-black bold-font paragraph capitalize">
-                {option}
-              </span>
-            </label>
-          );
-        })}
-      </div>
-    );
+  const onSubmit = async () => {
+    setShowLoader(true);
+    await new Promise((resolve) => setTimeout(resolve, 500));
+    router.push("/calculate-bmi");
   };
 
   return (
     <>
       <MetaLayout canonical={`${meta_url}pregnancy-check/`} />
       <StepsHeader />
+
       <FormWrapper
-        heading={"Are you pregnant, breastfeeding, or trying to conceive?"}
+        heading={"Before you continue"}
         description={
-          "Please note that our treatment programme is not suitable for use while breastfeeding, pregnant, or currently trying to conceive."
+          "We just need to confirm one thing before we can process your reorder."
         }
         percentage={"30"}
       >
         <PageAnimationWrapper>
-          <div className="bg-white">
-            <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
-              {/* Questions */}
-              <div className="space-y-6">
-                <div className="space-y-2">
-                  {/* className="block text-sm font-medium text-black mb-1" */}
-                  {renderYesNo("pregnancy", pregnancy)}
-                  {pregnancy === "yes" && (
-                    <p className="text-red-600 text-sm mt-2">
-                      This treatment is not suitable if you are pregnant, trying
-                      to get pregnant or breastfeeding. We recommend you speak
-                      to your GP in person.
+          <div>
+            <div
+              className={`relative ${
+                showLoader ? "pointer-events-none cursor-not-allowed" : ""
+              }`}
+            >
+              <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+
+                <div className="rounded-xl border border-slate-100 bg-[#FBFBFD] p-5 space-y-4">
+                  <div>
+                    <p className="inter-semibold-font text-[15px] text-slate-800 leading-snug">
+                      Are you pregnant, breastfeeding, or trying to conceive?
                     </p>
+                    <p className="inter-reg-font mt-1.5 text-[13px] text-slate-500 leading-relaxed">
+                      Our treatment programme is not suitable while breastfeeding, pregnant, or trying to conceive.
+                    </p>
+                  </div>
+
+                  <div className="flex gap-3">
+                    {["yes", "no"].map((option) => {
+                      const isSelected = pregnancy === option;
+                      return (
+                        <label
+                          key={option}
+                          className={`
+                            relative flex flex-1 cursor-pointer items-center gap-3 rounded-xl border-2 px-5 py-4
+                            transition-all duration-200 select-none
+                            ${isSelected
+                              ? "border-[#47317c] bg-[#47317c]/[0.05]"
+                              : "border-slate-200 bg-white hover:border-slate-300 hover:bg-slate-50"
+                            }
+                          `}
+                        >
+                          <input
+                            type="radio"
+                            value={option}
+                            {...register("pregnancy", {
+                              required: true,
+                              onChange: (e) => handlePregnancyChange(e.target.value),
+                            })}
+                            className="hidden"
+                          />
+                          <div className={`
+                            flex h-5 w-5 shrink-0 items-center justify-center rounded-full border-2
+                            transition-all duration-200
+                            ${isSelected ? "border-[#47317c] bg-[#47317c]" : "border-slate-300 bg-white"}
+                          `}>
+                            {isSelected && <div className="h-2 w-2 rounded-full bg-white" />}
+                          </div>
+                          <span className={`inter-medium-font text-[15px] capitalize ${isSelected ? "text-[#47317c]" : "text-slate-700"}`}>
+                            {option}
+                          </span>
+                        </label>
+                      );
+                    })}
+                  </div>
+
+                  {pregnancy === "yes" && (
+                    <div className="rounded-xl border border-red-100 bg-red-50 px-4 py-3">
+                      <p className="inter-reg-font text-[13px] text-red-600 leading-relaxed">
+                        This treatment is not suitable if you are pregnant, trying to get pregnant or breastfeeding. We recommend you speak to your GP in person.
+                      </p>
+                    </div>
                   )}
                 </div>
-              </div>
 
-              <div className="my-5">
-                <NextButton
-                  disabled={!isValid || pregnancy === "yes"}
-                  label="Next"
-                />
-                <BackButton
-                  label="Back"
-                  className="mt-3"
-                  onClick={() => router.back()}
-                />
-              </div>
-            </form>
+                <div>
+                  <NextButton
+                    label="Next"
+                    disabled={!isValid || pregnancy === "yes"}
+                  />
+                  <BackButton
+                    label="Back"
+                    className="mt-3"
+                    onClick={() => router.push("/re-order")}
+                  />
+                </div>
+              </form>
 
-            {showLoader && (
-              <div className="absolute inset-0 z-20 flex justify-center items-center bg-white/60 rounded-lg cursor-not-allowed">
-                <PageLoader />
-              </div>
-            )}
+              {showLoader && (
+                <div className="absolute inset-0 z-20 flex justify-center items-center bg-white/60 rounded-lg cursor-not-allowed">
+                  <PageLoader />
+                </div>
+              )}
+            </div>
           </div>
         </PageAnimationWrapper>
       </FormWrapper>
