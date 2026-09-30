@@ -40,12 +40,12 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
       <aside
         role="navigation"
         className={`
-          fixed inset-y-0 left-0 z-50 flex w-[240px] flex-col
+          fixed inset-y-0 left-0 z-50 flex w-[280px] flex-col
           bg-white border-r border-slate-100
           shadow-[4px_0_24px_rgba(0,0,0,0.05)]
           transition-transform duration-300 ease-out
           lg:sticky lg:top-[72px] lg:z-20
-          lg:h-[calc(100vh-72px)] lg:w-[220px] 2xl:w-[260px]
+          lg:h-[calc(100vh-72px)] lg:w-[260px] 2xl:w-[300px]
           lg:shrink-0 lg:translate-x-0 lg:shadow-none
           ${isOpen ? "translate-x-0" : "-translate-x-full"}
         `}
@@ -54,7 +54,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
         <div className="flex items-center justify-between border-b border-slate-100 px-5 py-4 lg:hidden">
           <div className="flex items-center gap-2.5">
               
-              {/* <span className="inter-bold-font text-[15px] tracking-[-0.01em] text-slate-900">Mayfair</span> */}
+              {/* <span className="inter-bold-font text-[15px] max-sm:text-[16px] tracking-[-0.01em] text-slate-900">Mayfair</span> */}
                 <ApplicationLogo className="h-12 w-auto text-white" />
             </div>
           <button
@@ -69,7 +69,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
 
         {/* Menu label */}
         <div className="px-5 pt-6 pb-1.5">
-          <p className="inter-medium-font text-[10px] uppercase tracking-[0.12em] text-slate-400">
+          <p className="inter-medium-font text-[10px] max-sm:text-[16px] uppercase tracking-[0.12em] text-slate-400">
             Menu
           </p>
         </div>
@@ -99,7 +99,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
                   strokeWidth={active ? 2.2 : 1.8}
                   className={active ? "text-[#47317c]" : "text-slate-400 group-hover:text-slate-600"}
                 />
-                <span className={`inter-medium-font text-[13px] lg:text-[14px] 2xl:text-[16px] leading-none ${active ? "text-[#47317c]" : ""}`}>
+                <span className={`inter-medium-font text-[13px] max-sm:text-[16px] lg:text-[14px] 2xl:text-[16px] leading-none ${active ? "text-[#47317c]" : ""}`}>
                   {label}
                 </span>
               </Link>
@@ -119,10 +119,10 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
               <Phone size={14} strokeWidth={2} />
             </span>
             <span className="min-w-0">
-              <span className="inter-medium-font block text-[10.5px] uppercase tracking-[0.1em] text-slate-400 leading-none">
+              <span className="inter-medium-font block text-[16px] whitespace-nowrap text-slate-400 leading-none">
                 Contact Support
               </span>
-              <span className="inter-medium-font mt-1.5 block truncate text-[12px] leading-none text-[#47317c]">
+              <span className="inter-medium-font mt-2 block truncate text-[16px] leading-none whitespace-nowrap text-[#47317c]">
                 +44 (0)20 7550 6515
               </span>
             </span>

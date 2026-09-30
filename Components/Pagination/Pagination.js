@@ -12,7 +12,7 @@ const Pagination = ({ pagination }) => {
   return (
     <div className="flex w-full flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
       {/* Page info */}
-      <p className="inter-reg-font text-center text-[12.5px] text-slate-400 sm:text-left">
+      <p className="inter-reg-font text-center text-[12.5px] max-sm:text-[16px] text-slate-400 sm:text-left">
         Page <span className="inter-semibold-font text-slate-700">{currentPage}</span> of{" "}
         <span className="inter-semibold-font text-slate-700">{lastPage}</span>
       </p>
@@ -42,7 +42,7 @@ const Pagination = ({ pagination }) => {
               borderRadius: "7px",
               border: "1px solid #e2e8f0",
               fontFamily: "var(--inter-medium)",
-              fontSize: "11.5px",
+              fontSize: { xs: "16px", sm: "11.5px" },
               color: "#64748b",
               backgroundColor: "#ffffff",
             },
@@ -53,7 +53,7 @@ const Pagination = ({ pagination }) => {
               fontFamily: "var(--inter-semibold)",
             },
             "& .MuiPaginationItem-icon": {
-              fontSize: "15px",
+              fontSize: { xs: "16px", sm: "15px" },
             },
             "& .Mui-disabled": {
               opacity: 0.4,
@@ -93,7 +93,7 @@ const Pagination = ({ pagination }) => {
             borderRadius: "8px",
             border: "1px solid #e2e8f0",
             fontFamily: "var(--inter-medium)",
-            fontSize: "12.5px",
+            fontSize: { xs: "16px", sm: "12.5px" },
             color: "#64748b",
             backgroundColor: "#ffffff",
             transition: "all 150ms ease",
@@ -132,13 +132,13 @@ const Pagination = ({ pagination }) => {
               height: "30px",
               padding: "0 4px",
               borderRadius: "7px",
-              fontSize: "11.5px",
+              fontSize: { xs: "16px", sm: "11.5px" },
             },
             "& .MuiPaginationItem-firstLast": {
               display: "none",
             },
             "& .MuiPaginationItem-icon": {
-              fontSize: "15px",
+              fontSize: { xs: "16px", sm: "15px" },
             },
           },
         }}

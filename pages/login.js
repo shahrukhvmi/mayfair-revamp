@@ -296,7 +296,7 @@ export default function LoginScreen() {
                       type="submit"
                       className="mb-5"
                     />
-                    <p className="reg-font text-black text-sm text-center">
+                    <p className="reg-font text-black text-sm max-sm:text-[16px] text-center">
                       Are you a new patient?{" "}
                       <Link
                         href={"/acknowledgment"}

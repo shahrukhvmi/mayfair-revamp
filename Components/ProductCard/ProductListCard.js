@@ -47,11 +47,11 @@ const ProductListCard = ({
       {/* Title */}
       <div className="min-w-0 flex-1">
         {isOutOfStock && (
-          <span className="inter-medium-font mb-1 inline-flex items-center gap-1 rounded-full bg-red-50 px-2 py-0.5 text-[10px] text-red-500">
+          <span className="inter-medium-font mb-1 inline-flex items-center gap-1 rounded-full bg-red-50 px-2 py-0.5 text-[10px] max-sm:text-[16px] text-red-500">
             Out of stock
           </span>
         )}
-        <h3 className="inter-semibold-font break-words text-[14px] leading-snug text-slate-900 sm:truncate lg:text-[14px] 2xl:text-[16px]">
+        <h3 className="max-sm:text-[18px] inter-semibold-font break-words text-[14px] leading-snug text-slate-900 sm:truncate lg:text-[14px] 2xl:text-[16px]">
           {title}
         </h3>
       </div>
@@ -59,7 +59,7 @@ const ProductListCard = ({
       {/* Price + Button */}
       <div className="col-start-2 flex w-full shrink-0 flex-wrap items-center justify-between gap-2 sm:w-auto sm:flex-nowrap sm:justify-start sm:gap-4 2xl:gap-5">
         <div className="flex items-baseline gap-1.5 text-right sm:block">
-          <p className="inter-reg-font text-[10px] uppercase tracking-[0.1em] text-slate-400">From</p>
+          <p className="inter-reg-font text-[10px] max-sm:text-[16px] uppercase tracking-[0.1em] text-slate-400">From</p>
           <span className="inter-bold-font text-[16px] lg:text-[16px] 2xl:text-[20px] leading-tight text-[#47317c]">
             £{originalPrice}
           </span>
@@ -73,7 +73,7 @@ const ProductListCard = ({
           }}
           disabled={isOutOfStock || isLoading}
           className={`inter-medium-font inline-flex min-h-[36px] lg:min-h-[36px] 2xl:min-h-[42px] items-center justify-center gap-1.5
-            rounded-xl px-3 text-[12px] sm:px-4 sm:text-[12.5px] lg:px-4 lg:text-[12.5px] 2xl:px-6 2xl:text-[13.5px]
+            rounded-xl px-3 text-[12px] max-sm:text-[16px] sm:px-4 sm:text-[12.5px] lg:px-4 lg:text-[12.5px] 2xl:px-6 2xl:text-[13.5px]
             whitespace-nowrap transition-all duration-150
             ${isOutOfStock
               ? "cursor-not-allowed bg-slate-100 text-slate-400"

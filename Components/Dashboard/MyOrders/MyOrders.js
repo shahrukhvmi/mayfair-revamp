@@ -49,7 +49,7 @@ const getStatusClasses = (status = "") => {
 };
 
 const OrderStatus = ({ status }) => (
-  <span className={`inter-medium-font inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-[11px] lg:text-[12px] 2xl:text-[13px] leading-none ${getStatusClasses(status)}`}>
+  <span className={`inter-medium-font inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-[11px] max-sm:text-[16px] lg:text-[12px] 2xl:text-[13px] leading-none ${getStatusClasses(status)}`}>
     <span className={`h-1.5 w-1.5 rounded-full ${statusDot[status?.toLowerCase()] || "bg-slate-400"}`} />
     {status}
   </span>
@@ -72,7 +72,7 @@ const StatusFilter = ({ value, onChange }) => {
       <button
         type="button"
         onClick={() => setOpen((p) => !p)}
-        className={`inter-medium-font flex min-h-[44px] w-full items-center justify-between gap-2 rounded-xl border px-4 py-2.5 text-[13px] transition-all duration-150 cursor-pointer ${current.color}`}
+        className={`inter-medium-font flex min-h-[44px] w-full items-center justify-between gap-2 rounded-xl border px-4 py-2.5 text-[13px] max-sm:text-[16px] transition-all duration-150 cursor-pointer ${current.color}`}
       >
         <span className="flex items-center gap-2">
           <span className={`h-2 w-2 rounded-full ${statusDot[current.value]}`} />
@@ -88,7 +88,7 @@ const StatusFilter = ({ value, onChange }) => {
               key={opt.value}
               type="button"
               onClick={() => { onChange(opt.value); setOpen(false); }}
-              className={`inter-medium-font flex w-full items-center gap-2.5 px-4 py-2.5 text-[13px] text-left transition-colors duration-100 cursor-pointer
+              className={`inter-medium-font flex w-full items-center gap-2.5 px-4 py-2.5 text-[13px] max-sm:text-[16px] text-left transition-colors duration-100 cursor-pointer
                 ${value === opt.value ? opt.color : "text-slate-700 hover:bg-slate-50"}`}
             >
               <span className={`h-2 w-2 rounded-full ${statusDot[opt.value]}`} />
@@ -167,8 +167,8 @@ const EmptyOrders = () => (
     <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-slate-100 text-slate-400">
       <ShoppingBag size={24} strokeWidth={1.8} />
     </div>
-    <h3 className="inter-bold-font mt-4 text-[16px] text-slate-900">No orders found</h3>
-    <p className="inter-reg-font mt-1.5 max-w-sm text-[13px] leading-[1.7] text-slate-500">
+    <h3 className="max-sm:text-[18px] inter-bold-font mt-4 text-[16px] text-slate-900">No orders found</h3>
+    <p className="inter-reg-font mt-1.5 max-w-sm text-[13px] max-sm:text-[16px] leading-[1.7] text-slate-500">
       No orders match your search or filter.
     </p>
   </div>
@@ -277,7 +277,7 @@ const MyOrders = () => {
             totalOrders !== null ? (
               <div className="flex items-center gap-2 rounded-xl border border-[#e8e2f5] bg-white/70 px-4 py-2.5">
                 <ShoppingBag size={14} strokeWidth={2} className="text-[#47317c]" />
-                <span className="inter-semibold-font text-[13px] text-slate-800">
+                <span className="inter-semibold-font text-[13px] max-sm:text-[16px] text-slate-800">
                   {totalOrders} Total Orders
                 </span>
               </div>
@@ -298,13 +298,13 @@ const MyOrders = () => {
                   value={searchValue}
                   onChange={(e) => setSearchValue(e.target.value.toLowerCase())}
                   placeholder="Search by order ID or treatment…"
-                  className="inter-reg-font min-h-[44px] w-full rounded-xl border border-slate-200 bg-slate-50/60 py-2.5 pl-10 pr-10 text-[13px] text-slate-900 outline-none placeholder:text-slate-400 transition-all duration-150 focus:border-slate-300 focus:bg-white focus:ring-2 focus:ring-slate-100"
+                  className="inter-reg-font min-h-[44px] w-full rounded-xl border border-slate-200 bg-slate-50/60 py-2.5 pl-10 pr-10 text-[13px] max-sm:text-[16px] text-slate-900 outline-none placeholder:text-slate-400 transition-all duration-150 focus:border-slate-300 focus:bg-white focus:ring-2 focus:ring-slate-100"
                 />
                 {searchValue && (
                   <button
                     type="button"
                     onClick={() => setSearchValue("")}
-                    className="inter-medium-font absolute right-2.5 top-1/2 -translate-y-1/2 rounded px-1.5 py-0.5 text-[11px] text-slate-500 bg-slate-100 hover:bg-slate-200 transition-colors cursor-pointer"
+                    className="inter-medium-font absolute right-2.5 top-1/2 -translate-y-1/2 rounded px-1.5 py-0.5 text-[11px] max-sm:text-[16px] text-slate-500 bg-slate-100 hover:bg-slate-200 transition-colors cursor-pointer"
                   >
                     Clear
                   </button>
@@ -315,13 +315,13 @@ const MyOrders = () => {
             <div className="flex items-center gap-3">
               {/* Filter result count */}
               {!isLoading && data && (status !== "all" || searchValue) && (
-                <span className={`inter-medium-font whitespace-nowrap rounded-lg border px-3 py-1.5 text-[12px] ${statusOptions.find((o) => o.value === status)?.color ?? "bg-[#f3f0f9] text-[#47317c] border-[#d9cff0]"}`}>
+                <span className={`inter-medium-font whitespace-nowrap rounded-lg border px-3 py-1.5 text-[12px] max-sm:text-[16px] ${statusOptions.find((o) => o.value === status)?.color ?? "bg-[#f3f0f9] text-[#47317c] border-[#d9cff0]"}`}>
                   {data?.total ?? 0} results
                 </span>
               )}
               <div className="flex items-center gap-2">
                 <SlidersHorizontal size={14} strokeWidth={2} className="text-slate-400 sm:block hidden" />
-                <span className="inter-reg-font text-[10.5px] sm:text-[12px] text-slate-500">Sort by status</span>
+                <span className="inter-reg-font text-[10.5px] max-sm:text-[16px] sm:text-[12px] text-slate-500">Sort by status</span>
               </div>
               <StatusFilter value={status} onChange={setStatus} />
             </div>
@@ -330,7 +330,7 @@ const MyOrders = () => {
           {/* Info notice */}
           <div className="mx-4 mt-4 sm:mx-5 flex items-center gap-2.5 rounded-xl border border-amber-200/70 bg-amber-50/50 px-4 py-2.5">
             <Info size={13} strokeWidth={2} className="shrink-0 text-amber-500" />
-            <p className="inter-reg-font text-[12px] sm:text-[14px] leading-none text-slate-500">
+            <p className="inter-reg-font text-[12px] max-sm:text-[16px] sm:text-[14px] leading-none text-slate-500">
               <span className="inter-medium-font text-slate-600">Note: </span>
               Changes to your shipping address will only apply to future orders and will not affect previous ones.
             </p>
@@ -343,7 +343,7 @@ const MyOrders = () => {
                 <thead>
                   <tr className="border-b border-slate-100 bg-slate-50/60">
                     {["Order ID", "Order date", "Treatment", "Items", "Status", "Total", ""].map((h) => (
-                      <th key={h || "action"} scope="col" className="inter-medium-font whitespace-nowrap px-5 py-3.5 text-[10.5px] lg:text-[11.5px] 2xl:text-[12.5px] uppercase tracking-[0.11em] text-slate-400">
+                      <th key={h || "action"} scope="col" className="inter-medium-font whitespace-nowrap px-5 py-3.5 text-[10.5px] max-sm:text-[16px] lg:text-[11.5px] 2xl:text-[12.5px] uppercase tracking-[0.11em] text-slate-400">
                         {h}
                       </th>
                     ))}
@@ -361,25 +361,25 @@ const MyOrders = () => {
                       return (
                         <tr key={order.id} className="group border-b border-slate-100 last:border-b-0 transition-colors duration-150 hover:bg-slate-50/60">
                           <td className="px-5 py-4">
-                            <span className="inter-bold-font text-[13px] lg:text-[14px] 2xl:text-[15px] text-slate-800">#{order.order_id}</span>
+                            <span className="inter-bold-font text-[13px] max-sm:text-[16px] lg:text-[14px] 2xl:text-[15px] text-slate-800">#{order.order_id}</span>
                           </td>
                           <td className="px-5 py-4">
                             <div className="flex items-center gap-1.5">
                               <CalendarDays size={13} strokeWidth={2} className="shrink-0 text-slate-400" />
-                              <span className="inter-medium-font whitespace-nowrap text-[12.5px] lg:text-[13.5px] 2xl:text-[14.5px] text-slate-600">{order.created_at}</span>
+                              <span className="inter-medium-font whitespace-nowrap text-[12.5px] max-sm:text-[16px] lg:text-[13.5px] 2xl:text-[14.5px] text-slate-600">{order.created_at}</span>
                             </div>
                           </td>
                           <td className="px-5 py-4">
                             <div className="flex max-w-[190px] flex-col gap-1">
                               {treatments.map((t, i) => (
-                                <span key={`${t}-${i}`} className="inter-medium-font text-[12.5px] lg:text-[13.5px] 2xl:text-[14.5px] leading-5 text-slate-800">{t}</span>
+                                <span key={`${t}-${i}`} className="inter-medium-font text-[12.5px] max-sm:text-[16px] lg:text-[13.5px] 2xl:text-[14.5px] leading-5 text-slate-800">{t}</span>
                               ))}
                             </div>
                           </td>
                           <td className="px-5 py-4">
                             <div className="flex max-w-[225px] flex-col gap-1">
                               {groupedItems.map((item, i) => (
-                                <span key={`${item.name}-${i}`} className="inter-reg-font text-[12px] lg:text-[13px] 2xl:text-[14px] leading-5 text-slate-500">
+                                <span key={`${item.name}-${i}`} className="inter-reg-font text-[12px] max-sm:text-[16px] lg:text-[13px] 2xl:text-[14px] leading-5 text-slate-500">
                                   {item.name}<span className="inter-medium-font ml-1 text-slate-700">× {item.quantity}</span>
                                 </span>
                               ))}
@@ -387,7 +387,7 @@ const MyOrders = () => {
                           </td>
                           <td className="px-5 py-4"><OrderStatus status={order.status} /></td>
                           <td className="px-5 py-4">
-                            <span className="inter-bold-font whitespace-nowrap text-[13px] lg:text-[14px] 2xl:text-[15px] text-slate-900">£{order.total_price}</span>
+                            <span className="inter-bold-font whitespace-nowrap text-[13px] max-sm:text-[16px] lg:text-[14px] 2xl:text-[15px] text-slate-900">£{order.total_price}</span>
                           </td>
                           <td className="px-5 py-4 text-right">
                             <button
@@ -422,33 +422,33 @@ const MyOrders = () => {
                   <article key={order.id} className="overflow-hidden rounded-2xl border border-slate-200/70 bg-white shadow-[0_1px_4px_rgba(0,0,0,0.05)]">
                     <div className="flex items-start justify-between gap-3 border-b border-slate-100 px-4 py-3.5">
                       <div>
-                        <p className="inter-medium-font text-[10px] uppercase tracking-[0.12em] text-slate-400">Order</p>
-                        <p className="inter-bold-font mt-0.5 text-[15px] text-slate-900">#{order.order_id}</p>
+                        <p className="inter-medium-font text-[10px] max-sm:text-[16px] uppercase tracking-[0.12em] text-slate-400">Order</p>
+                        <p className="inter-bold-font mt-0.5 text-[15px] max-sm:text-[16px] text-slate-900">#{order.order_id}</p>
                       </div>
                       <OrderStatus status={order.status} />
                     </div>
                     <div className="p-4">
                       <div className="grid grid-cols-2 gap-4">
                         <div>
-                          <p className="inter-medium-font text-[10px] uppercase tracking-[0.11em] text-slate-400">Date</p>
-                          <p className="inter-medium-font mt-1 text-[12.5px] text-slate-700">{order.created_at}</p>
+                          <p className="inter-medium-font text-[10px] max-sm:text-[16px] uppercase tracking-[0.11em] text-slate-400">Date</p>
+                          <p className="inter-medium-font mt-1 text-[12.5px] max-sm:text-[16px] text-slate-700">{order.created_at}</p>
                         </div>
                         <div className="text-right">
-                          <p className="inter-medium-font text-[10px] uppercase tracking-[0.11em] text-slate-400">Total</p>
+                          <p className="inter-medium-font text-[10px] max-sm:text-[16px] uppercase tracking-[0.11em] text-slate-400">Total</p>
                           <p className="inter-bold-font mt-1 text-[16px] text-slate-900">£{order.total_price}</p>
                         </div>
                       </div>
                       <div className="mt-3.5 border-t border-slate-100 pt-3.5">
-                        <p className="inter-medium-font text-[10px] uppercase tracking-[0.11em] text-slate-400">Treatment</p>
+                        <p className="inter-medium-font text-[10px] max-sm:text-[16px] uppercase tracking-[0.11em] text-slate-400">Treatment</p>
                         <div className="mt-1.5 flex flex-col gap-1">
-                          {treatments.map((t, i) => <p key={`${t}-${i}`} className="inter-medium-font text-[13px] text-slate-900">{t}</p>)}
+                          {treatments.map((t, i) => <p key={`${t}-${i}`} className="inter-medium-font text-[13px] max-sm:text-[16px] text-slate-900">{t}</p>)}
                         </div>
                       </div>
                       <div className="mt-3">
-                        <p className="inter-medium-font text-[10px] uppercase tracking-[0.11em] text-slate-400">Items</p>
+                        <p className="inter-medium-font text-[10px] max-sm:text-[16px] uppercase tracking-[0.11em] text-slate-400">Items</p>
                         <div className="mt-1.5 flex flex-col gap-1">
                           {groupedItems.map((item, i) => (
-                            <p key={`${item.name}-${i}`} className="inter-reg-font text-[12px] text-slate-500">
+                            <p key={`${item.name}-${i}`} className="inter-reg-font text-[12px] max-sm:text-[16px] text-slate-500">
                               {item.name}<span className="inter-medium-font ml-1 text-slate-700">× {item.quantity}</span>
                             </p>
                           ))}
@@ -457,7 +457,7 @@ const MyOrders = () => {
                       <button
                         type="button"
                         onClick={() => handleSendId(order?.id)}
-                        className="inter-medium-font mt-4 inline-flex min-h-[40px] w-full cursor-pointer items-center justify-center gap-2 rounded-xl bg-slate-900 px-4 text-[13px] text-white transition-all duration-150 hover:bg-slate-800 active:scale-[0.98]"
+                        className="inter-medium-font mt-4 inline-flex min-h-[40px] w-full cursor-pointer items-center justify-center gap-2 rounded-xl bg-slate-900 px-4 text-[13px] max-sm:text-[16px] text-white transition-all duration-150 hover:bg-slate-800 active:scale-[0.98]"
                       >
                         <Eye size={15} strokeWidth={2} />
                         View order

@@ -323,7 +323,7 @@ export default function BillingAddress({
               <button
                 type="button"
                 onClick={handleSearch}
-                className="inter-semibold-font absolute bottom-[7px] right-0 flex min-w-[104px] cursor-pointer items-center justify-center gap-2 rounded-md bg-[#47317c] px-4 py-2 text-[12px] text-white transition-colors duration-200 hover:bg-[#392765] disabled:cursor-not-allowed disabled:opacity-50"
+                className="inter-semibold-font absolute bottom-[7px] right-0 flex min-w-[104px] cursor-pointer items-center justify-center gap-2 rounded-md bg-[#47317c] px-4 py-2 text-[12px] max-sm:text-[16px] text-white transition-colors duration-200 hover:bg-[#392765] disabled:cursor-not-allowed disabled:opacity-50"
                 disabled={addressSearchLoading}
               >
                 {addressSearchLoading ? (

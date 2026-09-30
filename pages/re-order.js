@@ -94,7 +94,7 @@ export default function Acknowledgment() {
             >
               {isSelected && <div className="h-1.5 w-1.5 rounded-full bg-white" />}
             </div>
-            <span className={`inter-medium-font text-[14px] capitalize ${isSelected ? option === "yes" ? "text-[#47317c]" : "text-emerald-700" : "text-slate-700"}`}>
+            <span className={`inter-medium-font text-[14px] max-sm:text-[16px] capitalize ${isSelected ? option === "yes" ? "text-[#47317c]" : "text-emerald-700" : "text-slate-700"}`}>
               {option}
             </span>
           </label>
@@ -113,7 +113,7 @@ export default function Acknowledgment() {
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
               {/* <div className="rounded-xl border border-[#47317c]/10 bg-[#47317c]/[0.035] p-4 sm:p-5"> */}
                 <div>
-                  <p className="inter-medium-font text-[14px] leading-relaxed text-slate-800">
+                  <p className="inter-medium-font text-[14px] max-sm:text-[16px] leading-relaxed text-slate-800">
                     Has anything changed since your last order?
                   </p>
                   {renderYesNo("personalUse", personalUse)}

@@ -35,7 +35,7 @@ const SectionHeader = ({
         onClick={toggleAccordion}
       >
         <div
-          className={`flex items-center justify-center w-7 h-7 rounded-full text-[13px] transition-all duration-300 ${isCompleted
+          className={`flex items-center justify-center w-7 h-7 rounded-full text-[13px] max-sm:text-[16px] transition-all duration-300 ${isCompleted
             ? "bg-[#47317c] text-white"
             : "border-2 border-[#47317c] text-[#47317c] inter-semibold-font"
             }`}
@@ -65,7 +65,7 @@ const SectionHeader = ({
           </AnimatePresence>
         </div>
 
-        <h2 className="inter-semibold-font text-[15px] text-slate-900">{title}</h2>
+        <h2 className="max-sm:text-[18px] inter-semibold-font text-[15px] text-slate-900">{title}</h2>
 
         <motion.div
           className="ml-auto"
@@ -88,7 +88,7 @@ const SectionHeader = ({
           >
             <div className="px-6 py-5">
             {description && (
-              <p className="inter-reg-font text-[13px] text-slate-500 mb-4">
+              <p className="inter-reg-font text-[13px] max-sm:text-[16px] text-slate-500 mb-4">
                 {description}
               </p>
             )}

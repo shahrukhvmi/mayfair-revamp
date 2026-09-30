@@ -327,16 +327,16 @@ const IdVerification = () => {
 
                 <div className="flex flex-col items-center justify-center">
                   <AiOutlineLoading3Quarters className="animate-spin text-violet-700 w-7 h-7 mb-3" />
-                  <p className="text-gray-700 text-sm reg-font">Uploading...</p>
+                  <p className="text-gray-700 text-sm max-sm:text-[16px] reg-font">Uploading...</p>
                 </div>
               ) : !photo ? (
                 /* 📤 Upload UI */
                 <div className="flex flex-col items-center justify-center">
                   <FiUpload className="text-violet-700 w-full h-7 mb-3" />
-                  <p className="text-gray-700 text-sm reg-font">
+                  <p className="text-gray-700 text-sm max-sm:text-[16px] reg-font">
                     Click here
                     <br />
-                    <span className="text-gray-400 text-xs">
+                    <span className="text-gray-400 text-xs max-sm:text-[16px]">
                       or drag the image to upload
                     </span>
                   </p>
@@ -354,7 +354,7 @@ const IdVerification = () => {
                       >
                         <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm-1 1.5L18.5 9H13V3.5zM6 20V4h5v7h7v9H6z" />
                       </svg>
-                      <p className="w-full truncate px-3 text-center text-xs text-gray-600 reg-font">
+                      <p className="w-full truncate px-3 text-center text-xs max-sm:text-[16px] text-gray-600 reg-font">
                         {photo?.name}
                       </p>
                     </div>
@@ -372,12 +372,12 @@ const IdVerification = () => {
           </label>
 
           {/* ✅ Allowed formats helper text */}
-          <p className="text-[11px] text-gray-500 mt-2 text-center reg-font">
+          <p className="text-[11px] max-sm:text-[16px] text-gray-500 mt-2 text-center reg-font">
             JPEG, PNG, WEBP, HEIC, HEIF, AVIF or PDF · Maximum {MAX_SIZE_MB} MB
           </p>
 
           {/* 💡 Suggestion / helper text */}
-          <p className="text-xs text-gray-500 mt-2 text-center italic">
+          <p className="text-xs max-sm:text-[16px] text-gray-500 mt-2 text-center italic">
             {suggestion}
           </p>
         </div>
@@ -470,7 +470,7 @@ const IdVerification = () => {
             </p>
 
             {/* Bullet Points */}
-            {/* <ul className="list-disc pl-6 text-gray-800 text-sm space-y-2 font-normal font-sans pt-2 my-10 sm:my-0">
+            {/* <ul className="list-disc pl-6 text-gray-800 text-sm max-sm:text-[16px] space-y-2 font-normal font-sans pt-2 my-10 sm:my-0">
               <li>We will only ask for this once.</li>
               <li>
                 We realise it's inconvenient, but this is a regulatory
@@ -562,7 +562,7 @@ const IdVerification = () => {
             <button
               type="submit"
               disabled={loading || !frontPhoto}
-              className={`reg-font px-6 py-3 rounded-full text-white font-semibold text-sm transition-all duration-150 ease-in-out
+              className={`reg-font px-6 py-3 rounded-full text-white font-semibold text-sm max-sm:text-[16px] transition-all duration-150 ease-in-out
       flex items-center justify-center 
       ${loading || !frontPhoto
                   ? "bg-gray-300 cursor-not-allowed"

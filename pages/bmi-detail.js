@@ -198,13 +198,13 @@ export default function BmiDetail() {
       <FormWrapper heading={"Your BMI:"} percentage={"70"}>
         <PageAnimationWrapper>
           <div className="mb-5 rounded-2xl border border-[#47317c]/[0.12] bg-[#f5f2fc] py-10 text-center">
-            <p className="inter-medium-font mb-1 text-[13px] uppercase tracking-widest text-[#47317c]/60">Your BMI</p>
+            <p className="inter-medium-font mb-1 text-[13px] max-sm:text-[16px] uppercase tracking-widest text-[#47317c]/60">Your BMI</p>
             <h1 className="inter-bold-font text-4xl text-[#47317c]">{bmiValue}</h1>
           </div>
 
           {isReorderAndBmiLow && (
             <div className="mb-4 rounded-xl border border-red-100 bg-red-50 px-4 py-3.5">
-              <p className="inter-reg-font text-[13px] text-red-700">
+              <p className="inter-reg-font text-[13px] max-sm:text-[16px] text-red-700">
                 Your BMI is in the underweight category. Therefore, losing further
                 weight is not safe and you are not able to proceed further. Please
                 contact us to discuss your options with the clinical team.
@@ -214,7 +214,7 @@ export default function BmiDetail() {
 
           {shouldShowInfoMessage && !isReturningPatient && (
             <div className="mb-5 rounded-xl border border-amber-200/70 bg-amber-50/70 px-4 py-3.5">
-              <p className="inter-reg-font text-[13px] text-amber-800">
+              <p className="inter-reg-font text-[13px] max-sm:text-[16px] text-amber-800">
                 As you have confirmed that you are from one of the following
                 family backgrounds: South Asian, Chinese, Other Asian, Middle
                 Eastern, Black African or African-Caribbean, your
@@ -226,7 +226,7 @@ export default function BmiDetail() {
 
           {bmiError && (
             <div className="mb-4 rounded-xl border border-red-100 bg-red-50 px-4 py-3.5">
-              <p className="inter-reg-font text-[13px] text-red-700">{bmiError}</p>
+              <p className="inter-reg-font text-[13px] max-sm:text-[16px] text-red-700">{bmiError}</p>
             </div>
           )}
 
@@ -238,12 +238,12 @@ export default function BmiDetail() {
               <>
                 {patientInfo?.ethnicity === "No" ||
                 patientInfo?.ethnicity === "Prefer not to say" ? (
-                  <p className="inter-reg-font text-[13px] text-slate-700">
+                  <p className="inter-reg-font text-[13px] max-sm:text-[16px] text-slate-700">
                     Your BMI is between 27-29.9 which indicates you are
                     overweight.
                   </p>
                 ) : null}
-                <p className="inter-reg-font text-[13px] text-slate-700">
+                <p className="inter-reg-font text-[13px] max-sm:text-[16px] text-slate-700">
                   You should only continue with the consultation if you have
                   tried losing weight through a reduced-calorie diet and
                   increased physical activity but are still struggling to lose
@@ -262,7 +262,7 @@ export default function BmiDetail() {
                         </svg>
                       )}
                     </div>
-                    <span className="inter-medium-font text-[13px] leading-relaxed text-slate-800">{getCheckbox1Label()}</span>
+                    <span className="inter-medium-font text-[13px] max-sm:text-[16px] leading-relaxed text-slate-800">{getCheckbox1Label()}</span>
                   </label>
                 )} />
 
@@ -278,7 +278,7 @@ export default function BmiDetail() {
                         </svg>
                       )}
                     </div>
-                    <span className="inter-medium-font text-[13px] leading-relaxed text-slate-800">You have at least one weight-related comorbidity (e.g. PCOS, diabetes, etc.)</span>
+                    <span className="inter-medium-font text-[13px] max-sm:text-[16px] leading-relaxed text-slate-800">You have at least one weight-related comorbidity (e.g. PCOS, diabetes, etc.)</span>
                   </label>
                 )} />
 
@@ -313,11 +313,11 @@ export default function BmiDetail() {
                           </svg>
                         )}
                       </div>
-                      <span className="inter-medium-font text-[13px] leading-relaxed text-slate-800">None of the above</span>
+                      <span className="inter-medium-font text-[13px] max-sm:text-[16px] leading-relaxed text-slate-800">None of the above</span>
                     </label>
                     {noneOfTheAbove && (
                       <div className="mt-2 rounded-xl border border-red-100 bg-red-50 px-4 py-3">
-                        <p className="inter-reg-font text-[13px] text-red-700">
+                        <p className="inter-reg-font text-[13px] max-sm:text-[16px] text-red-700">
                           Your BMI in this range, weight loss treatment can only be
                           prescribed if you have either previously taken weight loss
                           medication, or you have at least one weight-related

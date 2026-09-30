@@ -15,7 +15,7 @@ const NextButton = ({
         type={type}
         onClick={onClick}
         disabled={disabled || loading}
-        className={`${className} w-full inter-medium-font text-[14px] tracking-wide transition-all duration-150 ease-in-out
+        className={`${className} w-full inter-medium-font text-[14px] max-sm:text-[16px] tracking-wide transition-all duration-150 ease-in-out
           flex justify-center items-center cursor-pointer rounded-lg py-3 px-6
           ${
             disabled || loading
@@ -32,7 +32,7 @@ const NextButton = ({
           <div className="flex flex-col items-center">
             <div>{label}</div>
             {subHeading && (
-              <div className="text-[12px] inter-reg-font pt-1 normal-case opacity-80">
+              <div className="text-[12px] max-sm:text-[16px] inter-reg-font pt-1 normal-case opacity-80">
                 {subHeading}
               </div>
             )}

@@ -62,7 +62,7 @@ const AddOn = ({ addon, onAdd, onIncrement, onDecrement, isSelected, quantity })
         {isOutOfStock && (
           <>
             <div className="absolute inset-0 z-10 cursor-not-allowed rounded-[14px] bg-slate-100/20" />
-            <div className="inter-semibold-font absolute -top-3.5 left-3 z-20 inline-flex h-7 items-center rounded-lg border border-rose-200 bg-rose-50 px-3 text-[11.5px] text-rose-700 shadow-[0_1px_2px_rgba(15,23,42,0.04)]">
+            <div className="inter-semibold-font absolute -top-3.5 left-3 z-20 inline-flex h-7 items-center rounded-lg border border-rose-200 bg-rose-50 px-3 text-[11.5px] max-sm:text-[16px] text-rose-700 shadow-[0_1px_2px_rgba(15,23,42,0.04)]">
               Out of stock
             </div>
           </>
@@ -79,8 +79,8 @@ const AddOn = ({ addon, onAdd, onIncrement, onDecrement, isSelected, quantity })
             )}
           </div>
           <div>
-            <p className="inter-semibold-font text-[15px] capitalize text-slate-900">{addon?.product_name}</p>
-            <p className={`inter-medium-font text-[13px] ${isSelected ? "text-[#47317c]" : "text-slate-900"}`}>{addon.name}</p>
+            <p className="inter-semibold-font text-[15px] max-sm:text-[16px] capitalize text-slate-900">{addon?.product_name}</p>
+            <p className={`inter-medium-font text-[13px] max-sm:text-[16px] ${isSelected ? "text-[#47317c]" : "text-slate-900"}`}>{addon.name}</p>
           </div>
         </div>
 
@@ -97,7 +97,7 @@ const AddOn = ({ addon, onAdd, onIncrement, onDecrement, isSelected, quantity })
                   className="flex h-7 w-7 items-center justify-center rounded-full bg-slate-100 hover:bg-slate-200 cursor-pointer transition-colors">
                   <FaMinus size={9} className="text-slate-600" />
                 </button>
-                <span className="inter-semibold-font w-6 text-center text-[13px] text-slate-900">{quantity}</span>
+                <span className="inter-semibold-font w-6 text-center text-[13px] max-sm:text-[16px] text-slate-900">{quantity}</span>
                 <button type="button" onClick={handleIncrement}
                   className={`flex h-7 w-7 items-center justify-center rounded-full transition-colors
                     ${quantity >= allowed ? "cursor-not-allowed bg-slate-100 opacity-40" : "bg-slate-100 hover:bg-slate-200 cursor-pointer"}`}>

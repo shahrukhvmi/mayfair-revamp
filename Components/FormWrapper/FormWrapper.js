@@ -72,11 +72,11 @@ const FormWrapper = ({
           {/* Card header — purple tinted */}
           {heading && (
             <div className={`border-b border-[#47317c]/[0.08] bg-[#f5f2fc] px-5 pb-5 pt-6 sm:px-8 sm:pb-6 sm:pt-7 ${headerClassName}`}>
-              <h1 className="inter-semibold-font text-[21px] leading-snug tracking-[-0.02em] text-slate-900 sm:text-[23px]">
+              <h1 className="max-sm:text-[24px] inter-semibold-font text-[21px] leading-snug tracking-[-0.02em] text-slate-900 sm:text-[23px]">
                 {heading}
               </h1>
               {description && (
-                <p className="inter-reg-font mt-2 max-w-[540px] text-[13px] leading-relaxed text-slate-500 sm:text-[13.5px]">
+                <p className="inter-reg-font mt-2 max-w-[540px] text-[13px] max-sm:text-[16px] leading-relaxed text-slate-500 sm:text-[13.5px]">
                   {description}
                 </p>
               )}

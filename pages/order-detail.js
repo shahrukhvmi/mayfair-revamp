@@ -69,7 +69,7 @@ const formatDate = (value) => {
 
 /* ── Status badge (inline pill) ── */
 const StatusBadge = ({ status }) => (
-  <span className={`inter-medium-font inline-flex items-center rounded-full border px-3 py-1.5 text-[11px] leading-none ${getStatusColor(status)}`}>
+  <span className={`inter-medium-font inline-flex items-center rounded-full border px-3 py-1.5 text-[11px] max-sm:text-[16px] leading-none ${getStatusColor(status)}`}>
     {status || "N/A"}
   </span>
 );
@@ -77,8 +77,8 @@ const StatusBadge = ({ status }) => (
 /* ── Detail field (patient info grid) ── */
 const DetailField = ({ label, value, capitalize = false }) => (
   <div className="rounded-[16px] border border-[#47317c]/[0.08] bg-[#faf9fc] px-4 py-4">
-    <p className="inter-medium-font text-[10px] uppercase tracking-[0.11em] text-slate-400">{label}</p>
-    <p className={`inter-medium-font mt-2 text-[13px] leading-5 text-slate-900 ${capitalize ? "capitalize" : ""}`}>
+    <p className="inter-medium-font text-[10px] max-sm:text-[16px] uppercase tracking-[0.11em] text-slate-400">{label}</p>
+    <p className={`inter-medium-font mt-2 text-[13px] max-sm:text-[16px] leading-5 text-slate-900 ${capitalize ? "capitalize" : ""}`}>
       {value || "N/A"}
     </p>
   </div>
@@ -199,13 +199,13 @@ const OrderNotFound = () => (
         <span className="flex h-16 w-16 items-center justify-center rounded-2xl bg-[#47317c]/[0.07] text-[#47317c]">
           <Package size={28} strokeWidth={1.8} />
         </span>
-        <h1 className="inter-bold-font mt-5 text-[22px] text-slate-900">Order not available</h1>
-        <p className="inter-reg-font mt-2 max-w-md text-[13px] leading-6 text-slate-500">
+        <h1 className="max-sm:text-[24px] inter-bold-font mt-5 text-[22px] text-slate-900">Order not available</h1>
+        <p className="inter-reg-font mt-2 max-w-md text-[13px] max-sm:text-[16px] leading-6 text-slate-500">
           The selected order could not be loaded. Return to your orders and select an order again.
         </p>
         <Link
           href="/orders"
-          className="inter-medium-font mt-5 inline-flex min-h-[44px] items-center justify-center gap-2 rounded-xl bg-[#47317c] px-5 py-2.5 text-[12px] text-white no-underline transition-colors hover:bg-[#392765]"
+          className="inter-medium-font mt-5 inline-flex min-h-[44px] items-center justify-center gap-2 rounded-xl bg-[#47317c] px-5 py-2.5 text-[12px] max-sm:text-[16px] text-white no-underline transition-colors hover:bg-[#392765]"
         >
           <ArrowLeft size={16} strokeWidth={2.2} />
           Back to orders
@@ -273,7 +273,7 @@ const OrderDetail = () => {
               <div>
                 <Link
                   href="/orders"
-                  className="inter-medium-font inline-flex items-center gap-2 text-[12.5px] text-slate-500 no-underline transition-colors hover:text-[#47317c]"
+                  className="inter-medium-font inline-flex items-center gap-2 text-[12.5px] max-sm:text-[16px] text-slate-500 no-underline transition-colors hover:text-[#47317c]"
                 >
                   <ArrowLeft size={15} strokeWidth={2.2} />
                   Back to orders
@@ -300,10 +300,10 @@ const OrderDetail = () => {
                             <ShoppingBag size={18} strokeWidth={1.8} />
                           </span>
                           <div className="flex flex-col gap-1.5">
-                            <span className="inter-medium-font whitespace-nowrap text-[10px] uppercase tracking-[0.12em] text-slate-400">Order Status</span>
+                            <span className="inter-medium-font whitespace-nowrap text-[10px] max-sm:text-[16px] uppercase tracking-[0.12em] text-slate-400">Order Status</span>
                             <div className="flex items-center gap-1.5">
                               <span className={`h-1.5 w-1.5 shrink-0 rounded-full ${theme.dot}`} />
-                              <span className={`inter-semibold-font whitespace-nowrap text-[12px] capitalize ${getStatusColor(currentOrder?.status || "").split(" ").find(c => c.startsWith("text-"))}`}>
+                              <span className={`inter-semibold-font whitespace-nowrap text-[12px] max-sm:text-[16px] capitalize ${getStatusColor(currentOrder?.status || "").split(" ").find(c => c.startsWith("text-"))}`}>
                                 {currentOrder?.status || "N/A"}
                               </span>
                             </div>
@@ -320,10 +320,10 @@ const OrderDetail = () => {
                             <ReceiptText size={18} strokeWidth={1.8} />
                           </span>
                           <div className="flex flex-col gap-1.5">
-                            <span className="inter-medium-font whitespace-nowrap text-[10px] uppercase tracking-[0.12em] text-slate-400">Payment Status</span>
+                            <span className="inter-medium-font whitespace-nowrap text-[10px] max-sm:text-[16px] uppercase tracking-[0.12em] text-slate-400">Payment Status</span>
                             <div className="flex items-center gap-1.5">
                               <span className={`h-1.5 w-1.5 shrink-0 rounded-full ${theme.dot}`} />
-                              <span className={`inter-semibold-font whitespace-nowrap text-[12px] capitalize ${getStatusColor(currentOrder?.payments?.status || "").split(" ").find(c => c.startsWith("text-"))}`}>
+                              <span className={`inter-semibold-font whitespace-nowrap text-[12px] max-sm:text-[16px] capitalize ${getStatusColor(currentOrder?.payments?.status || "").split(" ").find(c => c.startsWith("text-"))}`}>
                                 {currentOrder?.payments?.status || "N/A"}
                               </span>
                             </div>
@@ -337,7 +337,7 @@ const OrderDetail = () => {
 
               {/* Tab switcher */}
               <div className="flex flex-col gap-2">
-                <p className="inter-medium-font text-[10px] uppercase tracking-[0.12em] text-slate-400">
+                <p className="inter-medium-font text-[10px] max-sm:text-[16px] uppercase tracking-[0.12em] text-slate-400">
                   Switch Details
                 </p>
                 <div className="grid w-full grid-cols-2 gap-1 rounded-xl border border-slate-200 bg-slate-50 p-1 sm:flex sm:w-fit sm:items-center">
@@ -346,7 +346,7 @@ const OrderDetail = () => {
                       key={key}
                       type="button"
                       onClick={() => setActiveTab(key)}
-                      className={`inter-semibold-font inline-flex min-w-0 items-center justify-center gap-2 rounded-lg px-2 py-2 text-[12px] transition-all duration-150 cursor-pointer sm:px-4 sm:text-[13px]
+                      className={`inter-semibold-font inline-flex min-w-0 items-center justify-center gap-2 rounded-lg px-2 py-2 text-[12px] max-sm:text-[16px] transition-all duration-150 cursor-pointer sm:px-4 sm:text-[13px]
                         ${activeTab === key
                           ? "bg-white text-[#47317c] shadow-sm border border-slate-200/80 ring-1 ring-[#47317c]/10"
                           : "text-slate-400 hover:text-slate-700"
@@ -384,9 +384,9 @@ const OrderDetail = () => {
                       <table className="w-full min-w-[700px] border-collapse text-left">
                         <thead className="bg-white">
                           <tr className="border-b border-[#47317c]/[0.07]">
-                            <th className="inter-medium-font px-5 py-4 text-[12px] lg:text-[13px] uppercase tracking-[0.11em] text-slate-400">Item</th>
-                            <th className="inter-medium-font w-[150px] px-5 py-4 text-center text-[12px] lg:text-[13px] uppercase tracking-[0.11em] text-slate-400">Quantity</th>
-                            <th className="inter-medium-font w-[180px] px-5 py-4 text-right text-[12px] lg:text-[13px] uppercase tracking-[0.11em] text-slate-400">Amount</th>
+                            <th className="inter-medium-font px-5 py-4 text-[12px] max-sm:text-[16px] lg:text-[13px] uppercase tracking-[0.11em] text-slate-400">Item</th>
+                            <th className="inter-medium-font w-[150px] px-5 py-4 text-center text-[12px] max-sm:text-[16px] lg:text-[13px] uppercase tracking-[0.11em] text-slate-400">Quantity</th>
+                            <th className="inter-medium-font w-[180px] px-5 py-4 text-right text-[12px] max-sm:text-[16px] lg:text-[13px] uppercase tracking-[0.11em] text-slate-400">Amount</th>
                           </tr>
                         </thead>
                         <tbody>
@@ -396,17 +396,17 @@ const OrderDetail = () => {
                               className="border-b border-[#47317c]/[0.06] transition-colors hover:bg-[#47317c]/[0.018]"
                             >
                               <td className="px-5 py-5">
-                                <p className="inter-medium-font text-[14px] lg:text-[15px] capitalize leading-5 text-slate-900">
+                                <p className="inter-medium-font text-[14px] max-sm:text-[16px] lg:text-[15px] capitalize leading-5 text-slate-900">
                                   {product?.label || product?.name || product?.product || "Item"}
                                 </p>
                               </td>
                               <td className="px-5 py-5 text-center">
-                                <span className="inter-medium-font inline-flex min-w-[38px] items-center justify-center rounded-[10px] bg-[#47317c]/[0.06] px-3 py-2 text-[13px] lg:text-[14px] text-[#47317c]">
+                                <span className="inter-medium-font inline-flex min-w-[38px] items-center justify-center rounded-[10px] bg-[#47317c]/[0.06] px-3 py-2 text-[13px] max-sm:text-[16px] lg:text-[14px] text-[#47317c]">
                                   {product?.quantity}
                                 </span>
                               </td>
                               <td className="px-5 py-5 text-right">
-                                <span className="inter-bold-font text-[15px] lg:text-[16px] text-slate-950">
+                                <span className="inter-bold-font text-[15px] max-sm:text-[16px] lg:text-[16px] text-slate-950">
                                   £{formatCurrency(parseFloat(product?.price) * Number(product?.quantity))}
                                 </span>
                               </td>
@@ -417,7 +417,7 @@ const OrderDetail = () => {
                             <>
                               <tr className="border-b border-[#47317c]/[0.06] bg-[#faf9fc]/60">
                                 <td className="px-5 py-4">
-                                  <span className="inter-medium-font text-[13px] text-slate-600 lg:text-[14px]">
+                                  <span className="inter-medium-font text-[13px] max-sm:text-[16px] text-slate-600 lg:text-[14px]">
                                     Discount
                                     {isPercentageDiscount
                                       ? ` (${formatPercentage(discountData?.discount)}%)`
@@ -426,7 +426,7 @@ const OrderDetail = () => {
                                 </td>
                                 <td />
                                 <td className="px-5 py-4 text-right">
-                                  <span className="inter-semibold-font text-[13px] text-emerald-600 lg:text-[14px]">
+                                  <span className="inter-semibold-font text-[13px] max-sm:text-[16px] text-emerald-600 lg:text-[14px]">
                                     -£{formatCurrency(
                                       isPercentageDiscount
                                         ? discountData?.discount_value
@@ -437,20 +437,20 @@ const OrderDetail = () => {
                               </tr>
                               <tr className="border-b border-[#47317c]/[0.06] bg-[#faf9fc]/60">
                                 <td className="px-5 py-4">
-                                  <span className="inter-medium-font text-[13px] lg:text-[14px] text-slate-600">Coupon code</span>
+                                  <span className="inter-medium-font text-[13px] max-sm:text-[16px] lg:text-[14px] text-slate-600">Coupon code</span>
                                 </td>
                                 <td />
                                 <td className="px-5 py-4 text-right">
-                                  <span className="inter-medium-font text-[13px] lg:text-[14px] text-slate-900">{discountData?.code || "N/A"}</span>
+                                  <span className="inter-medium-font text-[13px] max-sm:text-[16px] lg:text-[14px] text-slate-900">{discountData?.code || "N/A"}</span>
                                 </td>
                               </tr>
                               <tr className="border-b border-[#47317c]/[0.06] bg-[#faf9fc]/60">
                                 <td className="px-5 py-4">
-                                  <span className="inter-medium-font text-[13px] lg:text-[14px] text-slate-600">Discount type</span>
+                                  <span className="inter-medium-font text-[13px] max-sm:text-[16px] lg:text-[14px] text-slate-600">Discount type</span>
                                 </td>
                                 <td />
                                 <td className="px-5 py-4 text-right">
-                                  <span className="inter-medium-font text-[13px] lg:text-[14px] text-slate-900">
+                                  <span className="inter-medium-font text-[13px] max-sm:text-[16px] lg:text-[14px] text-slate-900">
                                     {discountData?.type === "Fixed" ? "Fixed" : "Percentage"}
                                   </span>
                                 </td>
@@ -460,11 +460,11 @@ const OrderDetail = () => {
 
                           <tr className="border-b border-[#47317c]/[0.07] bg-[#faf9fc]/60">
                             <td className="px-5 py-4">
-                              <span className="inter-medium-font text-[13px] lg:text-[14px] text-slate-600">Shipping fee</span>
+                              <span className="inter-medium-font text-[13px] max-sm:text-[16px] lg:text-[14px] text-slate-600">Shipping fee</span>
                             </td>
                             <td />
                             <td className="px-5 py-4 text-right">
-                              <span className="inter-medium-font text-[13px] lg:text-[14px] text-slate-900">£{formatCurrency(shipmentFee)}</span>
+                              <span className="inter-medium-font text-[13px] max-sm:text-[16px] lg:text-[14px] text-slate-900">£{formatCurrency(shipmentFee)}</span>
                             </td>
                           </tr>
 
@@ -491,17 +491,17 @@ const OrderDetail = () => {
                             key={product?.id || `${product?.label}-${index}`}
                             className="rounded-[17px] border border-[#47317c]/[0.08] bg-[#faf9fc] p-4"
                           >
-                            <p className="inter-medium-font text-[13px] capitalize leading-5 text-slate-900">
+                            <p className="inter-medium-font text-[13px] max-sm:text-[16px] capitalize leading-5 text-slate-900">
                               {product?.label || product?.name || product?.product || "Item"}
                             </p>
                             <div className="mt-4 flex items-end justify-between gap-3">
                               <div>
-                                <p className="inter-medium-font text-[10px] uppercase tracking-[0.1em] text-slate-400">Quantity</p>
-                                <p className="inter-medium-font mt-1.5 text-[12px] text-slate-700">{product?.quantity}</p>
+                                <p className="inter-medium-font text-[10px] max-sm:text-[16px] uppercase tracking-[0.1em] text-slate-400">Quantity</p>
+                                <p className="inter-medium-font mt-1.5 text-[12px] max-sm:text-[16px] text-slate-700">{product?.quantity}</p>
                               </div>
                               <div className="text-right">
-                                <p className="inter-medium-font text-[10px] uppercase tracking-[0.1em] text-slate-400">Amount</p>
-                                <p className="inter-bold-font mt-1.5 text-[15px] text-[#47317c]">
+                                <p className="inter-medium-font text-[10px] max-sm:text-[16px] uppercase tracking-[0.1em] text-slate-400">Amount</p>
+                                <p className="inter-bold-font mt-1.5 text-[15px] max-sm:text-[16px] text-[#47317c]">
                                   £{formatCurrency(parseFloat(product?.price) * Number(product?.quantity))}
                                 </p>
                               </div>
@@ -515,13 +515,13 @@ const OrderDetail = () => {
                           {hasDiscount && (
                             <>
                               <div className="flex items-center justify-between gap-4">
-                                <span className="inter-reg-font text-[12px] text-slate-500">
+                                <span className="inter-reg-font text-[12px] max-sm:text-[16px] text-slate-500">
                                   Discount
                                   {isPercentageDiscount
                                     ? ` (${formatPercentage(discountData?.discount)}%)`
                                     : ""}
                                 </span>
-                                <span className="inter-semibold-font text-[12px] text-emerald-600">
+                                <span className="inter-semibold-font text-[12px] max-sm:text-[16px] text-emerald-600">
                                   -£{formatCurrency(
                                     isPercentageDiscount
                                       ? discountData?.discount_value
@@ -530,18 +530,18 @@ const OrderDetail = () => {
                                 </span>
                               </div>
                               <div className="flex items-center justify-between gap-4">
-                                <span className="inter-reg-font text-[12px] text-slate-500">Coupon code</span>
-                                <span className="inter-medium-font text-[12px] text-slate-900">{discountData?.code || "N/A"}</span>
+                                <span className="inter-reg-font text-[12px] max-sm:text-[16px] text-slate-500">Coupon code</span>
+                                <span className="inter-medium-font text-[12px] max-sm:text-[16px] text-slate-900">{discountData?.code || "N/A"}</span>
                               </div>
                             </>
                           )}
                           <div className="flex items-center justify-between gap-4">
-                            <span className="inter-reg-font text-[12px] text-slate-500">Shipping fee</span>
-                            <span className="inter-medium-font text-[12px] text-slate-900">£{formatCurrency(shipmentFee)}</span>
+                            <span className="inter-reg-font text-[12px] max-sm:text-[16px] text-slate-500">Shipping fee</span>
+                            <span className="inter-medium-font text-[12px] max-sm:text-[16px] text-slate-900">£{formatCurrency(shipmentFee)}</span>
                           </div>
                           <div className="h-px bg-[#47317c]/10" />
                           <div className="flex items-end justify-between gap-4">
-                            <span className="inter-bold-font text-[14px] text-slate-950">Total</span>
+                            <span className="inter-bold-font text-[14px] max-sm:text-[16px] text-slate-950">Total</span>
                             <span className="inter-bold-font text-[20px] text-[#47317c]">£{formatCurrency(total)}</span>
                           </div>
                         </div>

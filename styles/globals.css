@@ -114,7 +114,7 @@ body {
   }
 
   .paragraph {
-    font-size: 0.95rem;
+    font-size: 1rem;
   }
 
   .subHeading {
@@ -132,7 +132,7 @@ body {
   }
 
   .paragraph {
-    font-size: 0.875rem;
+    font-size: 1rem;
   }
 
   .subHeading {
@@ -670,5 +670,22 @@ body {
     padding: 9px 12px !important;
     gap: 8px !important;
     border-radius: 10px !important;
+  }
+}
+
+/* Mobile: 16px form text (prevents iOS Safari focus-zoom). */
+@media (max-width: 639px) {
+  .textarea-box textarea,
+  .react-tel-input .form-control,
+  .react-tel-input .country-list,
+  .react-tel-input .country-list .search-box {
+    font-size: 16px !important;
+  }
+}
+
+/* Mobile: page title (login) at 24px. */
+@media (max-width: 639px) {
+  .heading {
+    font-size: 24px;
   }
 }

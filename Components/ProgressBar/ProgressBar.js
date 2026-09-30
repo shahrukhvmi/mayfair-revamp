@@ -13,7 +13,7 @@ const ProgressBar = ({ percentage = 0 }) => {
       {percentage > 0 && (
         <div className="flex items-center justify-center gap-1.5 mt-3">
           <div className="h-1.5 w-1.5 rounded-full bg-[#47317c]/40" />
-          <p className="inter-medium-font text-[11px] uppercase tracking-[0.1em] text-[#47317c]/70">
+          <p className="inter-medium-font text-[11px] max-sm:text-[16px] uppercase tracking-[0.1em] text-[#47317c]/70">
             {percentage}% Completed
           </p>
           <div className="h-1.5 w-1.5 rounded-full bg-[#47317c]/40" />

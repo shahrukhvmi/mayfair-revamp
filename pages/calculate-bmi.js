@@ -558,7 +558,7 @@ export default function CalculateBmi() {
                       lastBmi?.weight_unit == "metrics" ||
                         lastBmi?.weight_unit == "metric" ? (
                         <div className="rounded-xl border border-amber-200/70 bg-amber-50/70 px-4 py-3.5">
-                          <p className="inter-reg-font flex items-center gap-2 text-[13px] text-amber-800">
+                          <p className="inter-reg-font flex items-center gap-2 text-[13px] max-sm:text-[16px] text-amber-800">
                             <BsInfoCircle className="shrink-0" /> Your previous
                             recorded weight was{" "}
                             <span className="inter-semibold-font">
@@ -568,7 +568,7 @@ export default function CalculateBmi() {
                         </div>
                       ) : (
                         <div className="rounded-xl border border-amber-200/70 bg-amber-50/70 px-4 py-3.5">
-                          <p className="inter-reg-font flex items-center gap-2 text-[13px] text-amber-800">
+                          <p className="inter-reg-font flex items-center gap-2 text-[13px] max-sm:text-[16px] text-amber-800">
                             <BsInfoCircle className="shrink-0" /> Your previous
                             recorded weight was{" "}
                             <span className="inter-semibold-font">

@@ -25,10 +25,10 @@ const PaymentFailed = () => {
               </span>
             </div>
           </div>
-          <h2 className="inter-bold-font relative text-[25px] tracking-[-0.025em] text-slate-900 sm:text-[29px]">
+          <h2 className="max-sm:text-[24px] inter-bold-font relative text-[25px] tracking-[-0.025em] text-slate-900 sm:text-[29px]">
             Payment Failed
           </h2>
-          <p className="inter-reg-font relative mx-auto mt-2.5 max-w-md text-[13.5px] leading-relaxed text-slate-500">
+          <p className="inter-reg-font relative mx-auto mt-2.5 max-w-md text-[13.5px] max-sm:text-[16px] leading-relaxed text-slate-500">
             It looks like your payment wasn’t completed. You can try again or
             contact us if you need help.
           </p>

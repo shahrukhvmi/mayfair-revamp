@@ -93,7 +93,7 @@ const SetAPassword = ({ isCompleted, onComplete }) => {
               type={showPassword ? "text" : "password"}
               placeholder="Create a password"
               {...register("password", { required: true })}
-              className="inter-reg-font w-full border-0 border-b-2 border-slate-200 bg-transparent px-0 py-3 pr-9 text-[14px] text-slate-900 placeholder:text-slate-400 transition-colors duration-200 focus:border-[#47317c] focus:outline-none focus:ring-0"
+              className="inter-reg-font w-full border-0 border-b-2 border-slate-200 bg-transparent px-0 py-3 pr-9 text-[14px] max-sm:text-[16px] text-slate-900 placeholder:text-slate-400 transition-colors duration-200 focus:border-[#47317c] focus:outline-none focus:ring-0"
             />
             <button
               type="button"
@@ -110,7 +110,7 @@ const SetAPassword = ({ isCompleted, onComplete }) => {
               placeholder="Re-enter your password"
               {...register("confirmPassword", { required: true })}
               onPaste={(e) => e.preventDefault()}
-              className="inter-reg-font w-full border-0 border-b-2 border-slate-200 bg-transparent px-0 py-3 pr-9 text-[14px] text-slate-900 placeholder:text-slate-400 transition-colors duration-200 focus:border-[#47317c] focus:outline-none focus:ring-0"
+              className="inter-reg-font w-full border-0 border-b-2 border-slate-200 bg-transparent px-0 py-3 pr-9 text-[14px] max-sm:text-[16px] text-slate-900 placeholder:text-slate-400 transition-colors duration-200 focus:border-[#47317c] focus:outline-none focus:ring-0"
             />
             <button
               type="button"

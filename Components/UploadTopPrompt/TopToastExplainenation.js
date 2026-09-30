@@ -268,10 +268,10 @@ const TopToastExplanation = () => {
 
             {/* Text Content */}
             <div className="flex-1 min-w-0">
-              <h3 className="text-xs sm:text-base bold-font">
+              <h3 className="max-sm:text-[18px] text-xs sm:text-base bold-font">
                 Action Required
               </h3>
-              <p className="text-[10px] sm:text-sm text-white/95 reg-font">
+              <p className="text-[10px] max-sm:text-[16px] sm:text-sm text-white/95 reg-font">
                 please provide the required information to complete your order
               </p>
             </div>
@@ -281,7 +281,7 @@ const TopToastExplanation = () => {
               onClick={() => setShowModal(true)}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              className="cursor-pointer flex-shrink-0 px-2.5 sm:px-5 py-1.5 sm:py-2 bg-white text-amber-600 rounded-lg sm:rounded-xl font-bold bold-font text-[11px] sm:text-base shadow-lg hover:shadow-xl transition-all duration-300 hover:bg-amber-50 border-2 border-white/20 whitespace-nowrap"
+              className="cursor-pointer flex-shrink-0 px-2.5 sm:px-5 py-1.5 sm:py-2 bg-white text-amber-600 rounded-lg sm:rounded-xl font-bold bold-font text-[11px] max-sm:text-[16px] sm:text-base shadow-lg hover:shadow-xl transition-all duration-300 hover:bg-amber-50 border-2 border-white/20 whitespace-nowrap"
             >
               Continue
             </motion.button>
@@ -368,7 +368,7 @@ const TopToastExplanation = () => {
                   <h2 className="text-2xl sm:text-3xl bold-font text-gray-800 mb-2">
                     Dose Verification Required
                   </h2>
-                  <p className="text-gray-600 text-sm thin-font">
+                  <p className="text-gray-600 text-sm max-sm:text-[16px] thin-font">
                     <div dangerouslySetInnerHTML={{ __html: getMessage() }} />
                   </p>
                 </div>
@@ -412,7 +412,7 @@ const TopToastExplanation = () => {
                     <label className="flex items-center gap-2 mb-3 text-gray-700 bold-font">
                       <FiUpload className="text-purple-500" />
                       Upload Attachment
-                      <span className="text-gray-400 text-xs font-normal">
+                      <span className="text-gray-400 text-xs max-sm:text-[16px] font-normal">
                         (Optional)
                       </span>
                     </label>
@@ -451,7 +451,7 @@ const TopToastExplanation = () => {
                                     >
                                       <path d="M4 18h12V6h-4V2H4v16zm-2 1V0h12l4 4v16H2v-1z" />
                                     </motion.svg>
-                                    <span className="text-sm text-gray-700 medium-font truncate max-w-[200px] px-2">
+                                    <span className="text-sm max-sm:text-[16px] text-gray-700 medium-font truncate max-w-[200px] px-2">
                                       {evidence.name}
                                     </span>
                                     <motion.div
@@ -503,10 +503,10 @@ const TopToastExplanation = () => {
                                     className="absolute inset-0 bg-purple-500 rounded-full blur-lg"
                                   />
                                 </div>
-                                <span className="text-sm font-medium medium-font mb-1">
+                                <span className="text-sm max-sm:text-[16px] font-medium medium-font mb-1">
                                   Click to upload document
                                 </span>
-                                <span className="text-xs text-gray-400 reg-font lowercase">
+                                <span className="text-xs max-sm:text-[16px] text-gray-400 reg-font lowercase">
                                   PNG, JPEG, WEBP or PDF (Max 5MB)
                                 </span>
                               </motion.div>

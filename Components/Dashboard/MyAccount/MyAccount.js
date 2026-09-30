@@ -90,14 +90,14 @@ export const PageHeader = ({ label, title, subtitle, right }) => (
     style={{ backgroundImage: "radial-gradient(120% 140% at 88% 0, #ece8ff 0%, #f6f4ff 42%, #FBFBFD 78%)" }}>
     <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
       <div>
-        <p className="inter-semibold-font text-[10px] lg:text-[10px] 2xl:text-[11px] uppercase tracking-[0.16em] text-[#47317c]/70 mb-2">
+        <p className="inter-semibold-font text-[10px] max-sm:text-[16px] lg:text-[10px] 2xl:text-[11px] uppercase tracking-[0.16em] text-[#47317c]/70 mb-2">
           {label}
         </p>
-        <h1 className="inter-bold-font text-[21px] leading-tight tracking-[-0.025em] text-slate-900 sm:text-[25px] lg:text-[25px] 2xl:text-[31px] capitalize">
+        <h1 className="max-sm:text-[24px] inter-bold-font text-[21px] leading-tight tracking-[-0.025em] text-slate-900 sm:text-[25px] lg:text-[25px] 2xl:text-[31px] capitalize">
           {title}
         </h1>
         {subtitle && (
-          <p className="inter-reg-font mt-1.5 text-[12.5px] lg:text-[13px] 2xl:text-[14px] text-slate-500">{subtitle}</p>
+          <p className="inter-reg-font mt-1.5 text-[12.5px] max-sm:text-[16px] lg:text-[13px] 2xl:text-[14px] text-slate-500">{subtitle}</p>
         )}
       </div>
       {right && <div className="shrink-0">{right}</div>}
@@ -108,7 +108,7 @@ export const PageHeader = ({ label, title, subtitle, right }) => (
 /* ── View toggle ── */
 const ViewToggle = ({ productView, setProductView }) => (
   <div className="flex shrink-0 flex-col items-end gap-1.5">
-    <span className="inter-medium-font text-[11px] uppercase tracking-[0.1em] text-slate-400">View as</span>
+    <span className="inter-medium-font text-[11px] max-sm:text-[16px] uppercase tracking-[0.1em] text-slate-400">View as</span>
     <div className="inline-flex items-center rounded-xl border border-slate-200 bg-slate-50 p-1 gap-0.5">
       {[
         { mode: "list", Icon: List, label: "List" },
@@ -119,7 +119,7 @@ const ViewToggle = ({ productView, setProductView }) => (
           type="button"
           onClick={() => setProductView(mode)}
           aria-pressed={productView === mode}
-          className={`inter-semibold-font inline-flex items-center gap-2 rounded-lg px-4 py-2.5 text-[13px] transition-all duration-150 cursor-pointer
+          className={`inter-semibold-font inline-flex items-center gap-2 rounded-lg px-4 py-2.5 text-[13px] max-sm:text-[16px] transition-all duration-150 cursor-pointer
             ${productView === mode
               ? "bg-white text-[#47317c] shadow-sm border border-slate-200/80 ring-1 ring-[#47317c]/10"
               : "text-slate-400 hover:text-slate-700"
@@ -137,8 +137,8 @@ const ViewToggle = ({ productView, setProductView }) => (
 const EmptyTreatments = () => (
   <div className="rounded-lg border border-dashed border-slate-200 bg-white px-4 py-12 text-center">
     <Pill size={20} strokeWidth={1.5} className="mx-auto text-slate-300" />
-    <p className="inter-medium-font mt-3 text-[13px] text-slate-600">No treatments available</p>
-    <p className="inter-reg-font mt-1 text-[12px] text-slate-400">Treatments will appear here when available.</p>
+    <p className="inter-medium-font mt-3 text-[13px] max-sm:text-[16px] text-slate-600">No treatments available</p>
+    <p className="inter-reg-font mt-1 text-[12px] max-sm:text-[16px] text-slate-400">Treatments will appear here when available.</p>
   </div>
 );
 
@@ -352,8 +352,8 @@ const MyAccount = () => {
                 <User size={14} strokeWidth={2} className="2xl:w-4 2xl:h-4" />
               </div> */}
               <div className="min-w-0">
-                <p className="inter-medium-font text-[9.5px] lg:text-[10px] uppercase tracking-[0.1em] text-slate-400 leading-none mb-1">Logged in as</p>
-                <p className="inter-semibold-font text-[12px] lg:text-[12px] 2xl:text-[13px] text-slate-800 truncate max-w-[160px]">{displayEmail}</p>
+                <p className="inter-medium-font text-[9.5px] max-sm:text-[16px] lg:text-[10px] uppercase tracking-[0.1em] text-slate-400 leading-none mb-1">Logged in as</p>
+                <p className="inter-semibold-font text-[12px] max-sm:text-[16px] lg:text-[12px] 2xl:text-[13px] text-slate-800 truncate max-w-[160px]">{displayEmail}</p>
               </div>
             </div>
           }
@@ -420,15 +420,15 @@ const MyAccount = () => {
             {/* Row 1: headings + view toggle — same grid so they align perfectly */}
             <div className="contents">
               <div className="order-1 lg:col-span-6">
-                <h2 className="inter-bold-font text-[15px] lg:text-[16px] 2xl:text-[19px] text-slate-900">Reorder Treatment</h2>
-                <p className="inter-reg-font mt-0.5 text-[12px] lg:text-[12.5px] 2xl:text-[13.5px] text-slate-500">
+                <h2 className="max-sm:text-[18px] inter-bold-font text-[15px] lg:text-[16px] 2xl:text-[19px] text-slate-900">Reorder Treatment</h2>
+                <p className="inter-reg-font mt-0.5 text-[12px] max-sm:text-[16px] lg:text-[12.5px] 2xl:text-[13.5px] text-slate-500">
                   Continue your latest clinician-approved treatment.
                 </p>
               </div>
               <div className="order-3 block sm:flex items-center justify-between gap-3 lg:order-2 lg:col-span-6">
                 <div>
-                  <h2 className="inter-bold-font text-[15px] lg:text-[16px] 2xl:text-[19px] text-slate-900">Available Treatments</h2>
-                  <p className="inter-reg-font mt-0.5 text-[12px] lg:text-[12.5px] 2xl:text-[13.5px] text-slate-500">
+                  <h2 className="max-sm:text-[18px] inter-bold-font text-[15px] lg:text-[16px] 2xl:text-[19px] text-slate-900">Available Treatments</h2>
+                  <p className="inter-reg-font mt-0.5 text-[12px] max-sm:text-[16px] lg:text-[12.5px] 2xl:text-[13.5px] text-slate-500">
                     We offer the following weight loss injections treatment options to help you in your weight loss journey.
 
 
@@ -463,14 +463,14 @@ const MyAccount = () => {
                     <div className="min-w-0">
                       <div className="flex items-center gap-1.5 mb-3">
                         <CalendarDays size={11} strokeWidth={2} className="text-slate-400" />
-                        <span className="inter-reg-font text-[11.5px] text-slate-400">
+                        <span className="inter-reg-font text-[11.5px] max-sm:text-[16px] text-slate-400">
                           Last ordered: <span className="inter-medium-font text-slate-600">{lastOrderDate}</span>
                         </span>
                       </div>
-                      <h3 className="inter-bold-font break-words text-[16px] leading-tight text-slate-900 xl:truncate 2xl:text-[17px]">
+                      <h3 className="max-sm:text-[18px] inter-bold-font break-words text-[16px] leading-tight text-slate-900 xl:truncate 2xl:text-[17px]">
                         {currentTreatment?.name}
                       </h3>
-                      <p className="inter-reg-font mt-1 text-[12px] text-slate-500">
+                      <p className="inter-reg-font mt-1 text-[12px] max-sm:text-[16px] text-slate-500">
                         Your latest clinician-approved treatment.
                       </p>
                     </div>
@@ -479,7 +479,7 @@ const MyAccount = () => {
                     <div className="flex shrink-0 items-end justify-between gap-3 sm:flex-col sm:justify-start">
                       {currentTreatmentDisplayPrice && (
                         <div className="text-right">
-                          <p className="inter-reg-font text-[10px] uppercase tracking-[0.1em] text-slate-400">From</p>
+                          <p className="inter-reg-font text-[10px] max-sm:text-[16px] uppercase tracking-[0.1em] text-slate-400">From</p>
                           <p className="inter-bold-font text-[22px] 2xl:text-[24px] text-[#47317c] leading-none mt-0.5">
                             £{currentTreatmentDisplayPrice}
                           </p>
@@ -489,7 +489,7 @@ const MyAccount = () => {
                         type="button"
                         onClick={() => handleReorder(currentTreatment?.id)}
                         disabled={!currentTreatment?.id || isReorderLoading}
-                        className={`inter-medium-font inline-flex items-center gap-2 rounded-xl px-4 py-2.5 text-[13px] text-white transition-all duration-150 whitespace-nowrap
+                        className={`inter-medium-font inline-flex items-center gap-2 rounded-xl px-4 py-2.5 text-[13px] max-sm:text-[16px] text-white transition-all duration-150 whitespace-nowrap
                           ${!currentTreatment?.id || isReorderLoading
                             ? "cursor-not-allowed bg-slate-200 text-slate-400"
                             : "cursor-pointer bg-[#47317c] hover:bg-[#392765] active:scale-[0.98]"
@@ -542,8 +542,8 @@ const MyAccount = () => {
             <section className="col-span-12 lg:col-span-6">
               <div className="mb-3 block sm:flex items-center justify-between gap-3">
                 <div>
-                  <h2 className="inter-bold-font text-[15px] lg:text-[16px] 2xl:text-[19px] text-slate-900">Available Treatments</h2>
-                  <p className="inter-reg-font mt-0.5 text-[12px] lg:text-[12.5px] 2xl:text-[13.5px] text-slate-500">
+                  <h2 className="max-sm:text-[18px] inter-bold-font text-[15px] lg:text-[16px] 2xl:text-[19px] text-slate-900">Available Treatments</h2>
+                  <p className="inter-reg-font mt-0.5 text-[12px] max-sm:text-[16px] lg:text-[12.5px] 2xl:text-[13.5px] text-slate-500">
                     We offer the following weight loss injections treatment options to help you in your weight loss journey.
 
 

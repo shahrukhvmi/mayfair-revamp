@@ -150,7 +150,7 @@ export default function LoginModal({ show = false, onClose = () => {}, onLogin =
             </h2>
 
             {showLoginMsg && mode === "login" && (
-              <p className="text-green-600 text-center text-sm mb-4 reg-font">Your password was changed successfully. Please login below.</p>
+              <p className="text-green-600 text-center text-sm max-sm:text-[16px] mb-4 reg-font">Your password was changed successfully. Please login below.</p>
             )}
 
             {mode === "reset" && (

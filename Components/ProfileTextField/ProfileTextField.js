@@ -35,7 +35,7 @@ const ProfileTextField = ({
           {required ? (
             <span className="text-red-500 absolute top-1 ms-1 niba-semibold-font"> *</span>
           ) : (
-            <span className="text-gray-500 text-sm font-normal ml-1">(optional)</span>
+            <span className="text-gray-500 text-sm max-sm:text-[16px] font-normal ml-1">(optional)</span>
           )}
         </label>
       )}
@@ -100,7 +100,7 @@ const ProfileTextField = ({
         </div>
       )}
 
-      {errors[name] && <p className="text-red-500 text-sm mt-1">{errors[name]?.message || "This field is required"}</p>}
+      {errors[name] && <p className="text-red-500 text-sm max-sm:text-[16px] mt-1">{errors[name]?.message || "This field is required"}</p>}
     </div>
   );
 };

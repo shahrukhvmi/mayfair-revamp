@@ -175,7 +175,7 @@ const Dose = ({
                 handleNotifiedClick(doseData);
               }}
               disabled={isLoading}
-              className="inter-semibold-font inline-flex h-7 cursor-pointer items-center justify-center gap-1.5 rounded-lg border border-emerald-200 bg-emerald-50 px-3 text-[11.5px] text-emerald-700 shadow-[0_1px_2px_rgba(15,23,42,0.04)] transition-colors hover:border-emerald-300 hover:bg-emerald-100 disabled:cursor-wait disabled:opacity-70"
+              className="inter-semibold-font inline-flex h-7 cursor-pointer items-center justify-center gap-1.5 rounded-lg border border-emerald-200 bg-emerald-50 px-3 text-[11.5px] max-sm:text-[16px] text-emerald-700 shadow-[0_1px_2px_rgba(15,23,42,0.04)] transition-colors hover:border-emerald-300 hover:bg-emerald-100 disabled:cursor-wait disabled:opacity-70"
             >
               {isLoading ? (
                 <>
@@ -205,7 +205,7 @@ const Dose = ({
                 </>
               ) : (
                 <>
-                  <FaInfoCircle className="text-[12px]" />
+                  <FaInfoCircle className="text-[12px] max-sm:text-[16px]" />
                   <span className="whitespace-nowrap">
                     Get Notified
                   </span>
@@ -213,7 +213,7 @@ const Dose = ({
               )}
             </button>
 
-            <div className="inter-reg-font pointer-events-none absolute right-0 top-9 z-30 whitespace-nowrap rounded-lg bg-slate-900 px-2.5 py-1.5 text-[11px] text-white opacity-0 shadow-lg transition-opacity duration-200 group-hover:opacity-100">
+            <div className="inter-reg-font pointer-events-none absolute right-0 top-9 z-30 whitespace-nowrap rounded-lg bg-slate-900 px-2.5 py-1.5 text-[11px] max-sm:text-[16px] text-white opacity-0 shadow-lg transition-opacity duration-200 group-hover:opacity-100">
               You'll be notified when this item is back in stock.
             </div>
           </div>
@@ -235,14 +235,14 @@ const Dose = ({
           {isOutOfStock && (
             <>
               <div className="absolute inset-0 z-10 cursor-not-allowed rounded-[14px] bg-slate-100/20" />
-              <div className="inter-semibold-font absolute -top-3.5 left-3 z-20 inline-flex h-7 items-center rounded-lg border border-rose-200 bg-rose-50 px-3 text-[11.5px] text-rose-700 shadow-[0_1px_2px_rgba(15,23,42,0.04)]">
+              <div className="inter-semibold-font absolute -top-3.5 left-3 z-20 inline-flex h-7 items-center rounded-lg border border-rose-200 bg-rose-50 px-3 text-[11.5px] max-sm:text-[16px] text-rose-700 shadow-[0_1px_2px_rgba(15,23,42,0.04)]">
                 {Number(productId) == FoundayoProductId ? "Coming Soon" : "Out of stock"}
               </div>
             </>
           )}
 
           {!isOutOfStock && !isSelected && isAllowExceeded && (
-            <div className="inter-semibold-font absolute -top-3.5 left-3 z-20 inline-flex h-7 items-center rounded-lg border border-amber-200 bg-amber-50 px-3 text-[11.5px] text-amber-700 shadow-[0_1px_2px_rgba(15,23,42,0.04)]">
+            <div className="inter-semibold-font absolute -top-3.5 left-3 z-20 inline-flex h-7 items-center rounded-lg border border-amber-200 bg-amber-50 px-3 text-[11.5px] max-sm:text-[16px] text-amber-700 shadow-[0_1px_2px_rgba(15,23,42,0.04)]">
               Selection limit reached
             </div>
           )}
@@ -259,14 +259,14 @@ const Dose = ({
             </div>
 
             <div className="min-w-0 flex-1">
-              <p className="inter-semibold-font break-words text-[14px] capitalize leading-snug text-slate-900 sm:text-[15px]">
+              <p className="inter-semibold-font break-words text-[14px] max-sm:text-[16px] capitalize leading-snug text-slate-900 sm:text-[15px]">
                 {doseData?.product_name}
               </p>
-              <p className={`inter-medium-font text-[13px] ${isSelected ? "text-[#47317c]" : "text-slate-500"}`}>
+              <p className={`inter-medium-font text-[13px] max-sm:text-[16px] ${isSelected ? "text-[#47317c]" : "text-slate-500"}`}>
                 {doseData.name}
               </p>
               {doseData?.expiry && (
-                <p className="inter-reg-font mt-0.5 text-[12.5px] text-slate-500">
+                <p className="inter-reg-font mt-0.5 text-[12.5px] max-sm:text-[16px] text-slate-500">
                   Expiry: {moment(doseData?.expiry).format("DD/MM/YYYY")}
                 </p>
               )}
@@ -289,7 +289,7 @@ const Dose = ({
                     className="flex h-7 w-7 items-center justify-center rounded-full bg-slate-100 hover:bg-slate-200 cursor-pointer transition-colors">
                     <FaMinus size={9} className="text-slate-600" />
                   </button>
-                  <span className="inter-semibold-font w-6 text-center text-[13px] text-slate-900">{qty}</span>
+                  <span className="inter-semibold-font w-6 text-center text-[13px] max-sm:text-[16px] text-slate-900">{qty}</span>
                   <button type="button" onClick={handleIncrement}
                     className={`flex h-7 w-7 items-center justify-center rounded-full transition-colors
                       ${qty >= allowed ? "cursor-not-allowed bg-slate-100 opacity-40" : "bg-slate-100 hover:bg-slate-200 cursor-pointer"}`}>

@@ -196,7 +196,7 @@ export default function GpDetail() {
             }`}
           >
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-              <p className="inter-medium-font text-[14px] text-slate-700">
+              <p className="inter-medium-font text-[14px] max-sm:text-[16px] text-slate-700">
                 Are you registered with a GP in the UK?
               </p>
               <div className="flex gap-3">
@@ -211,7 +211,7 @@ export default function GpDetail() {
                         ${isSelected ? "border-[#47317c] bg-[#47317c]" : "border-slate-300 bg-white"}`}>
                         {isSelected && <div className="h-1.5 w-1.5 rounded-full bg-white" />}
                       </div>
-                      <span className={`inter-medium-font text-[14px] capitalize ${isSelected ? "text-[#47317c]" : "text-slate-700"}`}>
+                      <span className={`inter-medium-font text-[14px] max-sm:text-[16px] capitalize ${isSelected ? "text-[#47317c]" : "text-slate-700"}`}>
                         {option}
                       </span>
                     </label>
@@ -221,7 +221,7 @@ export default function GpDetail() {
 
               {gpDetails === "no" && (
                 <div className="rounded-xl border border-amber-200/70 bg-amber-50/70 px-4 py-3.5">
-                  <p className="inter-reg-font text-[13px] text-amber-800">
+                  <p className="inter-reg-font text-[13px] max-sm:text-[16px] text-amber-800">
                     You should inform your doctor of any medication you take.
                     Contact us if you want us to email a letter for your doctor.
                   </p>
@@ -230,11 +230,11 @@ export default function GpDetail() {
 
               {gpDetails === "yes" && (
                 <>
-                  <p className="inter-reg-font text-[13px] text-slate-600">
+                  <p className="inter-reg-font text-[13px] max-sm:text-[16px] text-slate-600">
                     If you are registered with a GP in the UK then we can inform
                     them on your behalf.
                   </p>
-                  <p className="inter-medium-font text-[14px] text-slate-700">
+                  <p className="inter-medium-font text-[14px] max-sm:text-[16px] text-slate-700">
                     Do you consent for us to inform your GP about the treatment?
                   </p>
                   <div className="flex flex-col gap-3 sm:flex-row">
@@ -252,7 +252,7 @@ export default function GpDetail() {
                             ${isSelected ? "border-[#47317c] bg-[#47317c]" : "border-slate-300 bg-white"}`}>
                             {isSelected && <div className="h-1.5 w-1.5 rounded-full bg-white" />}
                           </div>
-                          <span className={`inter-medium-font text-[13px] leading-snug ${isSelected ? "text-[#47317c]" : "text-slate-700"}`}>
+                          <span className={`inter-medium-font text-[13px] max-sm:text-[16px] leading-snug ${isSelected ? "text-[#47317c]" : "text-slate-700"}`}>
                             {option.label}
                           </span>
                         </label>
@@ -289,7 +289,7 @@ export default function GpDetail() {
                       type="button"
                       onClick={handleAddressFetch}
                       disabled={searchLoading}
-                      className="inter-medium-font absolute right-0 top-[24px] flex min-h-[38px] min-w-[96px] cursor-pointer items-center justify-center gap-1.5 rounded-md bg-[#47317c] px-4 py-2 text-[12px] text-white transition-colors hover:bg-[#3d2a6b] disabled:cursor-not-allowed disabled:opacity-60"
+                      className="inter-medium-font absolute right-0 top-[24px] flex min-h-[38px] min-w-[96px] cursor-pointer items-center justify-center gap-1.5 rounded-md bg-[#47317c] px-4 py-2 text-[12px] max-sm:text-[16px] text-white transition-colors hover:bg-[#3d2a6b] disabled:cursor-not-allowed disabled:opacity-60"
                     >
                       {searchLoading ? (
                         <motion.div animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 1, ease: "linear" }}
@@ -330,7 +330,7 @@ export default function GpDetail() {
 
                   <div className="text-right">
                     <button type="button" onClick={() => setManual(!manual)}
-                      className="inter-medium-font cursor-pointer text-[13px] text-[#47317c] transition-colors hover:text-[#3d2a6b]">
+                      className="inter-medium-font cursor-pointer text-[13px] max-sm:text-[16px] text-[#47317c] transition-colors hover:text-[#3d2a6b]">
                       {manual ? "Hide manual address entry" : "Enter your address manually"}
                     </button>
                   </div>

@@ -78,10 +78,10 @@ export default function PregnancyCheck() {
 
                 <div className="rounded-xl border border-slate-100 bg-[#FBFBFD] p-5 space-y-4">
                   <div>
-                    <p className="inter-semibold-font text-[15px] text-slate-800 leading-snug">
+                    <p className="inter-semibold-font text-[15px] max-sm:text-[16px] text-slate-800 leading-snug">
                       Are you pregnant, breastfeeding, or trying to conceive?
                     </p>
-                    <p className="inter-reg-font mt-1.5 text-[13px] text-slate-500 leading-relaxed">
+                    <p className="inter-reg-font mt-1.5 text-[13px] max-sm:text-[16px] text-slate-500 leading-relaxed">
                       Our treatment programme is not suitable while breastfeeding, pregnant, or trying to conceive.
                     </p>
                   </div>
@@ -117,7 +117,7 @@ export default function PregnancyCheck() {
                           `}>
                             {isSelected && <div className="h-2 w-2 rounded-full bg-white" />}
                           </div>
-                          <span className={`inter-medium-font text-[15px] capitalize ${isSelected ? "text-[#47317c]" : "text-slate-700"}`}>
+                          <span className={`inter-medium-font text-[15px] max-sm:text-[16px] capitalize ${isSelected ? "text-[#47317c]" : "text-slate-700"}`}>
                             {option}
                           </span>
                         </label>
@@ -127,7 +127,7 @@ export default function PregnancyCheck() {
 
                   {pregnancy === "yes" && (
                     <div className="rounded-xl border border-red-100 bg-red-50 px-4 py-3">
-                      <p className="inter-reg-font text-[13px] text-red-600 leading-relaxed">
+                      <p className="inter-reg-font text-[13px] max-sm:text-[16px] text-red-600 leading-relaxed">
                         This treatment is not suitable if you are pregnant, trying to get pregnant or breastfeeding. We recommend you speak to your GP in person.
                       </p>
                     </div>

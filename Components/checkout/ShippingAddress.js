@@ -370,7 +370,7 @@ export default function ShippingAddress({
                   type="button"
                   onClick={handleSearch}
                   disabled={addressSearchLoading}
-                  className="inter-semibold-font absolute bottom-[7px] right-0 flex min-w-[124px] cursor-pointer items-center justify-center gap-2 rounded-md bg-[#47317c] px-4 py-2 text-[12px] text-white transition-colors duration-200 hover:bg-[#392765] disabled:cursor-not-allowed disabled:opacity-50"
+                  className="inter-semibold-font absolute bottom-[7px] right-0 flex min-w-[124px] cursor-pointer items-center justify-center gap-2 rounded-md bg-[#47317c] px-4 py-2 text-[12px] max-sm:text-[16px] text-white transition-colors duration-200 hover:bg-[#392765] disabled:cursor-not-allowed disabled:opacity-50"
                 >
                   {addressSearchLoading ? (
                     <motion.div
@@ -452,7 +452,7 @@ export default function ShippingAddress({
                       </svg>
                     )}
                   </div>
-                  <span className="inter-reg-font text-[13.5px] text-slate-700">
+                  <span className="inter-reg-font text-[13.5px] max-sm:text-[16px] text-slate-700">
                     Make billing address same as shipping address
                   </span>
                 </div>

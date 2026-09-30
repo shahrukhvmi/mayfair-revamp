@@ -78,7 +78,7 @@ export default function ForgotForm({ register, handleSubmit, errors, onSubmit, i
   return (
     <>
       {isSuccess ? (
-        <div className="text-green-700 text-sm sm:text-base text-start my-4 space-y-2 reg-font leading-relaxed">
+        <div className="text-green-700 text-sm max-sm:text-[16px] sm:text-base text-start my-4 space-y-2 reg-font leading-relaxed">
           <p>A password reset link has been sent to your email address.</p>
 
           <p className="text-gray-600 mt-2 reg-font">Didn’t receive the email? Check your spam or junk folder.</p>

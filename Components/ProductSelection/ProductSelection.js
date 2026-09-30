@@ -190,10 +190,10 @@ const ProductSelection = ({ showProductSelection }) => {
             {productData?.products?.length ? (
               <section className="flex w-full flex-col items-center gap-5">
                 <div className="text-center">
-                  <h2 className="inter-bold-font text-[21px] tracking-[-0.02em] text-slate-900 sm:text-[24px]">
+                  <h2 className="max-sm:text-[18px] inter-bold-font text-[21px] tracking-[-0.02em] text-slate-900 sm:text-[24px]">
                     Select Treatment
                   </h2>
-                  <p className="inter-reg-font mx-auto mt-1.5 max-w-md text-[12.5px] leading-5 text-slate-500 sm:text-[13px]">
+                  <p className="inter-reg-font mx-auto mt-1.5 max-w-md text-[12.5px] max-sm:text-[16px] leading-5 text-slate-500 sm:text-[13px]">
                     We offer the following weight-loss injection treatments to
                     help you in your weight-loss journey…
                   </p>
@@ -249,7 +249,7 @@ const ProductSelection = ({ showProductSelection }) => {
                 </div>
               </section>
             ) : (
-              <p className="text-sm text-gray-500 text-center">
+              <p className="text-sm max-sm:text-[16px] text-gray-500 text-center">
                 No available treatments at the moment.
               </p>
             )}

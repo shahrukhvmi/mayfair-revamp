@@ -92,18 +92,18 @@ export default function Index() {
           </div>
 
           {/* Heading */}
-          <h2 className="inter-semibold-font mb-2 text-start text-[21px] leading-[1.3] tracking-[-0.02em] text-slate-900 sm:text-[23px]">
+          <h2 className="max-sm:text-[24px] inter-semibold-font mb-2 text-start text-[21px] leading-[1.3] tracking-[-0.02em] text-slate-900 sm:text-[23px]">
             Let's get you started on your weight loss journey.
           </h2>
 
-          <p className="inter-reg-font mb-4 text-start text-[13.5px] leading-[1.5] text-slate-500 sm:mb-6 sm:leading-6">
+          <p className="inter-reg-font mb-4 text-start text-[13.5px] max-sm:text-[16px] leading-[1.5] text-slate-500 sm:mb-6 sm:leading-6">
             We’ll now ask a few questions about you and your health.
           </p>
 
           {/* Good to know */}
           <div className="mb-5 sm:mb-6">
-            <p className="inter-semibold-font mb-1.5 text-[13px] text-slate-800">Good to know</p>
-            <ul className="inter-reg-font list-outside list-disc divide-y divide-slate-100 border-y border-slate-100 pl-4 text-[13px] leading-[1.45] text-slate-600 marker:text-[#47317c] [&>li]:py-2.5 sm:[&>li]:py-3">
+            <p className="inter-semibold-font mb-1.5 text-[13px] max-sm:text-[16px] text-slate-800">Good to know</p>
+            <ul className="inter-reg-font list-outside list-disc divide-y divide-slate-100 border-y border-slate-100 pl-4 text-[13px] max-sm:text-[16px] leading-[1.45] text-slate-600 marker:text-[#47317c] [&>li]:py-2.5 sm:[&>li]:py-3">
               <li>
                 Your consultation will take about five minutes to complete.
               </li>
@@ -132,7 +132,7 @@ export default function Index() {
               className="group flex min-h-[54px] w-full cursor-pointer flex-col ite ms-center justify-center rounded-xl border border-[#47317c]/30 bg-white px-6 py-3 mt-3 text-[#47317c] transition-all duration-3 hover:border-[#47317c] hover:bg-[#47317c]/[0.04] disabled:cursor-not-allowed disabled:border-slate-200 disabled:text-slate-400 inter-medium-font"
             >
               Returning Patient
-              <p className="inter-reg-font mt-0.5 !text-[12px] text-[#47317c]/75 group-disabled:text-slate-400">
+              <p className="inter-reg-font mt-0.5 !text-[12px] max-sm:text-[16px] text-[#47317c]/75 group-disabled:text-slate-400">
                 Click here - your previous details will be saved
               </p>
             </button>

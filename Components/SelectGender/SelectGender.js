@@ -6,10 +6,10 @@ const GenderSelector = ({ register, selected, setValue, errors }) => {
   return (
     <div className="space-y-4">
       <div className="text-center">
-        <h2 className="text-xl font-semibold text-green-900 mb-1">
+        <h2 className="max-sm:text-[18px] text-xl font-semibold text-green-900 mb-1">
           What sex were you assigned at birth?
         </h2>
-        <p className="text-sm text-green-900 flex items-center justify-center gap-2">
+        <p className="text-sm max-sm:text-[16px] text-green-900 flex items-center justify-center gap-2">
           <span className="text-lg">❓</span> Why do we ask about your sex at birth?
         </p>
       </div>
@@ -36,7 +36,7 @@ const GenderSelector = ({ register, selected, setValue, errors }) => {
       <input type="hidden" {...register("gender", { required: true })} />
 
       {errors.gender && (
-        <p className="text-red-500 text-sm text-center mt-1">Please select a gender</p>
+        <p className="text-red-500 text-sm max-sm:text-[16px] text-center mt-1">Please select a gender</p>
       )}
     </div>
   );

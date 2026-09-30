@@ -35,20 +35,18 @@ const VerificationCard = ({
 }) => (
   <section className="w-full overflow-hidden rounded-2xl border border-amber-200/70 bg-amber-50/40 shadow-[0_1px_4px_rgba(180,83,9,0.06)]">
     <div className="flex w-full flex-col gap-4 p-4 sm:p-5 lg:flex-row lg:items-center lg:justify-between">
-      <div className="flex min-w-0 flex-1 items-center gap-3.5">
-        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-amber-50 text-amber-500">
-          <Icon aria-hidden="true" size={18} strokeWidth={2} />
-        </div>
+      <div className="flex min-w-0 flex-1 items-center">
         <div className="min-w-0 flex-1">
           <div className="mb-0.5 flex items-center gap-2">
-            <span className="inter-medium-font inline-flex items-center rounded-full border border-amber-200 bg-amber-50 px-2 py-0.5 text-[10px] uppercase tracking-[0.1em] text-amber-600">
+            <span className="inter-medium-font inline-flex items-center gap-1.5 rounded-full border border-amber-200 bg-amber-50 px-2 py-0.5 text-[10px] max-sm:text-[16px] uppercase tracking-[0.1em] text-amber-600">
+              <Icon aria-hidden="true" size={14} strokeWidth={2} className="h-3 w-3 shrink-0 max-sm:h-4 max-sm:w-4" />
               Action required
             </span>
           </div>
-          <h3 className="inter-semibold-font text-[14px] leading-snug text-slate-900">
+          <h3 className="max-sm:text-[18px] inter-semibold-font text-[14px] leading-snug text-slate-900">
             {title}
           </h3>
-          <p className="inter-reg-font mt-0.5 text-[12.5px] text-slate-500">
+          <p className="inter-reg-font mt-0.5 text-[12.5px] max-sm:text-[16px] text-slate-500">
             {description}
           </p>
         </div>
@@ -57,7 +55,7 @@ const VerificationCard = ({
       <button
         type="button"
         onClick={onClick}
-        className="inter-medium-font group inline-flex min-h-[38px] w-full shrink-0 cursor-pointer items-center justify-center gap-1.5 rounded-xl border border-amber-200 bg-amber-50 px-5 py-2 text-[12.5px] text-amber-600 transition-all duration-150 hover:bg-amber-100 active:scale-[0.98] lg:w-auto lg:min-w-[140px]"
+        className="inter-medium-font group inline-flex min-h-[38px] w-full shrink-0 cursor-pointer items-center justify-center gap-1.5 rounded-xl border border-amber-200 bg-amber-50 px-5 py-2 text-[12.5px] max-sm:text-[16px] text-amber-600 transition-all duration-150 hover:bg-amber-100 active:scale-[0.98] lg:w-auto lg:min-w-[140px]"
       >
         <UploadCloud aria-hidden="true" size={14} strokeWidth={2.2} />
         <span>{label}</span>
@@ -267,7 +265,7 @@ const ThankYou = () => {
             {" "}
             Order Placed Successfully
           </h2>
-          <span className="inter-semibold-font text-[15px] text-[#47317c] sm:text-[16px]">
+          <span className="inter-semibold-font text-[15px] max-sm:text-[16px] text-[#47317c] sm:text-[16px]">
             {" "}
             Order #{orderId}
           </span>
@@ -277,7 +275,7 @@ const ThankYou = () => {
           <div>
             {/* <h3 className="text-2xl reg-font text-gray-800 border-b border-gray-200 pb-2 mb-4 text-center">Order Summary</h3> */}
             <div className="overflow-x-auto rounded-xl border border-slate-200/80">
-              <table className="inter-reg-font min-w-full divide-y divide-slate-100 text-sm text-slate-700">
+              <table className="inter-reg-font min-w-full divide-y divide-slate-100 text-sm max-sm:text-[16px] text-slate-700">
                 <thead className="inter-semibold-font bg-[#47317c]/[0.05] text-slate-700">
                   <tr>
                     <th className="inter-semibold-font px-6 py-4 text-left">
@@ -309,7 +307,7 @@ const ThankYou = () => {
                         {(
                           parseFloat(item?.price) * (item?.quantity || 1)
                         ).toFixed(2)}
-                        <span className="text-gray-500 text-sm ml-1">
+                        <span className="text-gray-500 text-sm max-sm:text-[16px] ml-1">
                           {/* (£{parseFloat(item?.price).toFixed(2)} each) */}
                         </span>
                       </td>
@@ -330,7 +328,7 @@ const ThankYou = () => {
                           {(
                             parseFloat(item?.price) * (item?.qty || 1)
                           ).toFixed(2)}
-                          <span className="text-gray-500 text-sm ml-1">
+                          <span className="text-gray-500 text-sm max-sm:text-[16px] ml-1">
                           </span>
                         </td>
                       </tr>
@@ -396,16 +394,16 @@ const ThankYou = () => {
 
                   {checkOut?.shipment && (
                     <tr className="hover:bg-gray-50">
-                      <td className="px-6 py-3 reg-font text-black">
-                        Shipping{" "}
-                        <span className="text-black mx-2">
+                      <td colSpan={2} className="px-6 py-3 reg-font text-black">
+                        Shipping
+                        <span className="block text-black sm:ml-1 sm:inline">
                           ({checkOut?.shipment?.name})
                         </span>
                       </td>
-                      <td></td>
                       <td className="inter-reg-font px-6 py-3 text-right">
                         £{parseFloat(checkOut?.shipment?.price).toFixed(2)}
                       </td>
+                      <td></td>
                     </tr>
                   )}
 
@@ -444,7 +442,7 @@ const ThankYou = () => {
                   >
                     Your next step: verification
                   </h2>
-                  <p className="inter-reg-font mt-1 text-[13px] leading-relaxed text-slate-500">
+                  <p className="inter-reg-font mt-1 text-[13px] max-sm:text-[16px] leading-relaxed text-slate-500">
                     Please complete the uploads below so our clinical team can
                     review your order.
                   </p>
@@ -472,7 +470,7 @@ const ThankYou = () => {
                 )}
               </div>
 
-              <p className="inter-reg-font flex items-start gap-2 text-[12px] leading-relaxed text-slate-500">
+              <p className="inter-reg-font flex items-start gap-2 text-[12px] max-sm:text-[16px] leading-relaxed text-slate-500">
                 <ShieldCheck
                   aria-hidden="true"
                   size={17}
@@ -485,7 +483,7 @@ const ThankYou = () => {
             </section>
           )}
 
-          <div className="inter-reg-font space-y-4 text-left text-[13px] leading-relaxed text-slate-600">
+          <div className="inter-reg-font space-y-4 text-left text-[13px] max-sm:text-[16px] leading-relaxed text-slate-600">
             {/* <p>
               We have received your medical consultation form which is now being
               reviewed by our prescribers. You may be contacted by a member of

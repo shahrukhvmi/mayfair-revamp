@@ -60,11 +60,11 @@ const Dose = ({ doseData, onAdd, onIncrement, onDecrement, isSelected, qty, allo
           }`}
       >
         {/* Out of Stock Banner */}
-        {doseStatus === 0 && <div className="absolute -top-4 left-2 text-xs bg-black text-white px-2 py-0.5 rounded">Out of Stock</div>}
+        {doseStatus === 0 && <div className="absolute -top-4 left-2 text-xs max-sm:text-[16px] bg-black text-white px-2 py-0.5 rounded">Out of Stock</div>}
 
         {/* Selected Tick */}
         {isSelected &&
-          <div className="absolute -top-3 right-0 w-6 h-6 bg-purple-600 text-white rounded-full flex items-center justify-center text-xs"><FaCheck />
+          <div className="absolute -top-3 right-0 w-6 h-6 bg-purple-600 text-white rounded-full flex items-center justify-center text-xs max-sm:text-[16px]"><FaCheck />
           </div>}
 
         <div className="flex items-start space-x-4">
@@ -74,16 +74,16 @@ const Dose = ({ doseData, onAdd, onIncrement, onDecrement, isSelected, qty, allo
               : <FaRegCircle  size={20} className="text-gray-500" />}
           </div>
           <div>
-            <h3 className="font-semibold text-gray-800">{doseData?.product_name} {doseData?.recommended && <span className="ml-2 bg-purple-100 text-purple-700 px-2 py-0.5 text-xs rounded">Recommended</span>}</h3>
-            <p className="text-sm text-gray-600">{doseData?.name}</p>
-            {doseData?.expiry && <p className="text-xs text-gray-400">Expiry: {moment(doseData?.expiry).format("DD/MM/YYYY")}</p>}
+            <h3 className="max-sm:text-[18px] font-semibold text-gray-800">{doseData?.product_name} {doseData?.recommended && <span className="ml-2 bg-purple-100 text-purple-700 px-2 py-0.5 text-xs rounded">Recommended</span>}</h3>
+            <p className="text-sm max-sm:text-[16px] text-gray-600">{doseData?.name}</p>
+            {doseData?.expiry && <p className="text-xs max-sm:text-[16px] text-gray-400">Expiry: {moment(doseData?.expiry).format("DD/MM/YYYY")}</p>}
           </div>
         </div>
 
         <div className="flex items-center space-x-4">
           <div className="text-right">
             <p className="font-bold text-gray-900 text-lg">£{parseFloat(doseData?.price).toFixed(2)}</p>
-            {doseData?.oldPrice && <p className="text-xs line-through text-gray-400">£{doseData.oldPrice}</p>}
+            {doseData?.oldPrice && <p className="text-xs max-sm:text-[16px] line-through text-gray-400">£{doseData.oldPrice}</p>}
           </div>
 
           {isSelected && (
@@ -92,7 +92,7 @@ const Dose = ({ doseData, onAdd, onIncrement, onDecrement, isSelected, qty, allo
                 <FaMinus size={12} />
               </button>
 
-              <span className="px-3 py-1 bg-white border border-gray-300 rounded-md text-sm">{qty}</span>
+              <span className="px-3 py-1 bg-white border border-gray-300 rounded-md text-sm max-sm:text-[16px]">{qty}</span>
 
               <button type="button" onClick={handleIncrement} disabled={qty >= allowed} className={`w-8 h-8 ${qty >= allowed ? "bg-gray-200 opacity-50 cursor-not-allowed" : "bg-gray-200 hover:bg-gray-300"} rounded-full flex items-center justify-center text-gray-700`}>
                 <FaPlus size={12} />

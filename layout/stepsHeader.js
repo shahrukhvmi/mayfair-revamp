@@ -251,7 +251,7 @@ const StepsHeader = ({ isOpen, toggleSidebar }) => {
       )} */}
 
       {impersonate && (
-        <div className="inter-medium-font flex items-center justify-center gap-3 bg-gradient-to-r from-[#47317c] to-[#6b4faa] px-4 py-2 text-[12.5px] text-white/95 shadow-sm">
+        <div className="inter-medium-font flex items-center justify-center gap-3 bg-gradient-to-r from-[#47317c] to-[#6b4faa] px-4 py-2 text-[12.5px] max-sm:text-[16px] text-white/95 shadow-sm">
           <div className="flex items-center gap-2">
             <span className="flex h-5 w-5 items-center justify-center rounded-full bg-white/15">
               <Copy size={11} strokeWidth={2.2} />
@@ -261,7 +261,7 @@ const StepsHeader = ({ isOpen, toggleSidebar }) => {
           <span className="hidden h-3.5 w-px bg-white/25 sm:block" />
           <button
             type="button"
-            className="inter-semibold-font flex cursor-pointer items-center gap-1.5 rounded-full bg-white/15 px-3 py-1 text-[11px] tracking-wide text-white transition-all hover:bg-white/25"
+            className="inter-semibold-font flex cursor-pointer items-center gap-1.5 rounded-full bg-white/15 px-3 py-1 text-[11px] max-sm:text-[16px] tracking-wide text-white transition-all hover:bg-white/25"
             onClick={handleRemovedImpersonate}
           >
             <UserCheck size={12} strokeWidth={2.2} />
@@ -335,7 +335,7 @@ const StepsHeader = ({ isOpen, toggleSidebar }) => {
                     <UserRound size={16} strokeWidth={2} className="text-white" />
                   </span>
                   <span className="hidden min-w-0 text-left sm:block">
-                    <span className="inter-medium-font block max-w-[150px] truncate text-[14px] leading-4 text-slate-900 capitalize">
+                    <span className="inter-medium-font block max-w-[150px] truncate text-[14px] max-sm:text-[16px] leading-4 text-slate-900 capitalize">
                       {displayName}
                     </span>
                   </span>
@@ -351,13 +351,13 @@ const StepsHeader = ({ isOpen, toggleSidebar }) => {
                   <div className="absolute right-0 top-full z-50 w-[250px] overflow-hidden rounded-2xl border border-[#47317c]/10 bg-white shadow-[0_16px_40px_rgba(71,49,124,0.12)]">
                     {/* Account summary */}
                     <div className="border-b border-[#47317c]/[0.07] bg-[#faf9fc] px-4 py-4">
-                      <p className="inter-medium-font m-0 text-[10px] uppercase tracking-[0.11em] text-slate-500">
+                      <p className="inter-medium-font m-0 text-[10px] max-sm:text-[16px] uppercase tracking-[0.11em] text-slate-500">
                         Logged in as
                       </p>
-                      <p className="inter-semibold-font mt-1.5 truncate text-[14px] text-slate-900 capitalize">
+                      <p className="inter-semibold-font mt-1.5 truncate text-[14px] max-sm:text-[16px] text-slate-900 capitalize">
                         {displayName}
                       </p>
-                      <p title={email} className="inter-reg-font mt-0.5 truncate text-[12px] text-slate-500">
+                      <p title={email} className="inter-reg-font mt-0.5 truncate text-[12px] max-sm:text-[16px] text-slate-500">
                         {email}
                       </p>
                     </div>
@@ -367,7 +367,7 @@ const StepsHeader = ({ isOpen, toggleSidebar }) => {
                       <button
                         type="button"
                         onClick={() => { router.push("/dashboard"); setAnchorEl(null); }}
-                        className="inter-medium-font flex w-full cursor-pointer items-center gap-3 rounded-[10px] px-3 py-3 text-[13px] text-slate-700 transition-colors hover:bg-[#47317c]/[0.05] hover:text-[#47317c]"
+                        className="inter-medium-font flex w-full cursor-pointer items-center gap-3 rounded-[10px] px-3 py-3 text-[13px] max-sm:text-[16px] text-slate-700 transition-colors hover:bg-[#47317c]/[0.05] hover:text-[#47317c]"
                       >
                         <LayoutDashboard size={16} strokeWidth={2} className="text-[#47317c]" />
                         My Account
@@ -376,7 +376,7 @@ const StepsHeader = ({ isOpen, toggleSidebar }) => {
                       <button
                         type="button"
                         onClick={() => { router.push("/orders"); setAnchorEl(null); }}
-                        className="inter-medium-font flex w-full cursor-pointer items-center gap-3 rounded-[10px] px-3 py-3 text-[13px] text-slate-700 transition-colors hover:bg-[#47317c]/[0.05] hover:text-[#47317c]"
+                        className="inter-medium-font flex w-full cursor-pointer items-center gap-3 rounded-[10px] px-3 py-3 text-[13px] max-sm:text-[16px] text-slate-700 transition-colors hover:bg-[#47317c]/[0.05] hover:text-[#47317c]"
                       >
                         <ShoppingBag size={16} strokeWidth={2} className="text-[#47317c]" />
                         My Orders
@@ -387,7 +387,7 @@ const StepsHeader = ({ isOpen, toggleSidebar }) => {
                       <button
                         type="button"
                         onClick={handleLogout}
-                        className="inter-medium-font flex w-full cursor-pointer items-center gap-3 rounded-[10px] px-3 py-3 text-[13px] text-red-600 transition-colors hover:bg-red-50"
+                        className="inter-medium-font flex w-full cursor-pointer items-center gap-3 rounded-[10px] px-3 py-3 text-[13px] max-sm:text-[16px] text-red-600 transition-colors hover:bg-red-50"
                       >
                         <LogOut size={16} strokeWidth={2} className="text-red-500" />
                         Logout
@@ -400,7 +400,7 @@ const StepsHeader = ({ isOpen, toggleSidebar }) => {
 
             {!pathname?.startsWith("/login") && !token && (
               <div className="flex items-center gap-3">
-                <span className="mont-medium-font hidden text-[14px] text-slate-500 sm:block">
+                <span className="mont-medium-font hidden text-[14px] max-sm:text-[16px] text-slate-500 sm:block">
                   Already have an account?
                 </span>
 
@@ -411,7 +411,7 @@ const StepsHeader = ({ isOpen, toggleSidebar }) => {
               mont-medium-font inline-flex min-h-[40px]
               items-center gap-2 rounded-[11px]
               bg-[#47317c] px-4 py-2
-              text-[14px] text-white
+              text-[14px] max-sm:text-[16px] text-white
               transition-all duration-200
               hover:bg-[#392765]
               active:scale-[0.98]  cursor-pointer

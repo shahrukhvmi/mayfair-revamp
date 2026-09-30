@@ -90,7 +90,7 @@ export default function SignUp() {
                   }}
                   render={({ field }) => (
                     <div className="mb-4">
-                      <label htmlFor="phoneNo" className="inter-medium-font mb-1.5 block text-[13px] text-slate-700">
+                      <label htmlFor="phoneNo" className="inter-medium-font mb-1.5 block text-[13px] max-sm:text-[16px] text-slate-700">
                         Phone Number <span className="text-red-500">*</span>
                       </label>
 
@@ -130,7 +130,7 @@ export default function SignUp() {
                       </div>
 
                       {errors.phoneNo && (
-                        <p className="inter-reg-font mt-1.5 text-[12px] text-red-500">
+                        <p className="inter-reg-font mt-1.5 text-[12px] max-sm:text-[16px] text-red-500">
                           {errors.phoneNo.message}
                         </p>
                       )}

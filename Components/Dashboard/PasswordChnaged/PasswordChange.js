@@ -43,7 +43,7 @@ const PasswordRequirement = ({ valid, label }) => {
       </span>
 
       <span
-        className={`inter-medium-font text-[12px] leading-5 ${
+        className={`inter-medium-font text-[12px] max-sm:text-[16px] leading-5 ${
           valid ? "text-emerald-700" : "text-slate-500"
         }`}
       >
@@ -175,11 +175,11 @@ const PasswordChange = () => {
                 </span>
 
                 <div className="min-w-0">
-                  <h2 className="inter-semibold-font text-[16px] leading-6 text-slate-900">
+                  <h2 className="max-sm:text-[18px] inter-semibold-font text-[16px] leading-6 text-slate-900">
                     Update your password
                   </h2>
 
-                  <p className="inter-reg-font mt-1 text-[12.5px] leading-[1.7] text-slate-500 sm:text-[13px]">
+                  <p className="inter-reg-font mt-1 text-[12.5px] max-sm:text-[16px] leading-[1.7] text-slate-500 sm:text-[13px]">
                    Please create a strong password for your account.
 
 
@@ -249,7 +249,7 @@ const PasswordChange = () => {
                       className="mt-0.5 shrink-0 text-slate-500"
                     />
 
-                    <p className="inter-reg-font max-w-md text-[11.5px] leading-[1.7] text-slate-500">
+                    <p className="inter-reg-font max-w-md text-[11.5px] max-sm:text-[16px] leading-[1.7] text-slate-500">
                       After updating your password, use the new password the
                       next time you sign in.
                     </p>
@@ -282,11 +282,11 @@ const PasswordChange = () => {
                   </span>
 
                   <div className="min-w-0">
-                    <p className="inter-bold-font text-[14px] text-slate-950">
+                    <p className="inter-bold-font text-[14px] max-sm:text-[16px] text-slate-950">
                       Account email
                     </p>
 
-                    <p className="inter-reg-font mt-0.5 text-[11px] text-slate-500">
+                    <p className="inter-reg-font mt-0.5 text-[11px] max-sm:text-[16px] text-slate-500">
                       Associated with this account
                     </p>
                   </div>
@@ -295,13 +295,13 @@ const PasswordChange = () => {
                 <div className="mt-4 rounded-[13px] border border-[#47317c]/10 bg-white px-4 py-3">
                   <p
                     title={email}
-                    className="inter-medium-font truncate text-[12px] text-slate-700"
+                    className="inter-medium-font truncate text-[12px] max-sm:text-[16px] text-slate-700"
                   >
                     {email || "Not available"}
                   </p>
                 </div>
 
-                <p className="inter-reg-font mt-3 text-[10.5px] leading-[1.7] text-slate-500">
+                <p className="inter-reg-font mt-3 text-[10.5px] max-sm:text-[16px] leading-[1.7] text-slate-500">
                   This email is linked to your account and cannot be changed
                   from this page.
                 </p>
@@ -376,6 +376,15 @@ const PasswordChange = () => {
               background: #cbd5e1 !important;
               box-shadow: none !important;
             }
+          
+            @media (max-width: 639px) {
+              .password-form .MuiInputLabel-root,
+              .password-form .MuiInputBase-root,
+              .password-form input,
+              .password-save-button button {
+                font-size: 16px !important;
+              }
+            }
           `}</style>
         </section>
       </div>
@@ -392,11 +401,11 @@ const PasswordRequirements = ({ validations, progress, completed }) => {
         </span>
 
         <div className="min-w-0 flex-1">
-          <h3 className="inter-bold-font text-[15px] text-slate-950">
+          <h3 className="max-sm:text-[18px] inter-bold-font text-[15px] text-slate-950">
             Password requirements
           </h3>
 
-          <p className="inter-reg-font mt-0.5 text-[11px] text-slate-500">
+          <p className="inter-reg-font mt-0.5 text-[11px] max-sm:text-[16px] text-slate-500">
             {completed} of 5 completed
           </p>
         </div>

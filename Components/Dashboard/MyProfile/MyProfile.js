@@ -81,8 +81,8 @@ const MyProfile = () => {
   return (
     <div className="p-6 sm:bg-[#F9FAFB] sm:min-h-screen sm:rounded-md sm:shadow-md my-5 sm:me-5">
       <div className="mb-8">
-        <h1 className="md:text-3xl text-lg mb-2 niba-bold-font heading">Profile Information</h1>
-        <p className="reg-font paragraph  text-left text-sm xl:w-3/4 mt-2">Update your account's profile information and email address.</p>
+        <h1 className="max-sm:text-[24px] md:text-3xl text-lg mb-2 niba-bold-font heading">Profile Information</h1>
+        <p className="reg-font paragraph  text-left text-sm max-sm:text-[16px] xl:w-3/4 mt-2">Update your account's profile information and email address.</p>
       </div>
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
@@ -164,15 +164,15 @@ const MyProfile = () => {
                 </div>
               )}
             />
-            {errors.phoneNumber && <p className="text-red-500 text-sm mt-1">{errors.phoneNumber.message}</p>}
+            {errors.phoneNumber && <p className="text-red-500 text-sm max-sm:text-[16px] mt-1">{errors.phoneNumber.message}</p>}
           </div>
 
           <div>
             <label className="bold-font paragraph mb-2">Email Address</label>
-            <div className=" border border-gray-400 rounded-sm px-3 flex items-center text-sm text-black cursor-not-allowed h-15">
+            <div className=" border border-gray-400 rounded-sm px-3 flex items-center text-sm max-sm:text-[16px] text-black cursor-not-allowed h-15">
               <p className="reg-font">{userEmail}</p>
             </div>
-            <p className="reg-font text-xs mt-2 text-gray-700">(This email is associated with your account and cannot be changed)</p>
+            <p className="reg-font text-xs max-sm:text-[16px] mt-2 text-gray-700">(This email is associated with your account and cannot be changed)</p>
           </div>
         </div>
 

@@ -150,12 +150,12 @@ const ExplanationEvidence = () => {
 
   return (
     <div className="max-w-lg mx-auto mt-16 p-8 bg-white rounded-3xl shadow-xl">
-      <h2 className="text-2xl mont-bold-font mb-4 text-center text-black">
+      <h2 className="max-sm:text-[24px] text-2xl mont-bold-font mb-4 text-center text-black">
         Provide Evidence
       </h2>
-      <p className="text-gray-600 mb-6 text-center text-sm mont-reg-font">
+      <p className="text-gray-600 mb-6 text-center text-sm max-sm:text-[16px] mont-reg-font">
         Provide details about your prescription request.
-        {/* <span className="block mt-2 text-xs text-gray-500">
+        {/* <span className="block mt-2 text-xs max-sm:text-[16px] text-gray-500">
           📎 Supported files: Images (JPG, PNG, SVG) or PDF • Max size: 5MB
         </span> */}
       </p>
@@ -186,7 +186,7 @@ const ExplanationEvidence = () => {
             <label className="flex flex-col items-start w-full cursor-pointer">
               <p className="mb-2 font-medium text-gray-700 mont-medium-font">
                 Upload Attachment{" "}
-                <span className="text-gray-500 text-xs">(Optional)</span>
+                <span className="text-gray-500 text-xs max-sm:text-[16px]">(Optional)</span>
               </p>
               <div className="w-full min-h-[140px] border-2 border-dashed rounded-xl flex flex-col items-center justify-center border-purple-500 transition p-2 bg-gray-50">
                 <input
@@ -206,7 +206,7 @@ const ExplanationEvidence = () => {
                         >
                           <path d="M4 18h12V6h-4V2H4v16zm-2 1V0h12l4 4v16H2v-1z" />
                         </svg>
-                        <span className="text-sm text-gray-700 mont-medium-font">
+                        <span className="text-sm max-sm:text-[16px] text-gray-700 mont-medium-font">
                           {evidence.name}
                         </span>
                         <AiOutlineCheckCircle className="absolute top-2 right-2 w-6 h-6 text-green-600" />
@@ -225,7 +225,7 @@ const ExplanationEvidence = () => {
                 ) : (
                   <div className="flex flex-col items-center justify-center text-gray-400">
                     <FiUpload className="w-6 h-6 mb-1" />
-                    <span className="text-xs">
+                    <span className="text-xs max-sm:text-[16px]">
                       Click to upload (Image or PDF)
                     </span>
                   </div>

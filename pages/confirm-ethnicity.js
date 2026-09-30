@@ -77,7 +77,7 @@ export default function ConfirmEthnicity() {
         percentage={"60"}
       >
         <PageAnimationWrapper>
-          <p className="inter-medium-font mb-4 text-[14px] leading-relaxed text-slate-800">
+          <p className="inter-medium-font mb-4 text-[14px] max-sm:text-[16px] leading-relaxed text-slate-800">
             Does one of the following options describe your ethnic group or background?
           </p>
           <div>
@@ -88,7 +88,7 @@ export default function ConfirmEthnicity() {
                     aria-hidden="true"
                     className="h-1.5 w-1.5 shrink-0 rounded-full bg-[#47317c]/80"
                   />
-                  <p className="inter-medium-font text-[13.5px] text-slate-700">{ethnicity}</p>
+                  <p className="inter-medium-font text-[13.5px] max-sm:text-[16px] text-slate-700">{ethnicity}</p>
                 </div>
               ))}
             </div>
@@ -108,7 +108,7 @@ export default function ConfirmEthnicity() {
                           {isSelected && <div className="h-1.5 w-1.5 rounded-full bg-white" />}
                         </div>
                         <input type="radio" value={option} {...register("ethnicity", { required: true })} className="hidden" />
-                        <span className={`inter-medium-font text-[14px] ${isSelected ? "text-[#47317c]" : "text-slate-700"}`}>{option}</span>
+                        <span className={`inter-medium-font text-[14px] max-sm:text-[16px] ${isSelected ? "text-[#47317c]" : "text-slate-700"}`}>{option}</span>
                       </label>
                     );
                   })}

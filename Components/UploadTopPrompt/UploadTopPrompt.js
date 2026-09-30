@@ -22,20 +22,18 @@ const AlertBanner = ({
     <section className="w-full overflow-hidden rounded-2xl border border-amber-200/70 bg-amber-50/40 shadow-[0_1px_4px_rgba(180,83,9,0.06)]">
       <div className="flex w-full flex-col gap-4 p-4 sm:p-5 lg:flex-row lg:items-center lg:justify-between">
         {/* Content */}
-        <div className="flex min-w-0 flex-1 items-center gap-3.5">
-          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-amber-50 text-amber-500">
-            <Icon size={18} strokeWidth={2} />
-          </div>
+        <div className="flex min-w-0 flex-1 items-center">
           <div className="min-w-0 flex-1">
             <div className="flex items-center gap-2 mb-0.5">
-              <span className="inter-medium-font inline-flex items-center rounded-full bg-amber-50 border border-amber-200 px-2 py-0.5 text-[10px] uppercase tracking-[0.1em] text-amber-600">
+              <span className="inter-medium-font inline-flex items-center gap-1.5 rounded-full bg-amber-50 border border-amber-200 px-2 py-0.5 text-[10px] max-sm:text-[16px] uppercase tracking-[0.1em] text-amber-600">
+                <Icon size={14} strokeWidth={2} className="h-3 w-3 shrink-0 max-sm:h-4 max-sm:w-4" />
                 Action required
               </span>
             </div>
-            <h3 className="inter-semibold-font text-[14px] leading-snug text-slate-900">
+            <h3 className="max-sm:text-[18px] inter-semibold-font text-[14px] leading-snug text-slate-900">
               {title}
             </h3>
-            <p className="inter-reg-font mt-0.5 text-[12.5px] text-slate-500">
+            <p className="inter-reg-font mt-0.5 text-[12.5px] max-sm:text-[16px] text-slate-500">
               {description}
             </p>
           </div>
@@ -44,7 +42,7 @@ const AlertBanner = ({
         {/* Action */}
         <Link
           href={href}
-          className="inter-medium-font group inline-flex min-h-[38px] w-full shrink-0 items-center justify-center gap-1.5 rounded-xl border bg-amber-50 border border-amber-200 px-5 py-2 text-[12.5px] text-amber-600 no-underline transition-all duration-150 hover:bg-amber-100 active:scale-[0.98] lg:w-auto lg:min-w-[140px]"
+          className="inter-medium-font group inline-flex min-h-[38px] w-full shrink-0 items-center justify-center gap-1.5 rounded-xl border bg-amber-50 border border-amber-200 px-5 py-2 text-[12.5px] max-sm:text-[16px] text-amber-600 no-underline transition-all duration-150 hover:bg-amber-100 active:scale-[0.98] lg:w-auto lg:min-w-[140px]"
         >
           <UploadCloud size={14} strokeWidth={2.2} />
           <span>{buttonText}</span>

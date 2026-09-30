@@ -99,7 +99,7 @@ export default function Acknowledgment() {
               {isSelected && <div className="h-2 w-2 rounded-full bg-white" />}
             </div>
             <span
-              className={`inter-medium-font text-[15px] capitalize ${
+              className={`inter-medium-font text-[15px] max-sm:text-[16px] capitalize ${
                 isSelected
                   ? isYes ? "text-[#47317c]" : "text-red-600"
                   : "text-slate-700"
@@ -128,7 +128,7 @@ export default function Acknowledgment() {
                   const val = q.id === "personalUse" ? personalUse : decisionCapacity;
                   return (
                     <div key={q.id} className="py-6 first:pt-0">
-                      <p className="inter-medium-font text-[15px] leading-relaxed text-slate-800">
+                      <p className="inter-medium-font text-[15px] max-sm:text-[16px] leading-relaxed text-slate-800">
                         {q.text}
                       </p>
                       {renderYesNo(q.id, val)}
@@ -140,7 +140,7 @@ export default function Acknowledgment() {
               {/* No selected — cannot proceed */}
               {isNoSelected && (
                 <div className="mt-2 rounded-xl border border-red-100 bg-red-50 px-5 py-4">
-                  <p className="inter-medium-font text-[13px] leading-relaxed text-red-600">
+                  <p className="inter-medium-font text-[13px] max-sm:text-[16px] leading-relaxed text-red-600">
                     Unfortunately we are unable to proceed. Please consult a healthcare professional if you have concerns.
                   </p>
                 </div>
@@ -167,12 +167,12 @@ export default function Acknowledgment() {
                     >
                       {confirmConsent && <Check size={12} className="text-white" strokeWidth={3} />}
                     </div>
-                    <span className="inter-semibold-font text-[14px] text-slate-800">
+                    <span className="inter-semibold-font text-[14px] max-sm:text-[16px] text-slate-800">
                       Do you confirm that:
                     </span>
                   </label>
 
-                  <ul className="inter-reg-font mt-4 space-y-3 pl-0 sm:pl-8 text-[13px] text-slate-600 leading-relaxed">
+                  <ul className="inter-reg-font mt-4 space-y-3 pl-0 sm:pl-8 text-[13px] max-sm:text-[16px] text-slate-600 leading-relaxed">
                     {CONSENT_ITEMS.map((item, i) => (
                       <li key={i} className="flex items-start gap-2">
                         <CircleCheck

@@ -131,8 +131,8 @@ export default function WeightLossJourney() {
           {/* Section heading + unit toggle */}
           <div className="flex flex-col gap-4 border-b border-slate-100 p-4 sm:flex-row sm:items-center sm:justify-between lg:p-5 2xl:p-6">
             <div>
-              <h2 className="inter-bold-font text-[16px] lg:text-[17px] 2xl:text-[20px] text-slate-900">Progress Overview</h2>
-              <p className="inter-reg-font mt-0.5 text-[12px] 2xl:text-[13px] text-slate-500">Your weight statistics and progression chart.</p>
+              <h2 className="max-sm:text-[18px] inter-bold-font text-[16px] lg:text-[17px] 2xl:text-[20px] text-slate-900">Progress Overview</h2>
+              <p className="inter-reg-font mt-0.5 text-[12px] max-sm:text-[16px] 2xl:text-[13px] text-slate-500">Your weight statistics and progression chart.</p>
             </div>
             <UnitTabs unit={unit} setUnit={setUnit} />
           </div>
@@ -161,13 +161,13 @@ export default function WeightLossJourney() {
                   <TrendingDown size={15} strokeWidth={2} />
                 </span>
                 <div>
-                  <h3 className="inter-bold-font text-[14px] 2xl:text-[15px] text-slate-900">Weight progression</h3>
-                  <p className="inter-reg-font text-[11.5px] text-slate-500">Changes across your recorded treatment orders.</p>
+                  <h3 className="max-sm:text-[18px] inter-bold-font text-[14px] 2xl:text-[15px] text-slate-900">Weight progression</h3>
+                  <p className="inter-reg-font text-[11.5px] max-sm:text-[16px] text-slate-500">Changes across your recorded treatment orders.</p>
                 </div>
               </div>
               <div className="flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3 py-1.5">
                 <Award size={13} strokeWidth={2} className="text-[#47317c]" />
-                <span className="inter-medium-font text-[11.5px] text-slate-600">
+                <span className="inter-medium-font text-[11.5px] max-sm:text-[16px] text-slate-600">
                   {bmiJourney.length} records · {unit === "kg" ? "Kilograms" : "Stones / Pounds"}
                 </span>
               </div>
@@ -211,7 +211,7 @@ const UnitTabs = ({ unit, setUnit }) => (
         key={opt.value}
         type="button"
         onClick={() => setUnit(opt.value)}
-        className={`inter-medium-font min-h-[34px] flex-1 cursor-pointer rounded-lg px-4 text-[12px] transition-all duration-150 sm:flex-none
+        className={`inter-medium-font min-h-[34px] flex-1 cursor-pointer rounded-lg px-4 text-[12px] max-sm:text-[16px] transition-all duration-150 sm:flex-none
           ${unit === opt.value
             ? "bg-[#47317c]/[0.09] text-[#47317c]"
             : "text-slate-500 hover:bg-slate-50 hover:text-slate-800"
@@ -241,17 +241,17 @@ const StatCard = ({ title, value, description, badge, icon: Icon, tone = "defaul
           <TrendIcon size={17} strokeWidth={2} />
         </span>
         {badge && (
-          <span className={`inter-medium-font inline-flex items-center rounded-full border px-2 py-0.5 text-[10px] ${s.badge}`}>
+          <span className={`inter-medium-font inline-flex items-center rounded-full border px-2 py-0.5 text-[10px] max-sm:text-[16px] ${s.badge}`}>
             {badge}
           </span>
         )}
       </div>
       <div className="mt-4">
-        <p className="inter-medium-font text-[10px] uppercase tracking-[0.12em] text-slate-400">{title}</p>
+        <p className="inter-medium-font text-[10px] max-sm:text-[16px] uppercase tracking-[0.12em] text-slate-400">{title}</p>
         <p className={`inter-bold-font mt-1.5 text-[21px] 2xl:text-[24px] leading-tight tracking-[-0.02em] ${s.value}`}>
           {showMinus ? "−" : ""}{value}
         </p>
-        <p className="inter-reg-font mt-1.5 text-[11.5px] 2xl:text-[12.5px] leading-snug text-slate-500">{description}</p>
+        <p className="inter-reg-font mt-1.5 text-[11.5px] max-sm:text-[16px] 2xl:text-[12.5px] leading-snug text-slate-500">{description}</p>
       </div>
     </article>
   );
@@ -263,8 +263,8 @@ const JourneyTooltip = ({ active, payload, label, unit }) => {
   const item = payload[0]?.payload;
   return (
     <div className="min-w-[140px] rounded-xl border border-slate-200 bg-white px-3.5 py-3 shadow-[0_4px_16px_rgba(0,0,0,0.08)]">
-      <p className="inter-medium-font text-[10px] uppercase tracking-[0.1em] text-slate-400">{label}</p>
-      <p className="inter-bold-font mt-1 text-[14px] text-[#47317c]">
+      <p className="inter-medium-font text-[10px] max-sm:text-[16px] uppercase tracking-[0.1em] text-slate-400">{label}</p>
+      <p className="inter-bold-font mt-1 text-[14px] max-sm:text-[16px] text-[#47317c]">
         {unit === "kg" ? `${item?.value} kg` : item?.label}
       </p>
     </div>
@@ -344,8 +344,8 @@ const EmptyJourneyState = () => (
         <span className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[#47317c]/[0.08] text-[#47317c]">
           <Scale size={24} strokeWidth={1.8} />
         </span>
-        <h2 className="inter-bold-font mt-5 text-[20px] text-slate-900">No weight progression yet</h2>
-        <p className="inter-reg-font mt-2 max-w-sm text-[13px] leading-[1.7] text-slate-500">
+        <h2 className="max-sm:text-[18px] inter-bold-font mt-5 text-[20px] text-slate-900">No weight progression yet</h2>
+        <p className="inter-reg-font mt-2 max-w-sm text-[13px] max-sm:text-[16px] leading-[1.7] text-slate-500">
           Your journey will appear once tracking starts.
         </p>
       </div>

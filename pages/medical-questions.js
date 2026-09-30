@@ -130,7 +130,7 @@ const MedicalQuestions = () => {
                     className={`rounded-xl border p-4 sm:p-5 ${showValidationError ? "border-red-200 bg-red-50/30" : "border-slate-100 bg-[#FBFBFD]"}`}
                   >
                     <div
-                      className="inter-reg-font mb-4 text-[14px] leading-relaxed text-slate-800 [&>ul]:list-disc [&>ul]:ml-6 [&>li]:mt-0.5"
+                      className="inter-reg-font mb-4 text-[14px] max-sm:text-[16px] leading-relaxed text-slate-800 [&>ul]:list-disc [&>ul]:ml-6 [&>li]:mt-0.5"
                       dangerouslySetInnerHTML={{ __html: q.question }}
                     />
 
@@ -155,7 +155,7 @@ const MedicalQuestions = () => {
                               ${isSelected ? "border-[#47317c] bg-[#47317c]" : "border-slate-300 bg-white"}`}>
                               {isSelected && <div className="h-1.5 w-1.5 rounded-full bg-white" />}
                             </div>
-                            <span className={`inter-medium-font text-[14px] capitalize ${isSelected ? "text-[#47317c]" : "text-slate-700"}`}>
+                            <span className={`inter-medium-font text-[14px] max-sm:text-[16px] capitalize ${isSelected ? "text-[#47317c]" : "text-slate-700"}`}>
                               {option}
                             </span>
                           </label>
@@ -165,13 +165,13 @@ const MedicalQuestions = () => {
 
                     {showValidationError && (
                       <div className="mt-3 rounded-lg border border-red-100 bg-red-50 px-3 py-2.5">
-                        <p className="inter-reg-font text-[12px] text-red-600">{q.validation_error_msg}</p>
+                        <p className="inter-reg-font text-[12px] max-sm:text-[16px] text-red-600">{q.validation_error_msg}</p>
                       </div>
                     )}
 
                     {q.has_sub_field && selectedAnswer === "yes" && (
                       <textarea
-                        className="inter-reg-font mt-4 min-h-[104px] w-full resize-y rounded-xl border border-slate-200 bg-white px-4 py-3 text-[14px] leading-relaxed text-slate-800 shadow-[0_1px_3px_rgba(15,23,42,0.03)] transition-all duration-200 placeholder:text-slate-400 focus:border-[#47317c]/40 focus:outline-none focus:ring-[3px] focus:ring-[#47317c]/10"
+                        className="inter-reg-font mt-4 min-h-[104px] w-full resize-y rounded-xl border border-slate-200 bg-white px-4 py-3 text-[14px] max-sm:text-[16px] leading-relaxed text-slate-800 shadow-[0_1px_3px_rgba(15,23,42,0.03)] transition-all duration-200 placeholder:text-slate-400 focus:border-[#47317c]/40 focus:outline-none focus:ring-[3px] focus:ring-[#47317c]/10"
                         placeholder={q.sub_field_prompt}
                         rows={3}
                         value={subfieldValue}

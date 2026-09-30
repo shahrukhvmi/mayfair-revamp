@@ -230,7 +230,7 @@ export default function ReviewScreen() {
                       </div>
                     </div>
 
-                    <p className="text-[12px] text-black mont-reg-font tracking-wide tap-text">
+                    <p className="text-[12px] max-sm:text-[16px] text-black mont-reg-font tracking-wide tap-text">
                       Tap on an option
                     </p>
                   </div>
@@ -248,7 +248,7 @@ export default function ReviewScreen() {
                         placeholder="Tell us what went wrong..."
                         value={feedback}
                         onChange={(e) => setFeedback(e.target.value)}
-                        className="w-full h-[150px] textArea rounded-3xl px-6 py-5 bg-white/75 backdrop-blur-xl border border-white/60 text-[15px] text-black shadow-[inset_0_1px_2px_rgba(255,255,255,0.6),0_22px_44px_rgba(0,0,0,0.18)] focus:outline-none focus:ring-2 focus:ring-[#5b45a7]/50 placeholder:text-black/40 resize-none mont-reg-font"
+                        className="w-full h-[150px] textArea rounded-3xl px-6 py-5 bg-white/75 backdrop-blur-xl border border-white/60 text-[15px] max-sm:text-[16px] text-black shadow-[inset_0_1px_2px_rgba(255,255,255,0.6),0_22px_44px_rgba(0,0,0,0.18)] focus:outline-none focus:ring-2 focus:ring-[#5b45a7]/50 placeholder:text-black/40 resize-none mont-reg-font"
                       />
                     </div>
 
@@ -374,10 +374,10 @@ function ReviewButton({ icon, label, brand, className = "", onClick }) {
 
       {/* TEXT */}
       <div className="relative z-10 flex-1 text-start">
-        <p className="text-sm mont-medium-font text-black leading-tight review-btn-label">
+        <p className="text-sm max-sm:text-[16px] mont-medium-font text-black leading-tight review-btn-label">
           {label}
         </p>
-        <p className="text-[11px] text-black/50 mont-medium-font review-btn-subtitle">
+        <p className="text-[11px] max-sm:text-[16px] text-black/50 mont-medium-font review-btn-subtitle">
           Takes less than 30 seconds
         </p>
       </div>

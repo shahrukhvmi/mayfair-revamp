@@ -61,7 +61,7 @@ const PaymentPage = ({ paymentData }) => {
 
           <hr className="w-full my-6 border-gray-200" />
 
-          <p className="reg-font text-sm text-gray-500">Do not leave this page, you will be redirected to payment promptly.</p>
+          <p className="reg-font text-sm max-sm:text-[16px] text-gray-500">Do not leave this page, you will be redirected to payment promptly.</p>
         </motion.div>
 
         {/* Hidden form */}

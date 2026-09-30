@@ -188,11 +188,11 @@ export default function Billing({ billingCountries = [] }) {
         </span>
 
         <div className="min-w-0">
-          <h2 className="inter-bold-font text-[20px] leading-7 text-slate-950 sm:text-[23px]">
+          <h2 className="max-sm:text-[24px] inter-bold-font text-[20px] leading-7 text-slate-950 sm:text-[23px]">
             Billing information
           </h2>
 
-          <p className="inter-reg-font mt-1.5 max-w-2xl text-[12.5px] leading-[1.7] text-slate-500 sm:text-[13px]">
+          <p className="inter-reg-font mt-1.5 max-w-2xl text-[12.5px] max-sm:text-[16px] leading-[1.7] text-slate-500 sm:text-[13px]">
             Update your billing details — changes will apply to future orders only.
 
 
@@ -258,7 +258,7 @@ export default function Billing({ billingCountries = [] }) {
               type="button"
               onClick={handleSearch}
               disabled={addressSearchLoading}
-className="absolute right-2 top-12.5 -translate-y-1/2 bg-[#47317c] hover:bg-[#392765] text-white text-sm font-medium px-4 py-1.5 rounded-md flex items-center gap-1.5 disabled:opacity-60 transition-colors cursor-pointer"            >
+className="absolute right-2 top-12.5 -translate-y-1/2 bg-[#47317c] hover:bg-[#392765] text-white text-sm max-sm:text-[16px] font-medium px-4 py-1.5 rounded-md flex items-center gap-1.5 disabled:opacity-60 transition-colors cursor-pointer"            >
               {addressSearchLoading ? (
                 <>
                   <Loader2 size={15} strokeWidth={2.3} className="animate-spin" />
@@ -370,7 +370,7 @@ className="absolute right-2 top-12.5 -translate-y-1/2 bg-[#47317c] hover:bg-[#39
             <NextButton
               label="Update billing"
               disabled={!isValid}
-              className="inter-medium-font !min-h-[46px] !rounded-[13px] !border-[#47317c] !bg-[#47317c] !px-6 !py-3 !text-[12px] !text-white hover:!bg-[#392765]"
+              className="inter-medium-font !min-h-[46px] !rounded-[13px] !border-[#47317c] !bg-[#47317c] !px-6 !py-3 !text-[12px] max-sm:text-[16px] !text-white hover:!bg-[#392765]"
             />
           </div>
         </div>
@@ -405,6 +405,15 @@ className="absolute right-2 top-12.5 -translate-y-1/2 bg-[#47317c] hover:bg-[#39
 
         .address-form label {
           font-family: var(--inter-medium) !important;
+        }
+      
+        @media (max-width: 639px) {
+          .address-form .MuiInputLabel-root,
+          .address-form input,
+          .address-form select,
+          .address-form textarea {
+            font-size: 16px !important;
+          }
         }
       `}</style>
     </section>

@@ -132,7 +132,7 @@ export default function PatientConsent() {
                   <div className="mb-2 border-b border-slate-200 pb-4">
                     <h2
                       id="consent-statements-heading"
-                      className="inter-semibold-font text-[16px] text-slate-900 sm:text-[17px]"
+                      className="inter-semibold-font max-sm:text-[18px] text-[16px] text-slate-900 sm:text-[17px]"
                     >
                       I confirm and understand that:
                     </h2>
@@ -148,7 +148,7 @@ export default function PatientConsent() {
                           <div className="min-w-0">
                               {q.checklist && (
                                 <div
-                                  className="inter-reg-font mb-4 text-[14px] leading-[1.75] text-slate-600 sm:text-[16px] [&>ul]:ml-5 [&>ul]:list-disc [&>li]:mt-1.5"
+                                  className="inter-reg-font mb-4 text-[14px] max-sm:text-[16px] leading-[1.75] text-slate-600 sm:text-[16px] [&>ul]:ml-5 [&>ul]:list-disc [&>li]:mt-1.5"
                                   dangerouslySetInnerHTML={{ __html: q.checklist }}
                                 />
                               )}
@@ -179,7 +179,7 @@ export default function PatientConsent() {
                                     </svg>
                                   )}
                                 </span>
-                                <span className={`inter-medium-font text-[15px] leading-[1.65] transition-colors sm:text-[15.5px] ${selectedAnswer ? "text-[#47317c]" : "text-slate-800"}`}>
+                                <span className={`inter-medium-font text-[15px] max-sm:text-[16px] leading-[1.65] transition-colors sm:text-[15.5px] ${selectedAnswer ? "text-[#47317c]" : "text-slate-800"}`}>
                                   {q?.qsummary
                                     ?.replace("I confirm and understand that:", "")
                                     ?.replace("below", "above")
@@ -195,7 +195,7 @@ export default function PatientConsent() {
 
                 {/* Show error if not accepted */}
                 {!isNextEnabled && (
-                  <p className="inter-reg-font border-l-2 border-amber-300 pl-3 text-[13.5px] leading-relaxed text-amber-700">
+                  <p className="inter-reg-font border-l-2 border-amber-300 pl-3 text-[13.5px] max-sm:text-[16px] leading-relaxed text-amber-700">
                     You must confirm before proceeding.
                   </p>
                 )}

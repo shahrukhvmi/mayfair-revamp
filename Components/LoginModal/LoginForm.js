@@ -29,7 +29,7 @@ export default function LoginForm({ register, handleSubmit, errors, isLoading, o
       />
       <NextButton label="Login" type="submit" disabled={isLoading} />
 
-      <p className="reg-font text-black text-sm text-center mt-5" >
+      <p className="reg-font text-black text-sm max-sm:text-[16px] text-center mt-5" >
 
         Are you a new patient? <Link href={"/acknowledgment"} onClick={closeLoginModal} className="text-primary underline block mt-1"> Get started with the consultation</Link>
       </p>

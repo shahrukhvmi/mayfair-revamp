@@ -302,7 +302,7 @@ const OrderSummary = ({
               <div className="overflow-hidden rounded-[20px] border border-slate-200/80 bg-white font-inter shadow-[0_12px_40px_rgba(30,41,59,0.06)]">
                 <div className="flex items-center justify-between border-b border-slate-100 bg-white px-6 py-[18px]">
                   <div className="flex items-center gap-3">
-                    <div className={`flex items-center justify-center w-7 h-7 rounded-full text-[13px] transition-all duration-300 ${
+                    <div className={`flex items-center justify-center w-7 h-7 rounded-full text-[13px] max-sm:text-[16px] transition-all duration-300 ${
                       onComplete ? "bg-[#47317c] text-white" : "border-2 border-[#47317c] text-[#47317c] inter-semibold-font"
                     }`}>
                       {onComplete ? (
@@ -312,14 +312,14 @@ const OrderSummary = ({
                       ) : "4"}
                     </div>
                     <div>
-                      <h2 className="inter-semibold-font text-[16px] text-slate-950">Order Summary</h2>
-                      <p className="inter-reg-font mt-0.5 text-[11.5px] text-slate-500">Review your items before payment</p>
+                      <h2 className="max-sm:text-[18px] inter-semibold-font text-[16px] text-slate-950">Order Summary</h2>
+                      <p className="inter-reg-font mt-0.5 text-[11.5px] max-sm:text-[16px] text-slate-500">Review your items before payment</p>
                     </div>
                   </div>
                   <button
                     type="button"
                     onClick={handleEdit}
-                    className="inter-medium-font flex cursor-pointer items-center gap-1.5 rounded-lg px-2 py-1.5 text-[12.5px] text-slate-500 transition-colors hover:bg-[#f5f2fc] hover:text-[#47317c]"
+                    className="inter-medium-font flex cursor-pointer items-center gap-1.5 rounded-lg px-2 py-1.5 text-[12.5px] max-sm:text-[16px] text-slate-500 transition-colors hover:bg-[#f5f2fc] hover:text-[#47317c]"
                   >
                     <HiOutlinePencilAlt className="w-3.5 h-3.5" />
                     Edit
@@ -334,15 +334,15 @@ const OrderSummary = ({
                         {/* Standard dose item */}
                         <li className="flex items-center justify-between gap-4 rounded-xl border border-slate-200/80 bg-slate-50/60 px-4 py-3.5">
                           <div className="flex min-w-0 flex-col">
-                            <span className="inter-semibold-font truncate text-[13.5px] text-slate-900">
+                            <span className="inter-semibold-font truncate text-[13.5px] max-sm:text-[16px] text-slate-900">
                               {dose?.product} {dose?.name}
                             </span>
-                            <span className="inter-reg-font mt-1 text-[11.5px] text-slate-500">
+                            <span className="inter-reg-font mt-1 text-[11.5px] max-sm:text-[16px] text-slate-500">
                               Qty {dose?.qty}
                             </span>
                           </div>
 
-                          <span className="inter-semibold-font shrink-0 text-[14px] text-slate-950">
+                          <span className="inter-semibold-font shrink-0 text-[14px] max-sm:text-[16px] text-slate-950">
                             £{dose?.price?.toFixed(2)}
                           </span>
                         </li>
@@ -351,15 +351,15 @@ const OrderSummary = ({
                         {dose?.product === "Mounjaro (Tirzepatide)" && (
                           <li className="mt-2 flex items-center justify-between gap-4 rounded-xl border border-slate-200/80 bg-slate-50/60 px-4 py-3.5">
                             <div className="flex flex-col">
-                              <span className="inter-semibold-font text-[14px] text-slate-900 truncate">
+                              <span className="inter-semibold-font text-[14px] max-sm:text-[16px] text-slate-900 truncate">
                                 Pack of 5 Needle
                               </span>
-                              <span className="inter-reg-font text-[12px] text-slate-500 mt-1">
+                              <span className="inter-reg-font text-[12px] max-sm:text-[16px] text-slate-500 mt-1">
                                 Qty {dose.qty}
                               </span>
                             </div>
 
-                            <span className="inter-semibold-font text-[14px] text-slate-500">
+                            <span className="inter-semibold-font text-[14px] max-sm:text-[16px] text-slate-500">
                               £0.00
                             </span>
                           </li>
@@ -373,15 +373,15 @@ const OrderSummary = ({
                         className="flex items-center justify-between gap-4 rounded-xl border border-slate-200/80 bg-slate-50/60 px-4 py-3.5"
                       >
                         <div className="flex flex-col">
-                          <span className="inter-semibold-font text-[14px] text-slate-900 truncate">
+                          <span className="inter-semibold-font text-[14px] max-sm:text-[16px] text-slate-900 truncate">
                             {addon?.name}
                           </span>
-                          <span className="inter-reg-font text-[12px] text-slate-500 mt-1">
+                          <span className="inter-reg-font text-[12px] max-sm:text-[16px] text-slate-500 mt-1">
                             Qty {addon?.qty}
                           </span>
                         </div>
 
-                        <span className="inter-semibold-font shrink-0 text-[14px] text-slate-950">
+                        <span className="inter-semibold-font shrink-0 text-[14px] max-sm:text-[16px] text-slate-950">
                           £{addon?.price?.toFixed(2)}
                         </span>
                       </li>
@@ -390,35 +390,35 @@ const OrderSummary = ({
 
                   <div className="mt-5 space-y-3 border-t border-slate-100 pt-5">
                   <div className="flex items-center justify-between">
-                    <p className="inter-medium-font text-[13.5px] text-slate-600">Subtotal</p>
-                    <p className="inter-semibold-font text-[14px] text-slate-900">
+                    <p className="inter-medium-font text-[13.5px] max-sm:text-[16px] text-slate-600">Subtotal</p>
+                    <p className="inter-semibold-font text-[14px] max-sm:text-[16px] text-slate-900">
                       £{totalAmount?.toFixed(2)}
                     </p>
                   </div>
 
                   <div className="flex items-center justify-between">
-                    <p className="inter-medium-font text-[13.5px] text-slate-600">VAT</p>
-                    <p className="inter-semibold-font text-[14px] text-slate-900">£0.00</p>
+                    <p className="inter-medium-font text-[13.5px] max-sm:text-[16px] text-slate-600">VAT</p>
+                    <p className="inter-semibold-font text-[14px] max-sm:text-[16px] text-slate-900">£0.00</p>
                   </div>
 
                   {Coupon && (
                     <div className="flex items-center justify-between">
-                      <p className="inter-semibold-font text-[13px] text-[#47317c]">
+                      <p className="inter-semibold-font text-[13px] max-sm:text-[16px] text-[#47317c]">
                         Discount
                       </p>
-                      <p className="inter-semibold-font text-[13px] text-[#47317c]">
+                      <p className="inter-semibold-font text-[13px] max-sm:text-[16px] text-[#47317c]">
                         -£{discountAmount?.toFixed(2)}
                       </p>
                     </div>
                   )}
                   <div className="flex items-center justify-between">
-                    <p className="inter-medium-font text-[13.5px] text-slate-600">
+                    <p className="inter-medium-font text-[13.5px] max-sm:text-[16px] text-slate-600">
                       Shipping
                       <span className="inter-reg-font ms-1 text-slate-400">
                         ({shipping?.country_name})
                       </span>
                     </p>
-                    <p className="inter-semibold-font text-[14px] text-slate-900">
+                    <p className="inter-semibold-font text-[14px] max-sm:text-[16px] text-slate-900">
                       £{shipping?.country_price}
                     </p>
                   </div>
@@ -426,7 +426,7 @@ const OrderSummary = ({
                   </div>
 
                   <div className="mt-5 flex items-center justify-between rounded-xl bg-[#f5f2fc] px-4 py-3.5">
-                    <p className="inter-semibold-font text-[15px] text-slate-950">Total</p>
+                    <p className="inter-semibold-font text-[15px] max-sm:text-[16px] text-slate-950">Total</p>
                     <p className="inter-bold-font text-[18px] text-[#47317c]">
                       £{finalTotal?.toFixed(2)}
                     </p>
@@ -446,10 +446,10 @@ const OrderSummary = ({
                           <GoCheckCircleFill size={20} className="shrink-0 text-emerald-600" />
                           <div>
                             <p className="flex flex-wrap items-center gap-1.5">
-                              <span className="inter-semibold-font text-[13px] text-slate-900">{Coupon?.Data?.code}</span>
-                              <span className="inter-medium-font rounded-full bg-emerald-100 px-2 py-0.5 text-[10px] text-emerald-700">Applied</span>
+                              <span className="inter-semibold-font text-[13px] max-sm:text-[16px] text-slate-900">{Coupon?.Data?.code}</span>
+                              <span className="inter-medium-font rounded-full bg-emerald-100 px-2 py-0.5 text-[10px] max-sm:text-[16px] text-emerald-700">Applied</span>
                             </p>
-                            <p className="inter-medium-font mt-0.5 text-[11.5px] text-emerald-700">
+                            <p className="inter-medium-font mt-0.5 text-[11.5px] max-sm:text-[16px] text-emerald-700">
                                {Coupon?.Data?.type === "Percent"
                                 ? `${Coupon?.Data?.discount}% Off`
                                 : ` - £${Coupon?.Data?.discount}`}
@@ -473,13 +473,13 @@ const OrderSummary = ({
                             placeholder="Enter discount code"
                             value={discountCode}
                             onChange={(e) => setDiscountCode(e.target.value)}
-                            className="inter-reg-font min-w-0 flex-1 bg-transparent px-1 py-2 text-[13.5px] text-slate-900 placeholder:text-slate-400 focus:outline-none"
+                            className="inter-reg-font min-w-0 flex-1 bg-transparent px-1 py-2 text-[13.5px] max-sm:text-[16px] text-slate-900 placeholder:text-slate-400 focus:outline-none"
                           />
                           <button
                             type="button"
                             onClick={handleApplyCoupon}
                             disabled={!isApplyEnabled}
-                            className={`inter-semibold-font shrink-0 rounded-lg px-4 py-2.5 text-[12.5px] text-white transition-colors duration-200 ${
+                            className={`inter-semibold-font shrink-0 rounded-lg px-4 py-2.5 text-[12.5px] max-sm:text-[16px] text-white transition-colors duration-200 ${
                               isApplyEnabled
                                 ? "bg-[#47317c] hover:bg-[#3a2769] cursor-pointer"
                                 : "bg-slate-300 cursor-not-allowed"
@@ -520,7 +520,7 @@ const OrderSummary = ({
                       />
                       {pregnancyBlocked && (
                         <div className="mt-3 rounded-xl border border-red-100 bg-red-50 px-4 py-3">
-                          <p className="inter-reg-font text-[13px] leading-relaxed text-red-600">
+                          <p className="inter-reg-font text-[13px] max-sm:text-[16px] leading-relaxed text-red-600">
                             {PREGNANCY_BLOCK_MESSAGE}
                           </p>
                         </div>

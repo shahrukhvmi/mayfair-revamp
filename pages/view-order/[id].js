@@ -31,8 +31,8 @@ const statusColor = (s = "") => {
 
 const StatusBadge = ({ label, value }) => (
   <div className="flex flex-col items-center gap-1 rounded-xl border border-[#e8e2f5] bg-white/80 px-4 py-2.5 min-w-[110px]">
-    <span className="inter-medium-font text-[9.5px] uppercase tracking-[0.1em] text-slate-400">{label}</span>
-    <span className={`inter-semibold-font inline-flex items-center rounded-full border px-2.5 py-0.5 text-[11px] capitalize ${statusColor(value || "")}`}>
+    <span className="inter-medium-font text-[9.5px] max-sm:text-[16px] uppercase tracking-[0.1em] text-slate-400">{label}</span>
+    <span className={`inter-semibold-font inline-flex items-center rounded-full border px-2.5 py-0.5 text-[11px] max-sm:text-[16px] capitalize ${statusColor(value || "")}`}>
       {value || "N/A"}
     </span>
   </div>
@@ -41,8 +41,8 @@ const StatusBadge = ({ label, value }) => (
 /* ── Info row ── */
 const InfoRow = ({ label, value }) => (
   <div className="flex items-start gap-4 border-b border-slate-100 py-3 last:border-b-0">
-    <span className="inter-medium-font w-[140px] shrink-0 text-[12px] text-slate-400">{label}</span>
-    <span className="inter-medium-font text-[13px] text-slate-800 capitalize">{value || "N/A"}</span>
+    <span className="inter-medium-font w-[140px] shrink-0 text-[12px] max-sm:text-[16px] text-slate-400">{label}</span>
+    <span className="inter-medium-font text-[13px] max-sm:text-[16px] text-slate-800 capitalize">{value || "N/A"}</span>
   </div>
 );
 
@@ -53,7 +53,7 @@ const SectionCard = ({ icon: Icon, title, children }) => (
       <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-[#47317c]/[0.08] text-[#47317c]">
         <Icon size={14} strokeWidth={2} />
       </span>
-      <h3 className="inter-semibold-font text-[13.5px] text-slate-900">{title}</h3>
+      <h3 className="inter-semibold-font text-[13.5px] max-sm:text-[16px] text-slate-900">{title}</h3>
     </div>
     <div className="px-4 py-1">{children}</div>
   </div>
@@ -130,7 +130,7 @@ const OrderDetails = () => {
                 key={key}
                 type="button"
                 onClick={() => setActiveTab(key)}
-                className={`inter-semibold-font inline-flex items-center gap-2 rounded-lg px-4 py-2 text-[13px] transition-all duration-150 cursor-pointer
+                className={`inter-semibold-font inline-flex items-center gap-2 rounded-lg px-4 py-2 text-[13px] max-sm:text-[16px] transition-all duration-150 cursor-pointer
                   ${activeTab === key
                     ? "bg-white text-[#47317c] shadow-sm border border-slate-200/80 ring-1 ring-[#47317c]/10"
                     : "text-slate-400 hover:text-slate-700"
@@ -152,38 +152,38 @@ const OrderDetails = () => {
                   <table className="w-full text-left">
                     <thead>
                       <tr className="border-b border-slate-100">
-                        <th className="inter-medium-font py-3 text-[10.5px] uppercase tracking-[0.1em] text-slate-400">Treatment</th>
-                        <th className="inter-medium-font py-3 text-[10.5px] uppercase tracking-[0.1em] text-slate-400 text-center">Qty</th>
-                        <th className="inter-medium-font py-3 text-[10.5px] uppercase tracking-[0.1em] text-slate-400 text-right">Price</th>
+                        <th className="inter-medium-font py-3 text-[10.5px] max-sm:text-[16px] uppercase tracking-[0.1em] text-slate-400">Treatment</th>
+                        <th className="inter-medium-font py-3 text-[10.5px] max-sm:text-[16px] uppercase tracking-[0.1em] text-slate-400 text-center">Qty</th>
+                        <th className="inter-medium-font py-3 text-[10.5px] max-sm:text-[16px] uppercase tracking-[0.1em] text-slate-400 text-right">Price</th>
                       </tr>
                     </thead>
                     <tbody>
                       {products?.filter(p => p.name?.includes("mg")).map((p) => (
                         <tr key={p.id} className="border-b border-slate-100 last:border-b-0">
-                          <td className="inter-medium-font py-3 text-[13px] text-slate-800">{p.label}</td>
-                          <td className="inter-reg-font py-3 text-[13px] text-slate-600 text-center">{p.quantity}</td>
-                          <td className="inter-semibold-font py-3 text-[13px] text-slate-900 text-right">£{(parseFloat(p.price) * p.quantity).toFixed(2)}</td>
+                          <td className="inter-medium-font py-3 text-[13px] max-sm:text-[16px] text-slate-800">{p.label}</td>
+                          <td className="inter-reg-font py-3 text-[13px] max-sm:text-[16px] text-slate-600 text-center">{p.quantity}</td>
+                          <td className="inter-semibold-font py-3 text-[13px] max-sm:text-[16px] text-slate-900 text-right">£{(parseFloat(p.price) * p.quantity).toFixed(2)}</td>
                         </tr>
                       ))}
 
                       <tr className="border-b border-slate-100">
-                        <td className="inter-reg-font py-3 text-[13px] text-slate-500">Shipping fee</td>
+                        <td className="inter-reg-font py-3 text-[13px] max-sm:text-[16px] text-slate-500">Shipping fee</td>
                         <td />
-                        <td className="inter-reg-font py-3 text-[13px] text-slate-600 text-right">£{shipmentFee}</td>
+                        <td className="inter-reg-font py-3 text-[13px] max-sm:text-[16px] text-slate-600 text-right">£{shipmentFee}</td>
                       </tr>
 
                       {discount?.discount > 0 && <>
                         <tr className="border-b border-slate-100">
-                          <td className="inter-reg-font py-3 text-[13px] text-slate-500">Discount ({discount?.code})</td>
+                          <td className="inter-reg-font py-3 text-[13px] max-sm:text-[16px] text-slate-500">Discount ({discount?.code})</td>
                           <td />
-                          <td className="inter-reg-font py-3 text-[13px] text-emerald-600 text-right">
+                          <td className="inter-reg-font py-3 text-[13px] max-sm:text-[16px] text-emerald-600 text-right">
                             {discount?.type === "Fixed" ? `-£${discount?.discount_value}` : `-${parseFloat(discount?.discount_value).toFixed(1)}%`}
                           </td>
                         </tr>
                       </>}
 
                       <tr className="bg-slate-50/60">
-                        <td className="inter-bold-font py-3.5 text-[14px] text-slate-900">Total</td>
+                        <td className="inter-bold-font py-3.5 text-[14px] max-sm:text-[16px] text-slate-900">Total</td>
                         <td />
                         <td className="inter-bold-font py-3.5 text-[16px] text-[#47317c] text-right">£{total}</td>
                       </tr>
@@ -235,7 +235,7 @@ const OrderDetails = () => {
           {/* Back */}
           <div>
             <Link href="/orders">
-              <button className="inter-medium-font inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-[13px] text-slate-700 transition-all duration-150 hover:bg-slate-50 cursor-pointer">
+              <button className="inter-medium-font inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-[13px] max-sm:text-[16px] text-slate-700 transition-all duration-150 hover:bg-slate-50 cursor-pointer">
                 <ArrowLeft size={14} strokeWidth={2} />
                 Back to orders
               </button>

@@ -359,7 +359,7 @@ export default function DosageSelection() {
               className="max-h-[calc(100dvh-48px)] w-full max-w-md overflow-y-auto rounded-[22px] border border-white/80 bg-white shadow-[0_28px_80px_rgba(30,20,60,0.22)]"
             >
               <div className="relative border-b border-slate-100 bg-white px-6 py-5 pr-16">
-                <h2 className="inter-semibold-font text-[19px] tracking-[-0.01em] text-slate-900">
+                <h2 className="max-sm:text-[18px] inter-semibold-font text-[19px] tracking-[-0.01em] text-slate-900">
                   Dosage Confirmation
                 </h2>
                 <button
@@ -381,13 +381,13 @@ export default function DosageSelection() {
               </div>
               <div className="px-6 py-5">
                 {selectedDose?.productConcent && (
-                  <p className="inter-reg-font text-[13.5px] leading-[1.65] text-slate-600">
+                  <p className="inter-reg-font text-[13.5px] max-sm:text-[16px] leading-[1.65] text-slate-600">
                     {selectedDose?.productConcent}
                   </p>
                 )}
                 <div className="mt-5 space-y-4">
                   <div>
-                    <label className="inter-medium-font mb-1 block text-[13px] text-slate-700">
+                    <label className="inter-medium-font mb-1 block text-[13px] max-sm:text-[16px] text-slate-700">
                       Previous medication name
                     </label>
                     <input
@@ -395,11 +395,11 @@ export default function DosageSelection() {
                       value={prevMedication}
                       onChange={(e) => setPrevMedication(e.target.value)}
                       placeholder="e.g. Ozempic, Mounjaro, Wegovy"
-                      className="inter-reg-font h-12 w-full rounded-xl border border-slate-200 bg-slate-50/50 px-3.5 text-[14px] text-slate-800 outline-none transition-all placeholder:text-slate-400 hover:border-slate-300 focus:border-[#47317c] focus:bg-white focus:ring-4 focus:ring-[#47317c]/[0.08]"
+                      className="inter-reg-font h-12 w-full rounded-xl border border-slate-200 bg-slate-50/50 px-3.5 text-[14px] max-sm:text-[16px] text-slate-800 outline-none transition-all placeholder:text-slate-400 hover:border-slate-300 focus:border-[#47317c] focus:bg-white focus:ring-4 focus:ring-[#47317c]/[0.08]"
                     />
                   </div>
                   <div>
-                    <label className="inter-medium-font mb-1 block text-[13px] text-slate-700">
+                    <label className="inter-medium-font mb-1 block text-[13px] max-sm:text-[16px] text-slate-700">
                       What dose were you on? (mg)
                     </label>
                     <input
@@ -407,11 +407,11 @@ export default function DosageSelection() {
                       value={prevDose}
                       onChange={(e) => setPrevDose(e.target.value)}
                       placeholder="e.g. 2.5"
-                      className="inter-reg-font h-12 w-full rounded-xl border border-slate-200 bg-slate-50/50 px-3.5 text-[14px] text-slate-800 outline-none transition-all placeholder:text-slate-400 hover:border-slate-300 focus:border-[#47317c] focus:bg-white focus:ring-4 focus:ring-[#47317c]/[0.08]"
+                      className="inter-reg-font h-12 w-full rounded-xl border border-slate-200 bg-slate-50/50 px-3.5 text-[14px] max-sm:text-[16px] text-slate-800 outline-none transition-all placeholder:text-slate-400 hover:border-slate-300 focus:border-[#47317c] focus:bg-white focus:ring-4 focus:ring-[#47317c]/[0.08]"
                     />
                   </div>
                   <div>
-                    <label className="inter-medium-font mb-1 block text-[13px] text-slate-700">
+                    <label className="inter-medium-font mb-1 block text-[13px] max-sm:text-[16px] text-slate-700">
                       When did you last take it?
                     </label>
                     <LocalizationProvider dateAdapter={AdapterDateFns}>
@@ -436,7 +436,7 @@ export default function DosageSelection() {
                                 borderRadius: "12px",
                                 backgroundColor: "rgba(248, 250, 252, 0.5)",
                                 fontFamily: "var(--font-inter)",
-                                fontSize: "14px",
+                                fontSize: { xs: "16px", sm: "14px" },
                                 transition: "all 150ms ease",
                                 "&:hover": { backgroundColor: "#fff" },
                                 "&.Mui-focused": {
@@ -479,7 +479,7 @@ export default function DosageSelection() {
                     setLastTakenDate(null);
                     setShowDoseModal(false);
                   }}
-                  className="inter-semibold-font inline-flex min-h-12 w-full cursor-pointer items-center justify-center rounded-xl bg-[#47317c] px-5 py-3 text-[14px] text-white shadow-[0_8px_20px_rgba(71,49,124,0.22)] transition-all duration-150 hover:-translate-y-0.5 hover:bg-[#3d2a6b] hover:shadow-[0_10px_24px_rgba(71,49,124,0.28)] active:translate-y-0 active:scale-[0.99] disabled:cursor-not-allowed disabled:bg-[#c8c1da] disabled:shadow-none disabled:hover:translate-y-0"
+                  className="inter-semibold-font inline-flex min-h-12 w-full cursor-pointer items-center justify-center rounded-xl bg-[#47317c] px-5 py-3 text-[14px] max-sm:text-[16px] text-white shadow-[0_8px_20px_rgba(71,49,124,0.22)] transition-all duration-150 hover:-translate-y-0.5 hover:bg-[#3d2a6b] hover:shadow-[0_10px_24px_rgba(71,49,124,0.28)] active:translate-y-0 active:scale-[0.99] disabled:cursor-not-allowed disabled:bg-[#c8c1da] disabled:shadow-none disabled:hover:translate-y-0"
                 >
                   {productId == FoundayoProductId ||
                   productId == WegovyPillProductId
@@ -497,7 +497,7 @@ export default function DosageSelection() {
       <div className="min-h-screen bg-[#FBFBFD] px-4 pb-44 sm:px-6 lg:px-8">
         <div className="mx-auto w-full max-w-xl py-8">
 
-          <h1 className="inter-semibold-font mb-6 text-center text-[26px] sm:text-[30px] text-slate-900">
+          <h1 className="max-sm:text-[24px] inter-semibold-font mb-6 text-center text-[26px] sm:text-[30px] text-slate-900">
             You’re ready to start your personal <br /> weight loss journey
           </h1>
 
@@ -511,13 +511,13 @@ export default function DosageSelection() {
                 </div>
               </div>
               <div className="px-5 py-4">
-                <h2 className="inter-semibold-font text-[18px] text-slate-900">{variation?.name}</h2>
+                <h2 className="max-sm:text-[18px] inter-semibold-font text-[18px] text-slate-900">{variation?.name}</h2>
                 {variation?.name === "Mounjaro (Tirzepatide)" && (
-                  <span className="inter-medium-font mt-1.5 inline-block rounded-full bg-[#47317c]/10 px-3 py-1 text-[11px] text-[#47317c]">
+                  <span className="inter-medium-font mt-1.5 inline-block rounded-full bg-[#47317c]/10 px-3 py-1 text-[11px] max-sm:text-[16px] text-[#47317c]">
                     Pack of 5 Needles is included with every dose
                   </span>
                 )}
-                <p className="inter-medium-font mt-2 text-[14px] text-slate-500">
+                <p className="inter-medium-font mt-2 text-[14px] max-sm:text-[16px] text-slate-500">
                   From <span>
                     £
                     {parseFloat(variation?.price || 0).toFixed(2)}
@@ -528,7 +528,7 @@ export default function DosageSelection() {
 
             {/* Dosage section */}
             <div className="overflow-hidden rounded-2xl border border-[#47317c]/[0.08] bg-white px-5 py-5 shadow-[0_4px_20px_rgba(71,49,124,0.10)]">
-              <h2 className="inter-semibold-font mb-4 text-[16px] text-slate-900">
+              <h2 className="max-sm:text-[18px] inter-semibold-font mb-4 text-[16px] text-slate-900">
                 Choose your dosage
               </h2>
 
@@ -584,11 +584,11 @@ export default function DosageSelection() {
                               <HiOutlineInformationCircle className="mt-0.5 h-5 w-5 text-amber-600" />
 
                               <div>
-                                <p className="text-sm font-semibold text-gray-900">
+                                <p className="text-sm max-sm:text-[16px] font-semibold text-gray-900">
                                   7.2mg Pack Information
                                 </p>
 
-                                <p className="mt-1 text-sm text-gray-600">
+                                <p className="mt-1 text-sm max-sm:text-[16px] text-gray-600">
                                   Includes 4 single-dose pens. Other
                                   strengths are supplied as 1 pen
                                   containing 4 doses.
@@ -620,19 +620,19 @@ export default function DosageSelection() {
                       </svg>
                     )}
                   </div>
-                  <p className="inter-medium-font text-[14px] leading-relaxed text-slate-700">
+                  <p className="inter-medium-font text-[14px] max-sm:text-[16px] leading-relaxed text-slate-700">
                     Please confirm that you have reviewed the expiry dates of the selected doses.
                   </p>
                 </label>
                 {errors.terms && (
-                  <p className="inter-reg-font mt-1.5 text-[12px] text-red-500">{errors.terms.message}</p>
+                  <p className="inter-reg-font mt-1.5 text-[12px] max-sm:text-[16px] text-red-500">{errors.terms.message}</p>
                 )}
               </div>
             )}
 
             {Array.isArray(variation?.addons) && variation?.addons.length > 0 && productId != 7 && (
               <div className="mt-5 overflow-hidden rounded-2xl border border-[#47317c]/[0.08] bg-white px-5 py-5 shadow-[0_4px_20px_rgba(71,49,124,0.10)]">
-                <h2 className="inter-semibold-font mb-4 text-[16px] text-slate-900">
+                <h2 className="max-sm:text-[18px] inter-semibold-font mb-4 text-[16px] text-slate-900">
                   Select Add-ons
                 </h2>
                 {variation?.addons
@@ -669,17 +669,17 @@ export default function DosageSelection() {
               <div className="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-[#47317c]/10">
                 <img src={variation?.img} alt={variation?.name} className="h-7 w-7 object-contain" />
               </div>
-              <p className="inter-medium-font text-[13px] text-slate-600 truncate max-w-[160px]">{variation?.name}</p>
+              <p className="inter-medium-font text-[13px] max-sm:text-[16px] text-slate-600 truncate max-w-[160px]">{variation?.name}</p>
             </div>
             <div className="text-right">
-              <p className="inter-medium-font text-[11px] uppercase tracking-wide text-slate-400">Order total</p>
+              <p className="inter-medium-font text-[11px] max-sm:text-[16px] uppercase tracking-wide text-slate-400">Order total</p>
               <p className="inter-semibold-font text-[16px] text-[#47317c]">£{parseFloat(totalAmount)?.toFixed(2)}</p>
             </div>
           </div>
 
           {/* Action row */}
           {(totalSelectedQty() === 0 || (isExpiryRequired && !expiryConfirmed)) && (
-            <p className="inter-medium-font mb-2 text-center text-[12px] text-slate-500">
+            <p className="inter-medium-font mb-2 text-center text-[12px] max-sm:text-[16px] text-slate-500">
               {totalSelectedQty() === 0
                 ? "Select at least one dose to continue."
                 : "Confirm the expiry dates to continue."}
@@ -687,7 +687,7 @@ export default function DosageSelection() {
           )}
           <div className="flex items-center gap-2">
             <button type="button" onClick={back}
-              className="inter-medium-font flex h-11 shrink-0 items-center gap-1 text-[13px] text-slate-500 hover:text-[#47317c] transition-colors cursor-pointer px-1">
+              className="inter-medium-font flex h-11 shrink-0 items-center gap-1 text-[13px] max-sm:text-[16px] text-slate-500 hover:text-[#47317c] transition-colors cursor-pointer px-1">
               <IoIosArrowBack size={15} />
               Back
             </button>

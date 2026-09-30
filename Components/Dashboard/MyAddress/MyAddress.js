@@ -17,8 +17,8 @@ export const AddressFormSkeleton = ({ icon: Icon, title, subtitle }) => (
         <Icon size={19} strokeWidth={2} />
       </span>
       <div className="min-w-0">
-        <h2 className="inter-bold-font text-[20px] leading-7 text-slate-950 sm:text-[23px]">{title}</h2>
-        <p className="inter-reg-font mt-1.5 text-[12.5px] text-slate-500 sm:text-[13px]">{subtitle}</p>
+        <h2 className="max-sm:text-[24px] inter-bold-font text-[20px] leading-7 text-slate-950 sm:text-[23px]">{title}</h2>
+        <p className="inter-reg-font mt-1.5 text-[12.5px] max-sm:text-[16px] text-slate-500 sm:text-[13px]">{subtitle}</p>
       </div>
     </div>
     {/* Fields skeleton */}

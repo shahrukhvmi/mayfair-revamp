@@ -14,7 +14,7 @@ import { AddressFormSkeleton } from "@/Components/Dashboard/MyAddress/MyAddress"
 const SEARCH_BUTTON_CLASS = [
   "inter-medium-font inline-flex w-full cursor-pointer items-center justify-center gap-2",
   "rounded-sm border border-[#47317c] bg-[#47317c] px-4 py-4 mt-2",
-  "text-[12px] text-white",
+  "text-[12px] max-sm:text-[16px] text-white",
   "transition-all duration-150 hover:bg-[#392765]",
   "disabled:cursor-not-allowed disabled:border-slate-300 disabled:bg-slate-300 disabled:shadow-none",
 ].join(" ");
@@ -22,7 +22,7 @@ const SEARCH_BUTTON_CLASS = [
 const UPDATE_BUTTON_CLASS = [
   "inter-medium-font !min-h-[46px] !rounded-xl",
   "!border-[#47317c] !bg-[#47317c] !px-6 !py-3",
-  "!text-[12px] !text-white hover:!bg-[#392765]",
+  "!text-[12px] max-sm:text-[16px] !text-white hover:!bg-[#392765]",
 ].join(" ");
 
 export default function Shipping({ shipmentCountries = [] }) {
@@ -170,11 +170,11 @@ export default function Shipping({ shipmentCountries = [] }) {
         </span>
 
         <div className="min-w-0">
-          <h2 className="inter-bold-font text-[20px] leading-7 text-slate-950 sm:text-[23px]">
+          <h2 className="max-sm:text-[24px] inter-bold-font text-[20px] leading-7 text-slate-950 sm:text-[23px]">
             Shipping information
           </h2>
 
-          <p className="inter-reg-font mt-1.5 max-w-2xl text-[12.5px] leading-[1.7] text-slate-500 sm:text-[13px]">
+          <p className="inter-reg-font mt-1.5 max-w-2xl text-[12.5px] max-sm:text-[16px] leading-[1.7] text-slate-500 sm:text-[13px]">
             Update your shipping details — changes will apply to future orders only.
 
 
@@ -240,7 +240,7 @@ export default function Shipping({ shipmentCountries = [] }) {
             type="button"
             onClick={handleSearch}
             disabled={addressSearchLoading}
-            className="absolute right-2 top-12.5 -translate-y-1/2 bg-[#47317c] hover:bg-[#47317c] text-white text-sm font-medium px-4 py-1.5 rounded-md flex items-center gap-1.5 disabled:opacity-60 transition-colors cursor-pointer"
+            className="absolute right-2 top-12.5 -translate-y-1/2 bg-[#47317c] hover:bg-[#47317c] text-white text-sm max-sm:text-[16px] font-medium px-4 py-1.5 rounded-md flex items-center gap-1.5 disabled:opacity-60 transition-colors cursor-pointer"
           >
             {addressSearchLoading ? (
               <>
@@ -375,6 +375,15 @@ export default function Shipping({ shipmentCountries = [] }) {
 
         .address-form label {
           font-family: var(--inter-medium) !important;
+        }
+      
+        @media (max-width: 639px) {
+          .address-form .MuiInputLabel-root,
+          .address-form input,
+          .address-form select,
+          .address-form textarea {
+            font-size: 16px !important;
+          }
         }
       `}</style>
     </section>

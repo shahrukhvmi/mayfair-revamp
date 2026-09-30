@@ -58,7 +58,7 @@ const TextField = ({
   const hasError = !!errors[name];
 
   const baseInputClass = `
-    inter-reg-font w-full text-[15px] text-slate-800 placeholder:text-slate-400
+    inter-reg-font w-full text-[15px] max-sm:text-[16px] text-slate-800 placeholder:text-slate-400
     focus:outline-none transition-all duration-200
     ${boxed
       ? "rounded-xl border bg-white px-4 py-3 leading-relaxed shadow-[0_1px_3px_rgba(15,23,42,0.03)] focus:ring-[3px]"
@@ -76,11 +76,11 @@ const TextField = ({
   return (
     <div className="mb-4">
       {label && (
-        <label htmlFor={name} className="inter-medium-font mb-1.5 flex items-center gap-1 text-[13px] text-slate-700">
+        <label htmlFor={name} className="inter-medium-font mb-1.5 flex items-center gap-1 text-[13px] max-sm:text-[16px] text-slate-700">
           {label}
           {required
-            ? <span className="text-red-400 text-[14px] leading-none">*</span>
-            : <span className="inter-reg-font text-[12px] text-slate-400">(optional)</span>
+            ? <span className="text-red-400 text-[14px] max-sm:text-[16px] leading-none">*</span>
+            : <span className="inter-reg-font text-[12px] max-sm:text-[16px] text-slate-400">(optional)</span>
           }
         </label>
       )}
@@ -125,7 +125,7 @@ const TextField = ({
       )}
 
       {hasError && (
-        <p className="inter-reg-font mt-1.5 text-[12px] text-red-500">
+        <p className="inter-reg-font mt-1.5 text-[12px] max-sm:text-[16px] text-red-500">
           {errors[name]?.message || "This field is required"}
         </p>
       )}

@@ -24,7 +24,7 @@ const ProductGridCard = ({
       {/* Image */}
       <div className="relative h-[145px] 2xl:h-[160px] [@media(min-width:1921px)]:h-[200px] overflow-hidden bg-slate-100">
         {isOutOfStock && (
-          <span className="inter-medium-font absolute left-2.5 top-2.5 z-10 inline-flex items-center gap-1 rounded-full border border-red-100 bg-white px-2 py-0.5 text-[10px] text-red-500 shadow-sm">
+          <span className="inter-medium-font absolute left-2.5 top-2.5 z-10 inline-flex items-center gap-1 rounded-full border border-red-100 bg-white px-2 py-0.5 text-[10px] max-sm:text-[16px] text-red-500 shadow-sm">
             <PackageX size={9} strokeWidth={2} />
             Out of stock
           </span>
@@ -45,16 +45,16 @@ const ProductGridCard = ({
 
       {/* Body */}
       <div className="flex flex-1 flex-col p-3 2xl:p-4">
-        <h3 className="inter-semibold-font text-[12.5px] lg:text-[13px] 2xl:text-[14px] leading-snug text-slate-900">
+        <h3 className="max-sm:text-[18px] inter-semibold-font text-[12.5px] lg:text-[13px] 2xl:text-[14px] leading-snug text-slate-900">
           {title}
         </h3>
 
         <div className="mt-2.5 border-t border-slate-100 pt-2.5">
           <div className="flex items-center justify-between gap-2 mb-2">
-            <p className="inter-reg-font text-[10px] uppercase tracking-[0.08em] text-slate-400">
+            <p className="inter-reg-font text-[10px] max-sm:text-[16px] uppercase tracking-[0.08em] text-slate-400">
               Starting from
             </p>
-            <span className="inter-bold-font text-[14px] lg:text-[15px] 2xl:text-[16px] leading-none text-[#47317c]">
+            <span className="inter-bold-font text-[14px] max-sm:text-[16px] lg:text-[15px] 2xl:text-[16px] leading-none text-[#47317c]">
               £{originalPrice}
             </span>
           </div>
@@ -63,9 +63,9 @@ const ProductGridCard = ({
             type="button"
             onClick={onClick}
             disabled={isOutOfStock || isLoading}
-            className={`inter-medium-font inline-flex min-h-[38px] lg:min-h-[33px] 2xl:min-h-[36px] w-full items-center
-              justify-center gap-2 rounded-xl px-3
-              text-[14px] lg:text-[12px] 2xl:text-[12.5px] transition-all duration-150
+            className={`inter-medium-font inline-flex min-h-[46px] w-full items-center
+              justify-center gap-2 rounded-xl px-6 py-3
+              text-[14px] max-sm:text-[16px] lg:text-[12px] 2xl:text-[12.5px] transition-all duration-150
               ${isOutOfStock
                 ? "cursor-not-allowed bg-slate-100 text-slate-400"
                 : "cursor-pointer bg-[#47317c] text-white hover:bg-[#392765] active:scale-[0.97]"

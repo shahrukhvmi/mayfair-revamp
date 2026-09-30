@@ -75,7 +75,7 @@ export default function PageLoader({ message = "" }) {
         </div>
 
         {message ? (
-          <p className="inter-medium-font mt-2 px-3 text-[15px] leading-6 text-[#312747] drop-shadow-[0_1px_0_rgba(255,255,255,0.8)]">
+          <p className="inter-medium-font mt-2 px-3 text-[15px] max-sm:text-[16px] leading-6 text-[#312747] drop-shadow-[0_1px_0_rgba(255,255,255,0.8)]">
             {message}
           </p>
         ) : null}

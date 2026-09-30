@@ -60,18 +60,18 @@ const ModalProductListCard = ({
 
       <div className="min-w-0 sm:flex-1">
         {isOutOfStock && (
-          <span className="inter-medium-font mb-1 inline-flex items-center gap-1 rounded-full bg-red-50 px-2 py-0.5 text-[10px] text-red-500">
+          <span className="inter-medium-font mb-1 inline-flex items-center gap-1 rounded-full bg-red-50 px-2 py-0.5 text-[10px] max-sm:text-[16px] text-red-500">
             Out of stock
           </span>
         )}
-        <h3 className="inter-semibold-font break-words text-[13px] leading-[19px] text-slate-900 sm:truncate sm:text-[14px] sm:leading-snug lg:text-[14px] 2xl:text-[16px]">
+        <h3 className="max-sm:text-[18px] inter-semibold-font break-words text-[13px] leading-[19px] text-slate-900 sm:truncate sm:text-[14px] sm:leading-snug lg:text-[14px] 2xl:text-[16px]">
           {title}
         </h3>
       </div>
 
       <div className="flex w-full shrink-0 flex-col gap-2 sm:w-auto sm:flex-row sm:items-center sm:justify-start sm:gap-4 2xl:gap-5">
         <div className="flex items-baseline gap-1.5 text-left sm:block sm:text-right">
-          <p className="inter-reg-font text-[10px] uppercase tracking-[0.1em] text-slate-400">From</p>
+          <p className="inter-reg-font text-[10px] max-sm:text-[16px] uppercase tracking-[0.1em] text-slate-400">From</p>
           <span className="inter-bold-font text-[16px] leading-tight text-[#47317c] lg:text-[16px] 2xl:text-[20px]">
             £{originalPrice}
           </span>
@@ -86,7 +86,7 @@ const ModalProductListCard = ({
           disabled={isOutOfStock || isLoading}
           aria-pressed={isSelected}
           className={`inter-medium-font inline-flex h-[34px] w-full shrink-0 items-center justify-center gap-1.5 overflow-hidden
-            whitespace-nowrap rounded-xl px-2 text-[10.5px] transition-none sm:h-9 sm:w-[142px] sm:px-4 sm:text-[12.5px] 2xl:h-[42px] 2xl:w-[160px] 2xl:px-6 2xl:text-[13.5px]
+            whitespace-nowrap rounded-xl px-2 text-[10.5px] max-sm:text-[16px] transition-none sm:h-9 sm:w-[142px] sm:px-4 sm:text-[12.5px] 2xl:h-[42px] 2xl:w-[160px] 2xl:px-6 2xl:text-[13.5px]
             ${isOutOfStock
               ? "cursor-not-allowed border border-slate-200 bg-slate-100 text-slate-400"
               : isSelected
