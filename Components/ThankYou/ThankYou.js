@@ -440,11 +440,11 @@ const ThankYou = () => {
                     id="verification-heading"
                     className="inter-semibold-font text-[18px] tracking-[-0.02em] text-slate-900"
                   >
-                    Your next step: verification
+                    Final step: Verification
                   </h2>
                   <p className="inter-reg-font mt-1 text-[13px] max-sm:text-[16px] leading-relaxed text-slate-500">
-                    Please complete the uploads below so our clinical team can
-                    review your order.
+                    Please complete the verification checks for our clinical
+                    team to ensure the treatment is safe for you.
                   </p>
                 </div>
               </div>
@@ -453,18 +453,18 @@ const ThankYou = () => {
                 {!imageUploaded && (
                   <VerificationCard
                     icon={Camera}
-                    title="Upload your photo"
-                    description="Please upload your Photo verification to complete your order."
-                    label="Upload photo"
+                    title="BMI Verification"
+                    description="Continue to upload a recent photo for the clinical team to verify your BMI. This may be required to process your order. Alternative ways to verify your BMI may be offered during the clinical checks by the prescriber."
+                    label="Continue"
                     onClick={handleGoUpload}
                   />
                 )}
                 {!idVerificationUpload && (
                   <VerificationCard
                     icon={IdCard}
-                    title="Verify Your Identity"
-                    description="Please upload a valid ID to verify your identity and complete your order."
-                    label="Upload ID"
+                    title="Identity Verification"
+                    description="Please upload a valid proof of ID to verify your identity and complete your order."
+                    label="Continue"
                     onClick={() => GO.push("/id-verification")}
                   />
                 )}
@@ -526,7 +526,7 @@ const ThankYou = () => {
               <NextButton
                 className=""
                 onClick={handleGoBack}
-                label="Continue to view order details"
+                label="Continue to My Account"
                 // disabled={!imageUploaded}
               />
             </div>

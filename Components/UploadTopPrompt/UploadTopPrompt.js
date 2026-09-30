@@ -104,7 +104,7 @@ const UploadTopPrompt = ({ isLoading = false }) => {
           icon={Camera}
           title="Upload your photo"
           description="Please upload your Photo verification to complete your order."
-          buttonText="Upload photo"
+          buttonText="Continue"
           href="/photo-upload"
         />
       </div>
@@ -118,7 +118,7 @@ const UploadTopPrompt = ({ isLoading = false }) => {
           icon={IdCard}
           title="Verify Your Identity"
           description="Please upload a valid ID to verify your identity and complete your order."
-          buttonText="Upload ID"
+          buttonText="Continue"
           href="/id-verification"
         />
       </div>
