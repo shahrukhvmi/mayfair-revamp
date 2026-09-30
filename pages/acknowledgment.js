@@ -55,7 +55,6 @@ export default function Acknowledgment() {
   const onSubmit = async (data) => {
     setShowLoader(true);
     setIsFromReorder(false);
-    await new Promise((r) => setTimeout(r, 500));
     router.push("/signup");
   };
 

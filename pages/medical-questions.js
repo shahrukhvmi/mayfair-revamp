@@ -98,7 +98,6 @@ const MedicalQuestions = () => {
     setMedicalInfo(questions);
 
     setShowLoader(true);
-    await new Promise((resolve) => setTimeout(resolve, 500));
     router.push("/patient-consent");
   };
 

@@ -104,7 +104,6 @@ export default function PatientConsent() {
     setConfirmationInfo(questions);
     clearConsentResetProductId();
 
-    await new Promise((resolve) => setTimeout(resolve, 500));
     router.push("/gp-detail");
   };
 

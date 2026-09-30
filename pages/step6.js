@@ -43,7 +43,6 @@ const Step6 = () => {
 
   const onSubmit = async (data) => {
     setShowLoader(true);
-    await new Promise((resolve) => setTimeout(resolve, 500)); // Wait 2s
     router.push("/step7");
   };
 

@@ -128,7 +128,6 @@ export default function ResidentialAddress() {
 
     setPatientInfo({ ...patientInfo, address: fullAddress });
     setShowLoader(true);
-    await new Promise((resolve) => setTimeout(resolve, 500));
     router.push("/preferred-phone-number");
   };
 

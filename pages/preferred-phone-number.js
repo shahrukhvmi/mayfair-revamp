@@ -47,7 +47,6 @@ export default function SignUp() {
       phoneNo: data?.phoneNo, // 🆕 update or add phoneNo
     });
     setShowLoader(true);
-    await new Promise((resolve) => setTimeout(resolve, 500)); // Wait 2s
     if (isReturningPatient) {
       router.push("/calculate-bmi/");
     } else {

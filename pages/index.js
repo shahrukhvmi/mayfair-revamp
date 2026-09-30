@@ -69,7 +69,6 @@ export default function Index() {
     }
 
     setShowLoader(true);
-    await new Promise((resolve) => setTimeout(resolve, 500));
   };
 
   return (

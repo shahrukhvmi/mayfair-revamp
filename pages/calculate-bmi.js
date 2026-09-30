@@ -246,7 +246,6 @@ export default function CalculateBmi() {
         });
 
         setShowLoader(true);
-        await new Promise((resolve) => setTimeout(resolve, 500));
 
         router.push("/bmi-detail");
       })();

@@ -51,7 +51,6 @@ export default function PregnancyCheck() {
 
   const onSubmit = async () => {
     setShowLoader(true);
-    await new Promise((resolve) => setTimeout(resolve, 500));
     router.push("/calculate-bmi");
   };
 

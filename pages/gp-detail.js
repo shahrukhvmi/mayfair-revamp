@@ -179,7 +179,6 @@ export default function GpDetail() {
     };
 
     setShowLoader(true);
-    await new Promise((resolve) => setTimeout(resolve, 500)); // Wait 2s
     setGpDetails(payload);
     router.push("/confirmation-summary");
   };

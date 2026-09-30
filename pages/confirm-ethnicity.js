@@ -61,7 +61,6 @@ export default function ConfirmEthnicity() {
       ethnicity: data?.ethnicity,
     });
     setShowLoader(true);
-    await new Promise((resolve) => setTimeout(resolve, 500)); // Wait 2s
     router.push("/calculate-bmi");
   };
 

@@ -225,7 +225,6 @@ export default function ShippingAddress({
     setCloseShipping(true);
     setIsShippingCheck(true);
     setShowLoader(true);
-    await new Promise((resolve) => setTimeout(resolve, 500));
     setShowLoader(false);
 
     const selectedCountry = shipmentCountries.find(

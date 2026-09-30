@@ -56,7 +56,6 @@ export default function SignUp() {
     setLastName(data.lastName);
 
     setShowLoader(true);
-    await new Promise((resolve) => setTimeout(resolve, 500)); // Wait 2s
     if (token) {
       router.push("/steps-information");
     } else {

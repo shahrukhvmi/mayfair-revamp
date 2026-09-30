@@ -125,7 +125,6 @@ export default function PersonalDetails() {
     });
 
     setShowLoader(true);
-    await new Promise((resolve) => setTimeout(resolve, 500)); // Wait 2s
     router.push("/residential-address");
   };
 

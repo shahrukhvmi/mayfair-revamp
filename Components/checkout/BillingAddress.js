@@ -218,7 +218,6 @@ export default function BillingAddress({
   // Submit billing info
   const onSubmit = async (data) => {
     setShowLoader(true);
-    await new Promise((resolve) => setTimeout(resolve, 500));
     setShowLoader(false);
 
     const selectedCountry = billingCountries?.find(
