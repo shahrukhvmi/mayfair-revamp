@@ -484,7 +484,9 @@ const PhotoUpload = () => {
     }
   };
 
+  const [isRedirecting, setIsRedirecting] = useState(false);
   const handleRedirect = () => {
+    setIsRedirecting(true);
     if (!idVerificationUpload) {
       GO.push("/id-verification");
     } else {
@@ -542,6 +544,7 @@ const PhotoUpload = () => {
                   label={buttonLabel}
                   onClick={handleRedirect}
                   className="w-full"
+                  loading={isRedirecting}
                   // disabled={loading || !frontPhoto || !sidePhoto}
                   // loading={loading}
                 />

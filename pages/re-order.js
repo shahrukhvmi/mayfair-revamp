@@ -120,7 +120,7 @@ export default function Acknowledgment() {
               {/* </div> */}
 
               <div>
-                <NextButton disabled={!isValid} label="I Confirm" />
+                <NextButton loading={showLoader} disabled={!isValid} label="I Confirm" />
               </div>
             </form>
 

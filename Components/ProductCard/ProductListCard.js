@@ -59,8 +59,8 @@ const ProductListCard = ({
       {/* Price + Button */}
       <div className="col-start-2 flex w-full shrink-0 flex-wrap items-center justify-between gap-2 sm:w-auto sm:flex-nowrap sm:justify-start sm:gap-4 2xl:gap-5">
         <div className="flex items-baseline gap-1.5 text-right sm:block">
-          <p className="inter-reg-font text-[10px] max-sm:text-[16px] uppercase tracking-[0.1em] text-slate-400">From</p>
-          <span className="inter-bold-font text-[16px] lg:text-[16px] 2xl:text-[20px] leading-tight text-[#47317c]">
+          <p className="inter-reg-font text-[10px] max-sm:text-[16px] uppercase tracking-[0.08em] text-slate-400">From</p>
+          <span className="inter-bold-font text-[16px] max-sm:text-[18px] lg:text-[16px] 2xl:text-[20px] leading-tight text-[#47317c]">
             £{originalPrice}
           </span>
         </div>
@@ -72,8 +72,8 @@ const ProductListCard = ({
             onClick?.();
           }}
           disabled={isOutOfStock || isLoading}
-          className={`inter-medium-font inline-flex min-h-[36px] lg:min-h-[36px] 2xl:min-h-[42px] items-center justify-center gap-1.5
-            rounded-xl px-3 text-[12px] max-sm:text-[16px] sm:px-4 sm:text-[12.5px] lg:px-4 lg:text-[12.5px] 2xl:px-6 2xl:text-[13.5px]
+          className={`inter-medium-font inline-flex min-h-[36px] max-sm:min-h-[40px] max-sm:w-full lg:min-h-[36px] 2xl:min-h-[42px] items-center justify-center gap-1.5
+            rounded-xl px-3 max-sm:px-6 max-sm:py-2 text-[12px] max-sm:text-[15px] sm:px-4 sm:text-[12.5px] lg:px-4 lg:text-[12.5px] 2xl:px-6 2xl:text-[13.5px]
             whitespace-nowrap transition-all duration-150
             ${isOutOfStock
               ? "cursor-not-allowed bg-slate-100 text-slate-400"

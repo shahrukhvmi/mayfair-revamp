@@ -1,5 +1,6 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
+import Router from "next/router";
 import { useForm } from "react-hook-form";
 import { useMutation } from "@tanstack/react-query";
 import toast from "react-hot-toast";
@@ -30,6 +31,8 @@ import patientSource from "@/api/patientSource";
 export default function EmailConfirmation() {
   const [showLoader, setShowLoader] = useState(false);
   const [already, setAlready] = useState(false);
+  const [isSlow, setIsSlow] = useState(false);
+  const isMounted = useRef(true);
   // const [showLoginModal, setShowLoginModal] = useState(false);
   const router = useRouter();
   const {
@@ -68,6 +71,42 @@ export default function EmailConfirmation() {
     if (email) trigger(["email", "confirmationEmail"]);
   }, [email, confirmationEmail, setValue, trigger]);
 
+  useEffect(() => {
+    isMounted.current = true;
+    return () => {
+      isMounted.current = false;
+    };
+  }, []);
+
+
+  // If loading drags on, let the user retry or leave instead of waiting forever
+  const [isStuck, setIsStuck] = useState(false);
+  useEffect(() => {
+    if (!showLoader) {
+      setIsStuck(false);
+      return;
+    }
+    const timer = setTimeout(() => setIsStuck(true), 15000);
+    return () => clearTimeout(timer);
+  }, [showLoader]);
+
+  // Tell the user when loading is taking unusually long
+  useEffect(() => {
+    if (!showLoader) {
+      setIsSlow(false);
+      return;
+    }
+    const timer = setTimeout(() => setIsSlow(true), 5000);
+    return () => clearTimeout(timer);
+  }, [showLoader]);
+
+  // While loading, block the browser back button so the user can't leave mid-request
+  useEffect(() => {
+    if (!showLoader) return;
+    Router.beforePopState(() => false);
+    return () => Router.beforePopState(() => true);
+  }, [showLoader]);
+
   const registerMutation = useMutation(registerUser, {
     onSuccess: async (data) => {
       const user = data?.data?.data;
@@ -83,36 +122,40 @@ export default function EmailConfirmation() {
       );
 
       if (stored) {
-        try {
-          await patientSource({
-            user_id: userData?.id,
-            type: "register",
-            first_touch: {
-              channel: stored.first_touch?.channel || "Direct",
-              source: stored.first_touch?.source || "direct",
-              medium: stored.first_touch?.medium || "none",
-              paid_status: stored.first_touch?.paid_status || "unknown",
-            },
-            last_touch: {
-              channel: stored.last_touch?.channel || "Direct",
-              source: stored.last_touch?.source || "direct",
-              medium: stored.last_touch?.medium || "none",
-              paid_status: stored.last_touch?.paid_status || "unknown",
-            },
-          });
-
-          console.log("✅ Attribution sent");
-        } catch (attributionError) {
+        // Fire and forget: a slow attribution call must not keep the user waiting
+        patientSource({
+          user_id: userData?.id,
+          type: "register",
+          first_touch: {
+            channel: stored.first_touch?.channel || "Direct",
+            source: stored.first_touch?.source || "direct",
+            medium: stored.first_touch?.medium || "none",
+            paid_status: stored.first_touch?.paid_status || "unknown",
+          },
+          last_touch: {
+            channel: stored.last_touch?.channel || "Direct",
+            source: stored.last_touch?.source || "direct",
+            medium: stored.last_touch?.medium || "none",
+            paid_status: stored.last_touch?.paid_status || "unknown",
+          },
+        }).catch((attributionError) => {
           console.error("Attribution API failed:", attributionError);
-        }
+        });
       }
 
+      if (!isMounted.current) return;
       router.push("/steps-information");
     },
     onError: (error) => {
+      if (!isMounted.current) return;
       const emailError = error?.response?.data?.errors?.email;
       if (emailError === "This email is already registered.") setAlready(true);
-      if (emailError) toast.error(emailError);
+      toast.error(
+        emailError ||
+          (!error?.response
+            ? "Your internet connection seems slow or unavailable. Please try again."
+            : error?.response?.data?.message || "Something went wrong. Please try again."),
+      );
       setShowLoader(false);
     },
   });
@@ -141,6 +184,7 @@ export default function EmailConfirmation() {
         show={showLoginModal}
         onClose={closeLoginModal}
         isLoading={showLoader}
+        onCancelLoading={() => setShowLoader(false)}
         onLogin={async (data) => {
           setShowLoader(true);
           try {
@@ -149,7 +193,6 @@ export default function EmailConfirmation() {
               company_id: 1,
             });
             const user = response?.data?.data;
-            clg;
             setIsPasswordReset(false);
             setUserData(user);
             setAuthUserDetail(user);
@@ -168,11 +211,14 @@ export default function EmailConfirmation() {
             setShowLoader(false);
             router.push("/dashboard");
           } catch (error) {
+            if (!isMounted.current) return;
             const errorMsg = error?.response?.data?.errors;
             const firstMsg =
               errorMsg && typeof errorMsg === "object"
                 ? Object.values(errorMsg)[0]
-                : "Something went wrong.";
+                : !error?.response
+                  ? "Your internet connection seems slow or unavailable. Please try again."
+                  : "Something went wrong.";
             toast.error(firstMsg);
             setShowLoader(false);
           }
@@ -188,9 +234,7 @@ export default function EmailConfirmation() {
       >
         <PageAnimationWrapper>
           <div
-            className={`relative ${
-              showLoader ? "pointer-events-none cursor-not-allowed" : ""
-            }`}
+            className="relative"
           >
             <form
               onSubmit={handleSubmit(handleSignupSubmit)}
@@ -235,7 +279,7 @@ export default function EmailConfirmation() {
                 </div>
               )}
 
-              <NextButton label="Next" type="submit" disabled={!isValid} />
+              <NextButton loading={showLoader} label="Next" type="submit" disabled={!isValid} />
               <BackButton
                 label="Back"
                 className="mt-2"
@@ -244,9 +288,28 @@ export default function EmailConfirmation() {
             </form>
 
             {showLoader && (
-              <div className="absolute inset-0 z-20 flex justify-center items-center bg-white/60 rounded-lg">
-                <PageLoader />
+              <PageLoader
+                message={isSlow ? "Your internet connection seems slow. Please wait…" : ""}
+              >
+            {isStuck && (
+              <div className="mt-3 flex w-full flex-col gap-2.5">
+                <button
+                  type="button"
+                  onClick={() => setShowLoader(false)}
+                  className="inter-medium-font min-h-[46px] w-full cursor-pointer rounded-xl bg-[#47317c] px-6 py-3 text-white transition-colors hover:bg-[#392765]"
+                >
+                  Cancel and try again
+                </button>
+                <button
+                  type="button"
+                  onClick={() => router.push("/signup")}
+                  className="inter-medium-font min-h-[46px] w-full cursor-pointer rounded-xl border border-[#47317c]/30 bg-white px-6 py-3 text-[#47317c] transition-colors hover:bg-[#47317c]/[0.04]"
+                >
+                  Back
+                </button>
               </div>
+            )}
+          </PageLoader>
             )}
           </div>
         </PageAnimationWrapper>

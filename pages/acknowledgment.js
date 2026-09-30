@@ -59,7 +59,7 @@ export default function Acknowledgment() {
   };
 
   const renderYesNo = (fieldName, value) => (
-    <div className="mt-3 flex gap-3">
+    <div className="mt-2.5 flex gap-2.5 sm:mt-3 sm:gap-3">
       {["yes", "no"].map((option) => {
         const isSelected = value === option;
         const isYes = option === "yes";
@@ -67,7 +67,7 @@ export default function Acknowledgment() {
           <label
             key={option}
             className={`
-              relative flex flex-1 cursor-pointer items-center gap-3 rounded-xl border-2 px-5 py-4
+              relative flex flex-1 cursor-pointer items-center gap-2.5 rounded-xl border-2 px-3.5 py-3 sm:gap-3 sm:px-5 sm:py-4
               transition-all duration-200 select-none
               ${isSelected
                 ? isYes
@@ -126,8 +126,8 @@ export default function Acknowledgment() {
                 {QUESTIONS.map((q) => {
                   const val = q.id === "personalUse" ? personalUse : decisionCapacity;
                   return (
-                    <div key={q.id} className="py-6 first:pt-0">
-                      <p className="inter-medium-font text-[15px] max-sm:text-[16px] leading-relaxed text-slate-800">
+                    <div key={q.id} className="py-4 first:pt-0 sm:py-6">
+                      <p className="inter-medium-font text-[15px] max-sm:text-[16px] max-sm:leading-snug leading-relaxed text-slate-800">
                         {q.text}
                       </p>
                       {renderYesNo(q.id, val)}
@@ -138,8 +138,8 @@ export default function Acknowledgment() {
 
               {/* No selected — cannot proceed */}
               {isNoSelected && (
-                <div className="mt-2 rounded-xl border border-red-100 bg-red-50 px-5 py-4">
-                  <p className="inter-medium-font text-[13px] max-sm:text-[16px] leading-relaxed text-red-600">
+                <div className="mt-2 rounded-xl border border-red-100 bg-red-50 px-3.5 py-3 sm:px-5 sm:py-4">
+                  <p className="inter-medium-font text-[13px] max-sm:text-[16px] max-sm:leading-snug leading-relaxed text-red-600">
                     Unfortunately we are unable to proceed. Please consult a healthcare professional if you have concerns.
                   </p>
                 </div>
@@ -147,8 +147,8 @@ export default function Acknowledgment() {
 
               {/* Consent */}
               {showConsentBox && (
-                <div className="mt-2 rounded-xl border border-[#47317c]/[0.14] bg-[#faf9fd] p-5">
-                  <label className="flex cursor-pointer items-start gap-3">
+                <div className="mt-2 rounded-xl border border-[#47317c]/[0.14] bg-[#faf9fd] p-3.5 sm:p-5">
+                  <label className="flex cursor-pointer items-start gap-2.5 sm:gap-3">
                     <input
                       type="checkbox"
                       {...register("confirmConsent", { required: true })}
@@ -171,7 +171,7 @@ export default function Acknowledgment() {
                     </span>
                   </label>
 
-                  <ul className="inter-reg-font mt-4 space-y-3 pl-0 sm:pl-8 text-[13px] max-sm:text-[16px] text-slate-600 leading-relaxed">
+                  <ul className="inter-reg-font mt-3 space-y-2 pl-0 sm:mt-4 sm:space-y-3 sm:pl-8 text-[13px] max-sm:text-[16px] text-slate-600 leading-relaxed max-sm:leading-snug">
                     {CONSENT_ITEMS.map((item, i) => (
                       <li key={i} className="flex items-start gap-2">
                         <CircleCheck
@@ -187,8 +187,8 @@ export default function Acknowledgment() {
               )}
 
               {/* CTA */}
-              <div className="mt-6">
-                <NextButton disabled={!isValid || isNoSelected} label="I Confirm" />
+              <div className="mt-4 sm:mt-6">
+                <NextButton loading={showLoader} disabled={!isValid || isNoSelected} label="I Confirm" />
               </div>
 
             </form>

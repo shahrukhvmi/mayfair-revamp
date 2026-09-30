@@ -171,7 +171,7 @@ const Step6 = () => {
               </div>
 
               <div className="my-5">
-                <NextButton
+                <NextButton loading={showLoader}
                   disabled={!isValid || isNoSelected}
                   label="I Confirm"
                 />

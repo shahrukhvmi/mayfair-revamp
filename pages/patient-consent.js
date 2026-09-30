@@ -126,9 +126,9 @@ export default function PatientConsent() {
                 showLoader ? "pointer-events-none cursor-not-allowed" : ""
               }`}
             >
-              <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+              <form onSubmit={handleSubmit(onSubmit)} className="space-y-3 sm:space-y-6">
                 <section aria-labelledby="consent-statements-heading">
-                  <div className="mb-2 border-b border-slate-200 pb-4">
+                  <div className="mb-1 border-b border-slate-200 pb-4">
                     <h2
                       id="consent-statements-heading"
                       className="inter-semibold-font max-sm:text-[18px] text-[16px] text-slate-900 sm:text-[17px]"
@@ -143,7 +143,7 @@ export default function PatientConsent() {
                       const selectedAnswer = watch(`responses[${q.id}].answer`) ?? false;
 
                       return (
-                        <article key={q.id} className="py-5 first:pt-4">
+                        <article key={q.id} className="py-4 first:pt-4 last:pb-1 sm:py-5">
                           <div className="min-w-0">
                               {q.checklist && (
                                 <div
@@ -199,7 +199,7 @@ export default function PatientConsent() {
                   </p>
                 )}
 
-                <NextButton label="Next" disabled={!isNextEnabled} />
+                <NextButton loading={showLoader} label="Next" disabled={!isNextEnabled} />
                 <BackButton
                   label="Back"
                   className="mt-2"

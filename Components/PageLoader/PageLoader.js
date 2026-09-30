@@ -2,7 +2,7 @@
 
 import { motion, useReducedMotion } from "framer-motion";
 
-export default function PageLoader({ message = "" }) {
+export default function PageLoader({ message = "", children = null }) {
   const reduceMotion = useReducedMotion();
 
   return (
@@ -79,6 +79,8 @@ export default function PageLoader({ message = "" }) {
             {message}
           </p>
         ) : null}
+
+        {children}
 
         <span className="sr-only">Loading, please wait</span>
       </motion.div>

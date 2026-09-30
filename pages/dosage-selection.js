@@ -109,7 +109,10 @@ export default function DosageSelection() {
 
   //Handle Submit Button
   const onSubmit = () => {
-    // setIsButtonLoading(true);
+    if (isButtonLoading) return;
+    setIsButtonLoading(true);
+    // If navigation stalls or fails, give the button back after a while
+    setTimeout(() => setIsButtonLoading(false), 20000);
     router.push("/checkout");
 
     //⚠️ commit krdia h yaha sy q k ab har dose k click k api direct chaly gi⚠️
@@ -342,7 +345,6 @@ export default function DosageSelection() {
   return (
     <>
       <MetaLayout canonical={`${meta_url}dosage-selection/`} />
-      {isButtonLoading && <PageLoader />}
       <AnimatePresence>
         {showDoseModal && selectedDose && (
           <motion.div
@@ -495,29 +497,29 @@ export default function DosageSelection() {
       <StepsHeader />
 
       <div className="min-h-screen bg-[#FBFBFD] px-4 pb-44 sm:px-6 lg:px-8">
-        <div className="mx-auto w-full max-w-xl py-8">
+        <div className="mx-auto w-full max-w-xl py-5 sm:py-8">
 
-          <h1 className="max-sm:text-[24px] inter-semibold-font mb-6 text-center text-[26px] sm:text-[30px] text-slate-900">
-            You’re ready to start your personal <br /> weight loss journey
+          <h1 className="max-sm:text-[clamp(18px,6vw,24px)] max-sm:leading-[1.3] max-sm:tracking-[-0.02em] inter-semibold-font mb-4 sm:mb-6 text-center text-[26px] sm:text-[30px] text-slate-900">
+            You’re ready to start your <br className="sm:hidden" />personal <br className="max-sm:hidden" />weight loss journey
           </h1>
 
           <form onSubmit={handleSubmit(onSubmit)}>
 
             {/* Product card */}
-            <div className="mb-5 overflow-hidden rounded-2xl border border-[#47317c]/[0.08] bg-white shadow-[0_4px_20px_rgba(71,49,124,0.10)]">
-              <div className="flex items-center justify-center bg-[#47317c] p-5">
-                <div className="flex w-full max-w-[320px] items-center justify-center px-5 py-3 ">
-                  <img src={variation?.img} alt={variation?.name} className="h-36 w-full object-contain" />
+            <div className="mb-4 sm:mb-5 overflow-hidden rounded-2xl border border-[#47317c]/[0.08] bg-white shadow-[0_4px_20px_rgba(71,49,124,0.10)]">
+              <div className="flex items-center justify-center bg-[#47317c] p-3 sm:p-5">
+                <div className="flex w-full max-w-[320px] items-center justify-center px-2 py-2 sm:px-5 sm:py-3 ">
+                  <img src={variation?.img} alt={variation?.name} className="h-28 sm:h-36 w-full object-contain" />
                 </div>
               </div>
-              <div className="px-5 py-4">
-                <h2 className="max-sm:text-[18px] inter-semibold-font text-[18px] text-slate-900">{variation?.name}</h2>
+              <div className="px-4 py-4 sm:px-5">
+                <h2 className="max-sm:text-[18px] inter-semibold-font text-[18px] sm:text-[20px] text-slate-900">{variation?.name}</h2>
                 {variation?.name === "Mounjaro (Tirzepatide)" && (
-                  <span className="inter-medium-font mt-1.5 inline-block rounded-full bg-[#47317c]/10 px-3 py-1 text-[11px] max-sm:text-[16px] text-[#47317c]">
+                  <span className="inter-medium-font mt-1.5 inline-block whitespace-nowrap rounded-full bg-[#47317c]/10 px-3 py-1 text-[11px] max-sm:px-2 max-sm:text-[clamp(11px,3.6vw,14px)] text-[#47317c]">
                     Pack of 5 Needles is included with every dose
                   </span>
                 )}
-                <p className="inter-medium-font mt-2 text-[14px] max-sm:text-[16px] text-slate-500">
+                <p className="inter-medium-font mt-2 text-[14px] max-sm:text-[16px] sm:text-[16px] text-slate-500">
                   From <span>
                     £
                     {parseFloat(variation?.price || 0).toFixed(2)}
@@ -527,8 +529,8 @@ export default function DosageSelection() {
             </div>
 
             {/* Dosage section */}
-            <div className="overflow-hidden rounded-2xl border border-[#47317c]/[0.08] bg-white px-5 py-5 shadow-[0_4px_20px_rgba(71,49,124,0.10)]">
-              <h2 className="max-sm:text-[18px] inter-semibold-font mb-4 text-[16px] text-slate-900">
+            <div className="overflow-hidden rounded-2xl border border-[#47317c]/[0.08] bg-white px-3.5 py-4 shadow-[0_4px_20px_rgba(71,49,124,0.10)] sm:px-5 sm:py-5">
+              <h2 className="max-sm:text-[17px] inter-semibold-font mb-1 sm:mb-4 text-[16px] sm:text-[18px] text-slate-900">
                 Choose your dosage
               </h2>
 
@@ -588,7 +590,7 @@ export default function DosageSelection() {
                                   7.2mg Pack Information
                                 </p>
 
-                                <p className="mt-1 text-sm max-sm:text-[16px] text-gray-600">
+                                <p className="mt-1 text-sm max-sm:text-[16px] max-sm:leading-snug text-gray-600">
                                   Includes 4 single-dose pens. Other
                                   strengths are supplied as 1 pen
                                   containing 4 doses.
@@ -604,8 +606,8 @@ export default function DosageSelection() {
             </div>
 
             {isExpiryRequired && (
-              <div className="mt-4 rounded-xl border border-slate-100 bg-[#FBFBFD] p-4">
-                <label className="flex cursor-pointer items-start gap-3">
+              <div className="mt-4 rounded-xl border border-slate-100 bg-[#FBFBFD] p-3 sm:p-4">
+                <label className="flex cursor-pointer items-start gap-2.5 sm:gap-3">
                   <input type="checkbox" className="hidden"
                     {...register("terms", {
                       required: isExpiryRequired
@@ -620,8 +622,8 @@ export default function DosageSelection() {
                       </svg>
                     )}
                   </div>
-                  <p className="inter-medium-font text-[14px] max-sm:text-[16px] leading-relaxed text-slate-700">
-                    Please confirm that you have reviewed the expiry dates of the selected doses.
+                  <p className="inter-medium-font text-[14px] sm:text-[15px] max-sm:text-[16px] max-sm:tracking-[-0.01em] leading-relaxed max-sm:leading-snug text-slate-700">
+                    Please confirm that you have reviewed <br className="sm:hidden" />the expiry dates of the selected doses.
                   </p>
                 </label>
                 {errors.terms && (
@@ -631,8 +633,8 @@ export default function DosageSelection() {
             )}
 
             {Array.isArray(variation?.addons) && variation?.addons.length > 0 && productId != 7 && (
-              <div className="mt-5 overflow-hidden rounded-2xl border border-[#47317c]/[0.08] bg-white px-5 py-5 shadow-[0_4px_20px_rgba(71,49,124,0.10)]">
-                <h2 className="max-sm:text-[18px] inter-semibold-font mb-4 text-[16px] text-slate-900">
+              <div className="mt-5 overflow-hidden rounded-2xl border border-[#47317c]/[0.08] bg-white px-3.5 py-4 shadow-[0_4px_20px_rgba(71,49,124,0.10)] sm:px-5 sm:py-5">
+                <h2 className="max-sm:text-[17px] inter-semibold-font mb-1 sm:mb-4 text-[16px] sm:text-[18px] text-slate-900">
                   Select Add-ons
                 </h2>
                 {variation?.addons
@@ -662,24 +664,24 @@ export default function DosageSelection() {
 
       {/* Fixed bottom bar */}
       <div className="fixed bottom-0 left-0 right-0 z-50 border-t border-slate-100 bg-white/95 backdrop-blur-xl">
-        <div className="mx-auto max-w-xl px-4 py-3">
+        <div className="mx-auto max-w-xl px-4 py-2.5 max-sm:pb-[calc(env(safe-area-inset-bottom,0px)+12px)] sm:py-3">
           {/* Order summary row */}
-          <div className="mb-3 flex items-center justify-between">
-            <div className="flex items-center gap-2.5">
+          <div className="mb-2.5 flex items-center justify-between gap-3">
+            <div className="flex min-w-0 flex-1 items-center gap-2.5">
               <div className="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-[#47317c]/10">
                 <img src={variation?.img} alt={variation?.name} className="h-7 w-7 object-contain" />
               </div>
-              <p className="inter-medium-font text-[13px] max-sm:text-[16px] text-slate-600 truncate max-w-[160px]">{variation?.name}</p>
+              <p className="inter-medium-font text-[13px] max-sm:text-[16px] max-sm:leading-snug text-slate-600 sm:text-[15px] sm:truncate sm:max-w-[240px]">{variation?.name}</p>
             </div>
-            <div className="text-right">
-              <p className="inter-medium-font text-[11px] max-sm:text-[16px] uppercase tracking-wide text-slate-400">Order total</p>
-              <p className="inter-semibold-font text-[16px] text-[#47317c]">£{parseFloat(totalAmount)?.toFixed(2)}</p>
+            <div className="shrink-0 text-right">
+              <p className="inter-medium-font whitespace-nowrap text-[11px] sm:text-[12px] uppercase tracking-wide text-slate-400">Order total</p>
+              <p className="inter-semibold-font text-[18px] sm:text-[22px] leading-tight text-[#47317c]">£{parseFloat(totalAmount)?.toFixed(2)}</p>
             </div>
           </div>
 
           {/* Action row */}
           {(totalSelectedQty() === 0 || (isExpiryRequired && !expiryConfirmed)) && (
-            <p className="inter-medium-font mb-2 text-center text-[12px] max-sm:text-[16px] text-slate-500">
+            <p className="inter-medium-font mb-2 text-center text-[12px] max-sm:text-[16px] sm:text-[14px] text-slate-500">
               {totalSelectedQty() === 0
                 ? "Select at least one dose to continue."
                 : "Confirm the expiry dates to continue."}
@@ -687,20 +689,18 @@ export default function DosageSelection() {
           )}
           <div className="flex items-center gap-2">
             <button type="button" onClick={back}
-              className="inter-medium-font flex h-11 shrink-0 items-center gap-1 text-[13px] max-sm:text-[16px] text-slate-500 hover:text-[#47317c] transition-colors cursor-pointer px-1">
+              className="inter-medium-font flex h-11 shrink-0 items-center gap-1 text-[13px] max-sm:text-[16px] sm:text-[15px] text-slate-500 hover:text-[#47317c] transition-colors cursor-pointer px-1">
               <IoIosArrowBack size={15} />
               Back
             </button>
 
             <div className="flex-1">
-              {isButtonLoading ? (
-                <div className="flex w-full items-center justify-center rounded-lg bg-[#47317c] py-3">
-                  <motion.div animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 1, ease: "linear" }}
-                    className="h-5 w-5 rounded-full border-2 border-white border-t-transparent" />
-                </div>
-              ) : (
-                <NextButton onClick={handleSubmit(onSubmit)} disabled={totalSelectedQty() === 0 || (isExpiryRequired && !expiryConfirmed)} label="Proceed to Checkout" />
-              )}
+              <NextButton
+                onClick={handleSubmit(onSubmit)}
+                disabled={totalSelectedQty() === 0 || (isExpiryRequired && !expiryConfirmed)}
+                loading={isButtonLoading}
+                label="Proceed to Checkout"
+              />
             </div>
           </div>
         </div>

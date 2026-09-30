@@ -372,7 +372,7 @@ export default function GpDetail() {
                 </>
               )}
 
-              <NextButton
+              <NextButton loading={showLoader}
                 label="Next"
                 disabled={!isNextEnabled}
                 className="mt-5"

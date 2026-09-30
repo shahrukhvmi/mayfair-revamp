@@ -137,7 +137,7 @@ export default function SignUp() {
                   )}
                 />
 
-                <NextButton
+                <NextButton loading={showLoader}
                   label="Next"
                   disabled={!isValid} // ✅ disables until valid
                   type="submit"

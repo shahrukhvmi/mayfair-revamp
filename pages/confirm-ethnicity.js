@@ -114,7 +114,7 @@ export default function ConfirmEthnicity() {
                 </div>
 
                 <div className="pt-2">
-                  <NextButton disabled={!isValid} label="Next" />
+                  <NextButton loading={showLoader} disabled={!isValid} label="Next" />
                   <BackButton label="Back" className="mt-2" onClick={() => router.push("/preferred-phone-number")} />
                 </div>
               </form>

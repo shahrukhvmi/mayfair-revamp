@@ -262,7 +262,9 @@ const IdVerification = () => {
     }
   };
 
+  const [isRedirecting, setIsRedirecting] = useState(false);
   const handleRedirect = () => {
+    setIsRedirecting(true);
     if (!imageUploaded) {
       GO.push("/photo-upload");
     } else {
@@ -440,6 +442,7 @@ const IdVerification = () => {
                   label={buttonLabel}
                   onClick={handleRedirect}
                   className="w-full"
+                  loading={isRedirecting}
                 // disabled={loading || !frontPhoto || !sidePhoto}
                 // loading={loading}
                 />

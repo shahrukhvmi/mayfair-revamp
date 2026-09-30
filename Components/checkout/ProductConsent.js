@@ -39,14 +39,14 @@ const ProductConsent = ({ isCompleted, onComplete, onConsentChange, setIsConcent
         <div>
           {/* Consent List */}
           <div
-            className="list-disc list-outside pl-5 text-sm max-sm:text-[16px] text-gray-700 space-y-2 reg-font paragraph my-3 product-concent-list concent-anchor"
+            className="list-disc list-outside pl-5 text-sm max-sm:text-[16px] text-gray-700 space-y-2 reg-font paragraph my-2 sm:my-3 product-concent-list concent-anchor !whitespace-normal [&_li:last-child]:mb-0 [&>*:last-child]:mb-0"
             dangerouslySetInnerHTML={{ __html: variation?.terms_and_conditon }}
           ></div>
           {/* {variation?.terms_and_conditon} */}
 
           {/* Terms Checkbox */}
-          <div className="mt-8 font-inter mb-5">
-            <label className="flex items-center gap-3 text-[15px] max-sm:text-[16px] text-gray-900 font-semibold cursor-pointer select-none">
+          <div className="mt-3 sm:mt-8 font-inter mb-2 sm:mb-5">
+            <label className="flex items-center gap-2.5 sm:gap-3 text-[15px] max-sm:text-[16px] text-gray-900 font-semibold cursor-pointer select-none">
               {/* Custom Checkbox */}
               <div className="relative flex items-center justify-center">
                 <input
@@ -74,7 +74,7 @@ const ProductConsent = ({ isCompleted, onComplete, onConsentChange, setIsConcent
             </label>
 
             {/* Error Message */}
-            {!isChecked && <p className="text-xs max-sm:text-[16px] text-red-600 mt-2">You must accept the terms to continue.</p>}
+            {!isChecked && <p className="text-xs max-sm:text-[16px] text-red-600 mt-1.5 sm:mt-2">You must accept the terms to continue.</p>}
           </div>
           {/* <NextButton label="Continue" onClick={handleSubmit} disabled={!isValid} /> */}
         </div>

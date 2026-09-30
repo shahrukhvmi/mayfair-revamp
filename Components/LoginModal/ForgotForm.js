@@ -83,7 +83,7 @@ export default function ForgotForm({ register, handleSubmit, errors, onSubmit, i
 
           <p className="text-gray-600 mt-2 reg-font">Didn’t receive the email? Check your spam or junk folder.</p>
 
-          <NextButton
+          <NextButton loading={resendLoading}
             label={resendTimer > 0 ? `Resend Password Reset Link (${resendTimer}s)` : "Resend Password Reset Link"}
             type="button"
             disabled={resendLoading || resendTimer > 0 || isLoading}
@@ -96,7 +96,7 @@ export default function ForgotForm({ register, handleSubmit, errors, onSubmit, i
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <p className="paragraph reg-font">Enter your email address below and we will send you a password reset link.</p>
           <TextField label="Email Address" name="email" type="email" placeholder="name@example.com" register={register} required errors={errors} />
-          <NextButton label="Send Password Reset Link" type="submit" disabled={isLoading} />
+          <NextButton loading={isLoading} label="Send Password Reset Link" type="submit" disabled={isLoading} />
 
           <div className="mt-2">
             <BackButton onClick={onBack} label="Login" />

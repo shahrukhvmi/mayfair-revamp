@@ -235,7 +235,7 @@ const ExplanationEvidence = () => {
           )}
         />
 
-        <NextButton
+        <NextButton loading={loading}
           type="submit"
           label={loading ? "Submitting..." : "Submit"}
           disabled={loading || !description}

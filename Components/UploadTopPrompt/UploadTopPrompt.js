@@ -25,8 +25,8 @@ const AlertBanner = ({
         <div className="flex min-w-0 flex-1 items-center">
           <div className="min-w-0 flex-1">
             <div className="flex items-center gap-2 mb-0.5">
-              <span className="inter-medium-font inline-flex items-center gap-1.5 rounded-full bg-amber-50 border border-amber-200 px-2 py-0.5 text-[10px] max-sm:text-[16px] uppercase tracking-[0.1em] text-amber-600">
-                <Icon size={14} strokeWidth={2} className="h-3 w-3 shrink-0 max-sm:h-4 max-sm:w-4" />
+              <span className="inter-medium-font inline-flex items-center gap-1.5 rounded-full bg-amber-50 border border-amber-200 px-2 py-0.5 text-[10px] max-sm:text-[13px] uppercase tracking-[0.08em] text-amber-600">
+                <Icon size={14} strokeWidth={2} className="h-3 w-3 shrink-0 max-sm:h-3.5 max-sm:w-3.5" />
                 Action required
               </span>
             </div>

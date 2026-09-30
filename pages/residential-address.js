@@ -148,7 +148,7 @@ export default function ResidentialAddress() {
               }`}
             >
               <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-                <div className="space-y-6">
+                <div className="space-y-2 sm:space-y-6">
                   <div className="relative">
                     <div className="min-w-0">
                       <TextField
@@ -263,7 +263,7 @@ export default function ResidentialAddress() {
                   )}
                 </div>
 
-                <NextButton label="Next" disabled={!isNextEnabled} />
+                <NextButton loading={showLoader} label="Next" disabled={!isNextEnabled} />
                 <BackButton
                   label="Back"
                   className="mt-2"

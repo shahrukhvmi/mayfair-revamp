@@ -431,7 +431,7 @@ const ReviewAnswers = () => {
 
               {/* Bottom Action Buttons */}
               <div className="mt-7 border-t border-slate-200 pt-6">
-                <NextButton
+                <NextButton loading={showLoader}
                   label="Confirm and Proceed"
                   onClick={handleSubmit}
                 />

@@ -300,26 +300,26 @@ const OrderSummary = ({
           <div className="col-span-12 sm:col-span-4 mb-3">
             <div className="mb-24 sm:mb-0">
               <div className="overflow-hidden rounded-[20px] border border-slate-200/80 bg-white font-inter shadow-[0_12px_40px_rgba(30,41,59,0.06)]">
-                <div className="flex items-center justify-between border-b border-slate-100 bg-white px-6 py-[18px]">
-                  <div className="flex items-center gap-3">
-                    <div className={`flex items-center justify-center w-7 h-7 rounded-full text-[13px] max-sm:text-[16px] transition-all duration-300 ${
+                <div className="flex items-center justify-between gap-2 border-b border-slate-100 bg-white px-4 py-3.5 sm:px-6 sm:py-[18px]">
+                  <div className="flex min-w-0 items-center gap-2.5 sm:gap-3">
+                    <div className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-[13px] max-sm:text-[16px] transition-all duration-300 ${
                       onComplete ? "bg-[#47317c] text-white" : "border-2 border-[#47317c] text-[#47317c] inter-semibold-font"
                     }`}>
                       {onComplete ? (
-                        <svg viewBox="0 0 14 12" fill="none" className="w-4 h-4">
+                        <svg viewBox="0 0 14 12" fill="none" className="h-3.5 w-3.5">
                           <path d="M1 6l4 4L13 1" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                         </svg>
                       ) : "4"}
                     </div>
-                    <div>
-                      <h2 className="max-sm:text-[18px] inter-semibold-font text-[16px] text-slate-950">Order Summary</h2>
-                      <p className="inter-reg-font mt-0.5 text-[11.5px] max-sm:text-[16px] text-slate-500">Review your items before payment</p>
+                    <div className="min-w-0">
+                      <h2 className="max-sm:text-[16px] inter-semibold-font text-[16px] leading-tight text-slate-950">Order Summary</h2>
+                      <p className="inter-reg-font mt-0.5 text-[11.5px] max-sm:text-[16px] leading-snug text-slate-500">Review your items before payment</p>
                     </div>
                   </div>
                   <button
                     type="button"
                     onClick={handleEdit}
-                    className="inter-medium-font flex cursor-pointer items-center gap-1.5 rounded-lg px-2 py-1.5 text-[12.5px] max-sm:text-[16px] text-slate-500 transition-colors hover:bg-[#f5f2fc] hover:text-[#47317c]"
+                    className="inter-medium-font flex shrink-0 cursor-pointer items-center gap-1.5 rounded-lg px-2 py-1.5 text-[12.5px] max-sm:text-[16px] text-slate-500 transition-colors hover:bg-[#f5f2fc] hover:text-[#47317c]"
                   >
                     <HiOutlinePencilAlt className="w-3.5 h-3.5" />
                     Edit
@@ -507,7 +507,7 @@ const OrderSummary = ({
                     </div>
                   ) : (
                     <>
-                      <NextButton
+                      <NextButton loading={isButtonLoading}
                         disabled={
                           !isConcentCheck ||
                           !isShippingCheck ||

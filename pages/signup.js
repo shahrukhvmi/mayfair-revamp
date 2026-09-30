@@ -3,8 +3,9 @@ import TextField from "@/Components/TextField/TextField";
 import { useForm } from "react-hook-form";
 import NextButton from "@/Components/NextButton/NextButton";
 import { useRouter } from "next/navigation";
+import Router from "next/router";
 import PageLoader from "@/Components/PageLoader/PageLoader";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import FormWrapper from "@/Components/FormWrapper/FormWrapper";
 import PageAnimationWrapper from "@/Components/PageAnimationWrapper/PageAnimationWrapper";
 import StepsHeader from "@/layout/stepsHeader";
@@ -35,6 +36,37 @@ export default function SignUp() {
   });
 
   const router = useRouter();
+  const [isSlow, setIsSlow] = useState(false);
+  const [isStuck, setIsStuck] = useState(false);
+  const [attempt, setAttempt] = useState(0);
+  const targetRoute = useRef("");
+
+  // Loading feedback: slow-internet hint, then retry/back if it drags on
+  useEffect(() => {
+    if (!showLoader) {
+      setIsSlow(false);
+      setIsStuck(false);
+      return;
+    }
+    const slowTimer = setTimeout(() => setIsSlow(true), 5000);
+    const stuckTimer = setTimeout(() => setIsStuck(true), 15000);
+    return () => {
+      clearTimeout(slowTimer);
+      clearTimeout(stuckTimer);
+    };
+  }, [showLoader, attempt]);
+
+  // Block browser back while navigating, and recover if navigation fails
+  useEffect(() => {
+    if (!showLoader) return;
+    Router.beforePopState(() => false);
+    const onError = () => setShowLoader(false);
+    Router.events.on("routeChangeError", onError);
+    return () => {
+      Router.beforePopState(() => true);
+      Router.events.off("routeChangeError", onError);
+    };
+  }, [showLoader]);
 
   // 🛒 Set default values from Zustand on load
   useEffect(() => {
@@ -56,11 +88,20 @@ export default function SignUp() {
     setLastName(data.lastName);
 
     setShowLoader(true);
-    if (token) {
-      router.push("/steps-information");
-    } else {
-      router.push("/email-confirmation");
-    }
+    targetRoute.current = token ? "/steps-information" : "/email-confirmation";
+    router.push(targetRoute.current);
+  };
+
+  const retryNavigation = () => {
+    setIsStuck(false);
+    setAttempt((n) => n + 1);
+    router.push(targetRoute.current);
+  };
+
+  const goBack = () => {
+    Router.beforePopState(() => true);
+    setShowLoader(false);
+    router.push("/acknowledgment");
   };
 
   return (
@@ -77,9 +118,7 @@ export default function SignUp() {
         <PageAnimationWrapper>
           <div className="">
             <div
-              className={`relative ${
-                showLoader ? "pointer-events-none cursor-not-allowed" : ""
-              }`}
+className="relative"
             >
               <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
                 <TextField
@@ -100,7 +139,7 @@ export default function SignUp() {
                 />
 
                 <div className="mt-4 space-y-3">
-                  <NextButton
+                  <NextButton loading={showLoader}
                     label="Next"
                     disabled={!isValid}
                     type="submit"
@@ -113,11 +152,30 @@ export default function SignUp() {
                 </div>
               </form>
 
-              {/* {showLoader && (
-                <div className="absolute inset-0 z-20 flex justify-center items-center bg-white/60 rounded-lg cursor-not-allowed">
-                  <PageLoader />
-                </div>
-              )} */}
+              {showLoader && (
+                <PageLoader
+                  message={isSlow ? "Your internet connection seems slow. Please wait…" : ""}
+                >
+                  {isStuck && (
+                    <div className="mt-3 flex w-full flex-col gap-2.5">
+                      <button
+                        type="button"
+                        onClick={retryNavigation}
+                        className="inter-medium-font min-h-[46px] w-full cursor-pointer rounded-xl bg-[#47317c] px-6 py-3 text-white transition-colors hover:bg-[#392765]"
+                      >
+                        Try again
+                      </button>
+                      <button
+                        type="button"
+                        onClick={goBack}
+                        className="inter-medium-font min-h-[46px] w-full cursor-pointer rounded-xl border border-[#47317c]/30 bg-white px-6 py-3 text-[#47317c] transition-colors hover:bg-[#47317c]/[0.04]"
+                      >
+                        Back
+                      </button>
+                    </div>
+                  )}
+                </PageLoader>
+              )}
             </div>
           </div>
         </PageAnimationWrapper>

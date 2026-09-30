@@ -689,3 +689,25 @@ body {
     font-size: 24px;
   }
 }
+
+/* Mobile: no text below 16px. Classes with an explicit max-sm:text-* size are left to Tailwind. */
+@media (max-width: 639px) {
+  :is(.text-xs,
+  .text-sm,
+  .text-\[9px\],
+  .text-\[9\.5px\],
+  .text-\[10px\],
+  .text-\[10\.5px\],
+  .text-\[11px\],
+  .text-\[11\.5px\],
+  .text-\[12px\],
+  .text-\[12\.5px\],
+  .text-\[13px\],
+  .text-\[13\.5px\],
+  .text-\[14px\],
+  .text-\[14\.5px\],
+  .text-\[15px\],
+  .text-\[15\.5px\]):not([class*="max-sm:text-"]):not([class*="max-sm:!text-"]) {
+    font-size: 16px;
+  }
+}

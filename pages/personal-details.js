@@ -262,7 +262,7 @@ export default function PersonalDetails() {
                   />
                 </div>
 
-                <NextButton
+                <NextButton loading={showLoader}
                   label="Next"
                   disabled={!isValid || (gender === "Female" && pregnancy === "yes")}
                 />

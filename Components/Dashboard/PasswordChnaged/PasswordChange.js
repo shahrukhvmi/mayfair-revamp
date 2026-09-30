@@ -18,6 +18,7 @@ import { ChangePassword } from "@/api/ChangePassword";
 import useSignupStore from "@/store/signupStore";
 import useAuthUserDetailStore from "@/store/useAuthUserDetailStore";
 import { PageHeader } from "@/Components/Dashboard/MyAccount/MyAccount";
+import GuardedLoader from "@/Components/PageLoader/GuardedLoader";
 
 const PasswordRequirement = ({ valid, label }) => {
   return (
@@ -108,7 +109,9 @@ const PasswordChange = () => {
       const message =
         errorObj && typeof errorObj === "object"
           ? Object.values(errorObj)?.[0]
-          : "Something went wrong.";
+          : !error?.response
+            ? "Your internet connection seems slow or unavailable. Please try again."
+            : "Something went wrong.";
 
       toast.error(message);
       setIsLoading(false);
@@ -147,6 +150,13 @@ const PasswordChange = () => {
 
   return (
     <main className="inter-reg-font min-w-0 flex-1 bg-[#FBFBFD]">
+      <GuardedLoader
+        show={isLoading}
+        onCancel={() => {
+          changePasswordMutation.reset();
+          setIsLoading(false);
+        }}
+      />
       <div className="mx-auto flex w-full flex-col gap-6 p-4 sm:p-5 lg:p-6">
 
         <PageHeader
@@ -256,7 +266,7 @@ const PasswordChange = () => {
                   </div>
 
                   <div className="password-save-button w-full shrink-0 sm:w-[190px]">
-                    <NextButton
+                    <NextButton loading={isLoading}
                       type="submit"
                       disabled={!isValid || isLoading}
                       label={isLoading ? "Saving..." : "Save password"}

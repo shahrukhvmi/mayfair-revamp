@@ -4,6 +4,7 @@ import { useForm } from "react-hook-form";
 import NextButton from "@/Components/NextButton/NextButton";
 import { useRouter } from "next/router";
 import PageLoader from "@/Components/PageLoader/PageLoader";
+import GuardedLoader from "@/Components/PageLoader/GuardedLoader";
 import { useEffect, useRef, useState } from "react";
 import FormWrapper from "@/Components/FormWrapper/FormWrapper";
 import PageAnimationWrapper from "@/Components/PageAnimationWrapper/PageAnimationWrapper";
@@ -102,7 +103,11 @@ export default function LoginScreen() {
 
         toast.error(firstErrorMessage);
       } else {
-        toast.error("Something went wrong.");
+        toast.error(
+          !error?.response
+            ? "Your internet connection seems slow or unavailable. Please try again."
+            : "Something went wrong.",
+        );
       }
 
       setShowLoader(false);
@@ -139,7 +144,11 @@ export default function LoginScreen() {
 
         toast.error(firstErrorMessage);
       } else {
-        toast.error("Something went wrong.");
+        toast.error(
+          !error?.response
+            ? "Your internet connection seems slow or unavailable. Please try again."
+            : "Something went wrong.",
+        );
       }
 
       setShowLoader(false);
@@ -266,9 +275,7 @@ export default function LoginScreen() {
 
               <PageAnimationWrapper>
                 <div
-                  className={`relative ${
-                    showLoader ? "pointer-events-none cursor-not-allowed" : ""
-                  }`}
+className="relative"
                 >
                   <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
                     <TextField
@@ -290,7 +297,7 @@ export default function LoginScreen() {
                       required
                       errors={errors}
                     />
-                    <NextButton
+                    <NextButton loading={showLoader}
                       label="Login"
                       disabled={!isValid}
                       type="submit"
@@ -313,11 +320,11 @@ export default function LoginScreen() {
                     {/* <BackButton label="Back" className="mt-2" onClick={() => router.back()} /> */}
                   </form>
 
-                  {showLoader && (
-                    <div className="absolute inset-0 z-20 flex justify-center items-center bg-white/60 rounded-lg cursor-not-allowed">
-                      <PageLoader />
-                    </div>
-                  )}
+                  <GuardedLoader
+                    show={showLoader}
+                    onRetry={handleSubmit(onSubmit)}
+                    onCancel={() => setShowLoader(false)}
+                  />
                 </div>
               </PageAnimationWrapper>
             </div>
@@ -329,6 +336,7 @@ export default function LoginScreen() {
         show={showLoginModal}
         onClose={closeLoginModal}
         isLoading={showLoader}
+        onCancelLoading={() => setShowLoader(false)}
         onLogin={async (data) => {
           setShowLoader(true);
           try {
@@ -359,7 +367,9 @@ export default function LoginScreen() {
             const firstMsg =
               errorMsg && typeof errorMsg === "object"
                 ? Object.values(errorMsg)[0]
-                : "Something went wrong.";
+                : !error?.response
+                  ? "Your internet connection seems slow or unavailable. Please try again."
+                  : "Something went wrong.";
             toast.error(firstMsg);
             setShowLoader(false);
           }

@@ -179,7 +179,7 @@ const MyProfile = () => {
         {/* Submit Button */}
         <div className="mt-4 sm:max-w-20">
           <div className="text-center my-3">
-            <NextButton type="submit" disabled={!isValid || isLoading} label={isLoading ? "Saving..." : "Save"} />
+            <NextButton loading={isLoading} type="submit" disabled={!isValid || isLoading} label={isLoading ? "Saving..." : "Save"} />
           </div>
         </div>
       </form>

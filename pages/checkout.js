@@ -152,21 +152,21 @@ const Checkout = () => {
       <div className="min-h-[calc(100vh-66px)] bg-[#FBFBFD]">
       <div className="max-w-2xl mx-auto px-4 pb-14 space-y-6">
         <div ref={headingRef} className="pt-6 sm:pt-8">
-          <div className="sm:grid sm:grid-cols-[82px_minmax(0,1fr)_82px] sm:items-center sm:gap-2">
+          <div className="grid grid-cols-[40px_minmax(0,1fr)_40px] items-center gap-2 sm:grid-cols-[82px_minmax(0,1fr)_82px]">
             <button
               type="button"
               onClick={back}
-              className="inter-medium-font mb-2 inline-flex min-h-11 cursor-pointer items-center justify-start gap-1.5 px-0 text-[13px] max-sm:text-[16px] text-[#47317c] transition-colors duration-200 hover:text-[#392765] focus-visible:rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#47317c]/25 focus-visible:ring-offset-2 sm:mb-0 sm:min-h-9 sm:w-auto sm:justify-self-start sm:px-1"
+              className="inter-medium-font inline-flex cursor-pointer items-center justify-center gap-1.5 text-[13px] text-[#47317c] max-sm:h-10 max-sm:w-10 max-sm:rounded-full max-sm:border max-sm:border-[#47317c]/15 max-sm:bg-white max-sm:shadow-sm sm:min-h-11 sm:justify-start sm:px-0 transition-colors duration-200 hover:text-[#392765] focus-visible:rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#47317c]/25 focus-visible:ring-offset-2 sm:min-h-9 sm:w-auto sm:justify-self-start sm:px-1"
               aria-label="Back to dosage selection"
             >
-              <ArrowLeft size={15} strokeWidth={2} />
-              <span>Back</span>
+              <ArrowLeft size={18} strokeWidth={2} className="sm:h-[15px] sm:w-[15px]" />
+              <span className="max-sm:hidden">Back</span>
             </button>
             <h1
-              className={`inter-bold-font text-center text-slate-900 ${
+              className={`inter-semibold-font text-center text-slate-900 max-sm:[text-wrap:balance] max-sm:text-[23px] max-sm:leading-[1.3] max-sm:tracking-[-0.02em] ${
                 reorder
-                  ? "text-[19px] leading-tight sm:whitespace-nowrap sm:text-[30px]"
-                  : "text-[19px] leading-tight sm:text-[30px]"
+                  ? "sm:whitespace-nowrap sm:text-[30px]"
+                  : "sm:text-[30px]"
               }`}
             >
               {reorder ? (
@@ -175,11 +175,11 @@ const Checkout = () => {
                 "Checkout to kick-start your weight loss journey"
               )}
             </h1>
-            <span className="hidden sm:block" aria-hidden="true" />
+            <span aria-hidden="true" />
           </div>
 
           <div className="text-center sm:grid sm:grid-cols-[82px_minmax(0,1fr)_82px] sm:gap-2">
-            <p className="inter-reg-font mt-3 text-[13.5px] max-sm:text-[16px] leading-5 text-slate-500 sm:col-start-2">
+            <p className="inter-reg-font mt-2 sm:mt-3 text-[13.5px] max-sm:text-[16px] max-sm:leading-[1.45] text-slate-500 sm:col-start-2">
               {reorder
                 ? "You're almost done. Complete your checkout to continue your weight loss journey without interruption."
                 : "Complete your details below to secure your consultation. If you decide not to proceed after your consult for any reason, you will be fully refunded."}

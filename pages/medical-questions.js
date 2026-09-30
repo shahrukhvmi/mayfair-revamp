@@ -182,7 +182,7 @@ const MedicalQuestions = () => {
               })}
 
               <div className="">
-                <NextButton disabled={!isNextEnabled} label="Next" />
+                <NextButton loading={showLoader} disabled={!isNextEnabled} label="Next" />
                 <BackButton
                   label="Back"
                   className="mt-2"

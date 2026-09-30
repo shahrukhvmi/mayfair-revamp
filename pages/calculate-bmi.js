@@ -318,6 +318,8 @@ export default function CalculateBmi() {
         description={`Your Body Mass Index (BMI) is an important factor in assessing your eligibility for treatment. Please enter your ${localStep === 1 ? "height" : "weight"
           } below to allow us to calculate your BMI.`}
         percentage="70"
+        headerClassName="max-sm:!px-3.5"
+        headingClassName="max-sm:!tracking-[-0.035em]"
       >
         <PageAnimationWrapper>
           <div>
@@ -556,22 +558,26 @@ export default function CalculateBmi() {
                     {lastBmi ? (
                       lastBmi?.weight_unit == "metrics" ||
                         lastBmi?.weight_unit == "metric" ? (
-                        <div className="rounded-xl border border-amber-200/70 bg-amber-50/70 px-4 py-3.5">
-                          <p className="inter-reg-font flex items-center gap-2 text-[13px] max-sm:text-[16px] text-amber-800">
-                            <BsInfoCircle className="shrink-0" /> Your previous
-                            recorded weight was{" "}
-                            <span className="inter-semibold-font">
-                              {lastBmi?.kg} kg
+                        <div className="rounded-xl border border-amber-200/70 bg-amber-50/70 px-3.5 py-3">
+                          <p className="inter-reg-font flex items-center gap-2 whitespace-nowrap text-[13px] max-sm:text-[clamp(12px,3.7vw,14px)] text-amber-800">
+                            <BsInfoCircle className="shrink-0" />
+                            <span>
+                              Your previous recorded weight was{" "}
+                              <span className="inter-semibold-font whitespace-nowrap">
+                                {lastBmi?.kg} kg
+                              </span>
                             </span>
                           </p>
                         </div>
                       ) : (
-                        <div className="rounded-xl border border-amber-200/70 bg-amber-50/70 px-4 py-3.5">
-                          <p className="inter-reg-font flex items-center gap-2 text-[13px] max-sm:text-[16px] text-amber-800">
-                            <BsInfoCircle className="shrink-0" /> Your previous
-                            recorded weight was{" "}
-                            <span className="inter-semibold-font">
-                              {lastBmi?.stones} st & {lastBmi?.pound} lbs
+                        <div className="rounded-xl border border-amber-200/70 bg-amber-50/70 px-3.5 py-3">
+                          <p className="inter-reg-font flex items-center gap-2 whitespace-nowrap text-[13px] max-sm:text-[clamp(12px,3.7vw,14px)] text-amber-800">
+                            <BsInfoCircle className="shrink-0" />
+                            <span>
+                              Your previous recorded weight was{" "}
+                              <span className="inter-semibold-font whitespace-nowrap">
+                                {lastBmi?.stones} st & {lastBmi?.pound} lbs
+                              </span>
                             </span>
                           </p>
                         </div>
@@ -582,7 +588,7 @@ export default function CalculateBmi() {
                   </>
                 )}
 
-                <NextButton
+                <NextButton loading={showLoader}
                   label="Next"
                   onClick={handleNext}
                   type="button"

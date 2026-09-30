@@ -175,12 +175,12 @@ const Dose = ({
                 handleNotifiedClick(doseData);
               }}
               disabled={isLoading}
-              className="inter-semibold-font inline-flex h-7 cursor-pointer items-center justify-center gap-1.5 rounded-lg border border-emerald-200 bg-emerald-50 px-3 text-[11.5px] max-sm:text-[16px] text-emerald-700 shadow-[0_1px_2px_rgba(15,23,42,0.04)] transition-colors hover:border-emerald-300 hover:bg-emerald-100 disabled:cursor-wait disabled:opacity-70"
+              className="inter-semibold-font inline-flex h-6 sm:h-7 cursor-pointer items-center justify-center gap-1.5 rounded-lg border border-emerald-200 bg-emerald-50 px-2 sm:px-3 text-[11.5px] max-sm:text-[12px] text-emerald-700 shadow-[0_1px_2px_rgba(15,23,42,0.04)] transition-colors hover:border-emerald-300 hover:bg-emerald-100 disabled:cursor-wait disabled:opacity-70"
             >
               {isLoading ? (
                 <>
                   <svg
-                    className="animate-spin h-4 w-4 text-green-600"
+                    className="animate-spin h-3 w-3 sm:h-4 sm:w-4 text-green-600"
                     xmlns="http://www.w3.org/2000/svg"
                     fill="none"
                     viewBox="0 0 24 24"
@@ -205,7 +205,7 @@ const Dose = ({
                 </>
               ) : (
                 <>
-                  <FaInfoCircle className="text-[12px] max-sm:text-[16px]" />
+                  <FaInfoCircle className="text-[11px]" />
                   <span className="whitespace-nowrap">
                     Get Notified
                   </span>
@@ -221,8 +221,7 @@ const Dose = ({
         {/* </div> */}
         <div
           onClick={isOutOfStock || isAllowExceeded ? undefined : handleAdd}
-          className={`relative mt-5 flex justify-between rounded-[14px] border p-3.5 transition-all duration-200 sm:p-4
-            ${isSelected ? "flex-col items-start gap-3 sm:flex-row sm:items-center sm:gap-0" : "flex-row items-center gap-3"}
+          className={`relative mt-5 flex flex-wrap items-center justify-between gap-x-3 gap-y-2 rounded-[14px] border p-3 transition-all duration-200 sm:flex-nowrap sm:gap-y-0 sm:p-4
             ${isOutOfStock
               ? "cursor-not-allowed border-slate-200 bg-slate-50/80"
               : isSelected
@@ -235,25 +234,25 @@ const Dose = ({
           {isOutOfStock && (
             <>
               <div className="absolute inset-0 z-10 cursor-not-allowed rounded-[14px] bg-slate-100/20" />
-              <div className="inter-semibold-font absolute -top-3.5 left-3 z-20 inline-flex h-7 items-center rounded-lg border border-rose-200 bg-rose-50 px-3 text-[11.5px] max-sm:text-[16px] text-rose-700 shadow-[0_1px_2px_rgba(15,23,42,0.04)]">
+              <div className="inter-semibold-font absolute -top-3 sm:-top-3.5 left-3 z-20 inline-flex h-6 sm:h-7 items-center rounded-lg border border-rose-200 bg-rose-50 px-2 sm:px-3 text-[11.5px] max-sm:text-[12px] text-rose-700 shadow-[0_1px_2px_rgba(15,23,42,0.04)]">
                 {Number(productId) == FoundayoProductId ? "Coming Soon" : "Out of stock"}
               </div>
             </>
           )}
 
           {!isOutOfStock && !isSelected && isAllowExceeded && (
-            <div className="inter-semibold-font absolute -top-3.5 left-3 z-20 inline-flex h-7 items-center rounded-lg border border-amber-200 bg-amber-50 px-3 text-[11.5px] max-sm:text-[16px] text-amber-700 shadow-[0_1px_2px_rgba(15,23,42,0.04)]">
+            <div className="inter-semibold-font absolute -top-3 sm:-top-3.5 left-3 z-20 inline-flex h-6 sm:h-7 items-center rounded-lg border border-amber-200 bg-amber-50 px-2 sm:px-3 text-[11.5px] max-sm:text-[12px] text-amber-700 shadow-[0_1px_2px_rgba(15,23,42,0.04)]">
               Selection limit reached
             </div>
           )}
 
           {/* Left Side */}
-          <div className={`flex min-w-0 items-start gap-2.5 transition-opacity sm:items-center sm:gap-3 ${isSelected ? "w-full sm:w-auto" : "w-auto flex-1"} ${isOutOfStock || (!isSelected && isAllowExceeded) ? "opacity-60 grayscale" : ""}`}>
-            <div className={`mt-0.5 flex h-[18px] w-[18px] shrink-0 items-center justify-center rounded-[5px] border-2 transition-all duration-150 sm:h-5 sm:w-5
+          <div className={`flex min-w-0 items-start gap-2.5 transition-opacity sm:items-center sm:gap-3 flex-1 ${isOutOfStock || (!isSelected && isAllowExceeded) ? "opacity-60 grayscale" : ""}`}>
+            <div className={`mt-0.5 flex h-[22px] w-[22px] shrink-0 items-center justify-center rounded-[6px] border-2 transition-all duration-150 sm:h-5 sm:w-5
               ${isSelected ? "border-[#47317c] bg-[#47317c]" : "border-slate-300 bg-white"}`}>
               {isSelected && (
-                <svg width="10" height="8" viewBox="0 0 10 8" fill="none" aria-hidden="true">
-                  <path d="M1 4L3.5 6.5L9 1" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                <svg width="13" height="10" viewBox="0 0 10 8" fill="none" aria-hidden="true" className="block">
+                  <path d="M1 4L3.5 6.5L9 1" stroke="#ffffff" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
               )}
             </div>
@@ -274,17 +273,15 @@ const Dose = ({
           </div>
 
           {/* Right Side */}
-          <div className={`flex items-center gap-2 transition-opacity sm:w-auto sm:gap-3 ${isSelected ? "w-full justify-between border-t border-slate-100 pt-3 sm:border-t-0 sm:pt-0" : "w-auto justify-end border-0 p-0"} ${isOutOfStock || (!isSelected && isAllowExceeded) ? "opacity-60 grayscale" : ""}`}>
+          <div className="contents sm:flex sm:items-center sm:gap-3">
             <span
-              className={`inter-semibold-font shrink-0 text-[16px] ${isSelected ? "text-[#47317c]" : "text-slate-700"
-                }`}
+              className={`inter-semibold-font shrink-0 text-[16px] max-sm:text-[16px] transition-opacity ${isSelected ? "text-[#47317c]" : "text-slate-700"} ${isOutOfStock || (!isSelected && isAllowExceeded) ? "opacity-60 grayscale" : ""}`}
             >
               £{parseFloat(doseData?.price).toFixed(2)}
-
             </span>
             {isSelected && (
-              <>
-                <div className="ml-auto flex items-center gap-0.5 rounded-full border border-slate-200 bg-white p-1 shadow-sm sm:ml-0 sm:gap-1">
+              <div className="flex w-full basis-full items-center justify-between gap-2 sm:w-auto sm:basis-auto sm:gap-3">
+                <div className="flex items-center gap-0.5 rounded-full border border-slate-200 bg-white p-0.5 shadow-sm sm:gap-1">
                   <button type="button" onClick={handleDecrement}
                     className="flex h-7 w-7 items-center justify-center rounded-full bg-slate-100 hover:bg-slate-200 cursor-pointer transition-colors">
                     <FaMinus size={9} className="text-slate-600" />
@@ -299,10 +296,10 @@ const Dose = ({
 
                 <button type="button"
                   onClick={(e) => { e.stopPropagation(); setShowModal(true); }}
-                  className="flex h-8 w-8 shrink-0 cursor-pointer items-center justify-center rounded-lg border border-red-100 bg-red-50 text-red-500 transition-colors hover:border-red-200 hover:bg-red-100">
-                  <MdDelete size={15} />
+                  className="flex h-9 w-9 shrink-0 cursor-pointer items-center justify-center rounded-full border border-red-100 bg-red-50 text-red-500 transition-colors hover:border-red-200 hover:bg-red-100">
+                  <MdDelete size={17} />
                 </button>
-              </>
+              </div>
             )}
           </div>
         </div>

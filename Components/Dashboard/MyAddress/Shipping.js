@@ -337,7 +337,7 @@ export default function Shipping({ shipmentCountries = [] }) {
         {/* Update */}
         <div className="!mt-9 flex justify-start border-t border-[#47317c]/[0.07] pt-5">
           <div className="w-full sm:w-auto sm:min-w-[180px]">
-            <NextButton
+            <NextButton loading={showLoader}
               label="Update shipping"
               disabled={!isValid}
               className={UPDATE_BUTTON_CLASS}

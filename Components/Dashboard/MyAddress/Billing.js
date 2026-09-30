@@ -367,7 +367,7 @@ className="absolute right-2 top-12.5 -translate-y-1/2 bg-[#47317c] hover:bg-[#39
         {/* Submit */}
         <div className="flex justify-start border-t border-[#47317c]/[0.07] pt-5">
           <div className="w-full sm:w-auto sm:min-w-[180px]">
-            <NextButton
+            <NextButton loading={showLoader}
               label="Update billing"
               disabled={!isValid}
               className="inter-medium-font !min-h-[46px] !rounded-[13px] !border-[#47317c] !bg-[#47317c] !px-6 !py-3 !text-[12px] max-sm:text-[16px] !text-white hover:!bg-[#392765]"

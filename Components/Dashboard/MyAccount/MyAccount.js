@@ -108,8 +108,8 @@ export const PageHeader = ({ label, title, subtitle, right }) => (
 /* ── View toggle ── */
 const ViewToggle = ({ productView, setProductView }) => (
   <div className="flex shrink-0 flex-col items-end gap-1.5">
-    <span className="inter-medium-font text-[11px] max-sm:text-[16px] uppercase tracking-[0.1em] text-slate-400">View as</span>
-    <div className="inline-flex items-center rounded-xl border border-slate-200 bg-slate-50 p-1 gap-0.5">
+    <span className="inter-medium-font text-[11px] max-sm:text-[12px] uppercase tracking-[0.08em] text-slate-400">View as</span>
+    <div className="inline-flex items-center rounded-xl border border-slate-200 bg-slate-50 p-0.5 sm:p-1 gap-0.5">
       {[
         { mode: "list", Icon: List, label: "List" },
         { mode: "grid", Icon: Grid2X2, label: "Grid" },
@@ -119,13 +119,13 @@ const ViewToggle = ({ productView, setProductView }) => (
           type="button"
           onClick={() => setProductView(mode)}
           aria-pressed={productView === mode}
-          className={`inter-semibold-font inline-flex items-center gap-2 rounded-lg px-4 py-2.5 text-[13px] max-sm:text-[16px] transition-all duration-150 cursor-pointer
+          className={`inter-semibold-font inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 sm:gap-2 sm:px-4 sm:py-2.5 text-[13px] max-sm:text-[14px] transition-all duration-150 cursor-pointer
             ${productView === mode
               ? "bg-white text-[#47317c] shadow-sm border border-slate-200/80 ring-1 ring-[#47317c]/10"
               : "text-slate-400 hover:text-slate-700"
             }`}
         >
-          <Icon size={15} strokeWidth={productView === mode ? 2.5 : 2} />
+          <Icon size={15} strokeWidth={productView === mode ? 2.5 : 2} className="max-sm:h-3.5 max-sm:w-3.5" />
           {label}
         </button>
       ))}
@@ -353,7 +353,7 @@ const MyAccount = () => {
               </div> */}
               <div className="min-w-0">
                 <p className="inter-medium-font text-[9.5px] max-sm:text-[16px] lg:text-[10px] uppercase tracking-[0.1em] text-slate-400 leading-none mb-1">Logged in as</p>
-                <p className="inter-semibold-font text-[12px] max-sm:text-[16px] lg:text-[12px] 2xl:text-[13px] text-slate-800 truncate max-w-[160px]">{displayEmail}</p>
+                <p className="inter-semibold-font text-[12px] max-sm:text-[16px] lg:text-[12px] 2xl:text-[13px] text-slate-800 break-all">{displayEmail}</p>
               </div>
             </div>
           }
@@ -420,14 +420,14 @@ const MyAccount = () => {
             {/* Row 1: headings + view toggle — same grid so they align perfectly */}
             <div className="contents">
               <div className="order-1 lg:col-span-6">
-                <h2 className="max-sm:text-[18px] inter-bold-font text-[15px] lg:text-[16px] 2xl:text-[19px] text-slate-900">Reorder Treatment</h2>
+                <h2 className="max-sm:text-[22px] inter-bold-font text-[17px] lg:text-[18px] 2xl:text-[22px] text-slate-900">Reorder Treatment</h2>
                 <p className="inter-reg-font mt-0.5 text-[12px] max-sm:text-[16px] lg:text-[12.5px] 2xl:text-[13.5px] text-slate-500">
                   Continue your latest clinician-approved treatment.
                 </p>
               </div>
               <div className="order-3 block sm:flex items-center justify-between gap-3 lg:order-2 lg:col-span-6">
                 <div>
-                  <h2 className="max-sm:text-[18px] inter-bold-font text-[15px] lg:text-[16px] 2xl:text-[19px] text-slate-900">Available Treatments</h2>
+                  <h2 className="max-sm:text-[22px] inter-bold-font text-[17px] lg:text-[18px] 2xl:text-[22px] text-slate-900">Available Treatments</h2>
                   <p className="inter-reg-font mt-0.5 text-[12px] max-sm:text-[16px] lg:text-[12.5px] 2xl:text-[13.5px] text-slate-500">
                     We offer the following weight loss injections treatment options to help you in your weight loss journey.
 
@@ -476,11 +476,11 @@ const MyAccount = () => {
                     </div>
 
                     {/* Right: price stacked above button */}
-                    <div className="flex shrink-0 items-end justify-between gap-3 sm:flex-col sm:justify-start">
+                    <div className="flex w-full min-w-0 flex-col items-start gap-3 sm:w-auto sm:shrink-0 sm:items-end sm:justify-start">
                       {currentTreatmentDisplayPrice && (
-                        <div className="text-right">
-                          <p className="inter-reg-font text-[10px] max-sm:text-[16px] uppercase tracking-[0.1em] text-slate-400">From</p>
-                          <p className="inter-bold-font text-[22px] 2xl:text-[24px] text-[#47317c] leading-none mt-0.5">
+                        <div className="flex items-baseline gap-2 whitespace-nowrap sm:block sm:text-right">
+                          <p className="inter-reg-font text-[10px] max-sm:text-[16px] uppercase tracking-[0.08em] text-slate-400">From</p>
+                          <p className="inter-bold-font text-[22px] max-sm:text-[18px] 2xl:text-[24px] text-[#47317c] leading-none sm:mt-0.5">
                             £{currentTreatmentDisplayPrice}
                           </p>
                         </div>
@@ -489,7 +489,7 @@ const MyAccount = () => {
                         type="button"
                         onClick={() => handleReorder(currentTreatment?.id)}
                         disabled={!currentTreatment?.id || isReorderLoading}
-                        className={`inter-medium-font inline-flex items-center gap-2 rounded-xl px-4 py-2.5 text-[13px] max-sm:text-[16px] text-white transition-all duration-150 whitespace-nowrap
+                        className={`inter-medium-font inline-flex items-center justify-center gap-2 rounded-xl px-4 py-2.5 max-sm:w-full max-sm:min-h-[40px] max-sm:px-6 max-sm:py-2 text-[13px] max-sm:text-[15px] text-white transition-all duration-150 whitespace-nowrap
                           ${!currentTreatment?.id || isReorderLoading
                             ? "cursor-not-allowed bg-slate-200 text-slate-400"
                             : "cursor-pointer bg-[#47317c] hover:bg-[#392765] active:scale-[0.98]"
@@ -542,7 +542,7 @@ const MyAccount = () => {
             <section className="col-span-12 lg:col-span-6">
               <div className="mb-3 block sm:flex items-center justify-between gap-3">
                 <div>
-                  <h2 className="max-sm:text-[18px] inter-bold-font text-[15px] lg:text-[16px] 2xl:text-[19px] text-slate-900">Available Treatments</h2>
+                  <h2 className="max-sm:text-[22px] inter-bold-font text-[17px] lg:text-[18px] 2xl:text-[22px] text-slate-900">Available Treatments</h2>
                   <p className="inter-reg-font mt-0.5 text-[12px] max-sm:text-[16px] lg:text-[12.5px] 2xl:text-[13.5px] text-slate-500">
                     We offer the following weight loss injections treatment options to help you in your weight loss journey.
 

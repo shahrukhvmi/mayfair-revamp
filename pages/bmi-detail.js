@@ -330,7 +330,7 @@ export default function BmiDetail() {
               </>
             )}
 
-            <NextButton label="Next" type="submit" disabled={isNextDisabled} />
+            <NextButton loading={showLoader} label="Next" type="submit" disabled={isNextDisabled} />
             <BackButton
               label="Back"
               className="mt-3"

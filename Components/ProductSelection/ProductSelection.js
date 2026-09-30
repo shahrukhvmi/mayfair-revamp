@@ -18,6 +18,8 @@ import useReturning from "@/store/useReturningPatient";
 import useSignupStore from "@/store/signupStore";
 import useBmiStore from "@/store/bmiStore";
 import Router from "next/router";
+import toast from "react-hot-toast";
+import useAuthStore from "@/store/authStore";
 import NextButton from "../NextButton/NextButton";
 import useReorderButtonStore from "@/store/useReorderButton";
 import useReorder from "@/store/useReorderStore";
@@ -53,6 +55,8 @@ const ProductSelection = ({ showProductSelection }) => {
   );
   /* ───────────────  local state ────────────── */
   const [isLoading, setIsLoading] = useState(true);
+  const [loadError, setLoadError] = useState("");
+  const [isSlow, setIsSlow] = useState(false);
   const [productData, setProductData] = useState(null);
   const [showModal, setShowModal] = useState(showProductSelection);
   const [selectedProductId, setSelectedProductId] = useState(null); // NEW
@@ -87,6 +91,7 @@ const ProductSelection = ({ showProductSelection }) => {
   const { firstName, lastName, setFirstName, setLastName } = useSignupStore();
   const { isFromReorder } = useReorderButtonStore();
   const { setReorder } = useReorder();
+  const { clearToken } = useAuthStore();
 
   /* ───────────────  products mutation ────────────── */
   const getProducts = useMutation(GetProductsApi, {
@@ -96,7 +101,25 @@ const ProductSelection = ({ showProductSelection }) => {
       setIsLoading(false);
     },
     onError: (err) => {
-      toast.error(err?.response?.data?.errors || "Something went wrong");
+      const data = err?.response?.data;
+      const isUnauthenticated =
+        err?.response?.status === 401 || data?.message === "Unauthenticated.";
+      if (isUnauthenticated) {
+        toast.error("Session Expired");
+        setIsLoading(false);
+        setShowModal(false);
+        clearToken();
+        Router.push("/login");
+        return;
+      }
+      const errors = data?.errors;
+      const message = !err?.response
+        ? "Your internet connection seems slow or unavailable. Please try again."
+        : typeof errors === "string"
+          ? errors
+          : data?.message || "Something went wrong while loading treatments.";
+      setLoadError(message);
+      toast.error(message);
       setIsLoading(false);
     },
   });
@@ -104,12 +127,33 @@ const ProductSelection = ({ showProductSelection }) => {
   /* ───────────────  initial effects ────────────── */
   useEffect(() => {
     // fetch product list once
-    getProducts.mutate({});
+    loadProducts();
   }, []);
+
+  // Tell the user when loading is taking unusually long
+  useEffect(() => {
+    if (!isLoading) {
+      setIsSlow(false);
+      return;
+    }
+    const timer = setTimeout(() => setIsSlow(true), 5000);
+    return () => clearTimeout(timer);
+  }, [isLoading]);
+
+  const loadProducts = () => {
+    setLoadError("");
+    setIsLoading(true);
+    getProducts.mutate({});
+  };
 
   /* ───────────────  helper ────────────── */
   const renderSkeletons = () => (
     <div className="flex w-full flex-col gap-5">
+      {isSlow && (
+        <p className="inter-medium-font rounded-xl bg-amber-50 px-3 py-2 text-center text-[13px] text-amber-800">
+          Your internet connection seems slow. Please wait…
+        </p>
+      )}
       <div className="flex flex-col items-center">
         <Skeleton variant="text" width={190} height={36} />
         <Skeleton variant="text" width="min(100%, 390px)" height={24} />
@@ -181,6 +225,29 @@ const ProductSelection = ({ showProductSelection }) => {
     <FullScreenModal isOpen={showModal} onClose={() => setShowModal(false)}>
       {isLoading ? (
         renderSkeletons()
+      ) : loadError ? (
+        <div className="flex w-full flex-col items-center justify-center gap-4 py-10 text-center">
+          <p className="inter-medium-font max-w-sm text-[15px] leading-snug text-slate-700">
+            {loadError}
+          </p>
+          <button
+            type="button"
+            onClick={loadProducts}
+            className="inter-medium-font min-h-[46px] w-full max-w-xs cursor-pointer rounded-xl bg-[#47317c] px-6 py-3 text-white transition-colors hover:bg-[#392765]"
+          >
+            Try again
+          </button>
+          <button
+            type="button"
+            onClick={() => {
+              if (window.history.length > 1) Router.back();
+              else Router.push("/");
+            }}
+            className="inter-medium-font min-h-[46px] w-full max-w-xs cursor-pointer rounded-xl border border-[#47317c]/30 bg-white px-6 py-3 text-[#47317c] transition-colors hover:bg-[#47317c]/[0.04]"
+          >
+            Back
+          </button>
+        </div>
       ) : (
         <div className="flex w-full flex-col items-center justify-center">
           <div className="flex w-full flex-col items-center justify-center gap-5">
@@ -255,7 +322,7 @@ const ProductSelection = ({ showProductSelection }) => {
             )}
 
             {/* ───── Continue Button ───── */}
-            <div className="sticky bottom-0 flex w-full justify-end border-t border-slate-100 bg-white/95 pt-4 backdrop-blur-sm">
+            <div className="sticky -bottom-4 z-10 -mx-4 -mb-4 flex w-[calc(100%+2rem)] justify-end border-t border-slate-100 bg-white px-4 pb-4 pt-4 sm:-bottom-6 sm:-mx-6 sm:-mb-6 sm:w-[calc(100%+3rem)] sm:px-6 sm:pb-6">
               <div className="w-full sm:w-[180px]">
                 <NextButton
                   disabled={!selectedProductId}

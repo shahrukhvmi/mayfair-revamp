@@ -5,6 +5,7 @@ import SectionHeader from "./SectionHeader";
 import { FiCheck, FiX, FiEye, FiEyeOff } from "react-icons/fi";
 import useSignupStore from "@/store/signupStore";
 import { useMutation } from "@tanstack/react-query";
+import GuardedLoader from "@/Components/PageLoader/GuardedLoader";
 import toast from "react-hot-toast";
 import { UpdatePassword } from "@/api/updatePassword";
 import usePasswordReset from "@/store/usePasswordReset";
@@ -40,7 +41,7 @@ const SetAPassword = ({ isCompleted, onComplete }) => {
 
   const isPasswordStrongAndMatch = Object.values(validations).every(Boolean);
 
-  const { mutate, isLoading } = useMutation(UpdatePassword, {
+  const { mutate, isLoading, reset: resetMutation } = useMutation(UpdatePassword, {
     onSuccess: (data) => {
       if (data?.status) {
         toast.success("Account created successfully!");
@@ -60,7 +61,11 @@ const SetAPassword = ({ isCompleted, onComplete }) => {
           }
         });
       } else {
-        toast.error(error?.response?.statusText || "Something went wrong!");
+        toast.error(
+          !error?.response
+            ? "Your internet connection seems slow or unavailable. Please try again."
+            : error?.response?.statusText || "Something went wrong!",
+        );
       }
     },
   });
@@ -82,6 +87,7 @@ const SetAPassword = ({ isCompleted, onComplete }) => {
 
   return (
     <SectionWrapper>
+      <GuardedLoader show={isLoading} onCancel={resetMutation} />
       <SectionHeader stepNumber={<RiLockPasswordLine />} title="Set a Password" description="Please create a strong password for your account." isCompleted={isCompleted}
 
         className={`relative ${!isPasswordReset ? "opacity-50 ursor-not-allowed pointer-events-none" : ""}`}>
@@ -130,7 +136,7 @@ const SetAPassword = ({ isCompleted, onComplete }) => {
           </div>
 
           <div className="mt-6">
-            <NextButton label="Continue" disabled={!isPasswordStrongAndMatch || isLoading || !isPasswordReset} type="submit" />
+            <NextButton loading={isLoading} label="Continue" disabled={!isPasswordStrongAndMatch || isLoading || !isPasswordReset} type="submit" />
           </div>
         </form>
       </SectionHeader>

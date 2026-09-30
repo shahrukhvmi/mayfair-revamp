@@ -207,50 +207,50 @@ const ConfirmationSummary = () => {
                   {firstName ? <>{firstName} {lastName}</> : <>{patientInfo?.firstName} {patientInfo?.lastName}</>}
                 </p> */}
               </div>
-              <div className="grid grid-cols-2 gap-2.5 px-3 sm:gap-x-8 sm:gap-y-3 sm:px-5 mb-6">
-                <div className="min-w-0 rounded-lg border border-slate-100 bg-white px-3 py-2.5 sm:rounded-none sm:border-0 sm:bg-transparent sm:px-0 sm:py-0">
-                  <p className="inter-medium-font text-[11px] max-sm:text-[16px] uppercase tracking-wide text-slate-400 mb-0.5">Name</p>
-                  <p className="inter-medium-font break-words text-[13px] max-sm:text-[16px] text-slate-800 sm:text-[14px]">{firstName ? <>{firstName} {lastName}</> : <>{patientInfo?.firstName} {patientInfo?.lastName}</>}</p>
+              <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 sm:gap-x-8 sm:gap-y-3 mb-6">
+                <div className="min-w-0 max-sm:flex max-sm:flex-wrap max-sm:items-center max-sm:justify-between max-sm:gap-x-3 max-sm:gap-y-0.5 rounded-lg border border-slate-100 bg-white px-3 py-2.5 sm:rounded-none sm:border-0 sm:bg-transparent sm:px-0 sm:py-0">
+                  <p className="inter-medium-font text-[11px] max-sm:text-[16px] capitalize tracking-wide text-slate-400 mb-0.5 max-sm:mb-0 max-sm:shrink-0 max-sm:!text-[16px]">Name</p>
+                  <p className="capitalize inter-medium-font break-words max-sm:min-w-0 max-sm:flex-1 max-sm:text-right text-[13px] max-sm:text-[16px] text-slate-800 sm:text-[14px]">{firstName ? <>{firstName} {lastName}</> : <>{patientInfo?.firstName} {patientInfo?.lastName}</>}</p>
                 </div>
 
-                <div className="min-w-0 rounded-lg border border-slate-100 bg-white px-3 py-2.5 sm:rounded-none sm:border-0 sm:bg-transparent sm:px-0 sm:py-0">
-                  <p className="inter-medium-font text-[11px] max-sm:text-[16px] uppercase tracking-wide text-slate-400 mb-0.5">Email</p>
-                  <p className="inter-medium-font break-words text-[13px] max-sm:text-[16px] text-slate-800 sm:text-[14px]"> {email}</p>
+                <div className="min-w-0 max-sm:flex max-sm:flex-wrap max-sm:items-center max-sm:justify-between max-sm:gap-x-3 max-sm:gap-y-0.5 rounded-lg border border-slate-100 bg-white px-3 py-2.5 sm:rounded-none sm:border-0 sm:bg-transparent sm:px-0 sm:py-0">
+                  <p className="inter-medium-font text-[11px] max-sm:text-[16px] capitalize tracking-wide text-slate-400 mb-0.5 max-sm:mb-0 max-sm:shrink-0 max-sm:!text-[16px]">Email</p>
+                  <p className=" inter-medium-font break-words max-sm:min-w-0 max-sm:flex-1 max-sm:text-right text-[13px] max-sm:text-[16px] text-slate-800 sm:text-[14px]"> {email}</p>
                 </div>
-                <div className="min-w-0 rounded-lg border border-slate-100 bg-white px-3 py-2.5 sm:rounded-none sm:border-0 sm:bg-transparent sm:px-0 sm:py-0">
-                  <p className="inter-medium-font text-[11px] max-sm:text-[16px] uppercase tracking-wide text-slate-400 mb-0.5">Post code</p>
-                  <p className="inter-medium-font break-words text-[13px] max-sm:text-[16px] text-slate-800 sm:text-[14px]">{patientInfo?.address?.postalcode}</p>
+                <div className="min-w-0 max-sm:flex max-sm:flex-wrap max-sm:items-center max-sm:justify-between max-sm:gap-x-3 max-sm:gap-y-0.5 rounded-lg border border-slate-100 bg-white px-3 py-2.5 sm:rounded-none sm:border-0 sm:bg-transparent sm:px-0 sm:py-0">
+                  <p className="inter-medium-font text-[11px] max-sm:text-[16px] capitalize tracking-wide text-slate-400 mb-0.5 max-sm:mb-0 max-sm:shrink-0 max-sm:!text-[16px]">Post code</p>
+                  <p className="[&::first-letter]:uppercase inter-medium-font break-words max-sm:min-w-0 max-sm:flex-1 max-sm:text-right text-[13px] max-sm:text-[16px] text-slate-800 sm:text-[14px]">{patientInfo?.address?.postalcode}</p>
                 </div>
-                <div className="min-w-0 rounded-lg border border-slate-100 bg-white px-3 py-2.5 sm:rounded-none sm:border-0 sm:bg-transparent sm:px-0 sm:py-0">
-                  <p className="inter-medium-font text-[11px] max-sm:text-[16px] uppercase tracking-wide text-slate-400 mb-0.5">Date of Birth</p>
-                  <p className="inter-medium-font break-words text-[13px] max-sm:text-[16px] text-slate-800 sm:text-[14px]">{patientInfo?.dob}</p>
+                <div className="min-w-0 max-sm:flex max-sm:flex-wrap max-sm:items-center max-sm:justify-between max-sm:gap-x-3 max-sm:gap-y-0.5 rounded-lg border border-slate-100 bg-white px-3 py-2.5 sm:rounded-none sm:border-0 sm:bg-transparent sm:px-0 sm:py-0">
+                  <p className="inter-medium-font text-[11px] max-sm:text-[16px] capitalize tracking-wide text-slate-400 mb-0.5 max-sm:mb-0 max-sm:shrink-0 max-sm:!text-[16px]">Date of birth</p>
+                  <p className="inter-medium-font break-words max-sm:min-w-0 max-sm:flex-1 max-sm:text-right text-[13px] max-sm:text-[16px] text-slate-800 sm:text-[14px]">{patientInfo?.dob}</p>
                 </div>
-                <div className="min-w-0 rounded-lg border border-slate-100 bg-white px-3 py-2.5 sm:rounded-none sm:border-0 sm:bg-transparent sm:px-0 sm:py-0">
-                  <p className="inter-medium-font text-[11px] max-sm:text-[16px] uppercase tracking-wide text-slate-400 mb-0.5">Height</p>
-                  <p className="inter-medium-font break-words text-[13px] max-sm:text-[16px] text-slate-800 sm:text-[14px]">
+                <div className="min-w-0 max-sm:flex max-sm:flex-wrap max-sm:items-center max-sm:justify-between max-sm:gap-x-3 max-sm:gap-y-0.5 rounded-lg border border-slate-100 bg-white px-3 py-2.5 sm:rounded-none sm:border-0 sm:bg-transparent sm:px-0 sm:py-0">
+                  <p className="inter-medium-font text-[11px] max-sm:text-[16px] capitalize tracking-wide text-slate-400 mb-0.5 max-sm:mb-0 max-sm:shrink-0 max-sm:!text-[16px]">Height</p>
+                  <p className="inter-medium-font break-words max-sm:min-w-0 max-sm:flex-1 max-sm:text-right text-[13px] max-sm:text-[16px] text-slate-800 sm:text-[14px]">
                     {bmi?.height_unit == "imperial" ? <>{bmi?.ft} ft {bmi?.inch} inch</> : <>{bmi?.cm} cm</>}
                   </p>
                 </div>
-                <div className="min-w-0 rounded-lg border border-slate-100 bg-white px-3 py-2.5 sm:rounded-none sm:border-0 sm:bg-transparent sm:px-0 sm:py-0">
-                  <p className="inter-medium-font text-[11px] max-sm:text-[16px] uppercase tracking-wide text-slate-400 mb-0.5">Gender</p>
-                  <p className="inter-medium-font break-words text-[13px] max-sm:text-[16px] capitalize text-slate-800 sm:text-[14px]">{patientInfo?.gender}</p>
+                <div className="min-w-0 max-sm:flex max-sm:flex-wrap max-sm:items-center max-sm:justify-between max-sm:gap-x-3 max-sm:gap-y-0.5 rounded-lg border border-slate-100 bg-white px-3 py-2.5 sm:rounded-none sm:border-0 sm:bg-transparent sm:px-0 sm:py-0">
+                  <p className="inter-medium-font text-[11px] max-sm:text-[16px] capitalize tracking-wide text-slate-400 mb-0.5 max-sm:mb-0 max-sm:shrink-0 max-sm:!text-[16px]">Gender</p>
+                  <p className="inter-medium-font break-words max-sm:min-w-0 max-sm:flex-1 max-sm:text-right text-[13px] max-sm:text-[16px] capitalize text-slate-800 sm:text-[14px]">{patientInfo?.gender}</p>
                 </div>
-                <div className="min-w-0 rounded-lg border border-slate-100 bg-white px-3 py-2.5 sm:rounded-none sm:border-0 sm:bg-transparent sm:px-0 sm:py-0">
-                  <p className="inter-medium-font text-[11px] max-sm:text-[16px] uppercase tracking-wide text-slate-400 mb-0.5">Weight</p>
-                  <p className="inter-medium-font break-words text-[13px] max-sm:text-[16px] text-slate-800 sm:text-[14px]">
+                <div className="min-w-0 max-sm:flex max-sm:flex-wrap max-sm:items-center max-sm:justify-between max-sm:gap-x-3 max-sm:gap-y-0.5 rounded-lg border border-slate-100 bg-white px-3 py-2.5 sm:rounded-none sm:border-0 sm:bg-transparent sm:px-0 sm:py-0">
+                  <p className="inter-medium-font text-[11px] max-sm:text-[16px] capitalize tracking-wide text-slate-400 mb-0.5 max-sm:mb-0 max-sm:shrink-0 max-sm:!text-[16px]">Weight</p>
+                  <p className="inter-medium-font break-words max-sm:min-w-0 max-sm:flex-1 max-sm:text-right text-[13px] max-sm:text-[16px] text-slate-800 sm:text-[14px]">
                     {bmi?.weight_unit == "metrics" ? <>{bmi?.kg} kg</> : <>{bmi?.stones} stones {bmi?.pound} pound</>}
                   </p>
                 </div>
-                <div className="min-w-0 rounded-lg border border-slate-100 bg-white px-3 py-2.5 sm:rounded-none sm:border-0 sm:bg-transparent sm:px-0 sm:py-0">
-                  <p className="inter-medium-font text-[11px] max-sm:text-[16px] uppercase tracking-wide text-slate-400 mb-0.5">BMI</p>
-                  <p className="inter-semibold-font text-[14px] max-sm:text-[16px] text-[#47317c]">{bmi?.bmi?.toFixed(1)}</p>
+                <div className="min-w-0 max-sm:flex max-sm:flex-wrap max-sm:items-center max-sm:justify-between max-sm:gap-x-3 max-sm:gap-y-0.5 rounded-lg border border-slate-100 bg-white px-3 py-2.5 sm:rounded-none sm:border-0 sm:bg-transparent sm:px-0 sm:py-0">
+                  <p className="inter-medium-font text-[11px] max-sm:text-[16px] capitalize tracking-wide text-slate-400 mb-0.5 max-sm:mb-0 max-sm:shrink-0 max-sm:!text-[16px]">bmi</p>
+                  <p className="inter-semibold-font max-sm:min-w-0 max-sm:flex-1 max-sm:text-right text-[14px] max-sm:text-[16px] text-[#47317c]">{bmi?.bmi?.toFixed(1)}</p>
                 </div>
               </div>
             {/* </div> */}
 
             {/* Confirm & Review Buttons */}
             <div className="space-y-3">
-              <NextButton label="Confirm and proceed" onClick={hanldeConfirm} />
+              <NextButton loading={showLoader} label="Confirm and proceed" onClick={hanldeConfirm} />
               <BackButton
                 label="Review all answers"
                 className="mt-2"

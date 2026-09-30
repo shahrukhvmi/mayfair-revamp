@@ -134,7 +134,7 @@ export default function PregnancyCheck() {
                 </div>
 
                 <div>
-                  <NextButton
+                  <NextButton loading={showLoader}
                     label="Next"
                     disabled={!isValid || pregnancy === "yes"}
                   />

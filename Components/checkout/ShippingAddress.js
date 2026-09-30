@@ -458,7 +458,7 @@ export default function ShippingAddress({
               )}
             />
             {/* || isPostalCodeNotValid */}
-            <NextButton label="Continue" disabled={!isValid} />
+            <NextButton loading={showLoader} label="Continue" disabled={!isValid} />
           </form>
 
           {showLoader && (

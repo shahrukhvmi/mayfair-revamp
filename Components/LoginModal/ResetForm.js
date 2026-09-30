@@ -63,7 +63,7 @@ export default function ResetForm({ register, handleSubmit, errors, onSubmit, is
         {errors.password_confirmation && <p className="text-sm max-sm:text-[16px] text-red-600 mt-1">{errors.password_confirmation.message}</p>}
       </div>
 
-      <NextButton label="Change Password" type="submit" disabled={isLoading} />
+      <NextButton loading={isLoading} label="Change Password" type="submit" disabled={isLoading} />
     </form>
   );
 }
