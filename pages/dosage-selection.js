@@ -109,7 +109,7 @@ export default function DosageSelection() {
 
   //Handle Submit Button
   const onSubmit = () => {
-    setIsButtonLoading(true);
+    // setIsButtonLoading(true);
     router.push("/checkout");
 
     //⚠️ commit krdia h yaha sy q k ab har dose k click k api direct chaly gi⚠️

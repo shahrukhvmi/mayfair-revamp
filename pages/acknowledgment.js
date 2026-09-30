@@ -194,11 +194,11 @@ export default function Acknowledgment() {
 
             </form>
 
-            {showLoader && (
+            {/* {showLoader && (
               <div className="absolute inset-0 z-20 flex items-center justify-center rounded-lg bg-white/60 cursor-not-allowed">
                 <PageLoader />
               </div>
-            )}
+            )} */}
           </div>
         </PageAnimationWrapper>
       </FormWrapper>

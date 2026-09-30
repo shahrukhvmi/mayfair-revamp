@@ -150,11 +150,11 @@ export default function SignUp() {
                 />
               </form>
 
-              {showLoader && (
+              {/* {showLoader && (
                 <div className="absolute inset-0 z-20 flex justify-center items-center bg-white/60 rounded-lg cursor-not-allowed">
                   <PageLoader />
                 </div>
-              )}
+              )} */}
             </div>
           </div>
         </PageAnimationWrapper>

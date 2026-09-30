@@ -63,9 +63,9 @@ const ProductGridCard = ({
             type="button"
             onClick={onClick}
             disabled={isOutOfStock || isLoading}
-            className={`inter-medium-font inline-flex min-h-[32px] lg:min-h-[33px] 2xl:min-h-[36px] w-full items-center
+            className={`inter-medium-font inline-flex min-h-[38px] lg:min-h-[33px] 2xl:min-h-[36px] w-full items-center
               justify-center gap-2 rounded-xl px-3
-              text-[11.5px] lg:text-[12px] 2xl:text-[12.5px] transition-all duration-150
+              text-[14px] lg:text-[12px] 2xl:text-[12.5px] transition-all duration-150
               ${isOutOfStock
                 ? "cursor-not-allowed bg-slate-100 text-slate-400"
                 : "cursor-pointer bg-[#47317c] text-white hover:bg-[#392765] active:scale-[0.97]"

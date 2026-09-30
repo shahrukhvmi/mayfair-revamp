@@ -43,6 +43,8 @@ export default function PatientConsent() {
 
   // Load questions → prefer confirmationInfo
   useEffect(() => {
+    // Submitting updates the stores below; don't re-initialise (uncheck) while navigating away
+    if (showLoader) return;
     if (confirmationQuestions?.length) {
       const requiresFreshConsent =
         !reorder ||
@@ -71,6 +73,7 @@ export default function PatientConsent() {
     productId,
     reorder,
     reorderStatus,
+    showLoader,
   ]);
 
   // Prefill form fields
@@ -97,10 +100,10 @@ export default function PatientConsent() {
 
 
   const onSubmit = async () => {
+    setShowLoader(true);
     setConfirmationInfo(questions);
     clearConsentResetProductId();
 
-    setShowLoader(true);
     await new Promise((resolve) => setTimeout(resolve, 500));
     router.push("/gp-detail");
   };
@@ -205,11 +208,11 @@ export default function PatientConsent() {
                 />
               </form>
 
-              {showLoader && (
+              {/* {showLoader && (
                 <div className="absolute inset-0 z-20 flex justify-center items-center bg-white/60 rounded-lg cursor-not-allowed">
                   <PageLoader />
                 </div>
-              )}
+              )} */}
             </div>
           </div>
         </PageAnimationWrapper>

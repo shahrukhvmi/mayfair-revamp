@@ -337,11 +337,11 @@ export default function BmiDetail() {
               onClick={() => router.push("/calculate-bmi")}
             />
 
-            {showLoader && (
+            {/* {showLoader && (
               <div className="absolute inset-0 z-20 flex justify-center items-center bg-white/60 rounded-lg">
                 <PageLoader />
               </div>
-            )}
+            )} */}
           </form>
         </PageAnimationWrapper>
       </FormWrapper>

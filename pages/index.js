@@ -96,14 +96,14 @@ export default function Index() {
             Let's get you started on your weight loss journey.
           </h2>
 
-          <p className="inter-reg-font mb-6 text-start text-[13.5px] leading-6 text-slate-500">
+          <p className="inter-reg-font mb-4 text-start text-[13.5px] leading-[1.5] text-slate-500 sm:mb-6 sm:leading-6">
             We’ll now ask a few questions about you and your health.
           </p>
 
           {/* Good to know */}
-          <div className="mb-6">
-            <p className="inter-semibold-font mb-2 text-[13px] text-slate-800">Good to know</p>
-            <ul className="inter-reg-font list-inside list-disc divide-y divide-slate-100 border-y border-slate-100 text-[13px] leading-5 text-slate-600 marker:text-[#47317c] [&>li]:py-3">
+          <div className="mb-5 sm:mb-6">
+            <p className="inter-semibold-font mb-1.5 text-[13px] text-slate-800">Good to know</p>
+            <ul className="inter-reg-font list-outside list-disc divide-y divide-slate-100 border-y border-slate-100 pl-4 text-[13px] leading-[1.45] text-slate-600 marker:text-[#47317c] [&>li]:py-2.5 sm:[&>li]:py-3">
               <li>
                 Your consultation will take about five minutes to complete.
               </li>
@@ -138,11 +138,11 @@ export default function Index() {
             </button>
           </form>
 
-          {showLoader && (
+          {/* {showLoader && (
             <div className="fixed inset-0 z-[100] flex cursor-not-allowed items-center justify-center bg-white">
               <PageLoader />
             </div>
-          )}
+          )} */}
         </div>
       </section>
     </>

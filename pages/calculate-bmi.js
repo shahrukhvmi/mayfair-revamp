@@ -601,12 +601,12 @@ export default function CalculateBmi() {
                   <BackButton label="Back" className="mt-2" onClick={back} />
                 )}
               </form>
-
+{/* 
               {showLoader && (
                 <div className="absolute inset-0 z-20 flex justify-center items-center bg-white/60 rounded-lg cursor-not-allowed">
                   <PageLoader />
                 </div>
-              )}
+              )} */}
             </div>
           </div>
         </PageAnimationWrapper>
