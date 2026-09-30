@@ -32,7 +32,7 @@ const NextButton = ({
           <div className="flex flex-col items-center">
             <div>{label}</div>
             {subHeading && (
-              <div className="text-[12px] max-sm:text-[16px] inter-reg-font pt-1 normal-case opacity-80">
+              <div className="text-[12px] inter-reg-font pt-1 normal-case opacity-80">
                 {subHeading}
               </div>
             )}

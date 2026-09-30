@@ -115,7 +115,7 @@ const ProductSelection = ({ showProductSelection }) => {
         <Skeleton variant="text" width="min(100%, 390px)" height={24} />
       </div>
 
-      <div className="grid w-full grid-cols-2 gap-2.5 sm:grid-cols-1 sm:gap-3">
+      <div className="grid w-full grid-cols-1 gap-3">
         {Array.from({ length: 3 }).map((_, i) => (
           <SkeletonCard key={i} />
         ))}
@@ -199,7 +199,7 @@ const ProductSelection = ({ showProductSelection }) => {
                   </p>
                 </div>
 
-                <div className="grid w-full grid-cols-2 gap-2.5 sm:grid-cols-1 sm:gap-3">
+                <div className="grid w-full grid-cols-1 gap-3">
                   {(Array.isArray(productData.reorder)
                     ? productData.reorder
                     : [productData.reorder]

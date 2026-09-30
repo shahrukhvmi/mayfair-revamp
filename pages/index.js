@@ -79,7 +79,7 @@ export default function Index() {
       <section className="min-h-[calc(100vh-66px)] bg-[#FBFBFD] px-4 py-8 sm:py-12">
         <div className="relative mx-auto w-full max-w-[580px] overflow-hidden rounded-2xl border border-[#47317c]/10 bg-white px-5 py-6 shadow-[0_12px_36px_rgba(71,49,124,0.09)] sm:px-8 sm:py-8">
           {/* Icon */}
-          <div className="mb-6 flex h-[150px] items-center justify-center rounded-xl border border-[#47317c]/[0.07] bg-[#f7f5fc] sm:h-[165px]">
+          <div className="mb-6 flex items-center justify-center">
             <Image
               src={Weight}
               alt="Weight Loss Icon"

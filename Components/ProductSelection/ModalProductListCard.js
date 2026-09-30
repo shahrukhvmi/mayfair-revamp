@@ -29,7 +29,7 @@ const ModalProductListCard = ({
       role="button"
       tabIndex={isOutOfStock || isLoading ? -1 : 0}
       className={`
-        group flex h-full select-none flex-col items-stretch gap-2 rounded-2xl border bg-white
+        group flex h-full select-none flex-col items-stretch gap-2 rounded-2xl border bg-white max-sm:grid max-sm:grid-cols-[88px_1fr] max-sm:items-center max-sm:gap-x-3 max-sm:gap-y-1.5
         px-3 py-3 transition-none sm:h-auto sm:flex-row sm:items-center sm:gap-4 sm:px-4 sm:py-3.5 2xl:px-5 2xl:py-4
         ${isSelected
           ? "border-[#47317c] bg-[#47317c]/[0.025] shadow-[0_1px_4px_rgba(0,0,0,0.05)]"
@@ -40,7 +40,7 @@ const ModalProductListCard = ({
       `}
       aria-selected={isSelected}
     >
-      <div className="relative flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-slate-100 sm:h-[64px] sm:w-[64px] 2xl:h-[76px] 2xl:w-[76px]">
+      <div className="relative flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-slate-100 max-sm:row-span-2 max-sm:h-[88px] max-sm:w-[88px] sm:h-[64px] sm:w-[64px] 2xl:h-[76px] 2xl:w-[76px]">
         {isOutOfStock && (
           <span className="absolute inset-0 flex items-center justify-center bg-white/70">
             <PackageX size={16} strokeWidth={1.8} className="text-red-400" />
@@ -85,7 +85,7 @@ const ModalProductListCard = ({
           }}
           disabled={isOutOfStock || isLoading}
           aria-pressed={isSelected}
-          className={`inter-medium-font inline-flex h-[34px] w-full shrink-0 items-center justify-center gap-1.5 overflow-hidden
+          className={`inter-medium-font inline-flex h-[34px] max-sm:h-[44px] w-full shrink-0 items-center justify-center gap-1.5 overflow-hidden
             whitespace-nowrap rounded-xl px-2 text-[10.5px] max-sm:text-[16px] transition-none sm:h-9 sm:w-[142px] sm:px-4 sm:text-[12.5px] 2xl:h-[42px] 2xl:w-[160px] 2xl:px-6 2xl:text-[13.5px]
             ${isOutOfStock
               ? "cursor-not-allowed border border-slate-200 bg-slate-100 text-slate-400"
