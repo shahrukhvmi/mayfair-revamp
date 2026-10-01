@@ -1,4 +1,5 @@
-// Mayfair Analytics – connection to the WordPress plugin's tracker.
+// Mayfair Analytics – connection to the WordPress plugin's tracker
+// (plugin: Journey Attribution Analytics).
 //
 // The consultation app does not run its own attribution. It loads the same
 // tracker file the WordPress site and the ads landing pages load, so it shares
@@ -9,21 +10,24 @@
 // calls are dropped and the consultation keeps working.
 
 const DEFAULT_SRC =
-  "/wp-content/plugins/mayfair-analytics/assets/js/mayfair-tracker.js";
+  "/wp-content/plugins/journey-attribution-analytics/assets/js/journey-attribution-analytics.js";
 
 // Root-relative: WordPress and /start-consultation share one origin in
 // production and staging. Override for local development, e.g.
-// NEXT_PUBLIC_MAYFAIR_ANALYTICS_SRC=http://localhost/mayfair-cpanel/public_html/wp-content/plugins/mayfair-analytics/assets/js/mayfair-tracker.js
+// NEXT_PUBLIC_MAYFAIR_ANALYTICS_SRC=http://localhost/mayfair-cpanel/public_html/wp-content/plugins/journey-attribution-analytics/assets/js/journey-attribution-analytics.js
 export const TRACKER_SRC =
   process.env.NEXT_PUBLIC_MAYFAIR_ANALYTICS_SRC || DEFAULT_SRC;
+
+// e.g. NEXT_PUBLIC_MAYFAIR_ANALYTICS_PREFIX=mayfair on a site upgraded from plugin 1.0.
+export const TRACKER_PREFIX = process.env.NEXT_PUBLIC_MAYFAIR_ANALYTICS_PREFIX || "";
 
 let loader = null;
 let chain = Promise.resolve();
 
-/** Injects the tracker once. Resolves with window.MayfairAnalytics, or null if it failed to load. */
+/** Injects the tracker once. Resolves with window.JourneyAnalytics, or null if it failed to load. */
 export function loadTracker() {
   if (typeof window === "undefined") return Promise.resolve(null);
-  if (window.MayfairAnalytics) return Promise.resolve(window.MayfairAnalytics);
+  if (window.JourneyAnalytics) return Promise.resolve(window.JourneyAnalytics);
   if (!loader) {
     loader = new Promise((resolve) => {
       const script = document.createElement("script");
@@ -31,7 +35,11 @@ export function loadTracker() {
       script.async = true;
       // Tells the tracker which part of the site this is ("consultation" in reports).
       script.dataset.section = "consultation";
-      script.onload = () => resolve(window.MayfairAnalytics || null);
+      // Cookie prefix of the WordPress install (Settings > Tracking names). The
+      // tracker also reads it from WordPress; setting it here keeps the names
+      // fixed even if that request is slow.
+      if (TRACKER_PREFIX) script.dataset.prefix = TRACKER_PREFIX;
+      script.onload = () => resolve(window.JourneyAnalytics || null);
       script.onerror = () => resolve(null);
       document.head.appendChild(script);
     });

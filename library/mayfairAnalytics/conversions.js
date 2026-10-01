@@ -17,7 +17,7 @@ import { identify, oncePerBrowser, oncePerSession, run, track } from "./tracker"
  */
 export function getStoredAttribution() {
   if (typeof window === "undefined") return null;
-  const api = window.MayfairAnalytics;
+  const api = window.JourneyAnalytics;
   const live = api && api.getAttribution ? api.getAttribution() : null;
   if (live && live.first_touch) {
     return { first_touch: live.first_touch, last_touch: live.last_touch };
