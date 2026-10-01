@@ -69,7 +69,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
 
         {/* Menu label */}
         <div className="px-5 pt-6 pb-1.5">
-          <p className="inter-medium-font text-[10px] max-sm:text-[16px] uppercase tracking-[0.12em] text-slate-400">
+          <p className="inter-medium-font text-[10px] lg:text-[12px] max-sm:text-[16px] uppercase tracking-[0.12em] text-slate-400">
             Menu
           </p>
         </div>
@@ -86,7 +86,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
                 aria-current={active ? "page" : undefined}
                 className={`
                   ${key} group flex items-center gap-3
-                  rounded-md px-3 py-2.5 max-lg:py-3.5 2xl:px-4 2xl:py-3 no-underline outline-none
+                  rounded-md px-3 py-3 max-lg:py-3.5 2xl:px-4 2xl:py-3.5 no-underline outline-none
                   transition-all duration-150
                   ${active
                     ? "bg-[#47317c]/[0.09] text-[#47317c]"
@@ -97,9 +97,9 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
                 <Icon
                   size={15}
                   strokeWidth={active ? 2.2 : 1.8}
-                  className={`max-lg:h-5 max-lg:w-5 ${active ? "text-[#47317c]" : "text-slate-400 group-hover:text-slate-600"}`}
+                  className={`h-5 w-5 ${active ? "text-[#47317c]" : "text-slate-400 group-hover:text-slate-600"}`}
                 />
-                <span className={`inter-medium-font text-[13px] max-sm:text-[18px] max-lg:text-[18px] lg:text-[14px] 2xl:text-[16px] leading-none ${active ? "text-[#47317c]" : ""}`}>
+                <span className={`inter-medium-font text-[13px] max-sm:text-[18px] max-lg:text-[18px] lg:text-[16px] 2xl:text-[17px] leading-none ${active ? "text-[#47317c]" : ""}`}>
                   {label}
                 </span>
               </Link>
