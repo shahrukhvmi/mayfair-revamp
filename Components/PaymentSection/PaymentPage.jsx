@@ -1,8 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { trackPaymentAttempt } from "@/library/mayfairAnalytics";
 
 const PaymentPage = ({ paymentData }) => {
   const [countdown, setCountdown] = useState(3);
+
+  // Payment attempt: the visitor is about to be sent to the gateway.
+  useEffect(() => {
+    if (paymentData?.actionurl) trackPaymentAttempt(paymentData);
+  }, [paymentData]);
 
   useEffect(() => {
     if (!paymentData?.actionurl) return;

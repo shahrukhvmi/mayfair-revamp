@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 
 import getOrderByIdApi from "@/api/getOrderByIdApi";
+import { syncOrderStatus } from "@/library/mayfairAnalytics";
 import StepsHeader from "@/layout/stepsHeader";
 import DashBoardLayout from "@/Components/Dashboard/DashboardLayout/DashBoardLayout";
 import { PageHeader } from "@/Components/Dashboard/MyAccount/MyAccount";
@@ -77,7 +78,7 @@ const OrderDetails = () => {
     if (id) {
       setLoading(true);
       getOrderByIdApi(id)
-        .then((res) => { setOrder(res?.data); setLoading(false); })
+        .then((res) => { setOrder(res?.data); setLoading(false); syncOrderStatus(res?.data?.data?.order); })
         .catch(() => setLoading(false));
     }
   }, [id]);

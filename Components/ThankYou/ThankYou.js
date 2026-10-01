@@ -25,6 +25,13 @@ import useProductId from "@/store/useProductIdStore";
 import { trackCustomerLabsPurchased } from "@/config/CustomerLabs";
 import patientSource from "@/api/patientSource";
 import useReturning from "@/store/useReturningPatient";
+import {
+  alreadySent,
+  markSent,
+  getStoredAttribution,
+  recordThankYou,
+  toPatientSourceTouches,
+} from "@/library/mayfairAnalytics";
 
 const VerificationCard = ({
   icon: Icon,
@@ -172,34 +179,24 @@ const ThankYou = () => {
           };
         });
 
-        const stored = JSON.parse(
-          localStorage.getItem("mayfair_attribution") || "null",
-        );
+        // Order status, payment status (from the order record) and thank-you
+        // completion for Mayfair Analytics.
+        recordThankYou(res?.data);
 
-        if (stored) {
+        const stored = getStoredAttribution();
+
+        // Sent once per order. The attribution itself is kept (not deleted):
+        // it belongs to the visitor and must survive for their later orders.
+        const sentKey = `patient_source_order_${clOrderId}`;
+        if (stored && !alreadySent(sentKey)) {
           try {
             await patientSource({
               user_id: userData?.id || null,
               order_id: clOrderId,
               type: "order",
-              first_touch: {
-                channel: stored.first_touch?.channel || "Direct",
-                source: stored.first_touch?.source || "direct",
-                medium: stored.first_touch?.medium || "none",
-                paid_status: stored.first_touch?.paid_status || "unknown",
-              },
-              last_touch: {
-                channel: stored.last_touch?.channel || "Direct",
-                source: stored.last_touch?.source || "direct",
-                medium: stored.last_touch?.medium || "none",
-                paid_status: stored.last_touch?.paid_status || "unknown",
-              },
+              ...toPatientSourceTouches(stored),
             });
-
-            localStorage.removeItem("mayfair_attribution");
-            localStorage.removeItem("utm_source");
-            localStorage.removeItem("utm_medium");
-            localStorage.removeItem("utm_campaign");
+            markSent(sentKey);
           } catch (attributionError) {}
         }
 

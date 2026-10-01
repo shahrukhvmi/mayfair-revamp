@@ -33,6 +33,7 @@ import lastOrderStore from "@/store/lastOrderStore";
 import useAbandonCardStore from "@/store/abandonCardStore";
 import normalizeConfirmationInfo from "@/utils/normalizeConfirmationInfo";
 import { isPregnancyBlocked, PREGNANCY_BLOCK_MESSAGE } from "@/utils/patientChecks";
+import { trackOrderCreated } from "@/library/mayfairAnalytics";
 
 const OrderSummary = ({
   isConcentCheck,
@@ -145,6 +146,12 @@ const OrderSummary = ({
       if (data) {
         setPaymentData(data?.data?.paymentData);
         setOrderId(data?.data?.paymentData?.order_id);
+        // Order exists, payment not yet attempted: recorded as pending, not paid.
+        trackOrderCreated({
+          orderId: data?.data?.paymentData?.order_id,
+          value: finalTotal,
+          currency: "GBP",
+        });
         clearCoupon();
         clearAbandonCard();
       }

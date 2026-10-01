@@ -27,6 +27,11 @@ import MetaLayout from "@/Meta/MetaLayout";
 import { meta_url } from "@/config/constants";
 import useReturning from "@/store/useReturningPatient";
 import patientSource from "@/api/patientSource";
+import {
+  getStoredAttribution,
+  toPatientSourceTouches,
+  trackSignup,
+} from "@/library/mayfairAnalytics";
 
 export default function EmailConfirmation() {
   const [showLoader, setShowLoader] = useState(false);
@@ -108,7 +113,7 @@ export default function EmailConfirmation() {
   }, [showLoader]);
 
   const registerMutation = useMutation(registerUser, {
-    onSuccess: async (data) => {
+    onSuccess: async (data, variables) => {
       const user = data?.data?.data;
       setAuthUserDetail(user);
       setUserData(user);
@@ -117,27 +122,19 @@ export default function EmailConfirmation() {
       setIsReturningPatient(user?.isReturning);
       Fetcher.axiosSetup.defaults.headers.common.Authorization = `Bearer ${user?.token}`;
 
-      const stored = JSON.parse(
-        localStorage.getItem("mayfair_attribution") || "null",
-      );
+      // Links this new patient to their existing anonymous visitor (same
+      // visitor ID, original first/last touch untouched).
+      trackSignup(user, variables?.email);
+
+      const stored = getStoredAttribution();
 
       if (stored) {
         // Fire and forget: a slow attribution call must not keep the user waiting
         patientSource({
-          user_id: userData?.id,
+          // The newly registered user (userData here still holds the previous value).
+          user_id: user?.id || userData?.id,
           type: "register",
-          first_touch: {
-            channel: stored.first_touch?.channel || "Direct",
-            source: stored.first_touch?.source || "direct",
-            medium: stored.first_touch?.medium || "none",
-            paid_status: stored.first_touch?.paid_status || "unknown",
-          },
-          last_touch: {
-            channel: stored.last_touch?.channel || "Direct",
-            source: stored.last_touch?.source || "direct",
-            medium: stored.last_touch?.medium || "none",
-            paid_status: stored.last_touch?.paid_status || "unknown",
-          },
+          ...toPatientSourceTouches(stored),
         }).catch((attributionError) => {
           console.error("Attribution API failed:", attributionError);
         });

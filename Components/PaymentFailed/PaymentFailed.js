@@ -1,10 +1,17 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useRouter } from "next/router";
 import NextButton from "../NextButton/NextButton";
 import { AlertTriangle, CreditCard } from "lucide-react";
+import useCartStore from "@/store/useCartStore";
+import { trackPaymentFailed } from "@/library/mayfairAnalytics";
 
 const PaymentFailed = () => {
   const router = useRouter();
+
+  // The gateway's failure redirect for the order created at checkout (once per page load).
+  useEffect(() => {
+    trackPaymentFailed(useCartStore.getState().orderId);
+  }, []);
 
   const handleGoBack = () => {
     router.push("/dashboard");

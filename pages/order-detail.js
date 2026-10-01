@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 
 import getOrderByIdApi from "@/api/getOrderByIdApi";
+import { syncOrderStatus } from "@/library/mayfairAnalytics";
 import useOrderId from "@/store/useOrderIdStore";
 import MetaLayout from "@/Meta/MetaLayout";
 import { meta_url } from "@/config/constants";
@@ -226,7 +227,7 @@ const OrderDetail = () => {
     if (!orderId) return;
     setLoading(true);
     getOrderByIdApi(orderId)
-      .then((response) => { setOrder(response?.data); setLoading(false); })
+      .then((response) => { setOrder(response?.data); setLoading(false); syncOrderStatus(response?.data?.data?.order); })
       .catch((error) => { setLoading(false); });
   }, [orderId]);
 
