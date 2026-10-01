@@ -583,7 +583,7 @@ const PhotoUpload = () => {
               <span className="inter-semibold-font text-slate-700">
                 full body
               </span>{" "}
-              photo for the clinical team to verify your BMI. This may be required to process your order. Alternative ways to verify your BMI may be offered during the clinical checks by the prescriber.
+              photo for the clinical team to verify your BMI. This may be required to process your order.
             </p>
 
             {/* Bullet Points */}

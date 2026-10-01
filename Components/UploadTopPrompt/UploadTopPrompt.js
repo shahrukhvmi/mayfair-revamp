@@ -103,7 +103,7 @@ const UploadTopPrompt = ({ isLoading = false }) => {
         <AlertBanner
           icon={Camera}
           title="BMI Verification"
-          description="Continue to upload a recent photo for the clinical team to verify your BMI. This may be required to process your order. Alternative ways to verify your BMI may be offered during the clinical checks by the prescriber."
+          description="Continue to upload a recent photo for the clinical team to verify your BMI. This may be required to process your order."
           buttonText="Continue"
           href="/photo-upload"
         />
