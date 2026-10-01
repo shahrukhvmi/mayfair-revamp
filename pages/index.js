@@ -124,7 +124,7 @@ export default function Index() {
               subHeadingClassName="max-sm:hidden"
               loading={showLoader && loadingAction !== "Returning Patient"}
               disabled={!isValid || showLoader}
-              className="!rounded-xl text-[16px]"
+              className="!rounded-xl text-[16px] sm:min-h-[70px]"
             />
 
             <button
@@ -132,7 +132,7 @@ export default function Index() {
               name="action"
               value="Returning Patient"
               disabled={!isValid || (showLoader && loadingAction !== "Returning Patient")}
-              className="group flex min-h-[54px] max-sm:min-h-[48px] w-full cursor-pointer flex-col items-center justify-center rounded-xl border border-[#47317c]/30 bg-white px-6 py-2.5 mt-2 sm:mt-3 sm:py-3 text-[#47317c] transition-all duration-3 hover:border-[#47317c] hover:bg-[#47317c]/[0.04] disabled:cursor-not-allowed disabled:border-slate-200 disabled:text-slate-400 inter-medium-font"
+              className="group flex min-h-[54px] max-sm:min-h-[48px] sm:min-h-[70px] w-full cursor-pointer flex-col items-center justify-center rounded-xl border border-[#47317c]/30 bg-white px-6 py-2.5 mt-2 sm:mt-3 sm:py-3 text-[#47317c] transition-all duration-3 hover:border-[#47317c] hover:bg-[#47317c]/[0.04] disabled:cursor-not-allowed disabled:border-slate-200 disabled:text-slate-400 inter-medium-font"
             >
               {showLoader && loadingAction === "Returning Patient" ? (
                 <span className="flex items-center gap-2">
