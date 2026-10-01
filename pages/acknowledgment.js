@@ -148,30 +148,7 @@ export default function Acknowledgment() {
               {/* Consent */}
               {showConsentBox && (
                 <div className="mt-2 rounded-xl border border-[#47317c]/[0.14] bg-[#faf9fd] p-3.5 sm:p-5">
-                  <label className="flex cursor-pointer items-start gap-2.5 sm:gap-3">
-                    <input
-                      type="checkbox"
-                      {...register("confirmConsent", { required: true })}
-                      className="hidden"
-                    />
-                    <div
-                      className={`
-                        mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-[5px] border-2
-                        transition-all duration-200
-                        ${confirmConsent
-                          ? "border-[#47317c] bg-[#47317c]"
-                          : "border-slate-300 bg-white"
-                        }
-                      `}
-                    >
-                      {confirmConsent && <Check size={12} className="text-white" strokeWidth={3} />}
-                    </div>
-                    <span className="inter-semibold-font text-[14px] max-sm:text-[16px] text-slate-800">
-                      Do you confirm that:
-                    </span>
-                  </label>
-
-                  <ul className="inter-reg-font mt-3 space-y-2 pl-0 sm:mt-4 sm:space-y-3 sm:pl-8 text-[13px] max-sm:text-[16px] text-slate-600 leading-relaxed max-sm:leading-snug">
+                  <ul className="inter-reg-font space-y-2 pl-0 sm:space-y-3 sm:pl-0 text-[13px] max-sm:text-[16px] text-slate-600 leading-relaxed max-sm:leading-snug">
                     {CONSENT_ITEMS.map((item, i) => (
                       <li key={i} className="flex items-start gap-2">
                         <CircleCheck
@@ -183,12 +160,35 @@ export default function Acknowledgment() {
                       </li>
                     ))}
                   </ul>
+
+                  <label className="mt-4 flex cursor-pointer items-center gap-2.5 sm:mt-5 sm:gap-3">
+                    <input
+                      type="checkbox"
+                      {...register("confirmConsent", { required: true })}
+                      className="hidden"
+                    />
+                    <div
+                      className={`
+                        flex h-5 w-5 shrink-0 items-center justify-center rounded-[5px] border-2
+                        transition-all duration-200
+                        ${confirmConsent
+                          ? "border-[#47317c] bg-[#47317c]"
+                          : "border-slate-300 bg-white"
+                        }
+                      `}
+                    >
+                      {confirmConsent && <Check size={12} className="text-white" strokeWidth={3} />}
+                    </div>
+                    <span className="inter-semibold-font text-[14px] max-sm:text-[16px] text-slate-800">
+                      I agree to the above
+                    </span>
+                  </label>
                 </div>
               )}
 
               {/* CTA */}
               <div className="mt-4 sm:mt-6">
-                <NextButton loading={showLoader} disabled={!isValid || isNoSelected} label="I Confirm" />
+                <NextButton loading={showLoader} disabled={!isValid || isNoSelected} label="Confirm" />
               </div>
 
             </form>

@@ -28,6 +28,8 @@ import { MdDelete } from "react-icons/md";
 import { RxCross2 } from "react-icons/rx";
 import UploadPhotoLogs from "@/api/UploadLogsApi";
 import PageLoader from "@/Components/PageLoader/PageLoader";
+import BackButton from "@/Components/BackButton/BackButton";
+import { FiArrowLeft } from "react-icons/fi";
 
 // ✅ Allowed file types
 const ALLOWED_TYPES = [
@@ -94,82 +96,82 @@ const UploadBox = ({
   return (
     <div className="w-full">
       <div className="relative w-full">
-            <label className="block w-full cursor-pointer rounded-xl focus-within:ring-2 focus-within:ring-[#47317c]/25 focus-within:ring-offset-2">
-              <div
-                className="relative flex min-h-[164px] flex-col items-center justify-center rounded-xl border-2 border-dashed border-[#9b87c8] bg-[#f8f6fc] px-5 py-6 text-center transition-all duration-200 hover:border-[#47317c] hover:bg-[#f4f1fa]"
-              >
-                <input
-                  ref={inputRef}
-                  type="file"
-                  accept="image/jpeg,image/jpg,image/png,image/webp,image/heic,image/heif,image/avif,application/pdf"
-                  onChange={(e) => onUpload(e, type)}
-                  className="hidden"
-                />
+        <label className="block w-full cursor-pointer rounded-xl focus-within:ring-2 focus-within:ring-[#47317c]/25 focus-within:ring-offset-2">
+          <div
+            className="relative flex min-h-[164px] flex-col items-center justify-center rounded-xl border-2 border-dashed border-[#9b87c8] bg-[#f8f6fc] px-5 py-6 text-center transition-all duration-200 hover:border-[#47317c] hover:bg-[#f4f1fa]"
+          >
+            <input
+              ref={inputRef}
+              type="file"
+              accept="image/jpeg,image/jpg,image/png,image/webp,image/heic,image/heif,image/avif,application/pdf"
+              onChange={(e) => onUpload(e, type)}
+              className="hidden"
+            />
 
-                {loadingPhoto ? (
-                  <div className="flex flex-col items-center justify-center">
-                    <div className="mb-3 flex h-11 w-11 items-center justify-center rounded-full bg-white shadow-sm ring-1 ring-[#47317c]/10">
-                      <AiOutlineLoading3Quarters className="h-5 w-5 animate-spin text-[#47317c]" />
-                    </div>
-                    <p className="inter-medium-font text-sm max-sm:text-[16px] text-slate-700">
-                      Uploading...
-                    </p>
-                  </div>
-                ) : !photo ? (
-                  <div className="flex flex-col items-center justify-center">
-                    <div className="mb-3 flex h-11 w-11 items-center justify-center rounded-full bg-white text-[#47317c] shadow-sm ring-1 ring-[#47317c]/10">
-                      <FiUpload className="h-5 w-5" />
-                    </div>
-                    <p className="inter-semibold-font text-[14px] max-sm:text-[16px] text-slate-800">
-                      Choose a full-body photo
-                    </p>
-                    <p className="inter-reg-font mt-1 text-[12px] max-sm:text-[16px] leading-5 text-slate-500">
-                      Tap to browse files from your device
+            {loadingPhoto ? (
+              <div className="flex flex-col items-center justify-center">
+                <div className="mb-3 flex h-11 w-11 items-center justify-center rounded-full bg-white shadow-sm ring-1 ring-[#47317c]/10">
+                  <AiOutlineLoading3Quarters className="h-5 w-5 animate-spin text-[#47317c]" />
+                </div>
+                <p className="inter-medium-font text-sm max-sm:text-[16px] text-slate-700">
+                  Uploading...
+                </p>
+              </div>
+            ) : !photo ? (
+              <div className="flex flex-col items-center justify-center">
+                <div className="mb-3 flex h-11 w-11 items-center justify-center rounded-full bg-white text-[#47317c] shadow-sm ring-1 ring-[#47317c]/10">
+                  <FiUpload className="h-5 w-5" />
+                </div>
+                <p className="inter-semibold-font text-[14px] max-sm:text-[16px] text-slate-800">
+                  Choose a full-body photo
+                </p>
+                <p className="inter-reg-font mt-1 text-[12px] max-sm:text-[16px] leading-5 text-slate-500">
+                  Tap to browse files from your device
+                </p>
+              </div>
+            ) : (
+              <div className="relative flex w-full flex-col items-center">
+                {photo?.type === "application/pdf" ? (
+                  <div className="my-1 flex h-36 w-full max-w-[240px] flex-col items-center justify-center rounded-xl border border-slate-200 bg-white">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="mb-2 h-9 w-9 text-red-500"
+                      viewBox="0 0 24 24"
+                      fill="currentColor"
+                    >
+                      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm-1 1.5L18.5 9H13V3.5zM6 20V4h5v7h7v9H6z" />
+                    </svg>
+                    <p className="inter-reg-font w-full truncate px-3 text-center text-xs max-sm:text-[16px] text-slate-600">
+                      {photo?.name}
                     </p>
                   </div>
                 ) : (
-                  <div className="relative flex w-full flex-col items-center">
-                    {photo?.type === "application/pdf" ? (
-                      <div className="my-1 flex h-36 w-full max-w-[240px] flex-col items-center justify-center rounded-xl border border-slate-200 bg-white">
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          className="mb-2 h-9 w-9 text-red-500"
-                          viewBox="0 0 24 24"
-                          fill="currentColor"
-                        >
-                          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm-1 1.5L18.5 9H13V3.5zM6 20V4h5v7h7v9H6z" />
-                        </svg>
-                        <p className="inter-reg-font w-full truncate px-3 text-center text-xs max-sm:text-[16px] text-slate-600">
-                          {photo?.name}
-                        </p>
-                      </div>
-                    ) : (
-                      <img
-                        src={photoUrl}
-                        alt={`${label} preview`}
-                        className="my-1 h-36 w-full max-w-[240px] rounded-xl bg-white object-contain shadow-sm ring-1 ring-slate-200"
-                      />
-                    )}
-                  </div>
+                  <img
+                    src={photoUrl}
+                    alt={`${label} preview`}
+                    className="my-1 h-36 w-full max-w-[240px] rounded-xl bg-white object-contain shadow-sm ring-1 ring-slate-200"
+                  />
                 )}
               </div>
-            </label>
-
-            {/* ✅ Delete button — label ke BAHAR, tabhi kaam karega */}
-            {photo && !loadingPhoto && (
-              <button
-                type="button"
-                onClick={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  onRemove(type);
-                }}
-                className="absolute -right-2 -top-2 z-10 flex h-8 w-8 cursor-pointer items-center justify-center rounded-full bg-white text-red-600 shadow-md ring-1 ring-red-100 transition-colors duration-200 hover:bg-red-50"
-                title="Remove photo"
-              >
-                <RxCross2 className="h-4 w-4" />
-              </button>
             )}
+          </div>
+        </label>
+
+        {/* ✅ Delete button — label ke BAHAR, tabhi kaam karega */}
+        {photo && !loadingPhoto && (
+          <button
+            type="button"
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              onRemove(type);
+            }}
+            className="absolute -right-2 -top-2 z-10 flex h-8 w-8 cursor-pointer items-center justify-center rounded-full bg-white text-red-600 shadow-md ring-1 ring-red-100 transition-colors duration-200 hover:bg-red-50"
+            title="Remove photo"
+          >
+            <RxCross2 className="h-4 w-4" />
+          </button>
+        )}
       </div>
       <p className="inter-reg-font mt-3 text-center text-[11px] max-sm:text-[16px] leading-5 text-slate-500">
         JPEG, PNG, WEBP, HEIC, HEIF, AVIF or PDF · Maximum 30 MB
@@ -184,7 +186,7 @@ const PhotoUpload = () => {
 
   const logError = (message) => {
     toast.error(message);
-    UploadPhotoLogs({ message }).catch(() => {});
+    UploadPhotoLogs({ message }).catch(() => { });
   };
 
   const frontPhotoInputRef = React.useRef(null);
@@ -545,8 +547,8 @@ const PhotoUpload = () => {
                   onClick={handleRedirect}
                   className="w-full"
                   loading={isRedirecting}
-                  // disabled={loading || !frontPhoto || !sidePhoto}
-                  // loading={loading}
+                // disabled={loading || !frontPhoto || !sidePhoto}
+                // loading={loading}
                 />
               </motion.div>
             </motion.div>
@@ -556,6 +558,15 @@ const PhotoUpload = () => {
           onSubmit={handleSubmit(onSubmit)}
           className="mx-auto w-full max-w-[620px] rounded-2xl border border-[#47317c]/10 bg-white px-5 py-6 shadow-[0_12px_36px_rgba(71,49,124,0.09)] sm:px-8 sm:py-8"
         >
+          <button
+            type="button"
+            onClick={() => GO.push("/dashboard")}
+            aria-label="Back to dashboard"
+            className="mb-5 flex h-10 w-10 cursor-pointer items-center justify-center rounded-full border border-slate-200 bg-white text-slate-700 transition-colors hover:border-[#47317c]/40 hover:text-[#47317c]"
+          >
+            <FiArrowLeft size={18} />
+          </button>
+
           <div className="mb-6 text-left">
             {/* Heading */}
             {/* <h2 className="subHeading niba-semibold-font mb-2 border-b pb-3">
@@ -568,20 +579,23 @@ const PhotoUpload = () => {
 
             {/* Description */}
             <p className="inter-reg-font mt-2 text-[13.5px] max-sm:text-[16px] leading-6 text-slate-500">
-              Please upload a <span className="bold-font">full body</span>{" "}
-              picture of yourself.
+              Please upload a recent{" "}
+              <span className="inter-semibold-font text-slate-700">
+                full body
+              </span>{" "}
+              photo for the clinical team to verify your BMI. This may be required to process your order.
             </p>
 
             {/* Bullet Points */}
             <div className="mt-5 rounded-xl border border-[#47317c]/10 bg-[#f8f6fc] px-4 py-3.5">
               <p className="inter-semibold-font mb-2 text-[13px] max-sm:text-[16px] text-slate-800">Why we need this</p>
               <ul className="inter-reg-font list-disc space-y-2 pl-5 text-[12.5px] max-sm:text-[16px] leading-5 text-slate-600 marker:text-[#47317c]">
-              <li>We will only ask for this once.</li>
-              <li>
-                We realise it's inconvenient, but this is a regulatory
-                requirement designed for your safety and to prevent
-                inappropriate use.
-              </li>
+                <li>We will only ask for this once.</li>
+                <li>
+                  We realise it's inconvenient, but this is a regulatory
+                  requirement designed for your safety and to prevent
+                  inappropriate use.
+                </li>
               </ul>
             </div>
           </div>
@@ -590,29 +604,29 @@ const PhotoUpload = () => {
           <div className="mb-6">
             <p className="inter-semibold-font mb-3 text-[13px] max-sm:text-[16px] text-slate-800">Photo guidance</p>
             <div className="grid grid-cols-3 gap-2 sm:gap-3">
-            <div className="relative overflow-hidden rounded-xl border-2 border-emerald-400 bg-white">
-              <Image
-                src={FullBody}
-                alt="Correct full-body photo example"
-                className="aspect-[3/4] h-auto w-full object-cover"
-              />
-              <span className="inter-semibold-font absolute bottom-1.5 left-1.5 inline-flex items-center gap-1 rounded-md bg-white/95 px-1.5 py-1 text-[10px] max-sm:text-[16px] text-emerald-700 shadow-sm"><FaCheck size={10} /> Good</span>
-            </div>
-            <div className="relative overflow-hidden rounded-xl border border-slate-200 bg-white">
-              <Image
-                src={FaceX}
-                alt="Close-up photo example"
-                className="aspect-[3/4] h-auto w-full object-cover"
-              />
-            </div>
-            <div className="relative overflow-hidden rounded-xl border border-slate-200 bg-white">
-              <Image
-                src={HalfBodyX}
-                alt="Incorrect half-body photo example"
-                className="aspect-[3/4] h-auto w-full object-cover"
-              />
-              <span className="inter-semibold-font absolute bottom-1.5 left-1.5 inline-flex items-center gap-1 rounded-md bg-white/95 px-1.5 py-1 text-[10px] max-sm:text-[16px] text-red-600 shadow-sm"><RxCross2 size={10} /> Avoid</span>
-            </div>
+              <div className="relative overflow-hidden rounded-xl border-2 border-emerald-400 bg-white">
+                <Image
+                  src={FullBody}
+                  alt="Correct full-body photo example"
+                  className="aspect-[3/4] h-auto w-full object-cover"
+                />
+                <span className="inter-semibold-font absolute bottom-1.5 left-1.5 inline-flex items-center gap-1 rounded-md bg-white/95 px-1.5 py-1 text-[10px] max-sm:text-[16px] text-emerald-700 shadow-sm"><FaCheck size={10} /> Good</span>
+              </div>
+              <div className="relative overflow-hidden rounded-xl border border-slate-200 bg-white">
+                <Image
+                  src={FaceX}
+                  alt="Close-up photo example"
+                  className="aspect-[3/4] h-auto w-full object-cover"
+                />
+              </div>
+              <div className="relative overflow-hidden rounded-xl border border-slate-200 bg-white">
+                <Image
+                  src={HalfBodyX}
+                  alt="Incorrect half-body photo example"
+                  className="aspect-[3/4] h-auto w-full object-cover"
+                />
+                <span className="inter-semibold-font absolute bottom-1.5 left-1.5 inline-flex items-center gap-1 rounded-md bg-white/95 px-1.5 py-1 text-[10px] max-sm:text-[16px] text-red-600 shadow-sm"><RxCross2 size={10} /> Avoid</span>
+              </div>
             </div>
           </div>
 
@@ -661,14 +675,21 @@ const PhotoUpload = () => {
               type="submit"
               disabled={loading || !frontPhoto}
               className={`inter-semibold-font flex min-h-[54px] w-full items-center justify-center rounded-xl px-6 py-3 text-[15px] max-sm:text-[16px] text-white transition-all duration-200
-      ${
-        loading || !frontPhoto
-          ? "cursor-not-allowed bg-slate-200 text-slate-400"
-          : "cursor-pointer bg-[#47317c] shadow-[0_8px_20px_rgba(71,49,124,0.18)] hover:bg-[#392765] active:scale-[0.99]"
-      }
+      ${loading || !frontPhoto
+                  ? "cursor-not-allowed bg-slate-200 text-slate-400"
+                  : "cursor-pointer bg-[#47317c] shadow-[0_8px_20px_rgba(71,49,124,0.18)] hover:bg-[#392765] active:scale-[0.99]"
+                }
     `}
             >
               {loading ? "Uploading..." : "Upload"}
+            </button>
+            <button
+              type="button"
+              onClick={() => GO.push("/dashboard")}
+              className="inter-medium-font mx-auto mt-4 flex min-h-11 cursor-pointer items-center justify-center gap-2 text-[17px] text-[#47317c] transition-colors hover:text-[#392765]"
+            >
+              <FiArrowLeft size={17} />
+              I’ll do it later
             </button>
           </div>
         </form>

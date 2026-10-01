@@ -30,10 +30,10 @@ const AlertBanner = ({
                 Action required
               </span>
             </div>
-            <h3 className="max-sm:text-[18px] inter-semibold-font text-[14px] leading-snug text-slate-900">
+            <h3 className="inter-semibold-font text-[16px] leading-snug text-slate-900">
               {title}
             </h3>
-            <p className="inter-reg-font mt-0.5 text-[12.5px] max-sm:text-[16px] text-slate-500">
+            <p className="inter-reg-font mt-1 text-[16px] sm:text-[14px] leading-relaxed text-slate-500">
               {description}
             </p>
           </div>
@@ -42,7 +42,7 @@ const AlertBanner = ({
         {/* Action */}
         <Link
           href={href}
-          className="inter-medium-font group inline-flex min-h-[38px] w-full shrink-0 items-center justify-center gap-1.5 rounded-xl border bg-amber-50 border border-amber-200 px-5 py-2 text-[12.5px] max-sm:text-[16px] text-amber-600 no-underline transition-all duration-150 hover:bg-amber-100 active:scale-[0.98] lg:w-auto lg:min-w-[140px]"
+          className="inter-medium-font group inline-flex min-h-[38px] w-full shrink-0 items-center justify-center gap-1.5 rounded-xl border bg-amber-50 border border-amber-200 px-5 py-2 text-[15px] max-sm:text-[16px] text-amber-600 no-underline transition-all duration-150 hover:bg-amber-100 active:scale-[0.98] lg:w-auto lg:min-w-[140px]"
         >
           <UploadCloud size={14} strokeWidth={2.2} />
           <span>{buttonText}</span>
@@ -102,9 +102,9 @@ const UploadTopPrompt = ({ isLoading = false }) => {
       <div className="w-full">
         <AlertBanner
           icon={Camera}
-          title="Upload your photo"
-          description="Please upload your Photo verification to complete your order."
-          buttonText="Upload photo"
+          title="BMI Verification"
+          description="Continue to upload a recent photo for the clinical team to verify your BMI. This may be required to process your order."
+          buttonText="Continue"
           href="/photo-upload"
         />
       </div>
@@ -116,9 +116,9 @@ const UploadTopPrompt = ({ isLoading = false }) => {
       <div className="w-full">
         <AlertBanner
           icon={IdCard}
-          title="Verify Your Identity"
-          description="Please upload a valid ID to verify your identity and complete your order."
-          buttonText="Upload ID"
+          title="Identity Verification"
+          description="Please upload a valid proof of ID to verify your identity and complete your order."
+          buttonText="Continue"
           href="/id-verification"
         />
       </div>

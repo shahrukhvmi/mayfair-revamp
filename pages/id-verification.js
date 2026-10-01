@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
-import { FiUpload } from "react-icons/fi";
+import { FiUpload, FiArrowLeft } from "react-icons/fi";
 import { AiOutlineCheckCircle } from "react-icons/ai";
 import toast from "react-hot-toast";
 import useReorder from "@/store/useReorderStore";
@@ -455,12 +455,21 @@ const IdVerification = () => {
           className="max-w-3xl mx-auto my-auto px-6 sm:px-32 py-10 bg-white shadow-2xl rounded-3xl border border-gray-100"
         >
           <div className="mb-4 max-w-2xl mx-auto text-left">
+            <button
+              type="button"
+              onClick={() => GO.push("/dashboard")}
+              aria-label="Back to dashboard"
+              className="mb-5 flex h-10 w-10 cursor-pointer items-center justify-center rounded-full border border-slate-200 bg-white text-slate-700 transition-colors hover:border-[#47317c]/40 hover:text-[#47317c]"
+            >
+              <FiArrowLeft size={18} />
+            </button>
+
             {/* Heading */}
             {/* <h2 className="subHeading niba-semibold-font mb-2 border-b pb-3">
                             Please upload a <span className='niba-bold-font text-black' >full body</span> picture of yourself
                         </h2> */}
 
-            <h2 className="subHeading !text-black bold-font mb-3 border-b pb-3">
+            <h2 className="subHeading max-sm:!text-[24px] !text-black bold-font mb-3 border-b pb-3">
               ID verification required
             </h2>
 
@@ -561,7 +570,7 @@ const IdVerification = () => {
                     /> */}
           </div>
 
-          <div className="w-full flex justify-center">
+          <div className="w-full flex flex-col items-center">
             <button
               type="submit"
               disabled={loading || !frontPhoto}
@@ -574,6 +583,14 @@ const IdVerification = () => {
     `}
             >
               {loading ? "Uploading..." : "Upload"}
+            </button>
+            <button
+              type="button"
+              onClick={() => GO.push("/dashboard")}
+              className="inter-medium-font mt-4 flex min-h-11 cursor-pointer items-center justify-center gap-2 text-[17px] text-[#47317c] transition-colors hover:text-[#392765]"
+            >
+              <FiArrowLeft size={17} />
+              I’ll do it later
             </button>
           </div>
         </form>

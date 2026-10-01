@@ -50,10 +50,10 @@ const VerificationCard = ({
               Action required
             </span>
           </div>
-          <h3 className="max-sm:text-[18px] inter-semibold-font text-[14px] leading-snug text-slate-900">
+          <h3 className="inter-semibold-font text-[16px] leading-snug text-slate-900">
             {title}
           </h3>
-          <p className="inter-reg-font mt-0.5 text-[12.5px] max-sm:text-[16px] text-slate-500">
+          <p className="inter-reg-font mt-1 text-[16px] sm:text-[14px] leading-relaxed text-slate-500">
             {description}
           </p>
         </div>
@@ -62,7 +62,7 @@ const VerificationCard = ({
       <button
         type="button"
         onClick={onClick}
-        className="inter-medium-font group inline-flex min-h-[38px] w-full shrink-0 cursor-pointer items-center justify-center gap-1.5 rounded-xl border border-amber-200 bg-amber-50 px-5 py-2 text-[12.5px] max-sm:text-[16px] text-amber-600 transition-all duration-150 hover:bg-amber-100 active:scale-[0.98] lg:w-auto lg:min-w-[140px]"
+        className="inter-medium-font group inline-flex min-h-[38px] w-full shrink-0 cursor-pointer items-center justify-center gap-1.5 rounded-xl border border-amber-200 bg-amber-50 px-5 py-2 text-[15px] max-sm:text-[16px] text-amber-600 transition-all duration-150 hover:bg-amber-100 active:scale-[0.98] lg:w-auto lg:min-w-[140px]"
       >
         <UploadCloud aria-hidden="true" size={14} strokeWidth={2.2} />
         <span>{label}</span>
@@ -437,11 +437,11 @@ const ThankYou = () => {
                     id="verification-heading"
                     className="inter-semibold-font text-[18px] tracking-[-0.02em] text-slate-900"
                   >
-                    Your next step: verification
+                    Final step: Verification
                   </h2>
                   <p className="inter-reg-font mt-1 text-[13px] max-sm:text-[16px] leading-relaxed text-slate-500">
-                    Please complete the uploads below so our clinical team can
-                    review your order.
+                    Please complete the verification checks for our clinical
+                    team to ensure the treatment is safe for you.
                   </p>
                 </div>
               </div>
@@ -450,18 +450,18 @@ const ThankYou = () => {
                 {!imageUploaded && (
                   <VerificationCard
                     icon={Camera}
-                    title="Upload your photo"
-                    description="Please upload your Photo verification to complete your order."
-                    label="Upload photo"
+                    title="BMI Verification"
+                    description="Continue to upload a recent photo for the clinical team to verify your BMI. This may be required to process your order."
+                    label="Continue"
                     onClick={handleGoUpload}
                   />
                 )}
                 {!idVerificationUpload && (
                   <VerificationCard
                     icon={IdCard}
-                    title="Verify Your Identity"
-                    description="Please upload a valid ID to verify your identity and complete your order."
-                    label="Upload ID"
+                    title="Identity Verification"
+                    description="Please upload a valid proof of ID to verify your identity and complete your order."
+                    label="Continue"
                     onClick={() => GO.push("/id-verification")}
                   />
                 )}
@@ -480,7 +480,7 @@ const ThankYou = () => {
             </section>
           )}
 
-          <div className="inter-reg-font space-y-4 text-left text-[13px] max-sm:text-[16px] leading-relaxed text-slate-600">
+          <div className="inter-reg-font space-y-4 text-left text-[16px] sm:text-[16px] leading-relaxed text-slate-600">
             {/* <p>
               We have received your medical consultation form which is now being
               reviewed by our prescribers. You may be contacted by a member of
@@ -523,7 +523,7 @@ const ThankYou = () => {
               <NextButton
                 className=""
                 onClick={handleGoBack}
-                label="Continue to view order details"
+                label="Continue to My Account"
                 // disabled={!imageUploaded}
               />
             </div>

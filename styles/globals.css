@@ -711,3 +711,21 @@ body {
     font-size: 16px;
   }
 }
+
+/* iOS Safari zooms the page on focus when a field's font-size is below 16px.
+   Keep every form control at 16px on phones and other touch devices. */
+@media (max-width: 639px), (pointer: coarse) {
+  input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="file"]),
+  select,
+  textarea,
+  .MuiInputBase-input,
+  .MuiSelect-select,
+  .MuiOutlinedInput-input,
+  .MuiFilledInput-input,
+  .MuiInput-input,
+  .MuiAutocomplete-input,
+  .react-tel-input .form-control,
+  [contenteditable="true"] {
+    font-size: 16px !important;
+  }
+}
