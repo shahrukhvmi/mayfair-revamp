@@ -30,6 +30,7 @@ import UploadPhotoLogs from "@/api/UploadLogsApi";
 import PageLoader from "@/Components/PageLoader/PageLoader";
 import BackButton from "@/Components/BackButton/BackButton";
 import { FiArrowLeft } from "react-icons/fi";
+import BmiAlternativesModal from "@/Components/Modal/BmiAlternativesModal";
 
 // ✅ Allowed file types
 const ALLOWED_TYPES = [
@@ -113,7 +114,7 @@ const UploadBox = ({
                 <div className="mb-3 flex h-11 w-11 items-center justify-center rounded-full bg-white shadow-sm ring-1 ring-[#47317c]/10">
                   <AiOutlineLoading3Quarters className="h-5 w-5 animate-spin text-[#47317c]" />
                 </div>
-                <p className="inter-medium-font text-sm max-sm:text-[16px] text-slate-700">
+                <p className="inter-medium-font text-[16px] max-sm:text-[16px] text-slate-700">
                   Uploading...
                 </p>
               </div>
@@ -122,10 +123,10 @@ const UploadBox = ({
                 <div className="mb-3 flex h-11 w-11 items-center justify-center rounded-full bg-white text-[#47317c] shadow-sm ring-1 ring-[#47317c]/10">
                   <FiUpload className="h-5 w-5" />
                 </div>
-                <p className="inter-semibold-font text-[14px] max-sm:text-[16px] text-slate-800">
-                  Choose a full-body photo
+                <p className="inter-semibold-font text-[16px] max-sm:text-[16px] text-slate-800">
+                  Upload a full-body photo
                 </p>
-                <p className="inter-reg-font mt-1 text-[12px] max-sm:text-[16px] leading-5 text-slate-500">
+                <p className="inter-reg-font mt-1 text-[16px] max-sm:text-[16px] leading-6 text-slate-500">
                   Tap to browse files from your device
                 </p>
               </div>
@@ -141,7 +142,7 @@ const UploadBox = ({
                     >
                       <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm-1 1.5L18.5 9H13V3.5zM6 20V4h5v7h7v9H6z" />
                     </svg>
-                    <p className="inter-reg-font w-full truncate px-3 text-center text-xs max-sm:text-[16px] text-slate-600">
+                    <p className="inter-reg-font w-full truncate px-3 text-center text-[16px] max-sm:text-[16px] text-slate-600">
                       {photo?.name}
                     </p>
                   </div>
@@ -173,7 +174,7 @@ const UploadBox = ({
           </button>
         )}
       </div>
-      <p className="inter-reg-font mt-3 text-center text-[11px] max-sm:text-[16px] leading-5 text-slate-500">
+      <p className="inter-reg-font mt-3 text-center text-[16px] max-sm:text-[16px] leading-6 text-slate-500">
         JPEG, PNG, WEBP, HEIC, HEIF, AVIF or PDF · Maximum 30 MB
       </p>
     </div>
@@ -232,6 +233,7 @@ const PhotoUpload = () => {
 
   const GO = useRouter();
   const [open, setOpen] = useState(false);
+  const [showAlternatives, setShowAlternatives] = useState(false);
   const [showLoader, setShowLoader] = useState(false);
   // get Order id url to send photo uplaod api
   const searchParams = useSearchParams();
@@ -535,7 +537,7 @@ const PhotoUpload = () => {
                 </h2>
 
                 {/* Message */}
-                <p className="inter-reg-font mb-6 mt-3 text-center text-[14px] max-sm:text-[16px] leading-6 text-slate-600">
+                <p className="inter-reg-font mb-6 mt-3 text-center text-[16px] max-sm:text-[16px] leading-6 text-slate-600">
                   {!idVerificationUpload
                     ? "Your full body photo have been uploaded and are now under review by our prescribers. You need to complete the ID verification to proceed. Please click the button below to continue."
                     : "Your full body photo have been uploaded and are now under review by our prescribers. We'll approve your order once the review is complete and notify you straight away."}
@@ -554,31 +556,40 @@ const PhotoUpload = () => {
             </motion.div>
           )}
         </AnimatePresence>
-        <form
-          onSubmit={handleSubmit(onSubmit)}
-          className="mx-auto w-full max-w-[620px] rounded-2xl border border-[#47317c]/10 bg-white px-5 py-6 shadow-[0_12px_36px_rgba(71,49,124,0.09)] sm:px-8 sm:py-8"
-        >
+        <div className="mx-auto mb-4 flex w-full max-w-[620px] items-center justify-between gap-3">
           <button
             type="button"
             onClick={() => GO.push("/dashboard")}
             aria-label="Back to dashboard"
-            className="mb-5 flex h-10 w-10 cursor-pointer items-center justify-center rounded-full border border-slate-200 bg-white text-slate-700 transition-colors hover:border-[#47317c]/40 hover:text-[#47317c]"
+            className="flex h-10 w-10 shrink-0 cursor-pointer items-center justify-center rounded-full border border-slate-200 bg-white text-slate-700 shadow-sm transition-colors hover:border-[#47317c]/40 hover:text-[#47317c]"
           >
             <FiArrowLeft size={18} />
           </button>
+          <button
+            type="button"
+            onClick={() => setShowAlternatives(true)}
+            className="inter-medium-font min-w-0 cursor-pointer text-right text-[16px] leading-snug text-[#47317c] underline underline-offset-4 transition-colors hover:text-[#392765] sm:whitespace-nowrap"
+          >
+            Don&apos;t prefer to send photos?<br className="sm:hidden" /> See other ways to verify.
+          </button>
+        </div>
 
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          className="mx-auto w-full max-w-[620px] rounded-2xl border border-[#47317c]/10 bg-white px-5 py-6 shadow-[0_12px_36px_rgba(71,49,124,0.09)] sm:px-8 sm:py-8"
+        >
           <div className="mb-6 text-left">
             {/* Heading */}
             {/* <h2 className="subHeading niba-semibold-font mb-2 border-b pb-3">
                             Please upload a <span className='niba-bold-font text-black' >full body</span> picture of yourself
                         </h2> */}
 
-            <h1 className="max-sm:text-[24px] inter-semibold-font text-[21px] leading-[1.3] tracking-[-0.02em] text-slate-900 sm:text-[23px]">
+            <h1 className="inter-semibold-font text-[24px] leading-[1.3] tracking-[-0.02em] text-slate-900">
               Submit your photo for prescriber review
             </h1>
 
             {/* Description */}
-            <p className="inter-reg-font mt-2 text-[13.5px] max-sm:text-[16px] leading-6 text-slate-500">
+            <p className="inter-reg-font mt-2 text-[16px] max-sm:text-[16px] leading-6 text-slate-500">
               Please upload a recent{" "}
               <span className="inter-semibold-font text-slate-700">
                 full body
@@ -588,8 +599,8 @@ const PhotoUpload = () => {
 
             {/* Bullet Points */}
             <div className="mt-5 rounded-xl border border-[#47317c]/10 bg-[#f8f6fc] px-4 py-3.5">
-              <p className="inter-semibold-font mb-2 text-[13px] max-sm:text-[16px] text-slate-800">Why we need this</p>
-              <ul className="inter-reg-font list-disc space-y-2 pl-5 text-[12.5px] max-sm:text-[16px] leading-5 text-slate-600 marker:text-[#47317c]">
+              <p className="inter-semibold-font mb-2 text-[16px] max-sm:text-[16px] text-slate-800">Why we need this</p>
+              <ul className="inter-reg-font list-disc space-y-2 pl-5 text-[16px] max-sm:text-[16px] leading-6 text-slate-600 marker:text-[#47317c]">
                 <li>We will only ask for this once.</li>
                 <li>
                   We realise it's inconvenient, but this is a regulatory
@@ -602,7 +613,7 @@ const PhotoUpload = () => {
 
           {/* Example Images */}
           <div className="mb-6">
-            <p className="inter-semibold-font mb-3 text-[13px] max-sm:text-[16px] text-slate-800">Photo guidance</p>
+            <p className="inter-semibold-font mb-3 text-[16px] max-sm:text-[16px] text-slate-800">Photo guidance</p>
             <div className="grid grid-cols-3 gap-2 sm:gap-3">
               <div className="relative overflow-hidden rounded-xl border-2 border-emerald-400 bg-white">
                 <Image
@@ -610,7 +621,7 @@ const PhotoUpload = () => {
                   alt="Correct full-body photo example"
                   className="aspect-[3/4] h-auto w-full object-cover"
                 />
-                <span className="inter-semibold-font absolute bottom-1.5 left-1.5 inline-flex items-center gap-1 rounded-md bg-white/95 px-1.5 py-1 text-[10px] max-sm:text-[16px] text-emerald-700 shadow-sm"><FaCheck size={10} /> Good</span>
+                <span className="inter-semibold-font absolute bottom-1.5 left-1.5 inline-flex items-center gap-1 rounded-md bg-white/95 px-1.5 py-1 text-[16px] max-sm:text-[16px] text-emerald-700 shadow-sm"><FaCheck size={10} /> Good</span>
               </div>
               <div className="relative overflow-hidden rounded-xl border border-slate-200 bg-white">
                 <Image
@@ -625,7 +636,7 @@ const PhotoUpload = () => {
                   alt="Incorrect half-body photo example"
                   className="aspect-[3/4] h-auto w-full object-cover"
                 />
-                <span className="inter-semibold-font absolute bottom-1.5 left-1.5 inline-flex items-center gap-1 rounded-md bg-white/95 px-1.5 py-1 text-[10px] max-sm:text-[16px] text-red-600 shadow-sm"><RxCross2 size={10} /> Avoid</span>
+                <span className="inter-semibold-font absolute bottom-1.5 left-1.5 inline-flex items-center gap-1 rounded-md bg-white/95 px-1.5 py-1 text-[16px] max-sm:text-[16px] text-red-600 shadow-sm"><RxCross2 size={10} /> Avoid</span>
               </div>
             </div>
           </div>
@@ -674,7 +685,7 @@ const PhotoUpload = () => {
             <button
               type="submit"
               disabled={loading || !frontPhoto}
-              className={`inter-semibold-font flex min-h-[54px] w-full items-center justify-center rounded-xl px-6 py-3 text-[15px] max-sm:text-[16px] text-white transition-all duration-200
+              className={`inter-semibold-font flex min-h-[54px] w-full items-center justify-center rounded-xl px-6 py-3 text-[16px] max-sm:text-[16px] text-white transition-all duration-200
       ${loading || !frontPhoto
                   ? "cursor-not-allowed bg-slate-200 text-slate-400"
                   : "cursor-pointer bg-[#47317c] shadow-[0_8px_20px_rgba(71,49,124,0.18)] hover:bg-[#392765] active:scale-[0.99]"
@@ -694,6 +705,11 @@ const PhotoUpload = () => {
           </div>
         </form>
       </main>
+
+      <BmiAlternativesModal
+        isOpen={showAlternatives}
+        onClose={() => setShowAlternatives(false)}
+      />
     </>
   );
 };

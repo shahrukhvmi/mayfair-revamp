@@ -25,6 +25,7 @@ import useProductId from "@/store/useProductIdStore";
 import { trackCustomerLabsPurchased } from "@/config/CustomerLabs";
 import patientSource from "@/api/patientSource";
 import useReturning from "@/store/useReturningPatient";
+import BmiAlternativesModal from "../Modal/BmiAlternativesModal";
 import {
   alreadySent,
   markSent,
@@ -39,43 +40,58 @@ const VerificationCard = ({
   description,
   label,
   onClick,
-}) => (
-  <section className="w-full overflow-hidden rounded-2xl border border-amber-200/70 bg-amber-50/40 shadow-[0_1px_4px_rgba(180,83,9,0.06)]">
-    <div className="flex w-full flex-col gap-4 p-4 sm:p-5 lg:flex-row lg:items-center lg:justify-between">
-      <div className="flex min-w-0 flex-1 items-center">
+  alternativesText,
+}) => {
+  const [showAlternatives, setShowAlternatives] = useState(false);
+
+  return (
+    <section className="w-full overflow-hidden rounded-2xl border border-amber-200/70 bg-amber-50/40 shadow-[0_1px_4px_rgba(180,83,9,0.06)]">
+      <div className="flex w-full flex-col gap-4 p-4 sm:p-5 lg:flex-row lg:items-center lg:justify-between lg:gap-6">
         <div className="min-w-0 flex-1">
-          <div className="mb-0.5 flex items-center gap-2">
-            <span className="inter-medium-font inline-flex items-center gap-1.5 rounded-full border border-amber-200 bg-amber-50 px-2 py-0.5 text-[10px] max-sm:text-[13px] uppercase tracking-[0.08em] text-amber-600">
-              <Icon aria-hidden="true" size={14} strokeWidth={2} className="h-3 w-3 shrink-0 max-sm:h-3.5 max-sm:w-3.5" />
-              Action required
-            </span>
-          </div>
-          <h3 className="inter-semibold-font text-[16px] leading-snug text-slate-900">
+          <span className="inter-medium-font inline-flex items-center gap-1.5 rounded-full border border-amber-200 bg-amber-50 px-2 py-0.5 text-[10px] max-sm:text-[13px] uppercase tracking-[0.08em] text-amber-600">
+            <Icon aria-hidden="true" size={14} strokeWidth={2} className="h-3 w-3 shrink-0 max-sm:h-3.5 max-sm:w-3.5" />
+            Action required
+          </span>
+          <h3 className="inter-semibold-font mt-1.5 text-[16px] leading-snug text-slate-900">
             {title}
           </h3>
           <p className="inter-reg-font mt-1 text-[16px] sm:text-[14px] leading-relaxed text-slate-500">
             {description}
           </p>
+          {alternativesText && (
+            <button
+              type="button"
+              onClick={() => setShowAlternatives(true)}
+              className="inter-medium-font mt-2.5 cursor-pointer text-left text-[16px] leading-snug text-[#47317c] underline underline-offset-4 transition-colors hover:text-[#392765]"
+            >
+              {alternativesText}
+            </button>
+          )}
         </div>
+
+        <button
+          type="button"
+          onClick={onClick}
+          className="inter-medium-font group inline-flex min-h-[42px] w-full shrink-0 cursor-pointer items-center justify-center gap-1.5 rounded-xl border border-amber-200 bg-amber-50 px-5 py-2 text-[15px] max-sm:text-[16px] text-amber-600 whitespace-nowrap transition-all duration-150 hover:bg-amber-100 active:scale-[0.98] lg:w-[190px]"
+        >
+          <UploadCloud aria-hidden="true" size={14} strokeWidth={2.2} />
+          <span>{label}</span>
+          <ChevronRight
+            aria-hidden="true"
+            size={13}
+            strokeWidth={2.5}
+            className="shrink-0 transition-transform duration-150 group-hover:translate-x-0.5"
+          />
+        </button>
       </div>
 
-      <button
-        type="button"
-        onClick={onClick}
-        className="inter-medium-font group inline-flex min-h-[38px] w-full shrink-0 cursor-pointer items-center justify-center gap-1.5 rounded-xl border border-amber-200 bg-amber-50 px-5 py-2 text-[15px] max-sm:text-[16px] text-amber-600 transition-all duration-150 hover:bg-amber-100 active:scale-[0.98] lg:w-auto lg:min-w-[140px]"
-      >
-        <UploadCloud aria-hidden="true" size={14} strokeWidth={2.2} />
-        <span>{label}</span>
-        <ChevronRight
-          aria-hidden="true"
-          size={13}
-          strokeWidth={2.5}
-          className="shrink-0 transition-transform duration-150 group-hover:translate-x-0.5"
-        />
-      </button>
-    </div>
-  </section>
-);
+      <BmiAlternativesModal
+        isOpen={showAlternatives}
+        onClose={() => setShowAlternatives(false)}
+      />
+    </section>
+  );
+};
 
 const ThankYou = () => {
   const { orderId, checkOut, setOrderId, setCheckOut } = useCartStore();
@@ -452,7 +468,8 @@ const ThankYou = () => {
                     icon={Camera}
                     title="BMI Verification"
                     description="Continue to upload a recent photo for the clinical team to verify your BMI. This may be required to process your order."
-                    label="Continue"
+                    label="Upload Photo"
+                    alternativesText="Don't prefer to send photos? See other ways to verify."
                     onClick={handleGoUpload}
                   />
                 )}
@@ -461,7 +478,7 @@ const ThankYou = () => {
                     icon={IdCard}
                     title="Identity Verification"
                     description="Please upload a valid proof of ID to verify your identity and complete your order."
-                    label="Continue"
+                    label="Upload ID"
                     onClick={() => GO.push("/id-verification")}
                   />
                 )}

@@ -2,7 +2,7 @@ import React from "react";
 
 const BackButton = ({ label = "Back", loading = false, disabled = false, type = "button", onClick, className = "" }) => {
   return (
-    <div className={`${className} !mt-2 min-h-10 flex items-center justify-center`}>
+    <div className={`${className}  min-h-10 flex items-center justify-center`}>
       <button
         type={type}
         onClick={onClick}
