@@ -20,7 +20,7 @@ import MetaLayout from "@/Meta/MetaLayout";
 import { meta_url } from "@/config/constants";
 
 const OTHER_CLINIC_CONSENT_LABEL =
-  "I confirm that I am currently receiving weight loss medication from another clinic or pharmacy, and I understand that I may be asked to provide proof of this before my treatment is approved.";
+  "I confirm that I am currently receiving weight loss medication from another clinic or pharmacy, I understand that I will be required to provide proof of this before my treatment is approved.";
 
 export default function BmiDetail() {
   const [showLoader, setShowLoader] = useState(false);
@@ -31,7 +31,6 @@ export default function BmiDetail() {
   const { lastBmi } = useLastBmi();
   const { isReturningPatient } = useReturning();
   const router = useRouter();
-
 
   const {
     control,
@@ -132,7 +131,7 @@ export default function BmiDetail() {
       if (consent.weight_related_comorbidity_explanation) {
         setValue(
           "weight_related_comorbidity_explanation",
-          consent.weight_related_comorbidity_explanation
+          consent.weight_related_comorbidity_explanation,
         );
       }
       if (consent.assian_message) {
@@ -188,7 +187,7 @@ export default function BmiDetail() {
 
         if (data.checkbox2) {
           consent.weight_related_comorbidity.push(
-            "You have at least one weight-related comorbidity (e.g. PCOS, diabetes, etc.)"
+            "You have at least one weight-related comorbidity (e.g. PCOS, diabetes, etc.)",
           );
 
           if (data.weight_related_comorbidity_explanation) {
@@ -205,7 +204,6 @@ export default function BmiDetail() {
       bmiConsent: consent,
     });
     setClinicChangeConsent(clinicChangeConsentText);
-
 
     setShowLoader(true);
 
@@ -227,16 +225,21 @@ export default function BmiDetail() {
       <FormWrapper heading={"Your BMI:"} percentage={"70"}>
         <PageAnimationWrapper>
           <div className="mb-5 rounded-2xl border border-[#47317c]/[0.12] bg-[#f5f2fc] py-10 text-center">
-            <p className="inter-medium-font mb-1 text-[13px] max-sm:text-[16px] uppercase tracking-widest text-[#47317c]/60">Your BMI</p>
-            <h1 className="inter-bold-font text-4xl text-[#47317c]">{bmiValue}</h1>
+            <p className="inter-medium-font mb-1 text-[13px] max-sm:text-[16px] uppercase tracking-widest text-[#47317c]/60">
+              Your BMI
+            </p>
+            <h1 className="inter-bold-font text-4xl text-[#47317c]">
+              {bmiValue}
+            </h1>
           </div>
 
           {isReorderAndBmiLow && (
             <div className="mb-4 rounded-xl border border-red-100 bg-red-50 px-4 py-3.5">
               <p className="inter-reg-font text-[13px] max-sm:text-[16px] text-red-700">
-                Your BMI is in the underweight category. Therefore, losing further
-                weight is not safe and you are not able to proceed further. Please
-                contact us to discuss your options with the clinical team.
+                Your BMI is in the underweight category. Therefore, losing
+                further weight is not safe and you are not able to proceed
+                further. Please contact us to discuss your options with the
+                clinical team.
               </p>
             </div>
           )}
@@ -255,7 +258,9 @@ export default function BmiDetail() {
 
           {bmiError && (
             <div className="mb-4 rounded-xl border border-red-100 bg-red-50 px-4 py-3.5">
-              <p className="inter-reg-font text-[13px] max-sm:text-[16px] text-red-700">{bmiError}</p>
+              <p className="inter-reg-font text-[13px] max-sm:text-[16px] text-red-700">
+                {bmiError}
+              </p>
             </div>
           )}
 
@@ -268,26 +273,52 @@ export default function BmiDetail() {
                 If you are currently taking weight loss medication (such as
                 Mounjaro or Wegovy) prescribed by another clinic or pharmacy,
                 you may be able to continue your treatment with us at your
-                current BMI. Please note that we may ask you to provide proof
-                of your existing treatment, such as a prescription label,
+                current BMI. Please note that we may ask you to provide proof of
+                your existing treatment, such as a prescription label,
                 dispensing record or confirmation from your previous provider,
                 before your treatment can be approved.
               </p>
-              <Controller name="otherClinicConsent" control={control} render={({ field }) => (
-                <label className={`flex cursor-pointer items-start gap-3 rounded-xl border p-4 transition-all duration-150
-                  ${field.value ? "border-[#47317c]/20 bg-[#47317c]/[0.03]" : "border-slate-200 bg-[#FBFBFD]"}`}>
-                  <input type="checkbox" {...field} checked={field.value} className="hidden" />
-                  <div className={`mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-[5px] border-2 transition-all duration-150
-                    ${field.value ? "border-[#47317c] bg-[#47317c]" : "border-slate-300 bg-white"}`}>
-                    {field.value && (
-                      <svg width="10" height="8" viewBox="0 0 10 8" fill="none">
-                        <path d="M1 4L3.5 6.5L9 1" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                      </svg>
-                    )}
-                  </div>
-                  <span className="inter-medium-font text-[13px] max-sm:text-[16px] leading-relaxed text-slate-800">{OTHER_CLINIC_CONSENT_LABEL}</span>
-                </label>
-              )} />
+              <Controller
+                name="otherClinicConsent"
+                control={control}
+                render={({ field }) => (
+                  <label
+                    className={`flex cursor-pointer items-start gap-3 rounded-xl border p-4 transition-all duration-150
+                  ${field.value ? "border-[#47317c]/20 bg-[#47317c]/[0.03]" : "border-slate-200 bg-[#FBFBFD]"}`}
+                  >
+                    <input
+                      type="checkbox"
+                      {...field}
+                      checked={field.value}
+                      className="hidden"
+                    />
+                    <div
+                      className={`mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-[5px] border-2 transition-all duration-150
+                    ${field.value ? "border-[#47317c] bg-[#47317c]" : "border-slate-300 bg-white"}`}
+                    >
+                      {field.value && (
+                        <svg
+                          width="10"
+                          height="8"
+                          viewBox="0 0 10 8"
+                          fill="none"
+                        >
+                          <path
+                            d="M1 4L3.5 6.5L9 1"
+                            stroke="white"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          />
+                        </svg>
+                      )}
+                    </div>
+                    <span className="inter-medium-font text-[13px] max-sm:text-[16px] leading-relaxed text-slate-800">
+                      {OTHER_CLINIC_CONSENT_LABEL}
+                    </span>
+                  </label>
+                )}
+              />
             </div>
           )}
 
@@ -311,87 +342,186 @@ export default function BmiDetail() {
                   weight and confirm that either:
                 </p>
 
-                <Controller name="checkbox1" control={control} render={({ field }) => (
-                  <label className={`flex cursor-pointer items-start gap-3 rounded-xl border p-4 transition-all duration-150
-                    ${field.value ? "border-[#47317c]/20 bg-[#47317c]/[0.03]" : "border-slate-200 bg-[#FBFBFD]"}`}>
-                    <input type="checkbox" {...field} checked={field.value} className="hidden" />
-                    <div className={`mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-[5px] border-2 transition-all duration-150
-                      ${field.value ? "border-[#47317c] bg-[#47317c]" : "border-slate-300 bg-white"}`}>
-                      {field.value && (
-                        <svg width="10" height="8" viewBox="0 0 10 8" fill="none">
-                          <path d="M1 4L3.5 6.5L9 1" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                        </svg>
-                      )}
-                    </div>
-                    <span className="inter-medium-font text-[13px] max-sm:text-[16px] leading-relaxed text-slate-800">{getCheckbox1Label()}</span>
-                  </label>
-                )} />
+                <Controller
+                  name="checkbox1"
+                  control={control}
+                  render={({ field }) => (
+                    <label
+                      className={`flex cursor-pointer items-start gap-3 rounded-xl border p-4 transition-all duration-150
+                    ${field.value ? "border-[#47317c]/20 bg-[#47317c]/[0.03]" : "border-slate-200 bg-[#FBFBFD]"}`}
+                    >
+                      <input
+                        type="checkbox"
+                        {...field}
+                        checked={field.value}
+                        className="hidden"
+                      />
+                      <div
+                        className={`mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-[5px] border-2 transition-all duration-150
+                      ${field.value ? "border-[#47317c] bg-[#47317c]" : "border-slate-300 bg-white"}`}
+                      >
+                        {field.value && (
+                          <svg
+                            width="10"
+                            height="8"
+                            viewBox="0 0 10 8"
+                            fill="none"
+                          >
+                            <path
+                              d="M1 4L3.5 6.5L9 1"
+                              stroke="white"
+                              strokeWidth="2"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            />
+                          </svg>
+                        )}
+                      </div>
+                      <span className="inter-medium-font text-[13px] max-sm:text-[16px] leading-relaxed text-slate-800">
+                        {getCheckbox1Label()}
+                      </span>
+                    </label>
+                  )}
+                />
 
-                <Controller name="checkbox2" control={control} render={({ field }) => (
-                  <label className={`flex cursor-pointer items-start gap-3 rounded-xl border p-4 transition-all duration-150
-                    ${field.value ? "border-[#47317c]/20 bg-[#47317c]/[0.03]" : "border-slate-200 bg-[#FBFBFD]"}`}>
-                    <input type="checkbox" {...field} checked={field.value} className="hidden" />
-                    <div className={`mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-[5px] border-2 transition-all duration-150
-                      ${field.value ? "border-[#47317c] bg-[#47317c]" : "border-slate-300 bg-white"}`}>
-                      {field.value && (
-                        <svg width="10" height="8" viewBox="0 0 10 8" fill="none">
-                          <path d="M1 4L3.5 6.5L9 1" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                        </svg>
-                      )}
-                    </div>
-                    <span className="inter-medium-font text-[13px] max-sm:text-[16px] leading-relaxed text-slate-800">You have at least one weight-related comorbidity (e.g. PCOS, diabetes, etc.)</span>
-                  </label>
-                )} />
+                <Controller
+                  name="checkbox2"
+                  control={control}
+                  render={({ field }) => (
+                    <label
+                      className={`flex cursor-pointer items-start gap-3 rounded-xl border p-4 transition-all duration-150
+                    ${field.value ? "border-[#47317c]/20 bg-[#47317c]/[0.03]" : "border-slate-200 bg-[#FBFBFD]"}`}
+                    >
+                      <input
+                        type="checkbox"
+                        {...field}
+                        checked={field.value}
+                        className="hidden"
+                      />
+                      <div
+                        className={`mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-[5px] border-2 transition-all duration-150
+                      ${field.value ? "border-[#47317c] bg-[#47317c]" : "border-slate-300 bg-white"}`}
+                      >
+                        {field.value && (
+                          <svg
+                            width="10"
+                            height="8"
+                            viewBox="0 0 10 8"
+                            fill="none"
+                          >
+                            <path
+                              d="M1 4L3.5 6.5L9 1"
+                              stroke="white"
+                              strokeWidth="2"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            />
+                          </svg>
+                        )}
+                      </div>
+                      <span className="inter-medium-font text-[13px] max-sm:text-[16px] leading-relaxed text-slate-800">
+                        You have at least one weight-related comorbidity (e.g.
+                        PCOS, diabetes, etc.)
+                      </span>
+                    </label>
+                  )}
+                />
 
                 {checkbox2 && (
-                  <Controller name="weight_related_comorbidity_explanation" control={control}
+                  <Controller
+                    name="weight_related_comorbidity_explanation"
+                    control={control}
                     rules={{ required: "Explanation is required" }}
                     render={({ field }) => (
-                      <TextField {...field} required label="Explanation"
-                        name="weight_related_comorbidity_explanation" placeholder="Describe your condition(s)" errors={errors} multiline boxed rows={4} />
+                      <TextField
+                        {...field}
+                        required
+                        label="Explanation"
+                        name="weight_related_comorbidity_explanation"
+                        placeholder="Describe your condition(s)"
+                        errors={errors}
+                        multiline
+                        boxed
+                        rows={4}
+                      />
                     )}
                   />
                 )}
 
-                <Controller name="noneOfTheAbove" control={control} render={({ field }) => (
-                  <div>
-                    <label className={`flex cursor-pointer items-start gap-3 rounded-xl border p-4 transition-all duration-150
-                      ${field.value ? "border-red-200 bg-red-50/30" : "border-slate-200 bg-[#FBFBFD]"}`}>
-                      <input type="checkbox" {...field} checked={field.value} onChange={(e) => {
-                        const checked = e.target.checked;
-                        field.onChange(checked);
-                        if (checked) {
-                          setValue("checkbox1", false);
-                          setValue("checkbox2", false);
-                          setValue("weight_related_comorbidity_explanation", "");
-                        }
-                      }} className="hidden" />
-                      <div className={`mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-[5px] border-2 transition-all duration-150
-                        ${field.value ? "border-red-400 bg-red-400" : "border-slate-300 bg-white"}`}>
-                        {field.value && (
-                          <svg width="10" height="8" viewBox="0 0 10 8" fill="none">
-                            <path d="M1 4L3.5 6.5L9 1" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                          </svg>
-                        )}
-                      </div>
-                      <span className="inter-medium-font text-[13px] max-sm:text-[16px] leading-relaxed text-slate-800">None of the above</span>
-                    </label>
-                    {noneOfTheAbove && (
-                      <div className="mt-2 rounded-xl border border-red-100 bg-red-50 px-4 py-3">
-                        <p className="inter-reg-font text-[13px] max-sm:text-[16px] text-red-700">
-                          Your BMI in this range, weight loss treatment can only be
-                          prescribed if you have either previously taken weight loss
-                          medication, or you have at least one weight-related
-                          medical condition.
-                        </p>
-                      </div>
-                    )}
-                  </div>
-                )} />
+                <Controller
+                  name="noneOfTheAbove"
+                  control={control}
+                  render={({ field }) => (
+                    <div>
+                      <label
+                        className={`flex cursor-pointer items-start gap-3 rounded-xl border p-4 transition-all duration-150
+                      ${field.value ? "border-red-200 bg-red-50/30" : "border-slate-200 bg-[#FBFBFD]"}`}
+                      >
+                        <input
+                          type="checkbox"
+                          {...field}
+                          checked={field.value}
+                          onChange={(e) => {
+                            const checked = e.target.checked;
+                            field.onChange(checked);
+                            if (checked) {
+                              setValue("checkbox1", false);
+                              setValue("checkbox2", false);
+                              setValue(
+                                "weight_related_comorbidity_explanation",
+                                "",
+                              );
+                            }
+                          }}
+                          className="hidden"
+                        />
+                        <div
+                          className={`mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-[5px] border-2 transition-all duration-150
+                        ${field.value ? "border-red-400 bg-red-400" : "border-slate-300 bg-white"}`}
+                        >
+                          {field.value && (
+                            <svg
+                              width="10"
+                              height="8"
+                              viewBox="0 0 10 8"
+                              fill="none"
+                            >
+                              <path
+                                d="M1 4L3.5 6.5L9 1"
+                                stroke="white"
+                                strokeWidth="2"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                              />
+                            </svg>
+                          )}
+                        </div>
+                        <span className="inter-medium-font text-[13px] max-sm:text-[16px] leading-relaxed text-slate-800">
+                          None of the above
+                        </span>
+                      </label>
+                      {noneOfTheAbove && (
+                        <div className="mt-2 rounded-xl border border-red-100 bg-red-50 px-4 py-3">
+                          <p className="inter-reg-font text-[13px] max-sm:text-[16px] text-red-700">
+                            Your BMI in this range, weight loss treatment can
+                            only be prescribed if you have either previously
+                            taken weight loss medication, or you have at least
+                            one weight-related medical condition.
+                          </p>
+                        </div>
+                      )}
+                    </div>
+                  )}
+                />
               </>
             )}
 
-            <NextButton loading={showLoader} label="Next" type="submit" disabled={isNextDisabled} />
+            <NextButton
+              loading={showLoader}
+              label="Next"
+              type="submit"
+              disabled={isNextDisabled}
+            />
             <BackButton
               label="Back"
               className="mt-3"
