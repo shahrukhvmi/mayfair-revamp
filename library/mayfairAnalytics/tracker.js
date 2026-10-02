@@ -73,6 +73,28 @@ export function identify(type, id, meta = {}) {
   return run((api) => api.identify(type, String(id), meta));
 }
 
+/**
+ * Like identify(), but resolves true only once the server has stored the link
+ * (the tracker retries while the visitor's first hit is still on its way).
+ * Resolves false on failure, if the tracker is unavailable, or after 30 s
+ * (e.g. an older tracker that does not report back).
+ */
+export function identifyConfirmed(type, id, meta = {}) {
+  if (id === undefined || id === null || id === "") return Promise.resolve(false);
+  return new Promise((resolve) => {
+    let settled = false;
+    const done = (ok) => {
+      if (settled) return;
+      settled = true;
+      resolve(Boolean(ok));
+    };
+    const timer = setTimeout(() => done(false), 30000);
+    run((api) => api.identify(type, String(id), meta, (ok) => { clearTimeout(timer); done(ok); }));
+    // The tracker could not load at all: run() never calls fn.
+    loadTracker().then((api) => { if (!api) { clearTimeout(timer); done(false); } });
+  });
+}
+
 /** Page view for in-app (client-side) navigation. The first page view is sent by the tracker itself. */
 export function pageView() {
   return run((api) => api.page());

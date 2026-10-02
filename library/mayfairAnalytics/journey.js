@@ -29,14 +29,53 @@ const STEPS = {
   "/dosage-selection": { step: "dosage_selection" },
 };
 
-// Reaching one of these routes marks a stage, once per session.
-const STAGES = {
-  "/acknowledgment": ["consultation_started", { type: "new_patient" }],
-  "/re-order": ["consultation_started", { type: "reorder" }],
-  "/steps-information": ["consultation_started", { type: "continue" }],
-  "/gathering-data": ["consultation_completed", {}],
-  "/checkout": ["checkout_started", {}],
+// Pages where the patient chooses how to go on. Reaching one is not starting
+// the consultation; the flow chosen is remembered for when they really start.
+const ENTRIES = {
+  "/acknowledgment": "new_patient",
+  "/re-order": "reorder",
+  "/steps-information": "continue",
 };
+
+const FLOW_KEY = "mfa:consultation_flow";
+
+// Where this tab is in the current consultation round: "" (not started),
+// "started" (answering questions), "completed" (submitted) or "checkout".
+// A patient can answer, submit and check out more than once in one visit;
+// each round is reported once, and refreshing a page never repeats it.
+const ROUND_KEY = "mfa:consultation_round";
+
+function roundState() {
+  try {
+    return window.sessionStorage.getItem(ROUND_KEY) || "";
+  } catch (e) {
+    return "";
+  }
+}
+
+function setRoundState(state) {
+  try {
+    window.sessionStorage.setItem(ROUND_KEY, state);
+  } catch (e) {
+    // Storage unavailable: stages may be repeated on refresh, never lost.
+  }
+}
+
+function rememberFlow(type) {
+  try {
+    window.sessionStorage.setItem(FLOW_KEY, type);
+  } catch (e) {
+    // Storage unavailable: the flow is simply not reported.
+  }
+}
+
+function chosenFlow() {
+  try {
+    return window.sessionStorage.getItem(FLOW_KEY) || "";
+  } catch (e) {
+    return "";
+  }
+}
 
 function trackRoute(pathname, initial) {
   if (!initial) pageView();
@@ -45,14 +84,36 @@ function trackRoute(pathname, initial) {
     track("consultation_opened", { path: pathname }),
   );
 
-  const stage = STAGES[pathname];
-  if (stage) {
-    oncePerSession(stage[0], () =>
-      track(stage[0], { ...stage[1], path: pathname }),
+  const entry = ENTRIES[pathname];
+  if (entry) {
+    rememberFlow(entry);
+    oncePerSession(`consultation_entry:${entry}`, () =>
+      track("consultation_entry", { type: entry, path: pathname }),
     );
   }
 
   const step = STEPS[pathname];
+  const round = roundState();
+  // The consultation starts at its first question (a step with progress).
+  // Going back to a question after submitting is the same round.
+  if (step?.progress && (round === "" || round === "checkout")) {
+    setRoundState("started");
+    const type = chosenFlow();
+    track("consultation_started", { ...(type ? { type } : {}), step: step.step, progress: step.progress, path: pathname });
+  }
+
+  // Submitted (or a consultation completed earlier, resumed): the plugin tells
+  // the two apart by whether questions were answered.
+  if (pathname === "/gathering-data" && round !== "completed") {
+    setRoundState("completed");
+    track("consultation_completed", { path: pathname });
+  }
+
+  if (pathname === "/checkout" && round !== "checkout") {
+    setRoundState("checkout");
+    track("checkout_started", { path: pathname });
+  }
+
   if (step) {
     track("consultation_step", { ...step, path: pathname });
   }

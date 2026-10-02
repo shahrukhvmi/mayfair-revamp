@@ -5,8 +5,12 @@
 // Google Ads as the acquisition source.
 
 import useUserDataStore from "@/store/userDataStore";
+import useAuthUserDetailStore from "@/store/useAuthUserDetailStore";
+import useAuthStore from "@/store/authStore";
+import useImpersonate from "@/store/useImpersonateStore";
 import getOrderByIdApi from "@/api/getOrderByIdApi";
-import { identify, oncePerBrowser, oncePerSession, run, track } from "./tracker";
+import { identify, identifyConfirmed, oncePerBrowser, oncePerSession, run, track } from "./tracker";
+import { crmTime, fetchPatientOrders } from "./patientOrders";
 
 /* ------------------------------------------------------------ attribution */
 
@@ -71,6 +75,12 @@ export function markSent(key) {
 // "user signed in" link below does not report them as a plain login first.
 const signingUp = new Set();
 
+// Links being sent in this page load, so the same one is never sent twice at once.
+const sending = new Set();
+
+// How each patient seen in this page load signed in (already_logged_in / logged_in).
+const signedInHow = {};
+
 /** A new account was created in the consultation (email confirmation step). */
 export function trackSignup(user, email) {
   if (!user?.id) return;
@@ -83,36 +93,131 @@ export function trackSignup(user, email) {
   track("signup", { returning_patient: user.isReturning ? "yes" : "no" });
 }
 
-function linkPatient(user) {
-  if (!user?.id) return;
+/**
+ * The signed-in patient, or null. Every sign-in path (login page, header login
+ * modal, signup, impersonation) sets authUserDetail and/or userData; a patient
+ * only counts as signed in while the app holds their token.
+ */
+function signedInPatient() {
+  if (!useAuthStore.getState().token) return null;
+  const detail = useAuthUserDetailStore.getState().authUserDetail;
+  const user = detail?.id ? detail : useUserDataStore.getState().userData;
+  return user?.id ? user : null;
+}
+
+/** Staff signed in as a patient (impersonation) must never be linked to that patient. */
+function impersonating() {
+  return Boolean(useImpersonate.getState().impersonate);
+}
+
+function sessionFlag(key) {
+  try {
+    return Boolean(window.sessionStorage.getItem(key));
+  } catch (e) {
+    return false;
+  }
+}
+
+function setSessionFlag(key) {
+  try {
+    window.sessionStorage.setItem(key, "1");
+  } catch (e) {
+    // Storage unavailable: the link is simply sent again next time.
+  }
+}
+
+/**
+ * Links this visitor to the signed-in patient, once per tracker session.
+ * how: "already_logged_in" (signed in when the app loaded) or "logged_in"
+ * (signed in during this visit). The server keeps whichever it saw first.
+ * Then reads the patient's order history once per session, so the plugin can
+ * mark them as a returning patient (a paid order before this visitor was
+ * first seen) or a new one.
+ *
+ * Marked as done only after the server confirms, so a failed send is retried
+ * on the next page or event instead of being lost.
+ */
+function linkPatient(how) {
   run((api, state) => {
-    // Checked when it runs: the signup handler sets userData just before it
-    // reports the signup, so this sees the signup and stands aside.
-    if (signingUp.has(String(user.id))) return;
-    const key = `mfa:patient:${state?.visitor_id}:${user.id}`;
-    try {
-      if (localStorage.getItem(key)) return;
-      localStorage.setItem(key, "1");
-    } catch (e) {
-      // continue
+    const user = signedInPatient();
+    if (!user || impersonating()) return;
+    const id = String(user.id);
+    // The signup handler reports this patient itself, with signup_status "signed_up".
+    if (signingUp.has(id)) return;
+
+    const base = `mfa:patient:${state?.session_id}:${state?.visitor_id}:${id}`;
+    const meta = { email: user.email || "", signup_status: how };
+    if (user.isReturning !== undefined && user.isReturning !== null) {
+      meta.returning_patient = Boolean(user.isReturning);
     }
-    api.identify("patient", String(user.id), {
-      email: user.email || "",
-      returning_patient: Boolean(user.isReturning),
-    });
+
+    if (!sessionFlag(base) && !sending.has(base)) {
+      sending.add(base);
+      identifyConfirmed("patient", id, meta).then((ok) => {
+        sending.delete(base);
+        if (ok) setSessionFlag(base);
+      });
+    }
+
+    const ordersKey = `${base}:orders`;
+    if (!sessionFlag(ordersKey) && !sending.has(ordersKey)) {
+      sending.add(ordersKey);
+      fetchPatientOrders(useAuthStore.getState().token)
+        .then((orders) => {
+          if (!orders || signedInPatient()?.id !== user.id) return false;
+          return identifyConfirmed("patient", id, {
+            ...meta,
+            orders_checked: true,
+            orders_complete: orders.complete,
+            orders_total: orders.total,
+            orders_first_on: orders.firstOn,
+            orders_last_on: orders.lastOn,
+            paid_orders: orders.paid,
+          });
+        })
+        .then((ok) => {
+          sending.delete(ordersKey);
+          if (ok) setSessionFlag(ordersKey);
+        })
+        .catch(() => sending.delete(ordersKey));
+    }
   });
 }
 
 /**
- * Links the visitor to the patient whenever anyone signs in, wherever that
- * happens (login page, header, login modal) – they all set userData.
+ * Links the visitor to the patient whenever someone is signed in, wherever
+ * that happens: already signed in when the app loads, or signing in later
+ * through the login page, the header login modal or signup. Watches the
+ * patient stores and the token, since each path sets a different mix of them.
  */
 export function watchPatient() {
-  linkPatient(useUserDataStore.getState().userData);
-  return useUserDataStore.subscribe((state, previous) => {
-    const user = state.userData;
-    if (user?.id && user.id !== previous?.userData?.id) linkPatient(user);
-  });
+  const patientId = () => signedInPatient()?.id ?? null;
+  let current = patientId();
+  if (current) {
+    signedInHow[current] = "already_logged_in";
+    linkPatient("already_logged_in");
+  }
+
+  const check = () => {
+    const next = patientId();
+    if (next && next !== current) {
+      signedInHow[next] = signedInHow[next] || "logged_in";
+      linkPatient(signedInHow[next]);
+    }
+    current = next;
+  };
+  const stops = [
+    useAuthStore.subscribe(check),
+    useAuthUserDetailStore.subscribe(check),
+    useUserDataStore.subscribe(check),
+  ];
+  return () => stops.forEach((stop) => stop());
+}
+
+/** Before an order or payment is reported, make sure the visitor is linked to the patient. */
+function ensurePatientLinked() {
+  const user = signedInPatient();
+  if (user) linkPatient(signedInHow[user.id] || "logged_in");
 }
 
 /* ---------------------------------------------------------- orders/payments */
@@ -122,7 +227,8 @@ const PAYMENT_STATUS = [
   ["cancelled", /cancel|void|abandon/],
   ["failed", /fail|declin|error|reject|denied/],
   ["paid", /^(paid|success|successful|succeeded|captured|complete|completed|approved|settled)$/],
-  ["pending", /pend|process|await|incomplete|initiat|hold|unpaid/],
+  // "Not attempted" (order created, no payment yet) is unconfirmed, not unknown.
+  ["pending", /pend|process|await|incomplete|initiat|hold|unpaid|not attempt/],
 ];
 
 /**
@@ -152,8 +258,10 @@ function toCurrency(value) {
 /** The order was created by the backend; payment has not been attempted yet. */
 export function trackOrderCreated({ orderId, value, currency = "GBP" }) {
   if (!orderId) return;
+  ensurePatientLinked();
   const amount = toNumber(value);
   identify("order", orderId, {
+    context: "checkout",
     order_status: "created",
     payment_status: "pending",
     value: amount,
@@ -166,9 +274,11 @@ export function trackOrderCreated({ orderId, value, currency = "GBP" }) {
 export function trackPaymentAttempt(paymentData) {
   const orderId = paymentData?.order_id || paymentData?.oid;
   if (!orderId) return;
+  ensurePatientLinked();
   const value = toNumber(paymentData?.chargetotal);
   const currency = toCurrency(paymentData?.currency);
   identify("order", orderId, {
+    context: "checkout",
     payment_status: "pending",
     payment_attempt_at: new Date().toISOString(),
     value,
@@ -185,17 +295,24 @@ function latestPayment(order) {
 
 /**
  * Reports an order's real state as the backend returns it (order status,
- * payment status, total, method). Used on the thank-you page and whenever an
- * order is viewed, so later cancellations and refunds are picked up too.
+ * payment status, total, method, and the order system's own order and payment
+ * times). Used on the thank-you page and whenever an order is viewed, so later
+ * cancellations and refunds are picked up too.
+ *
+ * Viewing an order is reported as "order_viewed", never as a checkout or a
+ * payment: the plugin keeps an order the person only looked at apart from the
+ * orders placed in this visit, with its real dates.
  */
 export function syncOrderStatus(order, { thankYou = false } = {}) {
   if (!order?.id) return;
+  ensurePatientLinked();
   const payment = latestPayment(order);
   const rawPayment = payment?.status || order?.payment_status || "";
   const paymentStatus = normalizePaymentStatus(rawPayment);
   const orderId = String(order.id);
 
   const meta = {
+    context: thankYou ? "thank_you" : "view",
     order_status: order?.status || "",
     payment_status: paymentStatus,
     payment_status_raw: rawPayment,
@@ -203,14 +320,23 @@ export function syncOrderStatus(order, { thankYou = false } = {}) {
     currency: "GBP",
     payment_method: payment?.payment_method || payment?.method || payment?.card_brand || "",
   };
+  const createdAt = crmTime(order?.created_at, order?.created_at_time);
+  if (createdAt) meta.order_created_at = createdAt;
+  const paidAt = paymentStatus === "paid" ? crmTime(payment?.paid_at || payment?.updated_at || payment?.created_at) : "";
+  if (paidAt) meta.paid_at = paidAt;
   if (thankYou) meta.thank_you_at = new Date().toISOString();
   identify("order", orderId, meta);
 
-  if (thankYou) {
-    oncePerSession(`thank_you:${orderId}`, () =>
-      track("thank_you", { order_id: orderId, payment_status: paymentStatus }),
+  if (!thankYou) {
+    oncePerSession(`order_viewed:${orderId}`, () =>
+      track("order_viewed", { order_id: orderId, payment_status: paymentStatus }),
     );
+    return;
   }
+
+  oncePerSession(`thank_you:${orderId}`, () =>
+    track("thank_you", { order_id: orderId, payment_status: paymentStatus }),
+  );
 
   const outcome = {
     paid: "payment_success",
@@ -247,8 +373,9 @@ export function recordThankYou(order) {
  * recorded as a failed payment (a later successful retry replaces it).
  */
 export function trackPaymentFailed(orderId) {
+  ensurePatientLinked();
   track("payment_failed", { order_id: orderId ? String(orderId) : "", source: "gateway_redirect" });
   if (orderId) {
-    identify("order", orderId, { payment_status: "failed", evidence: "gateway_fail_redirect" });
+    identify("order", orderId, { context: "checkout", payment_status: "failed", evidence: "gateway_fail_redirect" });
   }
 }
