@@ -45,13 +45,12 @@ const BmiAlternativesModal = ({ isOpen, onClose }) => {
           id="bmi-alternatives-heading"
           className="inter-semibold-font pr-10 text-[20px] sm:text-[22px] leading-snug tracking-[-0.01em] text-slate-900 sm:whitespace-nowrap"
         >
-          Alternatives if you're not comfortable sending photos
+          Alternative Ways to Verify Your Height and Weight
         </h2>
 
         <div className="inter-reg-font mt-5 space-y-4 text-[16px] sm:text-[17px] leading-relaxed text-slate-600">
           <p>
-            If you prefer not to send a photo, you can email one of the
-            following to
+            If you would prefer not to submit a photograph, we understand and are happy to offer alternative methods of verification. You can email one of the following options to
             <span className="mt-1 block">
               <a
                 href={`mailto:${EMAIL}`}
@@ -64,18 +63,14 @@ const BmiAlternativesModal = ({ isOpen, onClose }) => {
           </p>
           <ul className="list-disc space-y-3 pl-5 marker:text-[#47317c]">
             <li>
-              A letter from your GP or pharmacist confirming your height and
-              weight. It must include your full name and date of birth, be
-              printed on official headed paper or bear a pharmacy stamp, and be
-              signed by a healthcare professional.
+              A letter from your GP or pharmacist confirming your height and weight. This must include your full name and date of birth, be printed on official headed paper or bear a pharmacy stamp, and be signed by a qualified healthcare professional.
             </li>
             <li>
-              A photo or video of you standing on a weighing scale. Your weight
-              must be clearly visible, with your ID placed beside you and its
-              details clearly legible.
+              A photograph or video of yourself standing on a weighing scale, with your weight clearly visible. Please ensure your identification document is placed beside you, with all details clearly legible.
             </li>
            
           </ul>
+          <p>We hope these alternatives provide a more comfortable and convenient way for you to complete the verification process.</p>
 
           <div className="border-t border-slate-200 pt-4">
             <h3 className="inter-bold-font text-[16px] sm:text-[17px] text-slate-900">
