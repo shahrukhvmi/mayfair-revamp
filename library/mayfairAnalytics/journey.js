@@ -29,6 +29,31 @@ const STEPS = {
   "/dosage-selection": { step: "dosage_selection" },
 };
 
+// The order of the steps, from the map above (used as step_index).
+const STEP_ORDER = Object.keys(STEPS);
+
+/**
+ * A consultation step was completed: its form passed validation and its
+ * answers were saved (to the app's own store, or to the server when the page
+ * saves them there – saved: "server"). Called by each step page at the point
+ * its save succeeded, never on a bare "Next" click. The step comes from the
+ * current page, so the pages only say *when*, never *which*.
+ */
+export function completeStep({ saved = "app", path } = {}) {
+  const pathname = String(path || Router.pathname || "").replace(/\/$/, "") || "/";
+  const step = STEPS[pathname];
+  if (!step) return;
+  track("consultation_step_completed", {
+    // "step", like the step views: property names containing "key" are dropped by the
+    // plugin's privacy filter (it treats them as secrets).
+    step: step.step,
+    step_index: STEP_ORDER.indexOf(pathname) + 1,
+    ...(step.progress ? { progress: step.progress } : {}),
+    saved,
+    path: pathname,
+  });
+}
+
 // Pages where the patient chooses how to go on. Reaching one is not starting
 // the consultation; the flow chosen is remembered for when they really start.
 const ENTRIES = {
@@ -69,6 +94,14 @@ function rememberFlow(type) {
   }
 }
 
+function forgetFlow() {
+  try {
+    window.sessionStorage.removeItem(FLOW_KEY);
+  } catch (e) {
+    // Storage unavailable: nothing was remembered.
+  }
+}
+
 function chosenFlow() {
   try {
     return window.sessionStorage.getItem(FLOW_KEY) || "";
@@ -77,23 +110,31 @@ function chosenFlow() {
   }
 }
 
+// Next.js error pages (a 404 or a crash): the page view is kept, but they are
+// not part of the consultation.
+const ERROR_PAGES = ["/_error", "/404", "/500"];
+
 function trackRoute(pathname, initial) {
   if (!initial) pageView();
+  if (ERROR_PAGES.includes(pathname)) return;
 
   oncePerSession("consultation_opened", () =>
     track("consultation_opened", { path: pathname }),
   );
 
+  const step = STEPS[pathname];
+  const round = roundState();
+
+  // One choice of how to go on per round, made before its first question: a
+  // new patient also passes /steps-information (treatment choice), and a
+  // re-order goes /re-order -> /steps-information; neither is a second choice.
   const entry = ENTRIES[pathname];
-  if (entry) {
+  if (entry && (round === "" || round === "checkout") && !chosenFlow()) {
     rememberFlow(entry);
     oncePerSession(`consultation_entry:${entry}`, () =>
       track("consultation_entry", { type: entry, path: pathname }),
     );
   }
-
-  const step = STEPS[pathname];
-  const round = roundState();
   // The consultation starts at its first question (a step with progress).
   // Going back to a question after submitting is the same round.
   if (step?.progress && (round === "" || round === "checkout")) {
@@ -111,11 +152,12 @@ function trackRoute(pathname, initial) {
 
   if (pathname === "/checkout" && round !== "checkout") {
     setRoundState("checkout");
+    forgetFlow(); // The next round chooses again.
     track("checkout_started", { path: pathname });
   }
 
   if (step) {
-    track("consultation_step", { ...step, path: pathname });
+    track("consultation_step", { ...step, step_index: STEP_ORDER.indexOf(pathname) + 1, path: pathname });
   }
 }
 

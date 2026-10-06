@@ -18,6 +18,7 @@ import useReturning from "@/store/useReturningPatient";
 import useSignupStore from "@/store/signupStore";
 import useBmiStore from "@/store/bmiStore";
 import Router from "next/router";
+import { completeStep } from "@/library/mayfairAnalytics";
 import toast from "react-hot-toast";
 import useAuthStore from "@/store/authStore";
 import NextButton from "../NextButton/NextButton";
@@ -218,6 +219,8 @@ const ProductSelection = ({ showProductSelection }) => {
       setConsentResetProductId(selectedProductId);
     }
     setProductId(selectedProductId);
+    // The treatment choice is this step's answer (kept in the app's store).
+    completeStep();
 
     Router.push(redirection);
   };

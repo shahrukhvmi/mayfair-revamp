@@ -43,4 +43,10 @@ switch (serverType) {
     meta_url = "https://www.mayfairweightlossclinic.co.uk/start-consultation/";
     break;
 }
+// Local development against a Laravel API served on this machine, e.g.
+// NEXT_PUBLIC_API_URL=http://127.0.0.1:8000/api in .env.local. Never set for
+// staging or live builds.
+if (process.env.NEXT_PUBLIC_API_URL) {
+  app_url = process.env.NEXT_PUBLIC_API_URL;
+}
 export { app_url, meta_url, passwordlink, FoundayoProductId, WegovyPillProductId };

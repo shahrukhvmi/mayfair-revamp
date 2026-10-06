@@ -15,6 +15,7 @@ import { meta_url } from "@/config/constants";
 import { MdCheckBox, MdCheckBoxOutlineBlank } from "react-icons/md";
 import useProductId from "@/store/useProductIdStore";
 import useReorder from "@/store/useReorderStore";
+import { completeStep } from "@/library/mayfairAnalytics";
 
 export default function PatientConsent() {
   const router = useRouter();
@@ -104,6 +105,7 @@ export default function PatientConsent() {
     setConfirmationInfo(questions);
     clearConsentResetProductId();
 
+    completeStep();
     router.push("/gp-detail");
   };
 

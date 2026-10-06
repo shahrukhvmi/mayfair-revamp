@@ -11,6 +11,7 @@ import PageLoader from "@/Components/PageLoader/PageLoader";
 import usePatientInfoStore from "@/store/patientInfoStore";
 import MetaLayout from "@/Meta/MetaLayout";
 import { meta_url } from "@/config/constants";
+import { completeStep } from "@/library/mayfairAnalytics";
 
 export default function PregnancyCheck() {
   const [showLoader, setShowLoader] = useState(false);
@@ -50,6 +51,7 @@ export default function PregnancyCheck() {
   };
 
   const onSubmit = async () => {
+    completeStep();
     setShowLoader(true);
     router.push("/calculate-bmi");
   };

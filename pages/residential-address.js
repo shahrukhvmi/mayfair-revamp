@@ -24,6 +24,7 @@ import { motion } from "framer-motion";
 import toast from "react-hot-toast";
 import MetaLayout from "@/Meta/MetaLayout";
 import { meta_url } from "@/config/constants";
+import { completeStep } from "@/library/mayfairAnalytics";
 // import { PostcodeLookup } from "@ideal-postcodes/postcode-lookup";
 
 // const api = new Client("_UFb05P76EyMidU1VHIQ_A42976"); old key
@@ -127,6 +128,7 @@ export default function ResidentialAddress() {
     };
 
     setPatientInfo({ ...patientInfo, address: fullAddress });
+    completeStep();
     setShowLoader(true);
     router.push("/preferred-phone-number");
   };

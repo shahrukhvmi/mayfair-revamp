@@ -20,6 +20,7 @@ import useReorderBackProcessStore from "@/store/useReorderBackProcess";
 import { isFemalePatient } from "@/utils/patientChecks";
 import useReturning from "@/store/useReturningPatient";
 import usePatientInfoStore from "@/store/patientInfoStore";
+import { completeStep } from "@/library/mayfairAnalytics";
 
 const validateRange = (value, min, max, wholeOnly, message) => {
   const num = Number(value);
@@ -245,6 +246,7 @@ export default function CalculateBmi() {
           weight_unit: weightUnitKey || bmi?.weight_unit, // default to metrics if blank
         });
 
+        completeStep();
         setShowLoader(true);
 
         router.push("/bmi-detail");
