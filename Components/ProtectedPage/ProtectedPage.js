@@ -7,9 +7,6 @@ export default function ProtectedPage({ children }) {
 
   const router = useRouter();
 
-  console.log("token", token);
-  console.log("hasHydrated", hasHydrated);
-
   useEffect(() => {
     if (isImpersonationLogout) {
       setIsImpersonationLogout(false); // reset flag after use

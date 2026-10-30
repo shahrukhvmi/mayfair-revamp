@@ -3,6 +3,7 @@ import { useRouter } from "next/router";
 import { motion, AnimatePresence } from "framer-motion";
 import PageLoader from "@/Components/PageLoader/PageLoader";
 import { app_url } from "../config/constants";
+import { trackPaymentAttempt } from "@/library/mayfairAnalytics";
 
 const Payment = () => {
   const router = useRouter();
@@ -29,14 +30,12 @@ const Payment = () => {
         const data = await res.json();
 
         // ✅ Log full response
-        console.log("Payment Data API Response:", data?.paymentData);
 
         if (data?.paymentData) {
           setPaymentData(data.paymentData);
         }
       } catch (err) {
         setShowLoader(false);
-        console.error("Error fetching paymentData:", err);
       }
     };
 
@@ -45,6 +44,9 @@ const Payment = () => {
 
   useEffect(() => {
     if (!paymentData?.actionurl) return;
+
+    // Payment attempt: the visitor is about to be sent to the gateway.
+    trackPaymentAttempt(paymentData);
 
     const updateCountdown = () => {
       setCountdown((prev) => {

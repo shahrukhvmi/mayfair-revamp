@@ -17,7 +17,7 @@ const OrdersTabs = ({ activeTab, onTabChange, tabs }) => {
             <motion.div
               key={index}
               onClick={() => handleTabChange(index)}
-              className={`text-xs niba-reg-font py-1 text-nowrap px-2 cursor-pointer ${activeTab === index
+              className={`text-xs max-sm:text-[16px] niba-reg-font py-1 text-nowrap px-2 cursor-pointer ${activeTab === index
                   ? " text-black border-b-4 border-violet-800"
                   : "text-gray-700 hover:border-b-4 border-violet-800"
                 }`}

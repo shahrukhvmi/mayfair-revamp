@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { FormControl, MenuItem, FormHelperText, Select } from "@mui/material";
+import MUISelectField from "@/Components/SelectField/SelectField";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
 import MuiDatePickerField from "@/Components/DatePicker/DatePicker";
@@ -36,10 +36,8 @@ const MyProfile = () => {
   // GET Profile
   const getProfileDataMutation = useMutation(getProfileData, {
     onSuccess: (res) => {
-      console.log(res, "res res res");
       const user = res?.data?.profile?.user;
       if (user) {
-        console.log(user);
 
         setValue("firstname", user.fname || "");
         setValue("lastname", user.lname || "");
@@ -77,59 +75,50 @@ const MyProfile = () => {
 
   const onSubmit = (data) => {
     setLoading(true);
-    console.log("Submitting data:", data);
     sendProfileDataMutation.mutate(data);
   };
 
   return (
     <div className="p-6 sm:bg-[#F9FAFB] sm:min-h-screen sm:rounded-md sm:shadow-md my-5 sm:me-5">
       <div className="mb-8">
-        <h1 className="md:text-3xl text-lg mb-2 niba-bold-font heading">Profile Information</h1>
-        <p className="reg-font paragraph  text-left text-sm xl:w-3/4 mt-2">Update your account's profile information and email address.</p>
+        <h1 className="max-sm:text-[24px] md:text-3xl text-lg mb-2 niba-bold-font heading">Profile Information</h1>
+        <p className="reg-font paragraph  text-left text-sm max-sm:text-[16px] xl:w-3/4 mt-2">Update your account's profile information and email address.</p>
       </div>
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
         {/* First & Last Name */}
         <div className="grid sm:grid-cols-2 gap-4">
-          <ProfileTextField required label="First Name" name="firstname" placeholder="First Name" register={register} errors={errors} />
+          <ProfileTextField required label="First Name" name="firstname" placeholder="Enter your first name" register={register} errors={errors} />
 
-          <ProfileTextField required label="Last Name" name="lastname" placeholder="Last Name" register={register} errors={errors} />
+          <ProfileTextField required label="Last Name" name="lastname" placeholder="Enter your last name" register={register} errors={errors} />
         </div>
 
         {/* Gender & DOB */}
         <div className="grid sm:grid-cols-2 gap-4 items-start">
           <div>
-            <label className="bold-font paragraph mb-2 relative">
-              Gender
-              <span className="text-red-500 absolute m-1 niba-semibold-font"> *</span>
-            </label>
-            <FormControl fullWidth error={!!errors.gender}>
               <Controller
                 name="gender"
                 control={control}
                 rules={{ required: "Gender is required" }}
                 render={({ field }) => (
-                  <Select
-                    {...field}
-                    displayEmpty
-                    size="small"
-                    fullWidth
-                    className="reg-font"
-                    sx={{
-                      height: 56,
-                      fontSize: "14px",
-                      color: "black",
-                      backgroundColor: "transparent",
-                    }}
-                  >
-                    <MenuItem value="">Select gender</MenuItem>
-                    <MenuItem value="male">Male</MenuItem>
-                    <MenuItem value="female">Female</MenuItem>
-                  </Select>
+                  <MUISelectField
+                    label="Gender"
+                    name={field.name}
+                    value={field.value}
+                    onChange={field.onChange}
+                    onBlur={field.onBlur}
+                    inputRef={field.ref}
+                    required
+                    placeholder="Select gender"
+                    placeholderDisabled={false}
+                    error={errors.gender?.message}
+                    options={[
+                      { value: "male", label: "Male" },
+                      { value: "female", label: "Female" },
+                    ]}
+                  />
                 )}
               />
-              {errors.gender && <FormHelperText>{errors.gender.message}</FormHelperText>}
-            </FormControl>
           </div>
 
           <div>
@@ -168,29 +157,29 @@ const MyProfile = () => {
                   <PhoneInput
                     {...field}
                     country="gb"
-                    placeholder="Enter your number"
+                    placeholder="e.g. 7700 900123"
                     inputStyle={{ border: "none", width: "100%", background: "transparent" }}
                     className="reg-font"
                   />
                 </div>
               )}
             />
-            {errors.phoneNumber && <p className="text-red-500 text-sm mt-1">{errors.phoneNumber.message}</p>}
+            {errors.phoneNumber && <p className="text-red-500 text-sm max-sm:text-[16px] mt-1">{errors.phoneNumber.message}</p>}
           </div>
 
           <div>
             <label className="bold-font paragraph mb-2">Email Address</label>
-            <div className=" border border-gray-400 rounded-sm px-3 flex items-center text-sm text-black cursor-not-allowed h-15">
+            <div className=" border border-gray-400 rounded-sm px-3 flex items-center text-sm max-sm:text-[16px] text-black cursor-not-allowed h-15">
               <p className="reg-font">{userEmail}</p>
             </div>
-            <p className="reg-font text-xs mt-2 text-gray-700">(This email is associated with your account and cannot be changed)</p>
+            <p className="reg-font text-xs max-sm:text-[16px] mt-2 text-gray-700">(This email is associated with your account and cannot be changed)</p>
           </div>
         </div>
 
         {/* Submit Button */}
         <div className="mt-4 sm:max-w-20">
           <div className="text-center my-3">
-            <NextButton type="submit" disabled={!isValid || isLoading} label={isLoading ? "Saving..." : "Save"} />
+            <NextButton loading={isLoading} type="submit" disabled={!isValid || isLoading} label={isLoading ? "Saving..." : "Save"} />
           </div>
         </div>
       </form>

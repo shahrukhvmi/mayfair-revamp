@@ -20,22 +20,12 @@ export default function RouteGuard({ children }) {
       router.push("/review");
     } else if (isLogin && token) {
       router.push("/dashboard");
-    } else {
-      setLoading(false);
-    }
+    } else {
+      setLoading(false);
+    }
   }, [router.pathname, token, loginRoute]);
 
-  if (loading)
-    return (
-      <>
-        {" "}
-        <PageLoader />
-      </>
-    );
+  if (loading) return <PageLoader />;
 
   return children;
-
-  // //  else if (isPublic && token) {
-  //     router.push("/dashboard/");
-  // }
 }

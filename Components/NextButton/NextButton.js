@@ -1,7 +1,5 @@
 import React from "react";
 
-import { Inter } from "next/font/google";
-const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 const NextButton = ({
   label = "Next",
   loading = false,
@@ -10,33 +8,34 @@ const NextButton = ({
   onClick,
   className,
   subHeading,
+  subHeadingClassName = "",
 }) => {
   return (
-    <div className={"mb-0"}>
+    <div className="mb-0">
       <button
         type={type}
         onClick={onClick}
         disabled={disabled || loading}
-        className={`${className} w-full ${
-          subHeading ? "" : "sm:px-12"
-        }   border-2 py-3 rounded-full text-white bold-font text-sm transition-all duration-150 ease-in-out
-            flex justify-center items-center cursor-pointer
-            ${
-              disabled || loading
-                ? "bg-gray-300 !cursor-not-allowed"
-                : " border-[#47317c] bg-[#47317c] hover:bg-[#47317c]"
-            }`}
+        className={`${className} w-full inter-medium-font text-[14px] max-sm:text-[16px] tracking-wide transition-all duration-150 ease-in-out
+          flex justify-center items-center cursor-pointer rounded-lg py-3 px-6
+          ${
+            loading
+              ? "bg-[#47317c] text-white opacity-80 !cursor-not-allowed"
+              : disabled
+                ? "bg-slate-200 text-slate-500 !cursor-not-allowed"
+                : "bg-[#47317c] hover:bg-[#3d2a6b] text-white"
+          }`}
       >
         {loading ? (
           <div className="flex items-center gap-2">
-            <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-            <span>Loading...</span>
+            <div className="w-4 h-4 shrink-0 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+            <span>Please wait...</span>
           </div>
         ) : (
-          <div className="flex flex-col items-center ">
+          <div className="flex flex-col items-center">
             <div>{label}</div>
             {subHeading && (
-              <div className="text-[13px] reg-font pt-1 normal-case">
+              <div className={`text-[12px] inter-reg-font pt-1 normal-case opacity-80 ${subHeadingClassName}`}>
                 {subHeading}
               </div>
             )}

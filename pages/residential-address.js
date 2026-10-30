@@ -24,6 +24,7 @@ import { motion } from "framer-motion";
 import toast from "react-hot-toast";
 import MetaLayout from "@/Meta/MetaLayout";
 import { meta_url } from "@/config/constants";
+import { completeStep } from "@/library/mayfairAnalytics";
 // import { PostcodeLookup } from "@ideal-postcodes/postcode-lookup";
 
 // const api = new Client("_UFb05P76EyMidU1VHIQ_A42976"); old key
@@ -88,10 +89,9 @@ export default function ResidentialAddress() {
         setAddressOptions(data.result);
         setManual(true);
       } else {
-        toast.error("No addresses found");
+        toast.error("No address found");
       }
     } catch (error) {
-      console.error("Ideal Postcodes error:", error);
       toast.error("Address lookup failed");
     } finally {
       setAddressSearchLoading(false);
@@ -128,8 +128,8 @@ export default function ResidentialAddress() {
     };
 
     setPatientInfo({ ...patientInfo, address: fullAddress });
+    completeStep();
     setShowLoader(true);
-    await new Promise((resolve) => setTimeout(resolve, 500));
     router.push("/preferred-phone-number");
   };
 
@@ -150,38 +150,31 @@ export default function ResidentialAddress() {
               }`}
             >
               <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-                <div className="space-y-6">
+                <div className="space-y-2 sm:space-y-6">
                   <div className="relative">
-                    <TextField
-                      label="Post code"
-                      name="postalCode"
-                      register={register}
-                      required
-                      errors={errors}
-                    />
+                    <div className="min-w-0">
+                      <TextField
+                        label="Post code"
+                        name="postalCode"
+                        placeholder="e.g. SW1A 1AA"
+                        register={register}
+                        required
+                        errors={errors}
+                        className="pr-[108px]"
+                      />
+                    </div>
                     <button
                       type="button"
                       onClick={handleSearch}
-                      className={`bold-medium-font absolute right-3 transform -translate-y-1/2 cursor-pointer flex items-center bg-primary text-white px-2 py-1 rounded w-32 justify-center ${
-                        errors.postalCode ? "top-2/4" : "top-2/3"
-                      }`}
                       disabled={addressSearchLoading}
+                      className="inter-medium-font absolute right-0 top-[24px] flex min-h-[38px] min-w-[96px] cursor-pointer items-center justify-center gap-1.5 rounded-md bg-[#47317c] px-4 py-2 text-[12px] max-sm:text-[16px] text-white transition-colors hover:bg-[#3d2a6b] disabled:cursor-not-allowed disabled:opacity-60"
                     >
                       {addressSearchLoading ? (
-                        <motion.div
-                          animate={{ rotate: 360 }}
-                          transition={{
-                            repeat: Infinity,
-                            duration: 1,
-                            ease: "linear",
-                          }}
-                          className="w-6 h-6 border-4 border-t-transparent rounded-full text-white"
+                        <motion.div animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 1, ease: "linear" }}
+                          className="h-4 w-4 rounded-full border-2 border-white border-t-transparent"
                         />
                       ) : (
-                        <span className="flex items-center reg-font">
-                          <FaSearch className="inline-block me-2" />
-                          Search
-                        </span>
+                        <><FaSearch size={12} /><span>Search</span></>
                       )}
                     </button>
                   </div>
@@ -189,6 +182,7 @@ export default function ResidentialAddress() {
                   {addressOptions.length > 0 && (
                     <MUISelectField
                       label="Select Your Address"
+                      variant="underline"
                       name="addressSelect"
                       value={selectedIndex}
                       required
@@ -227,15 +221,10 @@ export default function ResidentialAddress() {
                     />
                   )}
 
-                  <div className="text-sm sm:text-right text-center">
-                    <button
-                      type="button"
-                      onClick={() => setManual(!manual)}
-                      className="bold-font paragraph underline transition cursor-pointer"
-                    >
-                      {manual
-                        ? "Hide manual address entry"
-                        : "Enter your address manually"}
+                  <div className="text-right">
+                    <button type="button" onClick={() => setManual(!manual)}
+                      className="inter-medium-font cursor-pointer text-[13px] max-sm:text-[16px] text-[#47317c] transition-colors hover:text-[#3d2a6b]">
+                      {manual ? "Hide manual address entry" : "Enter your address manually"}
                     </button>
                   </div>
 
@@ -244,6 +233,7 @@ export default function ResidentialAddress() {
                       <TextField
                         label="Address"
                         name="address1"
+                        placeholder="e.g. 10 Downing Street"
                         register={register}
                         required
                         errors={errors}
@@ -251,12 +241,14 @@ export default function ResidentialAddress() {
                       <TextField
                         label="Address 2"
                         name="address2"
+                        placeholder="Apartment, suite or unit (optional)"
                         register={register}
                         errors={errors}
                       />
                       <TextField
                         label="Town / City"
                         name="city"
+                        placeholder="e.g. London"
                         register={register}
                         required
                         errors={errors}
@@ -264,6 +256,7 @@ export default function ResidentialAddress() {
                       <TextField
                         label="Country"
                         name="country"
+                        placeholder="e.g. United Kingdom"
                         register={register}
                         required
                         errors={errors}
@@ -272,7 +265,7 @@ export default function ResidentialAddress() {
                   )}
                 </div>
 
-                <NextButton label="Next" disabled={!isNextEnabled} />
+                <NextButton loading={showLoader} label="Next" disabled={!isNextEnabled} />
                 <BackButton
                   label="Back"
                   className="mt-2"
@@ -280,11 +273,11 @@ export default function ResidentialAddress() {
                 />
               </form>
 
-              {showLoader && (
+              {/* {showLoader && (
                 <div className="absolute inset-0 z-20 flex justify-center items-center bg-white/60 rounded-lg cursor-not-allowed">
                   <PageLoader />
                 </div>
-              )}
+              )} */}
             </div>
           </div>
         </PageAnimationWrapper>

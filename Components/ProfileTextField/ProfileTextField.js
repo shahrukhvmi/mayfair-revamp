@@ -35,7 +35,7 @@ const ProfileTextField = ({
           {required ? (
             <span className="text-red-500 absolute top-1 ms-1 niba-semibold-font"> *</span>
           ) : (
-            <span className="text-gray-500 text-sm font-normal ml-1">(optional)</span>
+            <span className="text-gray-500 text-sm max-sm:text-[16px] font-normal ml-1">(optional)</span>
           )}
         </label>
       )}
@@ -60,12 +60,25 @@ const ProfileTextField = ({
           <input
             id={name}
             type={inputType}
+            maxLength={type === "text" ? 100 : undefined}
             placeholder={placeholder}
             disabled={disabled}
             onPaste={handlePaste}
             {...(register
               ? register(name, {
                 required: required && "This field is required",
+                ...(type === "text"
+                  ? {
+                      minLength: {
+                        value: 2,
+                        message: "Please enter at least 2 characters",
+                      },
+                      maxLength: {
+                        value: 100,
+                        message: "Please enter no more than 100 characters",
+                      },
+                    }
+                  : {}),
                 ...validation,
               })
               : { value, onChange })}
@@ -87,7 +100,7 @@ const ProfileTextField = ({
         </div>
       )}
 
-      {errors[name] && <p className="text-red-500 text-sm mt-1">{errors[name]?.message || "This field is required"}</p>}
+      {errors[name] && <p className="text-red-500 text-sm max-sm:text-[16px] mt-1">{errors[name]?.message || "This field is required"}</p>}
     </div>
   );
 };

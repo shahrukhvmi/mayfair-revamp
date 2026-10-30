@@ -3,8 +3,17 @@ import { useRouter } from "next/router";
 import { HiBadgeCheck } from "react-icons/hi";
 import NextButton from "../NextButton/NextButton";
 import useCartStore from "@/store/useCartStore";
-import { RiErrorWarningLine } from "react-icons/ri";
+import {
+  ChevronRight,
+  UploadCloud,
+  Camera,
+  IdCard,
+  ShieldCheck,
+  ClipboardCheck,
+} from "lucide-react";
 import useImageUploadStore from "@/store/useImageUploadStore ";
+import useIdVerificationUploadStore from "@/store/useIdVerificationUploadStore";
+import { GetIdVerification } from "@/api/IdVerificationApi";
 import GetImageIsUplaod from "@/api/GetImageIsUplaod";
 import GetUserOrderApi from "@/api/GetUserOrderApi";
 import useAuthStore from "@/store/authStore";
@@ -16,6 +25,73 @@ import useProductId from "@/store/useProductIdStore";
 import { trackCustomerLabsPurchased } from "@/config/CustomerLabs";
 import patientSource from "@/api/patientSource";
 import useReturning from "@/store/useReturningPatient";
+import BmiAlternativesModal from "../Modal/BmiAlternativesModal";
+import {
+  alreadySent,
+  markSent,
+  getStoredAttribution,
+  recordThankYou,
+  toPatientSourceTouches,
+} from "@/library/mayfairAnalytics";
+
+const VerificationCard = ({
+  icon: Icon,
+  title,
+  description,
+  label,
+  onClick,
+  alternativesText,
+}) => {
+  const [showAlternatives, setShowAlternatives] = useState(false);
+
+  return (
+    <section className="w-full overflow-hidden rounded-2xl border border-amber-200/70 bg-amber-50/40 shadow-[0_1px_4px_rgba(180,83,9,0.06)]">
+      <div className="flex w-full flex-col gap-4 p-4 sm:p-5 lg:flex-row lg:items-center lg:justify-between lg:gap-6">
+        <div className="min-w-0 flex-1">
+          <span className="inter-medium-font inline-flex items-center gap-1.5 rounded-full border border-amber-200 bg-amber-50 px-2 py-0.5 text-[10px] max-sm:text-[13px] uppercase tracking-[0.08em] text-amber-600">
+            <Icon aria-hidden="true" size={14} strokeWidth={2} className="h-3 w-3 shrink-0 max-sm:h-3.5 max-sm:w-3.5" />
+            Action required
+          </span>
+          <h3 className="inter-semibold-font mt-1.5 text-[16px] leading-snug text-slate-900">
+            {title}
+          </h3>
+          <p className="inter-reg-font mt-1 text-[16px] sm:text-[14px] leading-relaxed text-slate-500">
+            {description}
+          </p>
+          {alternativesText && (
+            <button
+              type="button"
+              onClick={() => setShowAlternatives(true)}
+              className="inter-medium-font mt-2.5 cursor-pointer text-left text-[16px] leading-snug text-[#47317c] underline underline-offset-4 transition-colors hover:text-[#392765]"
+            >
+              {alternativesText}
+            </button>
+          )}
+        </div>
+
+        <button
+          type="button"
+          onClick={onClick}
+          className="inter-medium-font group inline-flex min-h-[42px] w-full shrink-0 cursor-pointer items-center justify-center gap-1.5 rounded-xl border border-amber-200 bg-amber-50 px-5 py-2 text-[15px] max-sm:text-[16px] text-amber-600 whitespace-nowrap transition-all duration-150 hover:bg-amber-100 active:scale-[0.98] lg:w-[190px]"
+        >
+          <UploadCloud aria-hidden="true" size={14} strokeWidth={2.2} />
+          <span>{label}</span>
+          <ChevronRight
+            aria-hidden="true"
+            size={13}
+            strokeWidth={2.5}
+            className="shrink-0 transition-transform duration-150 group-hover:translate-x-0.5"
+          />
+        </button>
+      </div>
+
+      <BmiAlternativesModal
+        isOpen={showAlternatives}
+        onClose={() => setShowAlternatives(false)}
+      />
+    </section>
+  );
+};
 
 const ThankYou = () => {
   const { orderId, checkOut, setOrderId, setCheckOut } = useCartStore();
@@ -26,8 +102,6 @@ const ThankYou = () => {
   const { patientInfo } = usePatientInfoStore();
   const { productId } = useProductId();
   const { isReturningPatient } = useReturning();
-
-  // console.log(isReturningPatient, "isReturningPatient");
 
   // useEffect(() => {
 
@@ -41,22 +115,27 @@ const ThankYou = () => {
   // }
   const GO = useRouter();
   const { imageUploaded, setImageUploaded } = useImageUploadStore();
+  const { idVerificationUpload, setIdVerificationUpload } =
+    useIdVerificationUploadStore();
   useEffect(() => {
     const fetchImageStatus = async () => {
       try {
-        const res = await GetImageIsUplaod({ order_id: orderId });
+        const [imageResult, idResult] = await Promise.allSettled([
+          GetImageIsUplaod({ order_id: orderId }),
+          GetIdVerification(),
+        ]);
 
-        setImageUploaded(res?.data?.status);
-      } catch (error) {
-        console.error(
-          "Failed to fetch image status:",
-          error?.response?.data?.errors?.Order,
-        );
-      }
+        if (imageResult.status === "fulfilled") {
+          setImageUploaded(imageResult.value?.data?.status);
+        }
+        if (idResult.status === "fulfilled") {
+          setIdVerificationUpload(idResult.value?.data?.status);
+        }
+      } catch (error) {}
     };
 
     if (orderId) fetchImageStatus();
-  }, [orderId]);
+  }, [orderId, setImageUploaded, setIdVerificationUpload]);
 
   useEffect(() => {
     const fetchUserOrder = async () => {
@@ -95,8 +174,8 @@ const ThankYou = () => {
         const addonsString =
           addonItems.length > 0
             ? addonItems
-              .map((item) => `${item?.name} x${item?.quantity || 1}`)
-              .join(", ")
+                .map((item) => `${item?.name} x${item?.quantity || 1}`)
+                .join(", ")
             : "None";
 
         // Build productProperties array for CL
@@ -116,38 +195,25 @@ const ThankYou = () => {
           };
         });
 
-        const stored = JSON.parse(
-          localStorage.getItem("mayfair_attribution") || "null",
-        );
+        // Order status, payment status (from the order record) and thank-you
+        // completion for Mayfair Analytics.
+        recordThankYou(res?.data);
 
-        if (stored) {
+        const stored = getStoredAttribution();
+
+        // Sent once per order. The attribution itself is kept (not deleted):
+        // it belongs to the visitor and must survive for their later orders.
+        const sentKey = `patient_source_order_${clOrderId}`;
+        if (stored && !alreadySent(sentKey)) {
           try {
             await patientSource({
               user_id: userData?.id || null,
               order_id: clOrderId,
-              first_touch: {
-                channel: stored.first_touch?.channel || "Direct",
-                source: stored.first_touch?.source || "direct",
-                medium: stored.first_touch?.medium || "none",
-                paid_status: stored.first_touch?.paid_status || "unknown",
-              },
-              last_touch: {
-                channel: stored.last_touch?.channel || "Direct",
-                source: stored.last_touch?.source || "direct",
-                medium: stored.last_touch?.medium || "none",
-                paid_status: stored.last_touch?.paid_status || "unknown",
-              },
+              type: "order",
+              ...toPatientSourceTouches(stored),
             });
-
-            localStorage.removeItem("mayfair_attribution");
-            localStorage.removeItem("utm_source");
-            localStorage.removeItem("utm_medium");
-            localStorage.removeItem("utm_campaign");
-
-            console.log("✅ Mayfair attribution sent");
-          } catch (attributionError) {
-            console.error("Attribution API failed:", attributionError);
-          }
+            markSent(sentKey);
+          } catch (attributionError) {}
         }
 
         trackCustomerLabsPurchased({
@@ -182,7 +248,6 @@ const ThankYou = () => {
           error?.response?.data?.errors?.Order || "An error occurred",
         );
         router.replace("/dashboard");
-        console.error("Failed to fetch user order:", error);
       }
     };
 
@@ -205,48 +270,57 @@ const ThankYou = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#F2EEFF] px-4 sm:px-8 md:px-20 my-16">
-      <div className="bg-white shadow-2xl rounded-3xl p-8 md:p-12 w-full max-w-3xl transition-all duration-300">
-        <div className="text-center mb-10">
-          <HiBadgeCheck className="w-20 h-20 text-gray-200 fill-purple-600 mx-auto mb-5" />
-          <h2 className="text-4xl font-bold text-gray-800 mb-4">
+    <div className="min-h-screen bg-[#FBFBFD] px-4 py-10 sm:px-6 sm:py-14">
+      <div className="mx-auto w-full max-w-3xl overflow-hidden rounded-2xl border border-[#47317c]/10 bg-white shadow-[0_18px_55px_rgba(71,49,124,0.10)] transition-all duration-300">
+        <div className="mb-0 border-b border-[#47317c]/[0.08] bg-[#f5f2fc] px-6 py-8 text-center sm:px-10">
+          <HiBadgeCheck className="mx-auto mb-4 h-14 w-14 fill-[#47317c] text-white" />
+          <h2 className="inter-bold-font mb-2 text-[24px] tracking-[-0.02em] text-slate-900 sm:text-[30px]">
             {" "}
             Order Placed Successfully
           </h2>
-          <span className="text-gray-800 font-bold text-2xl">
+          <span className="inter-semibold-font text-[15px] max-sm:text-[16px] text-[#47317c] sm:text-[16px]">
             {" "}
             Order #{orderId}
           </span>
         </div>
 
-        <div className="space-y-6">
+        <div className="space-y-6 px-5 py-6 sm:px-8 sm:py-8">
           <div>
             {/* <h3 className="text-2xl reg-font text-gray-800 border-b border-gray-200 pb-2 mb-4 text-center">Order Summary</h3> */}
-            <div className="overflow-x-auto rounded-xl border border-gray-200 shadow-md">
-              <table className="min-w-full divide-y divide-gray-200 text-sm text-gray-700">
-                <thead className="bg-gray-100 text-gray-700 font-semibold">
+            <div className="overflow-x-auto rounded-xl border border-slate-200/80">
+              <table className="inter-reg-font min-w-full divide-y divide-slate-100 text-sm max-sm:text-[16px] text-slate-700">
+                <thead className="inter-semibold-font bg-[#47317c]/[0.05] text-slate-700">
                   <tr>
-                    <th className="px-6 py-4 text-left bold-font">Items</th>
-                    <th className="px-6 py-4 text-right bold-font">Quantity</th>
-                    <th className="px-6 py-4 text-right bold-font">Amount</th>
+                    <th className="inter-semibold-font px-6 py-4 text-left">
+                      Items
+                    </th>
+                    <th className="inter-semibold-font px-6 py-4 text-right">
+                      Quantity
+                    </th>
+                    <th className="inter-semibold-font px-6 py-4 text-right">
+                      Amount
+                    </th>
                     <th className="px-6 py-4 text-right"></th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-gray-100 bg-white">
+                <tbody className="divide-y divide-slate-100 bg-white">
                   {items?.map((item, index) => (
-                    <tr key={`addon-${index}`} className="hover:bg-gray-50">
-                      <td className="px-6 py-3 reg-font text-black">
+                    <tr
+                      key={`addon-${index}`}
+                      className="transition-colors hover:bg-[#47317c]/[0.02]"
+                    >
+                      <td className="inter-medium-font px-6 py-3 text-slate-900">
                         {item?.label || item?.product || "Add-on"}
                       </td>
-                      <td className="px-6 py-3 text-center reg-font">
+                      <td className="inter-reg-font px-6 py-3 text-center">
                         {item?.quantity}
                       </td>
-                      <td className="px-6 py-3 text-right reg-font">
+                      <td className="inter-reg-font px-6 py-3 text-right">
                         £
                         {(
                           parseFloat(item?.price) * (item?.quantity || 1)
                         ).toFixed(2)}
-                        <span className="text-gray-500 text-sm ml-1">
+                        <span className="text-gray-500 text-sm max-sm:text-[16px] ml-1">
                           {/* (£{parseFloat(item?.price).toFixed(2)} each) */}
                         </span>
                       </td>
@@ -267,7 +341,7 @@ const ThankYou = () => {
                           {(
                             parseFloat(item?.price) * (item?.qty || 1)
                           ).toFixed(2)}
-                          <span className="text-gray-500 text-sm ml-1">
+                          <span className="text-gray-500 text-sm max-sm:text-[16px] ml-1">
                           </span>
                         </td>
                       </tr>
@@ -275,17 +349,17 @@ const ThankYou = () => {
 
                   {checkOut?.discount?.discount !== null && (
                     <tr className="hover:bg-gray-50">
-                      <td className="px-6 py-3 reg-font text-black">
+                      <td className="inter-reg-font px-6 py-3 text-slate-900">
                         Discount
                         {checkOut?.discount?.type === "Percent"
                           ? ` (${parseInt(checkOut?.discount?.discount)}%)`
                           : checkOut?.discount?.type &&
-                          ` (${checkOut?.discount?.type})`}
+                            ` (${checkOut?.discount?.type})`}
                         {checkOut?.discount?.code &&
                           ` - Code: ${checkOut?.discount?.code}`}
                       </td>
                       <td></td>
-                      <td className="px-6 py-3 text-right reg-font text-primary">
+                      <td className="inter-medium-font px-6 py-3 text-right text-[#47317c]">
                         {checkOut?.discount?.type === "Percent"
                           ? `-£${parseFloat(checkOut?.discount?.discount_value || 0).toFixed(2)}`
                           : `-£${parseFloat(checkOut?.discount?.discount).toFixed(2)}`}
@@ -295,7 +369,7 @@ const ThankYou = () => {
 
                   {/* {checkOut?.discount?.discount !== null && (
                     <tr className="hover:bg-gray-50">
-                      <td className="px-6 py-3 reg-font text-black">
+                      <td className="inter-reg-font px-6 py-3 text-slate-900">
                         Discount
                         {checkOut?.discount?.type &&
                           ` (${checkOut?.discount?.type})`}
@@ -333,24 +407,27 @@ const ThankYou = () => {
 
                   {checkOut?.shipment && (
                     <tr className="hover:bg-gray-50">
-                      <td className="px-6 py-3 reg-font text-black">
-                        Shipping{" "}
-                        <span className="text-black mx-2">
+                      <td colSpan={2} className="px-6 py-3 reg-font text-black">
+                        Shipping
+                        <span className="block text-black sm:ml-1 sm:inline">
                           ({checkOut?.shipment?.name})
                         </span>
                       </td>
-                      <td></td>
-                      <td className="px-6 py-3 text-right reg-font ">
+                      <td className="inter-reg-font px-6 py-3 text-right">
                         £{parseFloat(checkOut?.shipment?.price).toFixed(2)}
                       </td>
+                      <td></td>
                     </tr>
                   )}
 
-                  <tr className="bg-gray-100 font-bold text-gray-900">
-                    <td colSpan={2} className="px-6 py-3 text-right bold-font">
+                  <tr className="bg-[#47317c]/[0.055] font-bold text-slate-900">
+                    <td
+                      colSpan={2}
+                      className="inter-semibold-font px-6 py-3 text-right"
+                    >
                       Total
                     </td>
-                    <td className="px-6 py-3 text-right bold-font">
+                    <td className="inter-semibold-font px-6 py-3 text-right text-[#47317c]">
                       £{parseFloat(checkOut?.total).toFixed(2)}
                     </td>
                     <td></td>
@@ -359,69 +436,68 @@ const ThankYou = () => {
               </table>
             </div>
           </div>
-          {!imageUploaded && (
-            <>
-              <blockquote
-                style={{
-                  padding: "10px",
-                  backgroundColor: "#F9F9F9",
-                  borderLeft: "3px solid #ccc",
-                  borderRight: "3px solid #ccc",
-                  borderRadius: 15,
-                  padding: 20,
-                }}
-                className={`${imageUploaded ? "my-6" : ""} `}
-              >
-                <h2 className="niba-bold-font underline text-black mb-2">
-                  Photo Upload Request:
-                </h2>{" "}
-
-                <p className="thin-font text-gray-700">
-                  As part of our ongoing commitment to patient safety and
-                  compliance with current regulatory requirements, we are
-                  required to verify your BMI as part of our prescribing
-                  process.
-                </p>
-                <p className="thin-font text-gray-700 my-3">
-                  {" "}
-                  Please upload a clear, recent full-body photograph. This
-                  is one of the methods we use to verify your BMI and ensure
-                  that your treatment remains safe and appropriate for you.
-                </p>
-                <p className="thin-font text-gray-700 my-3 ">
-                  {" "}
-                  Once your photo has been reviewed and approved by our
-                  clinical team, your order will be processed and dispensed
-                  by our pharmacy.
-                </p>
-                <p className="thin-font text-gray-700 my-3 ">
-                  {" "}
-                  Your privacy is important to us, therefore all photos are
-                  stored securely, encrypted, and handled in strict
-                  confidence in accordance with applicable data protection
-                  regulations.
-                </p>
-
-              </blockquote>
-
-              <div className="my-6 flex justify-center ">
-                <button
-                  className="bg-[#f8d86e] border border-[#FFF3CD] rounded-xl sm:rounded-full  py-3 px-2 sm:px-6 text-black flex items-start sm:items-center bold-font cursor-pointer 
-                w-full  text-start sm:text-center"
-                  onClick={handleGoUpload}
-                >
-                  <RiErrorWarningLine
-                    className="text-black sm:mr-0 mr-2  sm:w-14 w-14 "
-                    size={20}
-                  />
-                  Click here to upload your full-body image to complete your
-                  order
-                </button>
+          {(!imageUploaded || !idVerificationUpload) && (
+            <section
+              aria-labelledby="verification-heading"
+              className="space-y-4"
+            >
+              <div className="flex items-start gap-3">
+                <ClipboardCheck
+                  aria-hidden="true"
+                  size={22}
+                  strokeWidth={1.7}
+                  className="mt-0.5 shrink-0 text-[#47317c]"
+                />
+                <div>
+                  <h2
+                    id="verification-heading"
+                    className="inter-semibold-font text-[18px] tracking-[-0.02em] text-slate-900"
+                  >
+                    Final step: Verification
+                  </h2>
+                  <p className="inter-reg-font mt-1 text-[13px] max-sm:text-[16px] leading-relaxed text-slate-500">
+                    Please complete the verification checks for our clinical
+                    team to ensure the treatment is safe for you.
+                  </p>
+                </div>
               </div>
-            </>
+
+              <div className="flex flex-col gap-3">
+                {!imageUploaded && (
+                  <VerificationCard
+                    icon={Camera}
+                    title="BMI Verification"
+                    description="Continue to upload a recent photo for the clinical team to verify your BMI. This may be required to process your order."
+                    label="Upload Photo"
+                    alternativesText="Don't prefer to send photos? See other ways to verify."
+                    onClick={handleGoUpload}
+                  />
+                )}
+                {!idVerificationUpload && (
+                  <VerificationCard
+                    icon={IdCard}
+                    title="Identity Verification"
+                    description="Please upload a valid proof of ID to verify your identity and complete your order."
+                    label="Upload ID"
+                    onClick={() => GO.push("/id-verification")}
+                  />
+                )}
+              </div>
+
+              <p className="inter-reg-font flex items-start gap-2 text-[12px] max-sm:text-[16px] leading-relaxed text-slate-500">
+                <ShieldCheck
+                  aria-hidden="true"
+                  size={17}
+                  strokeWidth={1.7}
+                  className="mt-0.5 shrink-0 text-teal-800"
+                />
+                Your uploads are stored securely and handled confidentially as
+                part of your clinical review.
+              </p>
+            </section>
           )}
 
-          <div className="text-left space-y-4 text-gray-700 text-sm leading-relaxed thin-font">
+          <div className="inter-reg-font space-y-4 text-left text-[16px] sm:text-[16px] leading-relaxed text-slate-600">
             {/* <p>
               We have received your medical consultation form which is now being
               reviewed by our prescribers. You may be contacted by a member of
@@ -431,7 +507,9 @@ const ThankYou = () => {
               account.
             </p> */}
             <p>
-              <span className="bold-font underline text-black">Delivery:</span>{" "}
+              <span className="inter-semibold-font text-slate-900">
+                Delivery:
+              </span>{" "}
               All orders, once approved, are shipped via next-day tracked
               delivery using either DPD or Royal Mail. Orders may take longer
               than one working day to approve due to the clinical checks
@@ -440,14 +518,14 @@ const ThankYou = () => {
               accordingly.
             </p>
             <p>
-              <span className="bold-font underline text-black">
+              <span className="inter-semibold-font text-slate-900">
                 Changes or cancellation:
               </span>{" "}
               If there are any changes you would like to make to your order or
               to cancel it, please contact us immediately by email on{" "}
               <a
                 href="mailto:contact@mayfairweightlossclinic.co.uk."
-                className="text-violet-700 reg-font underline"
+                className="inter-medium-font text-[#47317c] underline underline-offset-2"
               >
                 contact@mayfairweightlossclinic.co.uk.
               </a>{" "}
@@ -456,18 +534,17 @@ const ThankYou = () => {
               legislation around prescription-only medication.
             </p>
           </div>
-          {imageUploaded && (
-            <>
-              <div className="">
-                <NextButton
-                  className=""
-                  onClick={handleGoBack}
-                  label="Continue to view order details"
+
+          <>
+            <div className="">
+              <NextButton
+                className=""
+                onClick={handleGoBack}
+                label="Continue to My Account"
                 // disabled={!imageUploaded}
-                />
-              </div>
-            </>
-          )}
+              />
+            </div>
+          </>
         </div>
       </div>
     </div>

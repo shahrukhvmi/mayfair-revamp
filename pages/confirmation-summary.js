@@ -13,6 +13,7 @@ import sendStepData from "@/api/stepsDataApi";
 import { useMutation } from "@tanstack/react-query";
 import useMedicalInfoStore from "@/store/medicalInfoStore";
 import useConfirmationInfoStore from "@/store/confirmationInfoStore";
+import normalizeConfirmationInfo from "@/utils/normalizeConfirmationInfo";
 import useProductId from "@/store/useProductIdStore";
 import useGpDetailsStore from "@/store/gpDetailStore";
 import useSignupStore from "@/store/signupStore";
@@ -28,11 +29,11 @@ import useCheckoutStore from "@/store/checkoutStore";
 import MetaLayout from "@/Meta/MetaLayout";
 import { meta_url } from "@/config/constants";
 import useReorderBackProcessStore from "@/store/useReorderBackProcess";
+import { completeStep } from "@/library/mayfairAnalytics";
 
 const ConfirmationSummary = () => {
   const router = useRouter();
   const [showLoader, setShowLoader] = useState(false);
-
   // Zustand States
   const { patientInfo, setPatientInfo, clearPatientInfo } =
     usePatientInfoStore();
@@ -56,7 +57,6 @@ const ConfirmationSummary = () => {
   const { productId, clearProductId } = useProductId();
   const { setLastBmi, clearLastBmi } = useLastBmi();
   const { clearUserData, userData } = useUserDataStore();
-  console.log(userData, "userdata in confirmation summary");
   //To get firstname and lastName from signup store
   const {
     clearFirstName,
@@ -65,18 +65,16 @@ const ConfirmationSummary = () => {
     clearConfirmationEmail,
     firstName,
     lastName,
+    email
   } = useSignupStore();
 
-  console.log(bmi);
 
   // Customer lab data mutation
 
   const stepsDataMutation = useMutation(sendStepData, {
     onSuccess: (data) => {
-      console.log(data, "dataaaaaaaaaaaaaa");
 
       if (data?.data?.lastConsultation) {
-        console.log(data?.data?.lastConsultation?.fields, "data?.data?.data");
         setBmi(data?.data?.lastConsultation?.fields?.bmi);
         setConfirmationInfo(
           data?.data?.lastConsultation?.fields?.confirmationInfo,
@@ -87,6 +85,8 @@ const ConfirmationSummary = () => {
         setLastBmi(data?.data?.lastConsultation?.fields?.bmi);
       }
 
+      // Answers saved by the server.
+      completeStep({ saved: "server" });
       // CustomerLabs Lead/Form Submit trigger
 
       router.push("/gathering-data");
@@ -96,7 +96,6 @@ const ConfirmationSummary = () => {
       // setLoading(false);
       setShowLoader(false);
       if (error) {
-        console.log("error", error?.response?.data?.message);
         if (error?.response?.data?.message == "Unauthenticated.") {
           toast.error("Session Expired");
           clearBmi();
@@ -121,7 +120,6 @@ const ConfirmationSummary = () => {
           clearConfirmationEmail();
           router.push("/login");
         } else if (error?.response?.data?.original?.errors) {
-          console.log(error?.response?.data?.original?.errors, "error");
           // toast.error("Something went wrong");
           // toast.error(error?.response?.data?.original?.errors);
           const errorMessages = error?.response?.data?.original?.errors;
@@ -174,7 +172,7 @@ const ConfirmationSummary = () => {
       },
       bmi: bmi,
       gpdetails: gpdetails,
-      confirmationInfo: confirmationInfo,
+      confirmationInfo: normalizeConfirmationInfo(confirmationInfo),
       medicalInfo: formattedMedicalInfo,
       pid: productId,
     };
@@ -193,6 +191,7 @@ const ConfirmationSummary = () => {
       router.push("/gp-detail");
     }
   };
+
   return (
     <>
       <MetaLayout canonical={`${meta_url}confirmation-summary/`} />
@@ -203,67 +202,58 @@ const ConfirmationSummary = () => {
         percentage={95}
       >
         <PageAnimationWrapper>
-          <div className="space-y-6">
+          <div className="">
             {/* Summary Box */}
-            <div className="bg-[#F2EEFF] border border-green-100 rounded-md p-5 text-sm text-gray-800">
-              <p className="bold-font text-black mb-1">
-                <span className="bold-font paragraph">Full Name: </span>{" "}
-                {firstName ? (
-                  <>
-                    {" "}
-                    {firstName} {lastName}
-                  </>
-                ) : (
-                  <>
-                    {patientInfo?.firstName} {patientInfo?.lastName}
-                  </>
-                )}
-              </p>
-              {/* <hr className="border-gray-300 mb-3" /> */}
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-2 gap-x-8">
-                <p className="bold-font text-black">
-                  <span className="bold-font paragraph">Post code: </span>
-                  {patientInfo?.address?.postalcode}
-                </p>
-                <p className="bold-font text-black">
-                  <span className="bold-font paragraph">Date of Birth:</span>{" "}
-                  {patientInfo?.dob}
-                </p>
-                <p className="bold-font text-black">
-                  <span className="bold-font paragraph">Height:</span>{" "}
-                  {bmi?.height_unit == "imperial" ? (
-                    <span>
-                      {bmi?.ft} ft {bmi?.inch} inch
-                    </span>
-                  ) : (
-                    <span>{bmi?.cm} cm</span>
-                  )}
-                </p>
-                <p className="bold-font text-black">
-                  <span className="bold-font paragraph">Gender:</span>{" "}
-                  <span className="capitalize">{patientInfo?.gender}</span>
-                </p>
-                <p className="bold-font text-black">
-                  <span className="bold-font paragraph">Weight:</span>{" "}
-                  {bmi?.weight_unit == "metrics" ? (
-                    <span>{bmi?.kg} kg</span>
-                  ) : (
-                    <span>
-                      {bmi?.stones} stones {bmi?.pound} pound
-                    </span>
-                  )}
-                </p>
-                <p className="bold-font text-black">
-                  <span className="text-sm text-gray-700 mt-1">BMI: </span>{" "}
-                  {bmi?.bmi?.toFixed(1)}
-                </p>
+            <div className="rounded-xl  bg-[#FBFBFD] overflow-hidden">
+              {/* <div className="bg-[#f5f2fc] px-5 py-3.5 border-b border-[#47317c]/[0.07]"> */}
+                {/* <p className="inter-semibold-font text-[15px] max-sm:text-[16px] text-slate-900">
+                  {firstName ? <>{firstName} {lastName}</> : <>{patientInfo?.firstName} {patientInfo?.lastName}</>}
+                </p> */}
               </div>
-            </div>
+              <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 sm:gap-x-8 sm:gap-y-3 mb-6">
+                <div className="min-w-0 max-sm:flex max-sm:flex-wrap max-sm:items-center max-sm:justify-between max-sm:gap-x-3 max-sm:gap-y-0.5 rounded-lg border border-slate-100 bg-white px-3 py-2.5 sm:rounded-none sm:border-0 sm:bg-transparent sm:px-0 sm:py-0">
+                  <p className="inter-medium-font text-[11px] max-sm:text-[16px] capitalize tracking-wide text-slate-400 mb-0.5 max-sm:mb-0 max-sm:shrink-0 max-sm:!text-[16px]">Name</p>
+                  <p className="capitalize inter-medium-font break-words max-sm:min-w-0 max-sm:flex-1 max-sm:text-right text-[13px] max-sm:text-[16px] text-slate-800 sm:text-[14px]">{firstName ? <>{firstName} {lastName}</> : <>{patientInfo?.firstName} {patientInfo?.lastName}</>}</p>
+                </div>
+
+                <div className="min-w-0 max-sm:flex max-sm:flex-wrap max-sm:items-center max-sm:justify-between max-sm:gap-x-3 max-sm:gap-y-0.5 rounded-lg border border-slate-100 bg-white px-3 py-2.5 sm:rounded-none sm:border-0 sm:bg-transparent sm:px-0 sm:py-0">
+                  <p className="inter-medium-font text-[11px] max-sm:text-[16px] capitalize tracking-wide text-slate-400 mb-0.5 max-sm:mb-0 max-sm:shrink-0 max-sm:!text-[16px]">Email</p>
+                  <p className=" inter-medium-font break-words max-sm:min-w-0 max-sm:flex-1 max-sm:text-right text-[13px] max-sm:text-[16px] text-slate-800 sm:text-[14px]"> {email}</p>
+                </div>
+                <div className="min-w-0 max-sm:flex max-sm:flex-wrap max-sm:items-center max-sm:justify-between max-sm:gap-x-3 max-sm:gap-y-0.5 rounded-lg border border-slate-100 bg-white px-3 py-2.5 sm:rounded-none sm:border-0 sm:bg-transparent sm:px-0 sm:py-0">
+                  <p className="inter-medium-font text-[11px] max-sm:text-[16px] capitalize tracking-wide text-slate-400 mb-0.5 max-sm:mb-0 max-sm:shrink-0 max-sm:!text-[16px]">Post code</p>
+                  <p className="[&::first-letter]:uppercase inter-medium-font break-words max-sm:min-w-0 max-sm:flex-1 max-sm:text-right text-[13px] max-sm:text-[16px] text-slate-800 sm:text-[14px]">{patientInfo?.address?.postalcode}</p>
+                </div>
+                <div className="min-w-0 max-sm:flex max-sm:flex-wrap max-sm:items-center max-sm:justify-between max-sm:gap-x-3 max-sm:gap-y-0.5 rounded-lg border border-slate-100 bg-white px-3 py-2.5 sm:rounded-none sm:border-0 sm:bg-transparent sm:px-0 sm:py-0">
+                  <p className="inter-medium-font text-[11px] max-sm:text-[16px] capitalize tracking-wide text-slate-400 mb-0.5 max-sm:mb-0 max-sm:shrink-0 max-sm:!text-[16px]">Date of birth</p>
+                  <p className="inter-medium-font break-words max-sm:min-w-0 max-sm:flex-1 max-sm:text-right text-[13px] max-sm:text-[16px] text-slate-800 sm:text-[14px]">{patientInfo?.dob}</p>
+                </div>
+                <div className="min-w-0 max-sm:flex max-sm:flex-wrap max-sm:items-center max-sm:justify-between max-sm:gap-x-3 max-sm:gap-y-0.5 rounded-lg border border-slate-100 bg-white px-3 py-2.5 sm:rounded-none sm:border-0 sm:bg-transparent sm:px-0 sm:py-0">
+                  <p className="inter-medium-font text-[11px] max-sm:text-[16px] capitalize tracking-wide text-slate-400 mb-0.5 max-sm:mb-0 max-sm:shrink-0 max-sm:!text-[16px]">Height</p>
+                  <p className="inter-medium-font break-words max-sm:min-w-0 max-sm:flex-1 max-sm:text-right text-[13px] max-sm:text-[16px] text-slate-800 sm:text-[14px]">
+                    {bmi?.height_unit == "imperial" ? <>{bmi?.ft} ft {bmi?.inch} inch</> : <>{bmi?.cm} cm</>}
+                  </p>
+                </div>
+                <div className="min-w-0 max-sm:flex max-sm:flex-wrap max-sm:items-center max-sm:justify-between max-sm:gap-x-3 max-sm:gap-y-0.5 rounded-lg border border-slate-100 bg-white px-3 py-2.5 sm:rounded-none sm:border-0 sm:bg-transparent sm:px-0 sm:py-0">
+                  <p className="inter-medium-font text-[11px] max-sm:text-[16px] capitalize tracking-wide text-slate-400 mb-0.5 max-sm:mb-0 max-sm:shrink-0 max-sm:!text-[16px]">Gender</p>
+                  <p className="inter-medium-font break-words max-sm:min-w-0 max-sm:flex-1 max-sm:text-right text-[13px] max-sm:text-[16px] capitalize text-slate-800 sm:text-[14px]">{patientInfo?.gender}</p>
+                </div>
+                <div className="min-w-0 max-sm:flex max-sm:flex-wrap max-sm:items-center max-sm:justify-between max-sm:gap-x-3 max-sm:gap-y-0.5 rounded-lg border border-slate-100 bg-white px-3 py-2.5 sm:rounded-none sm:border-0 sm:bg-transparent sm:px-0 sm:py-0">
+                  <p className="inter-medium-font text-[11px] max-sm:text-[16px] capitalize tracking-wide text-slate-400 mb-0.5 max-sm:mb-0 max-sm:shrink-0 max-sm:!text-[16px]">Weight</p>
+                  <p className="inter-medium-font break-words max-sm:min-w-0 max-sm:flex-1 max-sm:text-right text-[13px] max-sm:text-[16px] text-slate-800 sm:text-[14px]">
+                    {bmi?.weight_unit == "metrics" ? <>{bmi?.kg} kg</> : <>{bmi?.stones} stones {bmi?.pound} pound</>}
+                  </p>
+                </div>
+                <div className="min-w-0 max-sm:flex max-sm:flex-wrap max-sm:items-center max-sm:justify-between max-sm:gap-x-3 max-sm:gap-y-0.5 rounded-lg border border-slate-100 bg-white px-3 py-2.5 sm:rounded-none sm:border-0 sm:bg-transparent sm:px-0 sm:py-0">
+                  <p className="inter-medium-font text-[11px] max-sm:text-[16px] capitalize tracking-wide text-slate-400 mb-0.5 max-sm:mb-0 max-sm:shrink-0 max-sm:!text-[16px]">bmi</p>
+                  <p className="inter-semibold-font max-sm:min-w-0 max-sm:flex-1 max-sm:text-right text-[14px] max-sm:text-[16px] text-[#47317c]">{bmi?.bmi?.toFixed(1)}</p>
+                </div>
+              </div>
+            {/* </div> */}
 
             {/* Confirm & Review Buttons */}
             <div className="space-y-3">
-              <NextButton label="Confirm and proceed" onClick={hanldeConfirm} />
+              <NextButton loading={showLoader} label="Confirm and proceed" onClick={hanldeConfirm} />
               <BackButton
                 label="Review all answers"
                 className="mt-2"
@@ -271,11 +261,11 @@ const ConfirmationSummary = () => {
               />
               <BackButton label="Back" onClick={back} />
             </div>
-            {showLoader && (
+            {/* {showLoader && (
               <div className="absolute inset-0 z-20 flex justify-center items-center bg-white/60 rounded-lg cursor-not-allowed">
                 <PageLoader />
               </div>
-            )}
+            )} */}
           </div>
         </PageAnimationWrapper>
       </FormWrapper>

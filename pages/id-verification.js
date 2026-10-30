@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
-import { FiUpload } from "react-icons/fi";
+import { FiUpload, FiArrowLeft } from "react-icons/fi";
 import { AiOutlineCheckCircle } from "react-icons/ai";
 import toast from "react-hot-toast";
 import useReorder from "@/store/useReorderStore";
@@ -27,10 +27,11 @@ import useImageUploadStore from "@/store/useImageUploadStore ";
 import MUISelectField from "@/Components/SelectField/SelectField";
 import { heicTo, isHeic } from "heic-to"; // ✅ import heic converter
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
+import PageLoader from "@/Components/PageLoader/PageLoader";
 
 const IdVerification = () => {
 
-  const MAX_SIZE_MB = 5;
+  const MAX_SIZE_MB = 30;
   const MAX_SIZE_BYTES = MAX_SIZE_MB * 1024 * 1024;
 
   // ✅ Compress image using <canvas>
@@ -64,16 +65,13 @@ const IdVerification = () => {
     });
   };
 
-
-  const toBase64 = (file) =>
-    new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onload = () => resolve(reader.result.split(",")[1]); // remove `data:image/...;base64,`
-      reader.onerror = reject;
-    });
-
-
+  // const toBase64 = (file) =>
+  //   new Promise((resolve, reject) => {
+  //     const reader = new FileReader();
+  //     reader.readAsDataURL(file);
+  //     reader.onload = () => resolve(reader.result.split(",")[1]); // remove `data:image/...;base64,`
+  //     reader.onerror = reject;
+  //   });
 
   const GO = useRouter();
   const [open, setOpen] = useState(false);
@@ -88,7 +86,7 @@ const IdVerification = () => {
   const frontPhoto = watch("frontPhoto");
   const sidePhoto = watch("sidePhoto");
   const [loading, setLoading] = useState(false);
-  const [selectedId, setSelectedId] = useState("passport");
+  const [selectedId, setSelectedId] = useState("id_card");
   const [ImagesSend, setImagesSend] = useState(false);
   const [buttonLabel, setButtonLabel] = useState("Return to Dashboard");
 
@@ -117,13 +115,10 @@ const IdVerification = () => {
     const fetchImageStatus = async () => {
       try {
         const res = await GetIdVerification({ order_id: orderId });
-        console.log("Image Upload Response", res);
 
         setIdVerificationUpload(res?.data?.status);
         setImagesSend(res?.data?.status);
-        console.log(res, "Image Upload Status");
       } catch (error) {
-        console.error("Failed to fetch image status:", error);
       }
     };
 
@@ -134,12 +129,9 @@ const IdVerification = () => {
     const fetchImageStatus = async () => {
       try {
         const res = await GetImageIsUplaod({ order_id: orderId });
-        console.log("Image Upload Response", res);
         setImageUploaded(res?.data?.status);
         setImagesSend(res?.data?.status);
-        console.log(res, "Image Upload Status");
       } catch (error) {
-        console.error("Failed to fetch image status:", error);
       }
     };
     if (orderId) fetchImageStatus();
@@ -153,9 +145,22 @@ const IdVerification = () => {
     setLoadingPhoto((prev) => ({ ...prev, [type]: true }));
 
     try {
-      if (!file.type.startsWith("image/") && !isHeic(file)) {
-        toast.error("Please upload a valid image (JPEG, PNG, or HEIC).");
+      const isPdf = file.type === "application/pdf";
+
+      if (!isPdf && !file.type.startsWith("image/") && !isHeic(file)) {
+        toast.error("Please upload a valid image (JPEG, PNG, HEIC) or a PDF.");
         e.target.value = "";
+        return;
+      }
+
+      // ✅ PDF — no HEIC conversion / compression needed
+      if (isPdf) {
+        if (file.size > MAX_SIZE_BYTES) {
+          toast.error(`PDF too large (max ${MAX_SIZE_MB} MB).`);
+          e.target.value = "";
+          return;
+        }
+        setValue(type, file);
         return;
       }
 
@@ -174,7 +179,6 @@ const IdVerification = () => {
             e.target.value = "";
             return;
           }
-          console.log("HEIC conversion failed — using original file instead.");
         }
       }
 
@@ -198,8 +202,6 @@ const IdVerification = () => {
     }
   };
 
-
-
   const onSubmit = async (data) => {
     try {
       if (!data.frontPhoto) {
@@ -209,22 +211,29 @@ const IdVerification = () => {
 
       setLoading(true);
 
-      const frontBase64 = await toBase64(data.frontPhoto);
+      // const frontBase64 = await toBase64(data.frontPhoto);
 
-      let payload = {
-        front: frontBase64,
-        order_id: orderIdGetUrl ? orderIdGetUrl : orderId,
-        type: selectedId,
-      };
+      // let payload = {
+      //   front: frontBase64,
+      //   order_id: orderIdGetUrl ? orderIdGetUrl : orderId,
+      //   type: selectedId,
+      // };
+
+      // if (data.sidePhoto) {
+      //   const sideBase64 = await toBase64(data.sidePhoto);
+      //   payload.side = sideBase64; // ✅ Only include if uploaded
+      // }
+
+      const formData = new FormData();
+      formData.append("front", data.frontPhoto);
+      formData.append("order_id", orderIdGetUrl ? orderIdGetUrl : orderId);
+      formData.append("type", selectedId);
 
       if (data.sidePhoto) {
-        const sideBase64 = await toBase64(data.sidePhoto);
-        payload.side = sideBase64; // ✅ Only include if uploaded
+        formData.append("side", data.sidePhoto); // ✅ Only include if uploaded
       }
 
-      console.log(payload, "Form Data");
-
-      const res = await IdVerificationUpload(payload);
+      const res = await IdVerificationUpload(formData);
 
       if (res?.status === 200) {
         setOpen(true);
@@ -233,7 +242,6 @@ const IdVerification = () => {
         );
       }
     } catch (error) {
-      console.log(error?.response?.data?.errors?.front, "Upload Error");
 
       if (error?.response?.data?.errors?.front) {
         toast.error(error?.response?.data?.errors?.front)
@@ -254,8 +262,9 @@ const IdVerification = () => {
     }
   };
 
-
+  const [isRedirecting, setIsRedirecting] = useState(false);
   const handleRedirect = () => {
+    setIsRedirecting(true);
     if (!imageUploaded) {
       GO.push("/photo-upload");
     } else {
@@ -269,11 +278,14 @@ const IdVerification = () => {
       if (e.dataTransfer.files && e.dataTransfer.files[0]) {
         const file = e.dataTransfer.files[0];
 
-        // ✅ Only allow images
-        if (file.type.startsWith("image/")) {
+        // ✅ Allow images and PDF
+        if (
+          file.type.startsWith("image/") ||
+          file.type === "application/pdf"
+        ) {
           setValue(type, file);
         } else {
-          toast.error("Only image files are allowed.");
+          toast.error("Only image or PDF files are allowed.");
         }
       }
     };
@@ -284,7 +296,6 @@ const IdVerification = () => {
 
     return (
       <>
-
 
         <div className="flex flex-col items-center w-full px-3">
           <label className="w-full cursor-pointer">
@@ -308,7 +319,7 @@ const IdVerification = () => {
             >
               <input
                 type="file"
-                accept="image/*"
+                accept="image/*,application/pdf"
                 onChange={(e) => handleUpload(e, type)}
                 className="hidden"
               />
@@ -318,16 +329,16 @@ const IdVerification = () => {
 
                 <div className="flex flex-col items-center justify-center">
                   <AiOutlineLoading3Quarters className="animate-spin text-violet-700 w-7 h-7 mb-3" />
-                  <p className="text-gray-700 text-sm reg-font">Uploading...</p>
+                  <p className="text-gray-700 text-sm max-sm:text-[16px] reg-font">Uploading...</p>
                 </div>
               ) : !photo ? (
                 /* 📤 Upload UI */
                 <div className="flex flex-col items-center justify-center">
                   <FiUpload className="text-violet-700 w-full h-7 mb-3" />
-                  <p className="text-gray-700 text-sm reg-font">
+                  <p className="text-gray-700 text-sm max-sm:text-[16px] reg-font">
                     Click here
                     <br />
-                    <span className="text-gray-400 text-xs">
+                    <span className="text-gray-400 text-xs max-sm:text-[16px]">
                       or drag the image to upload
                     </span>
                   </p>
@@ -335,19 +346,40 @@ const IdVerification = () => {
               ) : (
                 /* 🖼️ Preview UI */
                 <div className="flex flex-col items-center">
-                  <img
-                    src={URL.createObjectURL(photo)}
-                    alt={`${label} preview`}
-                    className="w-full object-contain rounded-lg mb-3"
-                  />
+                  {photo?.type === "application/pdf" ? (
+                    <div className="mb-3 flex h-32 w-full max-w-[240px] flex-col items-center justify-center rounded-lg border border-slate-200 bg-white">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="mb-2 h-9 w-9 text-red-500"
+                        viewBox="0 0 24 24"
+                        fill="currentColor"
+                      >
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm-1 1.5L18.5 9H13V3.5zM6 20V4h5v7h7v9H6z" />
+                      </svg>
+                      <p className="w-full truncate px-3 text-center text-xs max-sm:text-[16px] text-gray-600 reg-font">
+                        {photo?.name}
+                      </p>
+                    </div>
+                  ) : (
+                    <img
+                      src={URL.createObjectURL(photo)}
+                      alt={`${label} preview`}
+                      className="w-full object-contain rounded-lg mb-3"
+                    />
+                  )}
                   <AiOutlineCheckCircle className="w-6 h-6 text-[#1F9E8C] absolute top-3 right-3" />
                 </div>
               )}
             </div>
           </label>
 
+          {/* ✅ Allowed formats helper text */}
+          <p className="text-[11px] max-sm:text-[16px] text-gray-500 mt-2 text-center reg-font">
+            JPEG, PNG, WEBP, HEIC, HEIF, AVIF or PDF · Maximum {MAX_SIZE_MB} MB
+          </p>
+
           {/* 💡 Suggestion / helper text */}
-          <p className="text-xs text-gray-500 mt-2 text-center italic">
+          <p className="text-xs max-sm:text-[16px] text-gray-500 mt-2 text-center italic">
             {suggestion}
           </p>
         </div>
@@ -360,6 +392,9 @@ const IdVerification = () => {
     <>
       <StepsHeader />
       <MetaLayout canonical={`${meta_url}photo-upload/`} />
+      {loading && (
+        <PageLoader message="Please wait while your ID images are being uploaded..." />
+      )}
       <div className="my-14">
         <AnimatePresence>
           {open && (
@@ -407,6 +442,7 @@ const IdVerification = () => {
                   label={buttonLabel}
                   onClick={handleRedirect}
                   className="w-full"
+                  loading={isRedirecting}
                 // disabled={loading || !frontPhoto || !sidePhoto}
                 // loading={loading}
                 />
@@ -419,12 +455,21 @@ const IdVerification = () => {
           className="max-w-3xl mx-auto my-auto px-6 sm:px-32 py-10 bg-white shadow-2xl rounded-3xl border border-gray-100"
         >
           <div className="mb-4 max-w-2xl mx-auto text-left">
+            <button
+              type="button"
+              onClick={() => GO.push("/dashboard")}
+              aria-label="Back to dashboard"
+              className="mb-5 flex h-10 w-10 cursor-pointer items-center justify-center rounded-full border border-slate-200 bg-white text-slate-700 transition-colors hover:border-[#47317c]/40 hover:text-[#47317c]"
+            >
+              <FiArrowLeft size={18} />
+            </button>
+
             {/* Heading */}
             {/* <h2 className="subHeading niba-semibold-font mb-2 border-b pb-3">
                             Please upload a <span className='niba-bold-font text-black' >full body</span> picture of yourself
                         </h2> */}
 
-            <h2 className="subHeading !text-black bold-font mb-3 border-b pb-3">
+            <h2 className="subHeading max-sm:!text-[24px] !text-black bold-font mb-3 border-b pb-3">
               ID verification required
             </h2>
 
@@ -437,7 +482,7 @@ const IdVerification = () => {
             </p>
 
             {/* Bullet Points */}
-            {/* <ul className="list-disc pl-6 text-gray-800 text-sm space-y-2 font-normal font-sans pt-2 my-10 sm:my-0">
+            {/* <ul className="list-disc pl-6 text-gray-800 text-sm max-sm:text-[16px] space-y-2 font-normal font-sans pt-2 my-10 sm:my-0">
               <li>We will only ask for this once.</li>
               <li>
                 We realise it's inconvenient, but this is a regulatory
@@ -525,11 +570,11 @@ const IdVerification = () => {
                     /> */}
           </div>
 
-          <div className="w-full flex justify-center">
+          <div className="w-full flex flex-col items-center">
             <button
               type="submit"
               disabled={loading || !frontPhoto}
-              className={`reg-font px-6 py-3 rounded-full text-white font-semibold text-sm transition-all duration-150 ease-in-out
+              className={`reg-font px-6 py-3 rounded-full text-white font-semibold text-sm max-sm:text-[16px] transition-all duration-150 ease-in-out
       flex items-center justify-center 
       ${loading || !frontPhoto
                   ? "bg-gray-300 cursor-not-allowed"
@@ -538,6 +583,14 @@ const IdVerification = () => {
     `}
             >
               {loading ? "Uploading..." : "Upload"}
+            </button>
+            <button
+              type="button"
+              onClick={() => GO.push("/dashboard")}
+              className="inter-medium-font mt-4 flex min-h-11 cursor-pointer items-center justify-center gap-2 text-[17px] text-[#47317c] transition-colors hover:text-[#392765]"
+            >
+              <FiArrowLeft size={17} />
+              I’ll do it later
             </button>
           </div>
         </form>

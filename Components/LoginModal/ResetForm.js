@@ -18,7 +18,7 @@ export default function ResetForm({ register, handleSubmit, errors, onSubmit, is
             id="password"
             type={showPassword ? "text" : "password"}
             onPaste={(e) => e.preventDefault()}
-            placeholder="New Password"
+            placeholder="Create a new password"
             {...register("password", {
               required: "Password is required",
               minLength: {
@@ -34,7 +34,7 @@ export default function ResetForm({ register, handleSubmit, errors, onSubmit, is
             {showPassword ? <FiEye  size={18} /> : <FiEyeOff size={18} />}
           </button>
         </div>
-        {errors.password && <p className="text-sm text-red-600 mt-1">{errors.password.message}</p>}
+        {errors.password && <p className="text-sm max-sm:text-[16px] text-red-600 mt-1">{errors.password.message}</p>}
       </div>
 
       {/* Confirm Password */}
@@ -47,7 +47,7 @@ export default function ResetForm({ register, handleSubmit, errors, onSubmit, is
             id="password_confirmation"
             type={showConfirm ? "text" : "password"}
             onPaste={(e) => e.preventDefault()}
-            placeholder="Confirm Password"
+            placeholder="Re-enter your new password"
             {...register("password_confirmation", {
               required: "Please confirm your password",
               validate: (val) => val === getValues("password") || "Passwords do not match",
@@ -60,10 +60,10 @@ export default function ResetForm({ register, handleSubmit, errors, onSubmit, is
             {showConfirm ? <FiEye  size={18} /> : <FiEyeOff size={18} />}
           </button>
         </div>
-        {errors.password_confirmation && <p className="text-sm text-red-600 mt-1">{errors.password_confirmation.message}</p>}
+        {errors.password_confirmation && <p className="text-sm max-sm:text-[16px] text-red-600 mt-1">{errors.password_confirmation.message}</p>}
       </div>
 
-      <NextButton label="Change Password" type="submit" disabled={isLoading} />
+      <NextButton loading={isLoading} label="Change Password" type="submit" disabled={isLoading} />
     </form>
   );
 }

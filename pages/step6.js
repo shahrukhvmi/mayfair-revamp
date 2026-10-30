@@ -42,9 +42,7 @@ const Step6 = () => {
   const showConsentBox = personalUse === "yes" && decisionCapacity === "yes";
 
   const onSubmit = async (data) => {
-    console.log("Form Data:", data);
     setShowLoader(true);
-    await new Promise((resolve) => setTimeout(resolve, 500)); // Wait 2s
     router.push("/step7");
   };
 
@@ -173,18 +171,18 @@ const Step6 = () => {
               </div>
 
               <div className="my-5">
-                <NextButton
+                <NextButton loading={showLoader}
                   disabled={!isValid || isNoSelected}
                   label="I Confirm"
                 />
               </div>
             </form>
 
-            {showLoader && (
+            {/* {showLoader && (
               <div className="absolute inset-0 z-20 flex justify-center items-center bg-white/60 rounded-lg cursor-not-allowed">
                 <PageLoader />
               </div>
-            )}
+            )} */}
           </div>
         </PageAnimationWrapper>
       </FormWrapper>

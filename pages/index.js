@@ -18,6 +18,7 @@ import Weight from "@/public/images/intro.svg";
 export default function Index() {
   const router = useRouter();
   const [showLoader, setShowLoader] = useState(false);
+  const [loadingAction, setLoadingAction] = useState("");
   const { authUserDetail } = useAuthUserDetailStore();
 
   const { setIsFromReorder } = useReorderButtonStore();
@@ -54,6 +55,9 @@ export default function Index() {
 
   const onSubmit = async (data, e) => {
     const action = e.nativeEvent.submitter.value;
+    if (showLoader) return;
+    setLoadingAction(action);
+    setShowLoader(true);
 
     if (action === "Returning Patient") {
       if (token && authUserDetail?.isReturning) {
@@ -67,9 +71,6 @@ export default function Index() {
       setIsFromReorder(false);
       router.push("/acknowledgment");
     }
-
-    setShowLoader(true);
-    await new Promise((resolve) => setTimeout(resolve, 500));
   };
 
   return (
@@ -77,32 +78,33 @@ export default function Index() {
       <MetaLayout canonical={`${meta_url}`} />
       <StepsHeader />
 
-      <section className="my-16 mx-6 sm:mx-0">
-        <div className="bg-white max-w-xl mx-auto rounded-3xl p-10 shadow-lg border border-gray-100 relative">
+      <section className="min-h-[calc(100dvh-66px)] bg-[#FBFBFD] px-4 py-4 max-sm:flex max-sm:items-center sm:py-12">
+        <div className="relative mx-auto w-full max-w-[580px] overflow-hidden rounded-2xl border border-[#47317c]/10 bg-white px-4 py-4 shadow-[0_12px_36px_rgba(71,49,124,0.09)] sm:px-8 sm:py-8 max-sm:w-full">
           {/* Icon */}
-          <div className="flex justify-center">
+          {/* <div className="mb-6 flex items-center justify-center">
             <Image
               src={Weight}
               alt="Weight Loss Icon"
-              width={200}
-              height={50}
-              className="rounded-lg"
+              width={132}
+              height={132}
+              priority
+              className="h-[118px] w-[118px] object-contain sm:h-[132px] sm:w-[132px]"
             />
-          </div>
+          </div> */}
 
           {/* Heading */}
-          <h2 className=" bold-font paragraph text-xl text-start mb-3 p-0">
+          <h2 className="max-sm:text-[24px] inter-semibold-font mb-1.5 text-start text-[21px] leading-[1.3] tracking-[-0.02em] text-slate-900 sm:text-[24px]">
             Let's get you started on your weight loss journey.
           </h2>
 
-          <p className="reg-font text-start text-sm paragraph mb-8">
+          <p className="inter-reg-font mb-3 text-start text-[13.5px] max-sm:text-[16px] leading-[1.5] text-slate-500 sm:mb-6 sm:leading-6">
             We’ll now ask a few questions about you and your health.
           </p>
 
           {/* Good to know */}
-          <div className="mb-10">
-            <p className="bold-font paragraph mb-4">Good to know:</p>
-            <ul className="reg-font list-disc list-inside space-y-3 paragraph text-[15px] leading-relaxed">
+          <div className="mb-4 sm:mb-6">
+            <p className="inter-semibold-font mb-1 text-[13px] max-sm:text-[16px] text-slate-800">Good to know</p>
+            <ul className="inter-reg-font list-outside list-disc divide-y divide-slate-100 border-y border-slate-100 pl-4 text-[13px] max-sm:text-[16px] leading-[1.4] text-slate-600 marker:text-[#47317c] [&>li]:py-1.5 sm:[&>li]:py-3">
               <li>
                 Your consultation will take about five minutes to complete.
               </li>
@@ -114,33 +116,45 @@ export default function Index() {
             </ul>
           </div>
 
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-3">
             <NextButton
               type="submit"
               label="New Patient"
               subHeading="Click here to start online consultation"
-              disabled={!isValid}
+              subHeadingClassName="max-sm:hidden"
+              loading={showLoader && loadingAction !== "Returning Patient"}
+              disabled={!isValid || showLoader}
+              className="!rounded-xl text-[16px] sm:min-h-[70px]"
             />
 
             <button
               type="submit"
               name="action"
               value="Returning Patient"
-              disabled={!isValid}
-              className=" w-full px-12   bold-font text-sm border-in duration-150 ease-in-out hover:bg-primary  py-3 rounded-full bold-font  transition my-3 border-2 text-primary hover:text-white border-primary cursor-pointer"
+              disabled={!isValid || (showLoader && loadingAction !== "Returning Patient")}
+              className="group flex min-h-[54px] max-sm:min-h-[48px] sm:min-h-[70px] w-full cursor-pointer flex-col items-center justify-center rounded-xl border border-[#47317c]/30 bg-white px-6 py-2.5 mt-2 sm:mt-3 sm:py-3 text-[#47317c] transition-all duration-3 hover:border-[#47317c] hover:bg-[#47317c]/[0.04] disabled:cursor-not-allowed disabled:border-slate-200 disabled:text-slate-400 inter-medium-font"
             >
-              Returning Patient
-              <p className="reg-font paragraph !text-[13px] text-primary">
-                Click here - your previous details will be saved
-              </p>
+              {showLoader && loadingAction === "Returning Patient" ? (
+                <span className="flex items-center gap-2">
+                  <span className="h-4 w-4 shrink-0 animate-spin rounded-full border-2 border-[#47317c] border-t-transparent" />
+                  Please wait...
+                </span>
+              ) : (
+                <>
+                  Returning Patient
+                  <p className="inter-reg-font mt-0.5 !text-[12px] max-sm:hidden text-[#47317c]/75 group-disabled:text-slate-400">
+                    Click here - your previous details will be saved
+                  </p>
+                </>
+              )}
             </button>
           </form>
 
-          {showLoader && (
-            <div className="absolute inset-0 z-20 flex justify-center items-center bg-white/60 rounded-lg cursor-not-allowed">
+          {/* {showLoader && (
+            <div className="fixed inset-0 z-[100] flex cursor-not-allowed items-center justify-center bg-white">
               <PageLoader />
             </div>
-          )}
+          )} */}
         </div>
       </section>
     </>

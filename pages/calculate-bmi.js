@@ -17,7 +17,10 @@ import { BsInfoCircle } from "react-icons/bs";
 import MetaLayout from "@/Meta/MetaLayout";
 import { meta_url } from "@/config/constants";
 import useReorderBackProcessStore from "@/store/useReorderBackProcess";
+import { isFemalePatient } from "@/utils/patientChecks";
 import useReturning from "@/store/useReturningPatient";
+import usePatientInfoStore from "@/store/patientInfoStore";
+import { completeStep } from "@/library/mayfairAnalytics";
 
 const validateRange = (value, min, max, wholeOnly, message) => {
   const num = Number(value);
@@ -39,6 +42,7 @@ export default function CalculateBmi() {
   const { reorder, reorderStatus } = useReorder();
   const { lastBmi } = useLastBmi();
   const { reorderBackProcess } = useReorderBackProcessStore();
+  const { patientInfo } = usePatientInfoStore();
 
   const { bmi, setBmi } = useBmiStore();
   const router = useRouter();
@@ -242,8 +246,8 @@ export default function CalculateBmi() {
           weight_unit: weightUnitKey || bmi?.weight_unit, // default to metrics if blank
         });
 
+        completeStep();
         setShowLoader(true);
-        await new Promise((resolve) => setTimeout(resolve, 500));
 
         router.push("/bmi-detail");
       })();
@@ -295,7 +299,7 @@ export default function CalculateBmi() {
 
   const back = () => {
     if (reorderBackProcess == true) {
-      router.push("/re-order");
+      router.push(isFemalePatient(patientInfo) ? "/pregnancy-check" : "/re-order");
     } else if (isReturningPatient) {
       router.push("/preferred-phone-number");
     } else {
@@ -316,6 +320,8 @@ export default function CalculateBmi() {
         description={`Your Body Mass Index (BMI) is an important factor in assessing your eligibility for treatment. Please enter your ${localStep === 1 ? "height" : "weight"
           } below to allow us to calculate your BMI.`}
         percentage="70"
+        headerClassName="max-sm:!px-3.5"
+        headingClassName="max-sm:!tracking-[-0.035em]"
       >
         <PageAnimationWrapper>
           <div>
@@ -338,10 +344,6 @@ export default function CalculateBmi() {
                     const ft = parseFloat(watch("heightFt")) || 0;
                     const inch = parseFloat(watch("heightIn")) || 0;
                     const cm = ft * 30.48 + inch * 2.54;
-                    console.log(
-                      cm,
-                      "cm value in tabs saving in hidden before round If metric"
-                    );
                     setValue("hiddenCm", cm);
                     setValue("heightCm", cm ? Math.round(cm) : "");
                   } else {
@@ -349,16 +351,19 @@ export default function CalculateBmi() {
                     const totalInches = cm / 2.54;
                     const ft = Math.floor(totalInches / 12);
                     const inch = totalInches % 12;
-                    console.log(
-                      cm,
-                      "cm value in tabs saving in hidden before round If imperial"
-                    );
                     setValue("hiddenCm", cm);
                     setValue("heightFt", ft ? Math.round(ft) : "");
                     setValue("heightIn", inch ? Math.round(inch) : "");
                   }
                   setHeightUnit(value);
                   setHeightUnitKey(value);
+                  setTimeout(() => {
+                    void trigger(
+                      value === "imperial"
+                        ? ["heightFt", "heightIn"]
+                        : ["heightCm"],
+                    );
+                  }, 0);
                 } else {
                   if (value === "metrics") {
                     const st = parseFloat(watch("weightSt")) || 0;
@@ -377,6 +382,13 @@ export default function CalculateBmi() {
                   }
                   setWeightUnit(value);
                   setWeightUnitKey(value);
+                  setTimeout(() => {
+                    void trigger(
+                      value === "imperial"
+                        ? ["weightSt", "weightLbs"]
+                        : ["weightKg"],
+                    );
+                  }, 0);
                 }
               }}
             />
@@ -408,6 +420,7 @@ export default function CalculateBmi() {
                           onChange: (e) => {
                             if (e.target.value !== "")
                               setHeightUnitKey("imperial");
+                            void trigger("heightFt");
                           },
                         })}
                         errors={errors}
@@ -432,6 +445,7 @@ export default function CalculateBmi() {
                           onChange: (e) => {
                             if (e.target.value !== "")
                               setHeightUnitKey("imperial");
+                            void trigger("heightIn");
                           },
                         })}
                         errors={errors}
@@ -458,6 +472,7 @@ export default function CalculateBmi() {
                         onChange: (e) => {
                           if (e.target.value !== "")
                             setHeightUnitKey("metrics");
+                          void trigger("heightCm");
                         },
                       })}
                       errors={errors}
@@ -486,6 +501,7 @@ export default function CalculateBmi() {
                             onChange: (e) => {
                               if (e.target.value !== "")
                                 setWeightUnitKey("imperial");
+                              void trigger("weightSt");
                             },
                           })}
                           errors={errors}
@@ -508,6 +524,7 @@ export default function CalculateBmi() {
                             onChange: (e) => {
                               if (e.target.value !== "")
                                 setWeightUnitKey("imperial");
+                              void trigger("weightLbs");
                             },
                           })}
                           errors={errors}
@@ -532,6 +549,7 @@ export default function CalculateBmi() {
                           onChange: (e) => {
                             if (e.target.value !== "")
                               setWeightUnitKey("metrics");
+                            void trigger("weightKg");
                           },
                         })}
                         errors={errors}
@@ -542,22 +560,26 @@ export default function CalculateBmi() {
                     {lastBmi ? (
                       lastBmi?.weight_unit == "metrics" ||
                         lastBmi?.weight_unit == "metric" ? (
-                        <div className="bg-[#FFF3CD] px-4 py-4 mt-6 mb-6 text-gray-700 rounded shadow-md">
-                          <p className="flex items-center">
-                            <BsInfoCircle className="me-2" /> Your previous
-                            recorded weight was{" "}
-                            <span className="font-bold ms-1">
-                              {lastBmi?.kg} kg
+                        <div className="rounded-xl border border-amber-200/70 bg-amber-50/70 px-3.5 py-3">
+                          <p className="inter-reg-font flex items-center gap-2 whitespace-nowrap text-[13px] max-sm:text-[clamp(12px,3.7vw,14px)] text-amber-800">
+                            <BsInfoCircle className="shrink-0" />
+                            <span>
+                              Your previous recorded weight was{" "}
+                              <span className="inter-semibold-font whitespace-nowrap">
+                                {lastBmi?.kg} kg
+                              </span>
                             </span>
                           </p>
                         </div>
                       ) : (
-                        <div className="bg-[#FFF3CD] px-4 py-4 mt-6 mb-6 text-gray-700 rounded shadow-md">
-                          <p className="flex items-center">
-                            <BsInfoCircle className="me-2" /> Your previous
-                            recorded weight was{" "}
-                            <span className="font-bold ms-1">
-                              {lastBmi?.stones} st & {lastBmi?.pound} lbs
+                        <div className="rounded-xl border border-amber-200/70 bg-amber-50/70 px-3.5 py-3">
+                          <p className="inter-reg-font flex items-center gap-2 whitespace-nowrap text-[13px] max-sm:text-[clamp(12px,3.7vw,14px)] text-amber-800">
+                            <BsInfoCircle className="shrink-0" />
+                            <span>
+                              Your previous recorded weight was{" "}
+                              <span className="inter-semibold-font whitespace-nowrap">
+                                {lastBmi?.stones} st & {lastBmi?.pound} lbs
+                              </span>
                             </span>
                           </p>
                         </div>
@@ -568,7 +590,7 @@ export default function CalculateBmi() {
                   </>
                 )}
 
-                <NextButton
+                <NextButton loading={showLoader}
                   label="Next"
                   onClick={handleNext}
                   type="button"
@@ -586,12 +608,12 @@ export default function CalculateBmi() {
                   <BackButton label="Back" className="mt-2" onClick={back} />
                 )}
               </form>
-
+{/* 
               {showLoader && (
                 <div className="absolute inset-0 z-20 flex justify-center items-center bg-white/60 rounded-lg cursor-not-allowed">
                   <PageLoader />
                 </div>
-              )}
+              )} */}
             </div>
           </div>
         </PageAnimationWrapper>

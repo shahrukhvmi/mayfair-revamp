@@ -10,10 +10,14 @@
 // export default { app_url };
 // CONSTANT FILE
 
+//https://mayfair.netlify.app/login/?review=true&order_id=346037
+
+// https://www.onlineweightlossclinic.co.uk/start-consultation/login/?product_id=7&fromemail=testadmin88@gmail.com&type=abandoned-cart&eid=52
+
 const FoundayoProductId =8;
 const WegovyPillProductId = 7;
 const serverType = process.env.NEXT_PUBLIC_SERVER_TYPE;
-console.log(serverType, "SERVERRRrrrrrrrr");
+// console.log(serverType, "SERVERRRrrrrrrrr");
 let app_url = "";
 let passwordlink = "";
 let meta_url = "";
@@ -24,7 +28,7 @@ switch (serverType) {
     meta_url = "http://localhost:3000/";
     break;
   case "staging":
-    console.log("STAGING WORKING");
+    // console.log("STAGING WORKING");
     app_url = "https://staging.mayfairweightlossclinic.co.uk/api";
     passwordlink =
       "https://staging.mayfairweightlossclinic.co.uk/start-consultation/email-confirmation";
@@ -38,5 +42,11 @@ switch (serverType) {
       "https://www.mayfairweightlossclinic.co.uk/start-consultation/email-confirmation";
     meta_url = "https://www.mayfairweightlossclinic.co.uk/start-consultation/";
     break;
+}
+// Local development against a Laravel API served on this machine, e.g.
+// NEXT_PUBLIC_API_URL=http://127.0.0.1:8000/api in .env.local. Never set for
+// staging or live builds.
+if (process.env.NEXT_PUBLIC_API_URL) {
+  app_url = process.env.NEXT_PUBLIC_API_URL;
 }
 export { app_url, meta_url, passwordlink, FoundayoProductId, WegovyPillProductId };

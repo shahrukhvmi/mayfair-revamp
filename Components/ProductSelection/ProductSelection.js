@@ -3,7 +3,7 @@ import FullScreenModal from "../FullScreenModal/FullScreenModal";
 import GetProductsApi from "@/api/getProducts";
 import useProductId from "@/store/useProductIdStore";
 import { useMutation } from "@tanstack/react-query";
-import Product from "../ProductCard/Product";
+import ModalProductListCard from "./ModalProductListCard";
 import { Skeleton } from "@mui/material";
 import { userConsultationApi } from "@/api/consultationApi";
 import useCheckoutStore from "@/store/checkoutStore";
@@ -18,6 +18,9 @@ import useReturning from "@/store/useReturningPatient";
 import useSignupStore from "@/store/signupStore";
 import useBmiStore from "@/store/bmiStore";
 import Router from "next/router";
+import { completeStep } from "@/library/mayfairAnalytics";
+import toast from "react-hot-toast";
+import useAuthStore from "@/store/authStore";
 import NextButton from "../NextButton/NextButton";
 import useReorderButtonStore from "@/store/useReorderButton";
 import useReorder from "@/store/useReorderStore";
@@ -25,22 +28,40 @@ import useReorder from "@/store/useReorderStore";
 const ProductSelection = ({ showProductSelection }) => {
   /* ───────────────  skeleton card ────────────── */
   const SkeletonCard = () => (
-    <div className="p-4 my-3 bg-white rounded-lg shadow-md">
+    <div className="flex flex-col items-stretch gap-2 rounded-2xl border border-slate-200/70 bg-white px-3 py-3 sm:flex-row sm:items-center sm:gap-4 sm:px-4 sm:py-3.5">
       <Skeleton
-        variant="rectangular"
-        height={208}
-        className="mb-4 rounded-lg"
+        variant="rounded"
+        width={64}
+        height={64}
+        className="!shrink-0 !rounded-xl"
       />
-      <Skeleton variant="text" sx={{ fontSize: "1rem" }} width="80%" />
-      <Skeleton variant="text" sx={{ fontSize: "0.875rem" }} width="60%" />
-      <Skeleton variant="rectangular" height={40} className="mt-4 rounded-md" />
+
+      <div className="min-w-0 flex-1">
+        <Skeleton variant="text" width="65%" height={26} />
+      </div>
+
+      <div className="flex w-full shrink-0 flex-col gap-2 sm:w-auto sm:flex-row sm:items-center sm:justify-start sm:gap-4">
+        <div className="flex items-center gap-2 sm:block">
+          <Skeleton variant="text" width={36} height={16} />
+          <Skeleton variant="text" width={68} height={26} />
+        </div>
+        <Skeleton
+          variant="rounded"
+          width={142}
+          height={40}
+          className="!w-full !rounded-xl sm:!w-[142px]"
+        />
+      </div>
     </div>
   );
   /* ───────────────  local state ────────────── */
   const [isLoading, setIsLoading] = useState(true);
+  const [loadError, setLoadError] = useState("");
+  const [isSlow, setIsSlow] = useState(false);
   const [productData, setProductData] = useState(null);
   const [showModal, setShowModal] = useState(showProductSelection);
   const [selectedProductId, setSelectedProductId] = useState(null); // NEW
+  const [selectedTreatmentType, setSelectedTreatmentType] = useState(null);
   const [isButtonLoading, setIsButtonLoading] = useState(false);
   const [redirection, setRedirection] = useState("");
 
@@ -49,7 +70,11 @@ const ProductSelection = ({ showProductSelection }) => {
   const { setProductId, productId } = useProductId();
   const { setBmi, clearBmi } = useBmiStore();
   const { setCheckout, clearCheckout } = useCheckoutStore();
-  const { setConfirmationInfo, clearConfirmationInfo } =
+  const {
+    setConfirmationInfo,
+    clearConfirmationInfo,
+    setConsentResetProductId,
+  } =
     useConfirmationInfoStore();
   const { setGpDetails, clearGpDetails } = useGpDetailsStore();
   const { setMedicalInfo, clearMedicalInfo } = useMedicalInfoStore();
@@ -67,18 +92,35 @@ const ProductSelection = ({ showProductSelection }) => {
   const { firstName, lastName, setFirstName, setLastName } = useSignupStore();
   const { isFromReorder } = useReorderButtonStore();
   const { setReorder } = useReorder();
+  const { clearToken } = useAuthStore();
 
-  console.log(firstName, lastName, "product selection");
   /* ───────────────  products mutation ────────────── */
   const getProducts = useMutation(GetProductsApi, {
     onSuccess: (res) => {
       const resData = res?.data?.data || {};
-      console.log(resData, "resData");
       setProductData(resData);
       setIsLoading(false);
     },
     onError: (err) => {
-      toast.error(err?.response?.data?.errors || "Something went wrong");
+      const data = err?.response?.data;
+      const isUnauthenticated =
+        err?.response?.status === 401 || data?.message === "Unauthenticated.";
+      if (isUnauthenticated) {
+        toast.error("Session Expired");
+        setIsLoading(false);
+        setShowModal(false);
+        clearToken();
+        Router.push("/login");
+        return;
+      }
+      const errors = data?.errors;
+      const message = !err?.response
+        ? "Your internet connection seems slow or unavailable. Please try again."
+        : typeof errors === "string"
+          ? errors
+          : data?.message || "Something went wrong while loading treatments.";
+      setLoadError(message);
+      toast.error(message);
       setIsLoading(false);
     },
   });
@@ -86,15 +128,52 @@ const ProductSelection = ({ showProductSelection }) => {
   /* ───────────────  initial effects ────────────── */
   useEffect(() => {
     // fetch product list once
-    getProducts.mutate({});
+    loadProducts();
   }, []);
+
+  // Tell the user when loading is taking unusually long
+  useEffect(() => {
+    if (!isLoading) {
+      setIsSlow(false);
+      return;
+    }
+    const timer = setTimeout(() => setIsSlow(true), 5000);
+    return () => clearTimeout(timer);
+  }, [isLoading]);
+
+  const loadProducts = () => {
+    setLoadError("");
+    setIsLoading(true);
+    getProducts.mutate({});
+  };
 
   /* ───────────────  helper ────────────── */
   const renderSkeletons = () => (
-    <div className="grid grid-cols-2 gap-6">
-      {Array.from({ length: 2 }).map((_, i) => (
-        <SkeletonCard key={i} />
-      ))}
+    <div className="flex w-full flex-col gap-5">
+      {isSlow && (
+        <p className="inter-medium-font rounded-xl bg-amber-50 px-3 py-2 text-center text-[13px] text-amber-800">
+          Your internet connection seems slow. Please wait…
+        </p>
+      )}
+      <div className="flex flex-col items-center">
+        <Skeleton variant="text" width={190} height={36} />
+        <Skeleton variant="text" width="min(100%, 390px)" height={24} />
+      </div>
+
+      <div className="grid w-full grid-cols-1 gap-3">
+        {Array.from({ length: 3 }).map((_, i) => (
+          <SkeletonCard key={i} />
+        ))}
+      </div>
+
+      <div className="flex w-full justify-end border-t border-slate-100 pt-4">
+        <Skeleton
+          variant="rounded"
+          width={180}
+          height={42}
+          className="!w-full !rounded-lg sm:!w-[180px]"
+        />
+      </div>
     </div>
   );
 
@@ -102,7 +181,6 @@ const ProductSelection = ({ showProductSelection }) => {
 
   /* ───────────────  product selection handler ────────────── */
   const handleProductSelect = (id, treatment) => {
-    console.log(id, "id: check");
     if (isFromReorder) {
       if (treatment == "reorder") {
         setRedirection("/re-order");
@@ -115,8 +193,11 @@ const ProductSelection = ({ showProductSelection }) => {
       setRedirection("/personal-details");
       setReorder(false);
     }
-    console.log(treatment, "treatment-name");
-    setSelectedProductId((prev) => (prev === id ? null : id));
+    setSelectedProductId((prev) => {
+      const isDeselecting = prev === id;
+      setSelectedTreatmentType(isDeselecting ? null : treatment);
+      return isDeselecting ? null : id;
+    });
   };
 
   //   useEffect(() => {
@@ -129,7 +210,17 @@ const ProductSelection = ({ showProductSelection }) => {
   const hanlePrevData = () => {
     // setShowModal(false);
     setIsButtonLoading(true);
+    const productChanged =
+      productId != null && String(productId) !== String(selectedProductId);
+    // Reordering the existing treatment reuses its saved consent. Only a
+    // genuinely new treatment invalidates the previous product consent.
+    if (productChanged && selectedTreatmentType === "new") {
+      clearConfirmationInfo();
+      setConsentResetProductId(selectedProductId);
+    }
     setProductId(selectedProductId);
+    // The treatment choice is this step's answer (kept in the app's store).
+    completeStep();
 
     Router.push(redirection);
   };
@@ -137,51 +228,69 @@ const ProductSelection = ({ showProductSelection }) => {
     <FullScreenModal isOpen={showModal} onClose={() => setShowModal(false)}>
       {isLoading ? (
         renderSkeletons()
+      ) : loadError ? (
+        <div className="flex w-full flex-col items-center justify-center gap-4 py-10 text-center">
+          <p className="inter-medium-font max-w-sm text-[15px] leading-snug text-slate-700">
+            {loadError}
+          </p>
+          <button
+            type="button"
+            onClick={loadProducts}
+            className="inter-medium-font min-h-[46px] w-full max-w-xs cursor-pointer rounded-xl bg-[#47317c] px-6 py-3 text-white transition-colors hover:bg-[#392765]"
+          >
+            Try again
+          </button>
+          <button
+            type="button"
+            onClick={() => {
+              if (window.history.length > 1) Router.back();
+              else Router.push("/");
+            }}
+            className="inter-medium-font min-h-[46px] w-full max-w-xs cursor-pointer rounded-xl border border-[#47317c]/30 bg-white px-6 py-3 text-[#47317c] transition-colors hover:bg-[#47317c]/[0.04]"
+          >
+            Back
+          </button>
+        </div>
       ) : (
-        <div className="w-full flex flex-col items-center justify-center px-4 py-2">
-          <div className="w-full flex flex-col items-center justify-center gap-8">
+        <div className="flex w-full flex-col items-center justify-center">
+          <div className="flex w-full flex-col items-center justify-center gap-5">
             {/* ───── Reorder Treatments ───── */}
 
             {/* ───── Available Treatments ───── */}
             {productData?.products?.length ? (
-              <section className="w-full flex flex-col items-center gap-6">
+              <section className="flex w-full flex-col items-center gap-5">
                 <div className="text-center">
-                  <h2 className="text-2xl font-bold text-gray-800">
+                  <h2 className="max-sm:text-[18px] inter-bold-font text-[21px] tracking-[-0.02em] text-slate-900 sm:text-[24px]">
                     Select Treatment
                   </h2>
-                  <p className="text-sm text-gray-500 mt-1 max-w-md mx-auto">
+                  <p className="inter-reg-font mx-auto mt-1.5 max-w-md text-[12.5px] max-sm:text-[16px] leading-5 text-slate-500 sm:text-[13px]">
                     We offer the following weight-loss injection treatments to
                     help you in your weight-loss journey…
                   </p>
                 </div>
 
-                <div
-                  className={`flex flex-wrap gap-6 w-full ${
-                    productData.products.filter(
-                      (p) => p?.inventories?.[0]?.status === 1,
-                    ).length === 1
-                      ? "justify-center"
-                      : "justify-center"
-                  }`}
-                >
+                <div className="grid w-full grid-cols-1 gap-3">
                   {(Array.isArray(productData.reorder)
                     ? productData.reorder
                     : [productData.reorder]
                   )
                     .filter((item) => item?.inventories?.[0]?.status === 1)
                     .map((item) => (
-                      <Product
+                      <ModalProductListCard
                         key={item?.id}
                         id={item?.id}
                         title={item?.name}
                         image={item?.img}
-                        price={item?.price || "N/A"}
-                        status={item?.inventories?.[0]?.status}
-                        lastOrderDate={item?.lastOrderDate}
-                        buttonText="Reorder Treatment"
-                        reorder
+                        originalPrice={item?.price || "N/A"}
+                        isOutOfStock={!item?.inventories?.[0]?.status}
+                        isLoading={false}
+                        buttonText={
+                          selectedProductId === item?.id
+                            ? "Selected"
+                            : "Reorder Treatment"
+                        }
                         isSelected={selectedProductId === item?.id}
-                        onSelect={() =>
+                        onClick={() =>
                           handleProductSelect(item?.id, "reorder")
                         }
                       />
@@ -190,35 +299,42 @@ const ProductSelection = ({ showProductSelection }) => {
                     .filter((p) => p?.inventories?.[0]?.status === 1)
                     .sort((a, b) => (a.sequence || 0) - (b.sequence || 0))
                     .map((p) => (
-                      <Product
+                      <ModalProductListCard
                         key={p?.id}
                         id={p?.id}
                         title={p?.name}
                         image={p?.img}
-                        price={p?.price || "N/A"}
-                        status={p?.inventories?.[0]?.status}
-                        buttonText="Start Consultation"
+                        originalPrice={p?.price || "N/A"}
+                        isOutOfStock={!p?.inventories?.[0]?.status}
+                        isLoading={false}
+                        buttonText={
+                          selectedProductId === p?.id
+                            ? "Selected"
+                            : "Select Treatment"
+                        }
                         isSelected={selectedProductId === p?.id}
-                        onSelect={() => handleProductSelect(p?.id, "new")}
+                        onClick={() => handleProductSelect(p?.id, "new")}
                       />
                     ))}
                 </div>
               </section>
             ) : (
-              <p className="text-sm text-gray-500 text-center">
+              <p className="text-sm max-sm:text-[16px] text-gray-500 text-center">
                 No available treatments at the moment.
               </p>
             )}
 
             {/* ───── Continue Button ───── */}
-            <div className="pt-6">
-              <NextButton
-                disabled={!selectedProductId}
-                onClick={hanlePrevData}
-                label="Continue"
-                loading={isButtonLoading}
-                className={"px-5"}
-              />
+            <div className="sticky -bottom-4 z-10 -mx-4 -mb-4 flex w-[calc(100%+2rem)] justify-end border-t border-slate-100 bg-white px-4 pb-4 pt-4 sm:-bottom-6 sm:-mx-6 sm:-mb-6 sm:w-[calc(100%+3rem)] sm:px-6 sm:pb-6">
+              <div className="w-full sm:w-[180px]">
+                <NextButton
+                  disabled={!selectedProductId}
+                  onClick={hanlePrevData}
+                  label="Continue"
+                  loading={isButtonLoading}
+                  className="!rounded-lg px-5"
+                />
+              </div>
             </div>
           </div>
         </div>

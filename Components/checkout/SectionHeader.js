@@ -31,13 +31,13 @@ const SectionHeader = ({
       transition={{ duration: 0.4 }}
     >
       <div
-        className={`flex items-center space-x-4 cursor-pointer ${className}`}
+        className={`flex items-center space-x-2.5 sm:space-x-3 cursor-pointer bg-[#f5f2fc] px-4 py-3.5 sm:px-6 sm:py-4 ${className}`}
         onClick={toggleAccordion}
       >
         <div
-          className={`flex items-center justify-center w-8 h-8 rounded-full font-bold text-sm transition-all duration-300 ${isCompleted
-            ? "bg-primary text-white"
-            : "border border-black text-black"
+          className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-[13px] max-sm:text-[16px] transition-all duration-300 ${isCompleted
+            ? "bg-[#47317c] text-white"
+            : "border-2 border-[#47317c] text-[#47317c] inter-semibold-font"
             }`}
         >
           <AnimatePresence mode="wait" initial={false}>
@@ -49,7 +49,7 @@ const SectionHeader = ({
                 exit={{ scale: 0 }}
                 transition={{ duration: 0.3 }}
               >
-                <FiCheck className="w-5 h-5" />
+                <FiCheck className="h-4 w-4" />
               </motion.div>
             ) : (
               <motion.div
@@ -65,14 +65,14 @@ const SectionHeader = ({
           </AnimatePresence>
         </div>
 
-        <h2 className="text-black bold-font text-base">{title}</h2>
+        <h2 className="max-sm:text-[16px] inter-semibold-font text-[15px] text-slate-900">{title}</h2>
 
         <motion.div
           className="ml-auto"
           animate={{ rotate: isOpen ? 180 : 0 }}
           transition={{ duration: 0.3 }}
         >
-          <FiChevronDown className="w-5 h-5 text-gray-600" />
+          <FiChevronDown className="w-4 h-4 text-slate-400" />
         </motion.div>
       </div>
 
@@ -86,13 +86,14 @@ const SectionHeader = ({
             transition={{ duration: 0.3 }}
             className="overflow-hidden"
           >
-            <hr className="border-gray-200 my-2" />
+            <div className="px-4 py-4 sm:px-6 sm:py-5">
             {description && (
-              <p className="text-sm text-black mt-1 reg-font paragraph">
+              <p className="inter-reg-font text-[13px] max-sm:text-[16px] text-slate-500 mb-3 sm:mb-4">
                 {description}
               </p>
             )}
             {children}
+            </div>
           </motion.div>
         )}
       </AnimatePresence>

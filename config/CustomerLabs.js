@@ -43,7 +43,6 @@ export function trackCustomerLabsPurchased({
   // Guard: server-side render or script not ready.
   if (typeof window === "undefined") return;
   if (!window._cl) {
-    console.warn("CustomerLabs: _cl not loaded — event skipped");
     return;
   }
 
@@ -62,7 +61,6 @@ export function trackCustomerLabsPurchased({
 
   // Need at least one identifier for CustomerLabs to tie the event to a profile.
   if (!email && !phone) {
-    console.warn("CustomerLabs: no email or phone — event skipped");
     return;
   }
 

@@ -18,6 +18,8 @@ import toast from "react-hot-toast";
 import BackButton from "@/Components/BackButton/BackButton";
 import MetaLayout from "@/Meta/MetaLayout";
 import { meta_url } from "@/config/constants";
+import StepsHeader from "@/layout/stepsHeader";
+import PageLoader from "@/Components/PageLoader/PageLoader";
 
 export default function ReviewScreen() {
   const { token, setReview } = useAuthStore();
@@ -28,6 +30,7 @@ export default function ReviewScreen() {
   const [fade, setFade] = useState(false);
   const [feedback, setFeedback] = useState("");
   const [reviewDisabled, setReviewDisabled] = useState(null);
+  const [isReviewLoading, setIsReviewLoading] = useState(true);
 
   const happyRef = useRef(null);
   const sadRef = useRef(null);
@@ -63,7 +66,6 @@ export default function ReviewScreen() {
         order_id: orderId,
       });
     } catch (err) {
-      console.log(err?.response?.data?.errors?.order_id || "error-testing");
 
       if (err?.response?.data?.errors?.order_id) {
         setReviewDisabled(true);
@@ -72,7 +74,6 @@ export default function ReviewScreen() {
         );
       }
 
-      console.error("TrackReview error:", err);
     }
   };
 
@@ -80,8 +81,18 @@ export default function ReviewScreen() {
      PAGE VIEW TRACK (ADDED)
   ============================= */
   useEffect(() => {
-    if (!orderId) return;
-    sendReview({ review: true });
+    if (!orderId) {
+      setIsReviewLoading(false);
+      return;
+    }
+
+    const validateOrderForReview = async () => {
+      setIsReviewLoading(true);
+      await sendReview({ review: true });
+      setIsReviewLoading(false);
+    };
+
+    validateOrderForReview();
   }, [orderId]);
 
   /* =============================
@@ -129,7 +140,7 @@ export default function ReviewScreen() {
         path: "../images/sad-emoji.json",
       });
     }
-  }, [mode]);
+  }, [mode, isReviewLoading]);
 
   const transition = (text, next) => {
     setFade(true);
@@ -143,7 +154,12 @@ export default function ReviewScreen() {
   return (
     <>
       <MetaLayout canonical={`${meta_url}review/`} noIndex />
-
+      <StepsHeader />
+      {isReviewLoading ? (
+        <div className="flex min-h-[calc(100vh-72px)] items-center justify-center bg-[#fbfbfd]">
+          <PageLoader />
+        </div>
+      ) : (
       <section className="review-container ">
         <div className="review-shell">
           <ApplicationLogo className="mx-auto w-46 mb-6 review-logo" />
@@ -214,7 +230,7 @@ export default function ReviewScreen() {
                       </div>
                     </div>
 
-                    <p className="text-[12px] text-black mont-reg-font tracking-wide tap-text">
+                    <p className="text-[12px] max-sm:text-[16px] text-black mont-reg-font tracking-wide tap-text">
                       Tap on an option
                     </p>
                   </div>
@@ -232,18 +248,17 @@ export default function ReviewScreen() {
                         placeholder="Tell us what went wrong..."
                         value={feedback}
                         onChange={(e) => setFeedback(e.target.value)}
-                        className="w-full h-[150px] textArea rounded-3xl px-6 py-5 bg-white/75 backdrop-blur-xl border border-white/60 text-[15px] text-black shadow-[inset_0_1px_2px_rgba(255,255,255,0.6),0_22px_44px_rgba(0,0,0,0.18)] focus:outline-none focus:ring-2 focus:ring-[#5b45a7]/50 placeholder:text-black/40 resize-none mont-reg-font"
+                        className="w-full h-[150px] textArea rounded-3xl px-6 py-5 bg-white/75 backdrop-blur-xl border border-white/60 text-[15px] max-sm:text-[16px] text-black shadow-[inset_0_1px_2px_rgba(255,255,255,0.6),0_22px_44px_rgba(0,0,0,0.18)] focus:outline-none focus:ring-2 focus:ring-[#5b45a7]/50 placeholder:text-black/40 resize-none mont-reg-font"
                       />
                     </div>
 
                     <button
                       type="button"
                       disabled={!feedback.trim()}
-                      className={`submit-btn ${
-                        !feedback.trim()
+                      className={`submit-btn ${!feedback.trim()
                           ? "bg-gray-300 text-gray-500 cursor-not-allowed pointer-events-none"
                           : "cursor-pointer"
-                      }`}
+                        }`}
                       onClick={() => {
                         sendReview({
                           review_type: "sad",
@@ -315,6 +330,7 @@ export default function ReviewScreen() {
           )}
         </div>
       </section>
+      )}
     </>
   );
 }
@@ -334,20 +350,18 @@ function ReviewButton({ icon, label, brand, className = "", onClick }) {
     >
       {/* 🌈 Gradient Ring */}
       <span
-        className={`pointer-events-none absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 ${
-          isTrustpilot
+        className={`pointer-events-none absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 ${isTrustpilot
             ? "bg-[linear-gradient(120deg,rgba(0,182,122,.45),rgba(255,255,255,.6),rgba(0,182,122,.45))]"
             : "bg-[linear-gradient(120deg,rgba(66,133,244,.45),rgba(255,255,255,.6),rgba(66,133,244,.45))]"
-        }`}
+          }`}
       />
 
       {/* ICON */}
       <motion.div
         whileHover={{ y: -2 }}
         transition={{ type: "spring", stiffness: 300 }}
-        className={`relative z-10 w-10 h-10 rounded-full flex items-center justify-center shadow-[0_8px_18px_rgba(0,0,0,0.15)] ${
-          isTrustpilot ? "bg-[#e8f7f1] border border-[#00b67a]/30" : "bg-white"
-        }`}
+        className={`relative z-10 w-10 h-10 rounded-full flex items-center justify-center shadow-[0_8px_18px_rgba(0,0,0,0.15)] ${isTrustpilot ? "bg-[#e8f7f1] border border-[#00b67a]/30" : "bg-white"
+          }`}
       >
         <Image
           src={icon}
@@ -360,19 +374,18 @@ function ReviewButton({ icon, label, brand, className = "", onClick }) {
 
       {/* TEXT */}
       <div className="relative z-10 flex-1 text-start">
-        <p className="text-sm mont-medium-font text-black leading-tight review-btn-label">
+        <p className="text-sm max-sm:text-[16px] mont-medium-font text-black leading-tight review-btn-label">
           {label}
         </p>
-        <p className="text-[11px] text-black/50 mont-medium-font review-btn-subtitle">
+        <p className="text-[11px] max-sm:text-[16px] text-black/50 mont-medium-font review-btn-subtitle">
           Takes less than 30 seconds
         </p>
       </div>
 
       {/* ✨ Soft Glow */}
       <span
-        className={`absolute -inset-6 blur-2xl opacity-0 group-hover:opacity-40 transition-opacity ${
-          isTrustpilot ? "bg-[#00b67a]" : "bg-[#4285f4]"
-        }`}
+        className={`absolute -inset-6 blur-2xl opacity-0 group-hover:opacity-40 transition-opacity ${isTrustpilot ? "bg-[#00b67a]" : "bg-[#4285f4]"
+          }`}
       />
     </motion.button>
   );

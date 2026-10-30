@@ -4,7 +4,8 @@ import { useForm } from "react-hook-form";
 import NextButton from "@/Components/NextButton/NextButton";
 import { useRouter } from "next/router";
 import PageLoader from "@/Components/PageLoader/PageLoader";
-import { useEffect, useState } from "react";
+import GuardedLoader from "@/Components/PageLoader/GuardedLoader";
+import { useEffect, useRef, useState } from "react";
 import FormWrapper from "@/Components/FormWrapper/FormWrapper";
 import PageAnimationWrapper from "@/Components/PageAnimationWrapper/PageAnimationWrapper";
 import StepsHeader from "@/layout/stepsHeader";
@@ -41,6 +42,7 @@ export default function LoginScreen() {
   const { setImpersonate } = useImpersonate();
   const { setAuthUserDetail } = useAuthUserDetailStore();
   const router = useRouter();
+  const hasRedirected = useRef(false);
   const { abandonCard, setAbandonCard, hasHydrated } = useAbandonCardStore();
   const { setProductId } = useProductId();
   const {
@@ -67,17 +69,13 @@ export default function LoginScreen() {
   useEffect(() => {
     const orderId = searchParams.get("order_id");
     const review = searchParams.get("review") === "true";
-    console.log(review, "review param");
     if (orderId) setOrderId(orderId);
     if (review) setReview(review);
-
-    console.log("review:", review);
   }, [searchParams, params, setOrderId, setEmail]);
 
   const loginMutation = useMutation(Login, {
     onSuccess: (data) => {
       const user = data?.data?.data;
-      console.log(user, "user");
       if (user) {
         setUserData(user);
         setToken(user?.token);
@@ -96,7 +94,6 @@ export default function LoginScreen() {
       }
     },
     onError: (error) => {
-      console.log(error?.response?.data?.errors, "sdseds");
 
       const errorObj = error?.response?.data?.errors;
 
@@ -106,7 +103,11 @@ export default function LoginScreen() {
 
         toast.error(firstErrorMessage);
       } else {
-        toast.error("Something went wrong.");
+        toast.error(
+          !error?.response
+            ? "Your internet connection seems slow or unavailable. Please try again."
+            : "Something went wrong.",
+        );
       }
 
       setShowLoader(false);
@@ -117,7 +118,6 @@ export default function LoginScreen() {
   const impersonateLoginMutation = useMutation(impersonateLogin, {
     onSuccess: (data) => {
       const user = data?.data?.data;
-      console.log(user, "user");
       if (user) {
         setUserData(user);
         setAuthUserDetail(user);
@@ -135,7 +135,6 @@ export default function LoginScreen() {
       }
     },
     onError: (error) => {
-      console.log(error?.response?.data?.errors, "sdseds");
 
       const errorObj = error?.response?.data?.errors;
 
@@ -145,7 +144,11 @@ export default function LoginScreen() {
 
         toast.error(firstErrorMessage);
       } else {
-        toast.error("Something went wrong.");
+        toast.error(
+          !error?.response
+            ? "Your internet connection seems slow or unavailable. Please try again."
+            : "Something went wrong.",
+        );
       }
 
       setShowLoader(false);
@@ -186,13 +189,11 @@ export default function LoginScreen() {
     setEmail(data?.email);
     loginMutation.mutate(formData);
   };
-  console.log(review, "review");
   useEffect(() => {
     if (!token) return;
 
     // 🔥 FIRST PRIORITY: abandoned cart
     if (abandonCard?.type === "abandoned-cart") {
-      console.log("check1");
       router.replace("/gathering-data");
       return;
     }
@@ -226,7 +227,6 @@ export default function LoginScreen() {
         eid,
       });
     } else {
-      console.log("⛔ SKIPPED STORE UPDATE");
     }
   }, [searchParams, abandonCard]);
 
@@ -261,9 +261,9 @@ export default function LoginScreen() {
         </div>
       ) : (
         <>
-          <div className={`flex justify-center bg-[#F2EEFF] py-8 sm:py-16`}>
+          <div className={`flex justify-center bg-[#FBFBFD] px-4 py-8 sm:py-16`}>
             <div
-              className={`bg-white rounded-xl shadow-md w-full max-w-lg p-8`}
+              className={`bg-white rounded-xl shadow-md w-full max-w-lg p-5 sm:p-8`}
             >
               {/* Title */}
               <h1 className="niba-reg-font heading mb-2">Login</h1>
@@ -275,15 +275,13 @@ export default function LoginScreen() {
 
               <PageAnimationWrapper>
                 <div
-                  className={`relative ${
-                    showLoader ? "pointer-events-none cursor-not-allowed" : ""
-                  }`}
+className="relative"
                 >
                   <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
                     <TextField
                       label="Email Address"
                       name="email"
-                      placeholder="Email Address"
+                      placeholder="name@example.com"
                       type="email"
                       register={register}
                       required
@@ -293,19 +291,19 @@ export default function LoginScreen() {
                     <TextField
                       label="Password"
                       name="password"
-                      placeholder="Password"
+                      placeholder="Enter your password"
                       type="password"
                       register={register}
                       required
                       errors={errors}
                     />
-                    <NextButton
+                    <NextButton loading={showLoader}
                       label="Login"
                       disabled={!isValid}
                       type="submit"
                       className="mb-5"
                     />
-                    <p className="reg-font text-black text-sm text-center">
+                    <p className="reg-font text-black text-sm max-sm:text-[16px] text-center">
                       Are you a new patient?{" "}
                       <Link
                         href={"/acknowledgment"}
@@ -322,11 +320,11 @@ export default function LoginScreen() {
                     {/* <BackButton label="Back" className="mt-2" onClick={() => router.back()} /> */}
                   </form>
 
-                  {showLoader && (
-                    <div className="absolute inset-0 z-20 flex justify-center items-center bg-white/60 rounded-lg cursor-not-allowed">
-                      <PageLoader />
-                    </div>
-                  )}
+                  <GuardedLoader
+                    show={showLoader}
+                    onRetry={handleSubmit(onSubmit)}
+                    onCancel={() => setShowLoader(false)}
+                  />
                 </div>
               </PageAnimationWrapper>
             </div>
@@ -338,6 +336,7 @@ export default function LoginScreen() {
         show={showLoginModal}
         onClose={closeLoginModal}
         isLoading={showLoader}
+        onCancelLoading={() => setShowLoader(false)}
         onLogin={async (data) => {
           setShowLoader(true);
           try {
@@ -359,7 +358,6 @@ export default function LoginScreen() {
             setShowLoader(false);
 
             if (abandonCard?.type) {
-              console.log("check2");
               router.push("/gathering-data");
             } else {
               router.push("/dashboard");
@@ -369,7 +367,9 @@ export default function LoginScreen() {
             const firstMsg =
               errorMsg && typeof errorMsg === "object"
                 ? Object.values(errorMsg)[0]
-                : "Something went wrong.";
+                : !error?.response
+                  ? "Your internet connection seems slow or unavailable. Please try again."
+                  : "Something went wrong.";
             toast.error(firstMsg);
             setShowLoader(false);
           }

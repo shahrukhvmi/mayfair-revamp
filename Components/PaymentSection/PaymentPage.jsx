@@ -1,8 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { trackPaymentAttempt } from "@/library/mayfairAnalytics";
 
 const PaymentPage = ({ paymentData }) => {
   const [countdown, setCountdown] = useState(3);
+
+  // Payment attempt: the visitor is about to be sent to the gateway.
+  useEffect(() => {
+    if (paymentData?.actionurl) trackPaymentAttempt(paymentData);
+  }, [paymentData]);
 
   useEffect(() => {
     if (!paymentData?.actionurl) return;
@@ -26,13 +32,13 @@ const PaymentPage = ({ paymentData }) => {
   return (
     <AnimatePresence>
       <motion.div
-        className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/50 backdrop-blur-sm"
+        className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
       >
         <motion.div
-          className="bg-white p-8 rounded-2xl shadow-xl w-full max-w-md text-center flex flex-col items-center"
+          className="bg-white p-6 sm:p-8 rounded-2xl shadow-xl w-full max-w-md max-h-[calc(100dvh-32px)] overflow-y-auto text-center flex flex-col items-center"
           initial={{ scale: 0.95, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           exit={{ scale: 0.95, opacity: 0 }}
@@ -61,7 +67,7 @@ const PaymentPage = ({ paymentData }) => {
 
           <hr className="w-full my-6 border-gray-200" />
 
-          <p className="reg-font text-sm text-gray-500">Do not leave this page, you will be redirected to payment promptly.</p>
+          <p className="reg-font text-sm max-sm:text-[16px] text-gray-500">Do not leave this page, you will be redirected to payment promptly.</p>
         </motion.div>
 
         {/* Hidden form */}

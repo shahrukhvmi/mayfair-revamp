@@ -24,6 +24,12 @@ import {
   HiOutlineInformationCircle,
 } from "react-icons/hi";
 import useAbandonCardStore from "@/store/abandonCardStore";
+import PageLoader from "@/Components/PageLoader/PageLoader";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import { LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
+import { format } from "date-fns";
+import { completeStep } from "@/library/mayfairAnalytics";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 
@@ -32,38 +38,55 @@ export default function DosageSelection() {
   const [abandonData, setAbandonData] = useState([]);
   const router = useRouter();
   // const {  } = useCartStore();
-  const { addToCart, increaseQuantity, decreaseQuantity, removeItemCompletely, setConsentGiven, items, totalAmount } =
-    useCartStore();
+  const {
+    addToCart,
+    increaseQuantity,
+    decreaseQuantity,
+    removeItemCompletely,
+    setConsentGiven,
+    items,
+    totalAmount,
+  } = useCartStore();
   const { productId } = useProductId();
-  console.log(productId, "productId in dosage selection");
   const { reorder } = useReorder();
 
-  console.log(items, "items");
 
   const {
     register,
     handleSubmit,
     clearErrors,
     setValue,
-    formState: { isValid, errors },
+    watch,
+    formState: { errors },
   } = useForm({
     mode: "onChange",
+    shouldUnregister: true,
+    defaultValues: { terms: false },
   });
 
-  const [isExpiryRequired, setIsExpiryRequired] = useState(false);
   // Variation From zustand
   const { variation } = useVariationStore();
 
-  // ✅ useEffect to check if `product?.show_expiry` is `0` or `1`
+  const isExpiryRequired = (variation?.variations || []).some(
+    (dose) => Boolean(dose?.expiry),
+  );
+
   useEffect(() => {
-    if (variation?.show_expiry === 1) {
-      setIsExpiryRequired(true);
-    } else {
-      setIsExpiryRequired(false);
+    if (!isExpiryRequired) {
       clearErrors("terms");
       setValue("terms", false);
     }
-  }, [variation?.show_expiry, clearErrors, setValue]);
+  }, [isExpiryRequired, clearErrors, setValue]);
+
+  useEffect(() => {
+    items.doses.forEach((dose) => {
+      if (dose.product_concent && !dose.consentGiven) {
+        removeItemCompletely(dose.id, "dose");
+      }
+    });
+  }, []);
+
+  const expiryConfirmed = watch("terms");
 
   useEffect(() => {
     items.doses.forEach((dose) => {
@@ -78,26 +101,28 @@ export default function DosageSelection() {
   const [selectedDose, setSelectedDose] = useState(null);
   const [prevMedication, setPrevMedication] = useState("");
   const [prevDose, setPrevDose] = useState("");
-  const [lastTakenDate, setLastTakenDate] = useState("");
+  const [lastTakenDate, setLastTakenDate] = useState(null);
   const { abandonCard, extra } = useAbandonCardStore();
   const abandonCartMutation = useMutation(abandonCart, {
     onSuccess: (data) => {
       if (data) {
         // router.push("/checkout");
-        console.log(data, "This is Abandon Cart Data");
       }
     },
     onError: (error) => {
       if (error) {
         // router.push("/checkout");
-        console.log(error, "This is error");
       }
     },
   });
 
   //Handle Submit Button
   const onSubmit = () => {
+    if (isButtonLoading) return;
     setIsButtonLoading(true);
+    // If navigation stalls or fails, give the button back after a while
+    setTimeout(() => setIsButtonLoading(false), 20000);
+    completeStep();
     router.push("/checkout");
 
     //⚠️ commit krdia h yaha sy q k ab har dose k click k api direct chaly gi⚠️
@@ -119,7 +144,6 @@ export default function DosageSelection() {
     }
 
     const sortedVariations = [...variations].sort((a, b) => {
-      console.log(a, b, "sfkjefjfsj");
       const aMg = parseFloat(a.name);
       const bMg = parseFloat(b.name);
       return aMg - bMg;
@@ -316,13 +340,14 @@ export default function DosageSelection() {
 
   // 🔥⚠️⚠️⚠️⚠️⚠️Abandone card selected dose auto add krne k liye useEffect ⚠️⚠️⚠️⚠️⚠️
   useEffect(() => {
+    if (!router.isReady || router.query.checkoutRecovery === "1") return;
     if (!abandonCard || !extra) return;
     if (!variation?.variations) return;
 
     if (abandonCard?.type === "abandoned-cart") {
       handleAddDose(extra);
     }
-  }, [abandonCard, extra]);
+  }, [abandonCard, extra, router.isReady, router.query.checkoutRecovery]);
 
   const back = () => {
     router.push("/confirmation-summary");
@@ -330,113 +355,150 @@ export default function DosageSelection() {
   return (
     <>
       <MetaLayout canonical={`${meta_url}dosage-selection/`} />
-      <div className="bottom-[100px] fixed left-10 cursor-pointer py-2 rounded-full border-2 border-violet-700 sm:block hidden">
-        {/* <BackButton label="Back" onClick={back} className="mt-2 sm:block hidden " /> */}
-        <button
-          label="Back"
-          onClick={back}
-          className="text-violet-700 reg-font px-6 cursor-pointer"
-        >
-          <span>Back</span>
-        </button>
-      </div>
       <AnimatePresence>
         {showDoseModal && selectedDose && (
           <motion.div
-            className="fixed inset-0 bg-black/50 backdrop-blur-sm flex justify-center items-center z-[9999] px-4"
+            className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/40 px-4 py-6 backdrop-blur-sm"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
           >
             <motion.div
-              initial={{ y: 100, opacity: 0 }}
+              initial={{ y: 60, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
-              exit={{ y: 100, opacity: 0 }}
-              transition={{ type: "spring", stiffness: 300, damping: 25 }}
-              className="bg-white rounded-lg shadow-xl p-6 max-w-md w-full relative"
+              exit={{ y: 60, opacity: 0 }}
+              transition={{ type: "spring", stiffness: 300, damping: 28 }}
+              className="max-h-[calc(100dvh-48px)] w-full max-w-md overflow-y-auto rounded-[22px] border border-white/80 bg-white shadow-[0_28px_80px_rgba(30,20,60,0.22)]"
             >
-              <button
-                type="button"
-                onClick={() => {
-                  removeItemCompletely(selectedDose?.id, "dose");
-                  setPrevMedication("");
-                  setPrevDose("");
-                  setLastTakenDate("");
-                  setShowDoseModal(false);
-                }}
-                className="absolute -top-3 -right-3 flex items-center justify-center w-7 h-7 rounded-full bg-black cursor-pointer shadow-md"
-              >
-                <svg width="10" height="10" viewBox="0 0 14 14" fill="none">
-                  <path d="M1 1L13 13M13 1L1 13" stroke="white" strokeWidth="2.5" strokeLinecap="round" />
-                </svg>
-              </button>
-              <h2 className="text-xl bold-font mb-4 text-gray-800">
-                Dosage Confirmation
-              </h2>
-              {selectedDose?.productConcent && (
-                <p className="text-md paragraph rounded-md p-3 reg-font mb-4">
-                  {selectedDose?.productConcent}
-                </p>
-              )}
-              <div className="space-y-3 mb-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Previous medication name
-                  </label>
-                  <input
-                    type="text"
-                    value={prevMedication}
-                    onChange={(e) => setPrevMedication(e.target.value)}
-                    placeholder="e.g. Ozempic, Mounjaro, Wegovy"
-                    className="w-full rounded-lg border border-gray-200 bg-white px-3.5 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 outline-none transition-colors focus:border-[#47317c] focus:ring-1 focus:ring-[#47317c]/20"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    What dose were you on? (mg)
-                  </label>
-                  <input
-                    type="text"
-                    value={prevDose}
-                    onChange={(e) => setPrevDose(e.target.value)}
-                    placeholder="e.g. 2.5"
-                    className="w-full rounded-lg border border-gray-200 bg-white px-3.5 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 outline-none transition-colors focus:border-[#47317c] focus:ring-1 focus:ring-[#47317c]/20"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    When did you last take it?
-                  </label>
-                  <input
-                    type="date"
-                    value={lastTakenDate}
-                    onChange={(e) => setLastTakenDate(e.target.value)}
-                    max={new Date().toISOString().split("T")[0]}
-                    className="w-full rounded-lg border border-gray-200 bg-white px-3.5 py-2.5 text-sm text-gray-800 outline-none transition-colors focus:border-[#47317c] focus:ring-1 focus:ring-[#47317c]/20"
-                  />
+              <div className="relative border-b border-slate-100 bg-white px-6 py-5 pr-16">
+                <h2 className="max-sm:text-[18px] inter-semibold-font text-[19px] tracking-[-0.01em] text-slate-900">
+                  Dosage Confirmation
+                </h2>
+                <button
+                  type="button"
+                  aria-label="Close dosage confirmation"
+                  onClick={() => {
+                    removeItemCompletely(selectedDose?.id, "dose");
+                    setPrevMedication("");
+                    setPrevDose("");
+                    setLastTakenDate(null);
+                    setShowDoseModal(false);
+                  }}
+                  className="absolute right-4 top-1/2 flex h-9 w-9 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full border border-slate-200 bg-slate-50 text-slate-500 transition-all duration-150 hover:border-[#47317c]/20 hover:bg-[#f5f2fc] hover:text-[#47317c] active:scale-95"
+                >
+                  <svg width="13" height="13" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+                    <path d="M1.5 1.5L12.5 12.5M12.5 1.5L1.5 12.5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+                  </svg>
+                </button>
+              </div>
+              <div className="px-6 py-5">
+                {selectedDose?.productConcent && (
+                  <p className="inter-reg-font text-[13.5px] max-sm:text-[16px] leading-[1.65] text-slate-600">
+                    {selectedDose?.productConcent}
+                  </p>
+                )}
+                <div className="mt-5 space-y-4">
+                  <div>
+                    <label className="inter-medium-font mb-1 block text-[13px] max-sm:text-[16px] text-slate-700">
+                      Previous medication name
+                    </label>
+                    <input
+                      type="text"
+                      value={prevMedication}
+                      onChange={(e) => setPrevMedication(e.target.value)}
+                      placeholder="e.g. Ozempic, Mounjaro, Wegovy"
+                      className="inter-reg-font h-12 w-full rounded-xl border border-slate-200 bg-slate-50/50 px-3.5 text-[14px] max-sm:text-[16px] text-slate-800 outline-none transition-all placeholder:text-slate-400 hover:border-slate-300 focus:border-[#47317c] focus:bg-white focus:ring-4 focus:ring-[#47317c]/[0.08]"
+                    />
+                  </div>
+                  <div>
+                    <label className="inter-medium-font mb-1 block text-[13px] max-sm:text-[16px] text-slate-700">
+                      What dose were you on? (mg)
+                    </label>
+                    <input
+                      type="text"
+                      value={prevDose}
+                      onChange={(e) => setPrevDose(e.target.value)}
+                      placeholder="e.g. 2.5"
+                      className="inter-reg-font h-12 w-full rounded-xl border border-slate-200 bg-slate-50/50 px-3.5 text-[14px] max-sm:text-[16px] text-slate-800 outline-none transition-all placeholder:text-slate-400 hover:border-slate-300 focus:border-[#47317c] focus:bg-white focus:ring-4 focus:ring-[#47317c]/[0.08]"
+                    />
+                  </div>
+                  <div>
+                    <label className="inter-medium-font mb-1 block text-[13px] max-sm:text-[16px] text-slate-700">
+                      When did you last take it?
+                    </label>
+                    <LocalizationProvider dateAdapter={AdapterDateFns}>
+                      <DatePicker
+                        value={lastTakenDate}
+                        onChange={(date) => setLastTakenDate(date)}
+                        maxDate={new Date()}
+                        format="dd/MM/yyyy"
+                        slotProps={{
+                          popper: {
+                            sx: { zIndex: 10001 },
+                          },
+                          dialog: {
+                            sx: { zIndex: 10001 },
+                          },
+                          textField: {
+                            fullWidth: true,
+                            placeholder: "DD/MM/YYYY",
+                            sx: {
+                              "& .MuiOutlinedInput-root": {
+                                height: "48px",
+                                borderRadius: "12px",
+                                backgroundColor: "rgba(248, 250, 252, 0.5)",
+                                fontFamily: "var(--font-inter)",
+                                fontSize: { xs: "16px", sm: "14px" },
+                                transition: "all 150ms ease",
+                                "&:hover": { backgroundColor: "#fff" },
+                                "&.Mui-focused": {
+                                  backgroundColor: "#fff",
+                                  boxShadow: "0 0 0 4px rgba(71, 49, 124, 0.08)",
+                                },
+                              },
+                              "& .MuiOutlinedInput-notchedOutline": { borderColor: "#e2e8f0" },
+                              "& .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline": { borderColor: "#cbd5e1" },
+                              "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": { borderColor: "#47317c", borderWidth: "1px" },
+                              "& .MuiIconButton-root": { color: "#64748b" },
+                            },
+                          },
+                          desktopPaper: {
+                            sx: {
+                              borderRadius: "16px",
+                              boxShadow: "0 20px 50px rgba(30, 20, 60, 0.18)",
+                              "& .MuiPickersDay-root.Mui-selected": { backgroundColor: "#47317c" },
+                            },
+                          },
+                          mobilePaper: { sx: { borderRadius: "16px" } },
+                        }}
+                      />
+                    </LocalizationProvider>
+                  </div>
                 </div>
               </div>
-              <NextButton
-                label={productId == FoundayoProductId || productId == WegovyPillProductId ? "I confirm this dose" : " I Confirm"}
-                disabled={!prevMedication || !prevDose || !lastTakenDate}
-                onClick={() => {
-                  console.log({
-                    medication_name: prevMedication,
-                    dosage: prevDose,
-                    dosage_time: lastTakenDate,
-                    selectedDose: selectedDose?.name,
-                  });
-                  setConsentGiven(selectedDose?.id, {
-                    medication_name: prevMedication,
-                    dosage: prevDose,
-                    dosage_time: lastTakenDate,
-                  });
-                  setPrevMedication("");
-                  setPrevDose("");
-                  setLastTakenDate("");
-                  setShowDoseModal(false);
-                }}
-              />
+              <div className="px-6 pb-6">
+                <button
+                  type="button"
+                  disabled={!prevMedication || !prevDose || !lastTakenDate}
+                  onClick={() => {
+                    setConsentGiven(selectedDose?.id, {
+                      medication_name: prevMedication,
+                      dosage: prevDose,
+                      dosage_time: format(lastTakenDate, "dd/MM/yyyy"),
+                    });
+                    setPrevMedication("");
+                    setPrevDose("");
+                    setLastTakenDate(null);
+                    setShowDoseModal(false);
+                  }}
+                  className="inter-semibold-font inline-flex min-h-12 w-full cursor-pointer items-center justify-center rounded-xl bg-[#47317c] px-5 py-3 text-[14px] max-sm:text-[16px] text-white shadow-[0_8px_20px_rgba(71,49,124,0.22)] transition-all duration-150 hover:-translate-y-0.5 hover:bg-[#3d2a6b] hover:shadow-[0_10px_24px_rgba(71,49,124,0.28)] active:translate-y-0 active:scale-[0.99] disabled:cursor-not-allowed disabled:bg-[#c8c1da] disabled:shadow-none disabled:hover:translate-y-0"
+                >
+                  {productId == FoundayoProductId ||
+                  productId == WegovyPillProductId
+                    ? "I confirm this dose"
+                    : "I Confirm"}
+                </button>
+              </div>
             </motion.div>
           </motion.div>
         )}
@@ -444,277 +506,212 @@ export default function DosageSelection() {
 
       <StepsHeader />
 
-      <div
-        className={`${inter.className} flex items-center justify-center bg-[#F2EEFF] px-4 sm:px-6 lg:px-8 mb-40 sm:mb-0`}
-      >
-        <div className="rounded-xl w-full max-w-2xl sm:my-10">
-          <div className="w-full mx-auto sm:px-8 my-6 rounded-md">
-            <div className="flex justify-center">
-              <h1 className="niba-reg-font heading text-center my-3">
-                You’re ready to start your personal weight loss journey
-              </h1>
-            </div>
-            <form onSubmit={handleSubmit(onSubmit)}>
-              <div className="">
-                <div className="col-span-12 sm:col-span-6 md:px-4 py-10">
-                  <div className="bg-white rounded-lg shadow-lg overflow-hidden mb-6">
-                    <div className="bg-primary p-6">
-                      <img
-                        src={variation?.img}
-                        alt={variation?.name}
-                        className="w-full h-40 object-contain"
-                      />
-                    </div>
-                    <div className="sm:p-6 p-3">
-                      <h2 className="text-2xl mb-2 bold-font text-gray-800">
-                        {variation?.name}
-                      </h2>
-                      {variation?.name === "Mounjaro (Tirzepatide)" && (
-                        <p className="inline-block px-3 py-1 text-xs font-semibold text-white bg-violet-500 rounded-full mb-2">
-                          Pack of 5 Needles is included with every dose
-                        </p>
-                      )}
+      <div className="min-h-screen bg-[#FBFBFD] px-4 pb-44 sm:px-6 lg:px-8">
+        <div className="mx-auto w-full max-w-xl py-5 sm:py-8">
 
-                      <br />
+          <h1 className="max-sm:text-[clamp(18px,6vw,24px)] max-sm:leading-[1.3] max-sm:tracking-[-0.02em] inter-semibold-font mb-4 sm:mb-6 text-center text-[26px] sm:text-[30px] text-slate-900">
+            You’re ready to start your <br className="sm:hidden" />personal <br className="max-sm:hidden" />weight loss journey
+          </h1>
 
-                      <span className="bold-font text-black">
-                        From{" "}
-                        <span>
-                          £
-                          {parseFloat(
-                          variation?.price || 0
-                          ).toFixed(2)}
-                        </span>
-                      </span>
-                      {/* <div
-                        className="reg-font text-gray-600 bg-red-50  p-3 rounded-md text-sm"
-                        dangerouslySetInnerHTML={{ __html: variation?.description }}
-                      ></div> */}
-                    </div>
-                  </div>
+          <form onSubmit={handleSubmit(onSubmit)}>
 
-                  <div className="bg-white rounded-lg shadow-lg  px-4 py-6">
-                    <h1 className="my-4 niba-bold-font text-2xl text-black text-start">
-                      <span className="niba-reg-font">Choose your </span> Dosage
-                    </h1>
-
-                    {variation?.variations
-                      ?.sort((a, b) => {
-                        const aOutOfStock = a?.stock?.status === 0;
-                        const bOutOfStock = b?.stock?.status === 0;
-                        const qOutOfStock = b?.stock?.quantity === 0;
-                        const qaOutOfStock = a?.stock?.quantity === 0;
-
-                        // Out of stock ko neeche le jao
-                        if (qaOutOfStock && !qOutOfStock) return 1;
-                        if (!qaOutOfStock && qOutOfStock) return -1;
-                        if (aOutOfStock && !bOutOfStock) return 1;
-                        if (!aOutOfStock && bOutOfStock) return -1;
-                        return 0;
-                      })
-                      .map((dose, index) => {
-                        const cartDose = items.doses.find(
-                          (item) => item.id === dose.id,
-                        );
-                        const cartQty = cartDose?.qty || 0;
-
-                        const is72mgWegovy =
-                          dose?.name === "7.2mg" && productId == 1;
-                        const is72mgSelected = is72mgWegovy && cartQty > 0;
-
-                        return (
-                          <React.Fragment key={index}>
-                            <Dose
-                              doseData={dose}
-                              allow={allowed}
-                              qty={cartQty}
-                              totalSelectedQty={totalSelectedQty}
-                              isSelected={cartQty > 0}
-                              onAdd={() => handleAddDose(dose)}
-                              onIncrement={() =>
-                                increaseQuantity(dose.id, "dose")
-                              }
-                              onDecrement={() =>
-                                decreaseQuantity(dose.id, "dose")
-                              }
-                            />
-
-                            {is72mgSelected && (
-                              <motion.div
-                                initial={{ opacity: 0, y: -5 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                className="mt-3"
-                              >
-                                <div className="rounded-xl bg-gradient-to-r from-amber-50 to-orange-50 p-3">
-                                  <div className="flex gap-3">
-                                    <HiOutlineInformationCircle className="mt-0.5 h-5 w-5 text-amber-600" />
-
-                                    <div>
-                                      <p className="text-sm font-semibold text-gray-900">
-                                        7.2mg Pack Information
-                                      </p>
-
-                                      <p className="mt-1 text-sm text-gray-600">
-                                        Includes 4 single-dose pens. Other
-                                        strengths are supplied as 1 pen
-                                        containing 4 doses.
-                                      </p>
-                                    </div>
-                                  </div>
-                                </div>
-                              </motion.div>
-                            )}
-                          </React.Fragment>
-                        );
-                      })}
-                  </div>
-
-                  {variation?.show_expiry === 1 && (
-                    <div className="flex flex-col space-y-2 text-sm py-6">
-                      <FormControlLabel
-                        control={
-                          <Checkbox
-                            {...register("terms", {
-                              required: isExpiryRequired
-                                ? "Please confirm that you have read and acknowledged the expiry information."
-                                : false,
-                            })}
-                            icon={
-                              <span className="w-5 h-5 border-2 border-gray-400 rounded-full flex items-center justify-center" />
-                            }
-                            checkedIcon={
-                              <span className="w-5 h-5 border-2 border-[#4565BF] rounded-full flex items-center justify-center">
-                                <span className="w-2.5 h-2.5 bg-[#4565BF] rounded-full" />
-                              </span>
-                            }
-                            sx={{
-                              "& .MuiSvgIcon-root": {
-                                display: "none",
-                              },
-                            }}
-                          />
-                        }
-                        label={
-                          <p className="font-sans font-bold text-sm italic text-black">
-                            Please confirm that you have reviewed the expiry
-                            dates of the selected doses.
-                          </p>
-                        }
-                      />
-                      {errors.terms && (
-                        <p className="text-red-600 text-xs font-semibold">
-                          {errors.terms.message}
-                        </p>
-                      )}
-                    </div>
-                  )}
-
-                  {Array.isArray(variation?.addons) &&
-                    variation?.addons.length > 0 &&
-                    productId != FoundayoProductId && productId != WegovyPillProductId && (
-                      <div className="bg-white rounded-lg shadow-lg  px-4 py-6 my-4">
-                        <>
-                          <h1 className="my-4 niba-reg-font text-2xl text-gray-800">
-                            Select{" "}
-                            <span className="font-bold text-2xl">Add-ons</span>
-                          </h1>
-
-                          {variation?.addons
-                            .slice()
-                            .sort((a, b) => {
-                              const aOutOfStock =
-                                a?.stock?.status === 0 ||
-                                  a?.stock?.quantity === 0
-                                  ? 1
-                                  : 0;
-                              const bOutOfStock =
-                                b?.stock?.status === 0 ||
-                                  b?.stock?.quantity === 0
-                                  ? 1
-                                  : 0;
-
-                              return aOutOfStock - bOutOfStock;
-                            })
-                            .map((addon) => {
-                              const cartAddon = items.addons.find(
-                                (item) => item.id === addon.id,
-                              );
-                              const cartQty = cartAddon?.qty || 0;
-
-                              return (
-                                <AddOn
-                                  key={addon.id}
-                                  addon={addon}
-                                  quantity={cartQty}
-                                  isSelected={cartQty > 0}
-                                  onAdd={() => handleAddAddon(addon)}
-                                  onIncrement={() =>
-                                    increaseQuantity(addon.id, "addon")
-                                  }
-                                  onDecrement={() =>
-                                    decreaseQuantity(addon.id, "addon")
-                                  }
-                                />
-                              );
-                            })}
-                        </>
-                      </div>
-                    )}
+            {/* Product card */}
+            <div className="mb-4 sm:mb-5 overflow-hidden rounded-2xl border border-[#47317c]/[0.08] bg-white shadow-[0_4px_20px_rgba(71,49,124,0.10)]">
+              <div className="flex items-center justify-center bg-[#47317c] p-3 sm:p-5">
+                <div className="flex w-full max-w-[320px] items-center justify-center px-2 py-2 sm:px-5 sm:py-3 ">
+                  <img src={variation?.img} alt={variation?.name} className="h-28 sm:h-36 w-full object-contain" />
                 </div>
               </div>
-            </form>
-          </div>
+              <div className="px-4 py-4 sm:px-5">
+                <h2 className="max-sm:text-[18px] inter-semibold-font text-[18px] sm:text-[20px] text-slate-900">{variation?.name}</h2>
+                {variation?.name === "Mounjaro (Tirzepatide)" && (
+                  <span className="inter-medium-font mt-1.5 inline-block whitespace-nowrap rounded-full bg-[#47317c]/10 px-3 py-1 text-[11px] max-sm:px-2 max-sm:text-[clamp(11px,3.6vw,14px)] text-[#47317c]">
+                    Pack of 5 Needles is included with every dose
+                  </span>
+                )}
+                <p className="inter-medium-font mt-2 text-[14px] max-sm:text-[16px] sm:text-[16px] text-slate-500">
+                  From <span>
+                    £
+                    {parseFloat(variation?.price || 0).toFixed(2)}
+                  </span>
+                </p>
+              </div>
+            </div>
+
+            {/* Dosage section */}
+            <div className="overflow-hidden rounded-2xl border border-[#47317c]/[0.08] bg-white px-3.5 py-4 shadow-[0_4px_20px_rgba(71,49,124,0.10)] sm:px-5 sm:py-5">
+              <h2 className="max-sm:text-[17px] inter-semibold-font mb-1 sm:mb-4 text-[16px] sm:text-[18px] text-slate-900">
+                Choose your dosage
+              </h2>
+
+              {variation?.variations
+                ?.sort((a, b) => {
+                  const aOutOfStock = a?.stock?.status === 0;
+                  const bOutOfStock = b?.stock?.status === 0;
+                  const qOutOfStock = b?.stock?.quantity === 0;
+                  const qaOutOfStock = a?.stock?.quantity === 0;
+
+                  // Out of stock ko neeche le jao
+                  if (qaOutOfStock && !qOutOfStock) return 1;
+                  if (!qaOutOfStock && qOutOfStock) return -1;
+                  if (aOutOfStock && !bOutOfStock) return 1;
+                  if (!aOutOfStock && bOutOfStock) return -1;
+                  return 0;
+                })
+                .map((dose, index) => {
+                  const cartDose = items.doses.find(
+                    (item) => item.id === dose.id,
+                  );
+                  const cartQty = cartDose?.qty || 0;
+
+                  const is72mgWegovy =
+                    dose?.name === "7.2mg" && productId == 1;
+                  const is72mgSelected = is72mgWegovy && cartQty > 0;
+
+                  return (
+                    <React.Fragment key={index}>
+                      <Dose
+                        doseData={dose}
+                        allow={allowed}
+                        qty={cartQty}
+                        totalSelectedQty={totalSelectedQty}
+                        isSelected={cartQty > 0}
+                        onAdd={() => handleAddDose(dose)}
+                        onIncrement={() =>
+                          increaseQuantity(dose.id, "dose")
+                        }
+                        onDecrement={() =>
+                          decreaseQuantity(dose.id, "dose")
+                        }
+                      />
+
+                      {is72mgSelected && (
+                        <motion.div
+                          initial={{ opacity: 0, y: -5 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          className="mt-3"
+                        >
+                          <div className="rounded-xl bg-gradient-to-r from-amber-50 to-orange-50 p-3">
+                            <div className="flex gap-3">
+                              <HiOutlineInformationCircle className="mt-0.5 h-5 w-5 text-amber-600" />
+
+                              <div>
+                                <p className="text-sm max-sm:text-[16px] font-semibold text-gray-900">
+                                  7.2mg Pack Information
+                                </p>
+
+                                <p className="mt-1 text-sm max-sm:text-[16px] max-sm:leading-snug text-gray-600">
+                                  Includes 4 single-dose pens. Other
+                                  strengths are supplied as 1 pen
+                                  containing 4 doses.
+                                </p>
+                              </div>
+                            </div>
+                          </div>
+                        </motion.div>
+                      )}
+                    </React.Fragment>
+                  );
+                })}
+            </div>
+
+            {isExpiryRequired && (
+              <div className="mt-4 rounded-xl border border-slate-100 bg-[#FBFBFD] p-3 sm:p-4">
+                <label className="flex cursor-pointer items-start gap-2.5 sm:gap-3">
+                  <input type="checkbox" className="hidden"
+                    {...register("terms", {
+                      required: isExpiryRequired
+                        ? "Please confirm that you have read and acknowledged the expiry information."
+                        : false,
+                    })}
+                  />
+                  <div className={`mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-[5px] border-2 transition-all duration-150 ${expiryConfirmed ? "border-[#47317c] bg-[#47317c]" : "border-slate-300 bg-white"}`}>
+                    {expiryConfirmed && (
+                      <svg width="10" height="8" viewBox="0 0 10 8" fill="none" aria-hidden="true">
+                        <path d="M1 4L3.5 6.5L9 1" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                      </svg>
+                    )}
+                  </div>
+                  <p className="inter-medium-font text-[14px] sm:text-[15px] max-sm:text-[16px] max-sm:tracking-[-0.01em] leading-relaxed max-sm:leading-snug text-slate-700">
+                    Please confirm that you have reviewed <br className="sm:hidden" />the expiry dates of the selected doses.
+                  </p>
+                </label>
+                {errors.terms && (
+                  <p className="inter-reg-font mt-1.5 text-[12px] max-sm:text-[16px] text-red-500">{errors.terms.message}</p>
+                )}
+              </div>
+            )}
+
+            {Array.isArray(variation?.addons) && variation?.addons.length > 0 && productId != 7 && (
+              <div className="mt-5 overflow-hidden rounded-2xl border border-[#47317c]/[0.08] bg-white px-3.5 py-4 shadow-[0_4px_20px_rgba(71,49,124,0.10)] sm:px-5 sm:py-5">
+                <h2 className="max-sm:text-[17px] inter-semibold-font mb-1 sm:mb-4 text-[16px] sm:text-[18px] text-slate-900">
+                  Select Add-ons
+                </h2>
+                {variation?.addons
+                  .slice()
+                  .sort((a, b) => {
+                    const aOutOfStock = a?.stock?.status === 0 || a?.stock?.quantity === 0 ? 1 : 0;
+                    const bOutOfStock = b?.stock?.status === 0 || b?.stock?.quantity === 0 ? 1 : 0;
+                    return aOutOfStock - bOutOfStock;
+                  })
+                  .map((addon) => {
+                    const cartAddon = items.addons.find((item) => item.id === addon.id);
+                    const cartQty = cartAddon?.qty || 0;
+                    return (
+                      <AddOn key={addon.id} addon={addon} quantity={cartQty} isSelected={cartQty > 0}
+                        onAdd={() => handleAddAddon(addon)}
+                        onIncrement={() => increaseQuantity(addon.id, "addon")}
+                        onDecrement={() => decreaseQuantity(addon.id, "addon")}
+                      />
+                    );
+                  })}
+              </div>
+            )}
+
+          </form>
         </div>
       </div>
 
-      <div className="fixed bottom-0 left-0 right-0 z-50 bg-[#ffffff] px-4 py-3 shadow-[0_-2px_10px_rgba(0,0,0,0.1)]">
-        <div className="max-w-xl mx-auto flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          {/* Product Info */}
-          <div className="flex items-start sm:items-center space-x-3 me-5">
-            <img
-              src={variation?.img}
-              alt={variation?.name}
-              className="w-10 h-10 rounded-md object-contain"
-            />
-            <div className="text-black leading-tight">
-              <div className="text-lg bold-font">{variation?.name}</div>
-              <div className="text-lg bold-font">
-                <span className="me-2 sm:text-lg text-md reg-font paragraph">
-                  Order total
-                </span>
-                £{parseFloat(totalAmount)?.toFixed(2)}
+      {/* Fixed bottom bar */}
+      <div className="fixed bottom-0 left-0 right-0 z-50 border-t border-slate-100 bg-white/95 backdrop-blur-xl">
+        <div className="mx-auto max-w-xl px-4 py-2.5 max-sm:pb-[calc(env(safe-area-inset-bottom,0px)+12px)] sm:py-3">
+          {/* Order summary row */}
+          <div className="mb-2.5 flex items-center justify-between gap-3">
+            <div className="flex min-w-0 flex-1 items-center gap-2.5">
+              <div className="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-[#47317c]/10">
+                <img src={variation?.img} alt={variation?.name} className="h-7 w-7 object-contain" />
               </div>
+              <p className="inter-medium-font text-[13px] max-sm:text-[16px] max-sm:leading-snug text-slate-600 sm:text-[15px] sm:truncate sm:max-w-[240px]">{variation?.name}</p>
+            </div>
+            <div className="shrink-0 text-right">
+              <p className="inter-medium-font whitespace-nowrap text-[11px] sm:text-[12px] uppercase tracking-wide text-slate-400">Order total</p>
+              <p className="inter-semibold-font text-[18px] sm:text-[22px] leading-tight text-[#47317c]">£{parseFloat(totalAmount)?.toFixed(2)}</p>
             </div>
           </div>
 
-          {/* Button */}
-          <div className="w-full sm:w-auto">
-            {isButtonLoading === true ? (
-              <div className="w-full px-28 py-3 rounded-full text-white bg-primary flex justify-center">
-                <motion.div
-                  animate={{ rotate: 360 }}
-                  transition={{
-                    repeat: Infinity,
-                    duration: 1,
-                    ease: "linear",
-                  }}
-                  className="w-5 h-5 border-4 border-t-transparent rounded-full text-white"
-                />
-              </div>
-            ) : (
+          {/* Action row */}
+          {(totalSelectedQty() === 0 || (isExpiryRequired && !expiryConfirmed)) && (
+            <p className="inter-medium-font mb-2 text-center text-[12px] max-sm:text-[16px] sm:text-[14px] text-slate-500">
+              {totalSelectedQty() === 0
+                ? "Select at least one dose to continue."
+                : "Confirm the expiry dates to continue."}
+            </p>
+          )}
+          <div className="flex items-center gap-2">
+            <button type="button" onClick={back}
+              className="inter-medium-font flex h-11 shrink-0 items-center gap-1 text-[13px] max-sm:text-[16px] sm:text-[15px] text-slate-500 hover:text-[#47317c] transition-colors cursor-pointer px-1">
+              <IoIosArrowBack size={15} />
+              Back
+            </button>
+
+            <div className="flex-1">
               <NextButton
                 onClick={handleSubmit(onSubmit)}
-                disabled={totalSelectedQty() === 0 || !isValid}
+                disabled={totalSelectedQty() === 0 || (isExpiryRequired && !expiryConfirmed)}
+                loading={isButtonLoading}
                 label="Proceed to Checkout"
-                className="w-full sm:w-auto"
               />
-            )}
-
-            <BackButton
-              label="Back"
-              className="mt-2 sm:hidden block"
-              onClick={back}
-            />
+            </div>
           </div>
         </div>
       </div>

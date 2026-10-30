@@ -12,9 +12,9 @@ import { passwordlink } from "@/config/constants";
 import ResetForm from "./ResetForm";
 import ForgotForm from "./ForgotForm";
 import LoginForm from "./LoginForm";
-import PageLoader from "../PageLoader/PageLoader";
+import GuardedLoader from "../PageLoader/GuardedLoader";
 
-export default function LoginModal({ show = false, onClose = () => {}, onLogin = () => {}, isLoading = false, modes }) {
+export default function LoginModal({ show = false, onClose = () => {}, onLogin = () => {}, isLoading = false, onCancelLoading = () => {}, modes }) {
   const {
     register,
     handleSubmit,
@@ -38,7 +38,6 @@ export default function LoginModal({ show = false, onClose = () => {}, onLogin =
 
   // }, [mode]);
 
-  console.log(mode, "mode");
   const [forceVisible, setForceVisible] = useState(false);
   const [showLoginMsg, setShowLoginMsg] = useState(false);
   const [localLoading, setLocalLoading] = useState(false);
@@ -53,7 +52,6 @@ export default function LoginModal({ show = false, onClose = () => {}, onLogin =
       setLocalLoading(false);
     },
     onError: (error) => {
-      console.log("Login error:", error);
 
       const errors = error?.response?.data?.errors;
 
@@ -152,7 +150,7 @@ export default function LoginModal({ show = false, onClose = () => {}, onLogin =
             </h2>
 
             {showLoginMsg && mode === "login" && (
-              <p className="text-green-600 text-center text-sm mb-4 reg-font">Your password was changed successfully. Please login below.</p>
+              <p className="text-green-600 text-center text-sm max-sm:text-[16px] mb-4 reg-font">Your password was changed successfully. Please login below.</p>
             )}
 
             {mode === "reset" && (
@@ -211,11 +209,14 @@ export default function LoginModal({ show = false, onClose = () => {}, onLogin =
               />
             )}
 
-            {isFormLoading && (
-              <div className="absolute inset-0 z-10 flex items-center justify-center bg-white/60 rounded-2xl">
-                <PageLoader />
-              </div>
-            )}
+            <GuardedLoader
+              show={isFormLoading}
+              onCancel={() => {
+                forgotLinkMutation.reset();
+                forgotMutation.reset();
+                onCancelLoading();
+              }}
+            />
           </motion.div>
         </motion.div>
       )}

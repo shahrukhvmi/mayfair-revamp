@@ -185,9 +185,7 @@ const PhotoUpload = () => {
 
   const logError = (message) => {
     toast.error(message);
-    UploadPhotoLogs({ message }).catch((err) =>
-      console.error("Failed to log error:", err),
-    );
+    UploadPhotoLogs({ message }).catch(() => {});
   };
 
   const frontPhotoInputRef = React.useRef(null);
@@ -265,11 +263,9 @@ const PhotoUpload = () => {
     const fetchImageStatus = async () => {
       try {
         const res = await GetImageIsUplaod({ order_id: orderId });
-        console.log("Image Upload Response", res);
 
         setImageUploaded(res?.data?.status);
         setImagesSend(res?.data?.status);
-        console.log(res, "Image Upload Status");
 
         if (!idVerificationUpload) {
           setButtonLabel("Upload ID verification photo");
@@ -277,7 +273,6 @@ const PhotoUpload = () => {
           setButtonLabel("Return to Dashboard");
         }
       } catch (error) {
-        console.error("Failed to fetch image status:", error);
       }
     };
 
@@ -288,12 +283,9 @@ const PhotoUpload = () => {
     const fetchImageStatus = async () => {
       try {
         const res = await GetIdVerification({ order_id: orderId });
-        console.log("Image Upload Response", res);
         setIdVerificationUpload(res?.data?.status);
         setImagesSend(res?.data?.status);
-        console.log(res, "Image Upload Status");
       } catch (error) {
-        console.error("Failed to fetch image status:", error);
       }
     };
     if (orderId) fetchImageStatus();
@@ -353,7 +345,6 @@ const PhotoUpload = () => {
             { type: "image/jpeg" },
           );
         } catch (err) {
-          console.warn("HEIC conversion failed:", err);
 
           // 🚫 Block completely if file seems corrupted
           if (file.size === 0 || !file.type || file.name === "") {
@@ -365,7 +356,6 @@ const PhotoUpload = () => {
           }
 
           // Otherwise continue using the original HEIC file
-          console.log("HEIC conversion failed — using original file instead.");
         }
       }
 
@@ -388,9 +378,7 @@ const PhotoUpload = () => {
 
       // ✅ All checks passed
       setValue(type, processedFile);
-      console.log("✅ Final processed file:", processedFile);
     } catch (err) {
-      console.error("Error processing image:", err);
       logError("Something went wrong while processing this image.");
       if (e.target.value !== undefined) e.target.value = "";
     } finally {
@@ -426,7 +414,6 @@ const PhotoUpload = () => {
         // GO.push("/dashboard/");
       }
     } catch (error) {
-      console.log(error, "error");
       toast.error(error?.response?.data?.errors?.front);
       if (error?.response?.data?.message === "Unauthenticated.") {
         logError("Failed to upload images. Please Login again.");
@@ -444,10 +431,6 @@ const PhotoUpload = () => {
       setLoading(false); // ✅ loading hamesha false hoga
     }
   };
-
-  console.log(ImagesSend, "GDJSGHSFHDSHFBSDJFSDJFB");
-
-  console.log(imageUploaded, "imageUploaded");
 
   const handleRedirect = () => {
     if (!idVerificationUpload) {

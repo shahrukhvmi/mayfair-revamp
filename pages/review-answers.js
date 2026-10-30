@@ -9,6 +9,7 @@ import usePatientInfoStore from "@/store/patientInfoStore";
 import useBmiStore from "@/store/bmiStore";
 import useMedicalInfoStore from "@/store/medicalInfoStore";
 import useConfirmationInfoStore from "@/store/confirmationInfoStore";
+import normalizeConfirmationInfo from "@/utils/normalizeConfirmationInfo";
 import useGpDetailsStore from "@/store/gpDetailStore";
 import sendStepData from "@/api/stepsDataApi";
 import { useMutation } from "@tanstack/react-query";
@@ -27,6 +28,7 @@ import useSignupStore from "@/store/signupStore";
 import PageLoader from "@/Components/PageLoader/PageLoader";
 import MetaLayout from "@/Meta/MetaLayout";
 import { meta_url } from "@/config/constants";
+import { completeStep } from "@/library/mayfairAnalytics";
 
 const ReviewAnswers = () => {
   const router = useRouter();
@@ -221,10 +223,8 @@ const ReviewAnswers = () => {
   //Send All steps data
   const stepsDataMutation = useMutation(sendStepData, {
     onSuccess: (data) => {
-      console.log(data, "Medical Questions");
 
       if (data?.data?.lastConsultation) {
-        console.log(data?.data?.lastConsultation?.fields, "data?.data?.data");
         setBmi(data?.data?.lastConsultation?.fields?.bmi);
         setConfirmationInfo(
           data?.data?.lastConsultation?.fields?.confirmationInfo,
@@ -235,12 +235,13 @@ const ReviewAnswers = () => {
         setLastBmi(data?.data?.lastConsultation?.fields?.bmi);
       }
 
+      // Answers saved by the server.
+      completeStep({ saved: "server" });
       router.push("/gathering-data");
       return;
     },
     onError: (error) => {
       // setLoading(false);
-      console.log("error", error?.response?.data?.message);
       if (error) {
         if (error?.response?.data?.message == "Unauthenticated.") {
           toast.error("Session Expired");
@@ -266,7 +267,6 @@ const ReviewAnswers = () => {
           clearConfirmationEmail();
           router.push("/login");
         } else if (error?.response?.data?.original?.errors) {
-          console.log(error?.response?.data?.original?.errors, "error");
           // toast.error("Something went wrong");
           // toast.error(error?.response?.data?.original?.errors);
           setShowLoader(false);
@@ -328,7 +328,7 @@ const ReviewAnswers = () => {
       },
       bmi: bmi,
       gpdetails: gpdetails,
-      confirmationInfo: confirmationInfo,
+      confirmationInfo: normalizeConfirmationInfo(confirmationInfo),
       medicalInfo: formattedMedicalInfo,
       pid: productId,
     };
@@ -339,96 +339,108 @@ const ReviewAnswers = () => {
     <>
       <MetaLayout canonical={`${meta_url}review-answers/`} />
       <StepsHeader />
-      <FormWrapper percentage={"95"} heading="Review Your Answers">
+      <FormWrapper
+        percentage={"95"}
+        heading="Review Your Answers"
+        description="Please check that your details and medical answers are correct before continuing."
+        width="!max-w-[760px]"
+      >
         <PageAnimationWrapper>
-          <div className="py-12">
-            <div className="max-w-2xl mx-auto">
-              {/* Q&A Summary */}
-              <div className="space-y-6">
-                {/* <div>
-                  <p className="text-sm font-semibold text-black">What is your sex at birth?</p>
-                  <p className="text-sm text-gray-700 mt-1">{patientInfo?.gender}</p>
-                  <hr className="mt-4 border-gray-200" />
-                </div>
-                <div>
-                  <p className="text-sm font-semibold text-black">What is your date of birth?</p>
-                  <p className="text-sm text-gray-700 mt-1">{patientInfo?.dob}</p>
-                  <hr className="mt-4 border-gray-200" />
-                </div> */}
-                <div>
-                  <p className="text-sm font-semibold text-black">
-                    Patient Residential Address
-                  </p>
-                  <p className="text-sm text-gray-700 mt-1">
-                    {patientInfo?.address?.postalcode}
-                  </p>
-                  <p className="text-sm text-gray-700 mt-1">
-                    {patientInfo?.address?.addressone}
-                  </p>
-                  {patientInfo?.address?.addresstwo?.trim() && (
-                    <p className="text-sm text-gray-700 mt-1">
-                      {patientInfo.address.addresstwo}
+          <div>
+            <div className="mx-auto max-w-[680px]">
+              <section aria-labelledby="contact-summary-heading">
+                <h2
+                  id="contact-summary-heading"
+                  className="inter-semibold-font max-sm:text-[18px] text-[15px] text-slate-900"
+                >
+                  Contact details
+                </h2>
+                <div className="mt-3 grid overflow-hidden rounded-xl border border-slate-200 bg-[#FBFBFD] sm:grid-cols-[1.4fr_0.6fr] sm:divide-x sm:divide-slate-200">
+                  <div className="px-4 py-4 sm:px-5">
+                    <p className="inter-medium-font text-[10px] max-sm:text-[16px] uppercase tracking-[0.1em] text-slate-400">
+                      Residential address
                     </p>
-                  )}
-                  <p className="text-sm text-gray-700 mt-1">
-                    {patientInfo?.address?.city}
-                  </p>
-                  <p className="text-sm text-gray-700 mt-1">
-                    {patientInfo?.address?.state}
-                  </p>
-                  <hr className="mt-4 border-gray-200" />
+                    <address className="inter-reg-font mt-2 not-italic text-[13px] max-sm:text-[16px] leading-6 text-slate-700">
+                      {[
+                        patientInfo?.address?.addressone,
+                        patientInfo?.address?.addresstwo,
+                        patientInfo?.address?.city,
+                        patientInfo?.address?.state,
+                        patientInfo?.address?.postalcode,
+                      ]
+                        .filter(Boolean)
+                        .join(", ") || "Not provided"}
+                    </address>
+                  </div>
+                  <div className="border-t border-slate-200 px-4 py-4 sm:border-t-0 sm:px-5">
+                    <p className="inter-medium-font text-[10px] max-sm:text-[16px] uppercase tracking-[0.1em] text-slate-400">
+                      Phone number
+                    </p>
+                    <p className="inter-medium-font mt-2 break-words text-[13px] max-sm:text-[16px] text-slate-700">
+                      {patientInfo?.phoneNo || "Not provided"}
+                    </p>
+                  </div>
                 </div>
-                <div>
-                  <p className="text-sm font-semibold text-black">
-                    Phone Number
-                  </p>
-                  <p className="text-sm text-gray-700 mt-1">
-                    {patientInfo?.phoneNo}
-                  </p>
-                  <hr className="mt-4 border-gray-200" />
+              </section>
+
+              <section className="mt-7" aria-labelledby="medical-summary-heading">
+                <div className="mb-3 flex items-end justify-between gap-4">
+                  <div>
+                    <h2
+                      id="medical-summary-heading"
+                      className="inter-semibold-font max-sm:text-[18px] text-[15px] text-slate-900"
+                    >
+                      Medical questionnaire
+                    </h2>
+                    {/* <p className="inter-reg-font mt-1 text-[12.5px] max-sm:text-[16px] text-slate-500">
+                      {medicalInfo.length} answers to review
+                    </p> */}
+                  </div>
                 </div>
 
-                {/* <div>
-                  <p className="text-sm font-semibold text-black">Your BMI</p>
-                  <p className="text-sm text-gray-700 mt-1">BMI: {bmi?.bmi}</p>
-                  <p className="text-sm text-gray-700 mt-1">BMI: {bmi?.bmi}</p>
-                  {bmi?.bmiConsent?.previously_taking_medicine?.[0]?.trim() && (
-                    <p className="text-sm text-gray-700 mt-1">{bmi.bmiConsent.previously_taking_medicine[0]}</p>
-                  )}
-                  <p className="text-sm text-gray-700 mt-1">{bmi.bmiConsent?.assian_message}</p>
-                  <p className="text-sm text-gray-700 mt-1">{bmi.bmiConsent?.weight_related_comorbidity[0]}</p>
-                  <p className="text-sm text-gray-700 mt-1">{bmi.bmiConsent?.weight_related_comorbidity_explanation}</p>
-                  <hr className="mt-4 border-gray-200" />
-                </div> */}
+                <div className="divide-y divide-slate-200 overflow-hidden rounded-xl border border-slate-200 bg-white">
+                  {medicalInfo.map((item, index) => (
+                    <article key={index} className="px-4 py-5 sm:px-5">
+                      <div className="flex items-start gap-3">
+                        <span className="inter-semibold-font flex h-6 w-6 shrink-0 items-center justify-center rounded-lg bg-[#47317c]/[0.07] text-[11px] max-sm:text-[16px] text-[#47317c]">
+                          {index + 1}
+                        </span>
+                        <div
+                          className="inter-medium-font min-w-0 flex-1 text-[13.5px] max-sm:text-[16px] leading-[1.65] text-slate-800 [&>ul]:ml-5 [&>ul]:mt-2 [&>ul]:list-disc [&>li]:mt-1 [&>li]:font-normal [&>li]:text-slate-600"
+                          dangerouslySetInnerHTML={{ __html: item.question }}
+                        />
+                      </div>
 
-                {medicalInfo.map((item, index) => {
-                  return (
-                    <div>
-                      <div
-                        className="text-sm font-semibold text-black [&>ul]:list-disc [&>ul]:ml-6 [&>li]:mt-0.5"
-                        dangerouslySetInnerHTML={{ __html: item.question }}
-                      ></div>
-                      <p className="text-sm text-gray-700 mt-1 capitalize">
-                        {item?.answer}{" "}
-                      </p>
-                      <p className="text-sm text-gray-700 mt-1">
-                        {item?.subfield_response}
-                      </p>
-                      <hr className="mt-4 border-gray-200" />
-                    </div>
-                  );
-                })}
-              </div>
+                      <div className="ml-9 mt-3 border-l-2 border-[#47317c]/25 pl-3.5">
+                        <div className="flex flex-wrap items-baseline gap-x-2 gap-y-1">
+                          <span className="inter-medium-font text-[10px] max-sm:text-[16px] uppercase tracking-[0.09em] text-slate-400">
+                            Your answer
+                          </span>
+                          <span className="inter-semibold-font text-[14px] max-sm:text-[16px] capitalize text-[#47317c]">
+                            {item?.answer || "Not answered"}
+                          </span>
+                        </div>
+
+                        {String(item?.subfield_response || "").trim() && (
+                          <p className="inter-reg-font mt-1.5 text-[13px] max-sm:text-[16px] leading-relaxed text-slate-600">
+                            {item.subfield_response}
+                          </p>
+                        )}
+                      </div>
+                    </article>
+                  ))}
+                </div>
+              </section>
 
               {/* Bottom Action Buttons */}
-              <div className="mt-8 space-y-3">
-                <NextButton
+              <div className="mt-7 border-t border-slate-200 pt-6">
+                <NextButton loading={showLoader}
                   label="Confirm and Proceed"
                   onClick={handleSubmit}
                 />
                 <BackButton
                   label="Edit answers"
-                  className="mt-2"
+                  className="mt-3"
                   onClick={handleRestart}
                 />
               </div>

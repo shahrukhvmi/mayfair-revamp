@@ -23,9 +23,21 @@ body {
   /* background: var(--background); */
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
-  background-color: #f2eeff;
+  background-color: #FBFBFD;
+}
+.css-1hgcujo-MuiPickersInputBase-root-MuiPickersOutlinedInput-root {
+
+    border-radius: 0.75rem !Important;
 }
 
+
+.css-18qp6qv {
+    border-radius: 0.75rem !Important;
+}
+.css-113d811-MuiFormLabel-root-MuiInputLabel-root.Mui-focused {
+
+    color: #47317c !Important;
+}
 /* global css */
 
 .heading {
@@ -102,7 +114,7 @@ body {
   }
 
   .paragraph {
-    font-size: 0.95rem;
+    font-size: 1rem;
   }
 
   .subHeading {
@@ -120,7 +132,7 @@ body {
   }
 
   .paragraph {
-    font-size: 0.875rem;
+    font-size: 1rem;
   }
 
   .subHeading {
@@ -647,5 +659,73 @@ body {
   .thanks-panel p {
     width: 400px;
     font-size: 17px;
+  }
+}
+
+/* Compact radio option cards across consultation forms on mobile. */
+@media (max-width: 639px) {
+  label:has(input[type="radio"]) {
+    flex: 0 1 calc(50% - 6px) !important;
+    min-height: 46px !important;
+    padding: 9px 12px !important;
+    gap: 8px !important;
+    border-radius: 10px !important;
+  }
+}
+
+/* Mobile: 16px form text (prevents iOS Safari focus-zoom). */
+@media (max-width: 639px) {
+  .textarea-box textarea,
+  .react-tel-input .form-control,
+  .react-tel-input .country-list,
+  .react-tel-input .country-list .search-box {
+    font-size: 16px !important;
+  }
+}
+
+/* Mobile: page title (login) at 24px. */
+@media (max-width: 639px) {
+  .heading {
+    font-size: 24px;
+  }
+}
+
+/* Mobile: no text below 16px. Classes with an explicit max-sm:text-* size are left to Tailwind. */
+@media (max-width: 639px) {
+  :is(.text-xs,
+  .text-sm,
+  .text-\[9px\],
+  .text-\[9\.5px\],
+  .text-\[10px\],
+  .text-\[10\.5px\],
+  .text-\[11px\],
+  .text-\[11\.5px\],
+  .text-\[12px\],
+  .text-\[12\.5px\],
+  .text-\[13px\],
+  .text-\[13\.5px\],
+  .text-\[14px\],
+  .text-\[14\.5px\],
+  .text-\[15px\],
+  .text-\[15\.5px\]):not([class*="max-sm:text-"]):not([class*="max-sm:!text-"]) {
+    font-size: 16px;
+  }
+}
+
+/* iOS Safari zooms the page on focus when a field's font-size is below 16px.
+   Keep every form control at 16px on phones and other touch devices. */
+@media (max-width: 639px), (pointer: coarse) {
+  input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="file"]),
+  select,
+  textarea,
+  .MuiInputBase-input,
+  .MuiSelect-select,
+  .MuiOutlinedInput-input,
+  .MuiFilledInput-input,
+  .MuiInput-input,
+  .MuiAutocomplete-input,
+  .react-tel-input .form-control,
+  [contenteditable="true"] {
+    font-size: 16px !important;
   }
 }
