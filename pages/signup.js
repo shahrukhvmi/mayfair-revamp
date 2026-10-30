@@ -13,6 +13,7 @@ import BackButton from "@/Components/BackButton/BackButton";
 import useAuthStore from "@/store/authStore";
 import MetaLayout from "@/Meta/MetaLayout";
 import { meta_url } from "@/config/constants";
+import { completeStep } from "@/library/mayfairAnalytics";
 
 export default function SignUp() {
   const [showLoader, setShowLoader] = useState(false);
@@ -87,6 +88,7 @@ export default function SignUp() {
     setFirstName(data.firstName);
     setLastName(data.lastName);
 
+    completeStep();
     setShowLoader(true);
     targetRoute.current = token ? "/steps-information" : "/email-confirmation";
     router.push(targetRoute.current);

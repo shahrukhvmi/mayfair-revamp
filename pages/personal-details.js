@@ -16,6 +16,7 @@ import usePatientInfoStore from "@/store/patientInfoStore";
 import useProductId from "@/store/useProductIdStore";
 import MetaLayout from "@/Meta/MetaLayout";
 import { FoundayoProductId, meta_url, WegovyPillProductId } from "@/config/constants";
+import { completeStep } from "@/library/mayfairAnalytics";
 
 export default function PersonalDetails() {
   const [showLoader, setShowLoader] = useState(false);
@@ -124,6 +125,7 @@ export default function PersonalDetails() {
       pregnancy: data.pregnancy || "", // Add this
     });
 
+    completeStep();
     setShowLoader(true);
     router.push("/residential-address");
   };

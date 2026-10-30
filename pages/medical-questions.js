@@ -12,6 +12,7 @@ import useMedicalQuestionsStore from "@/store/medicalQuestionStore";
 import useMedicalInfoStore from "@/store/medicalInfoStore";
 import MetaLayout from "@/Meta/MetaLayout";
 import { meta_url } from "@/config/constants";
+import { completeStep } from "@/library/mayfairAnalytics";
 
 const MedicalQuestions = () => {
   const router = useRouter();
@@ -97,6 +98,7 @@ const MedicalQuestions = () => {
     // ✅ Save questions + user answers into medicalInfo
     setMedicalInfo(questions);
 
+    completeStep();
     setShowLoader(true);
     router.push("/patient-consent");
   };

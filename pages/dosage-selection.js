@@ -29,6 +29,7 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { format } from "date-fns";
+import { completeStep } from "@/library/mayfairAnalytics";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 
@@ -113,6 +114,7 @@ export default function DosageSelection() {
     setIsButtonLoading(true);
     // If navigation stalls or fails, give the button back after a while
     setTimeout(() => setIsButtonLoading(false), 20000);
+    completeStep();
     router.push("/checkout");
 
     //⚠️ commit krdia h yaha sy q k ab har dose k click k api direct chaly gi⚠️

@@ -29,6 +29,7 @@ import useCheckoutStore from "@/store/checkoutStore";
 import MetaLayout from "@/Meta/MetaLayout";
 import { meta_url } from "@/config/constants";
 import useReorderBackProcessStore from "@/store/useReorderBackProcess";
+import { completeStep } from "@/library/mayfairAnalytics";
 
 const ConfirmationSummary = () => {
   const router = useRouter();
@@ -84,6 +85,8 @@ const ConfirmationSummary = () => {
         setLastBmi(data?.data?.lastConsultation?.fields?.bmi);
       }
 
+      // Answers saved by the server.
+      completeStep({ saved: "server" });
       // CustomerLabs Lead/Form Submit trigger
 
       router.push("/gathering-data");

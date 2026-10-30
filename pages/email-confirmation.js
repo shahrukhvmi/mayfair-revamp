@@ -31,6 +31,7 @@ import {
   getStoredAttribution,
   toPatientSourceTouches,
   trackSignup,
+  completeStep,
 } from "@/library/mayfairAnalytics";
 
 export default function EmailConfirmation() {
@@ -125,6 +126,8 @@ export default function EmailConfirmation() {
       // Links this new patient to their existing anonymous visitor (same
       // visitor ID, original first/last touch untouched).
       trackSignup(user, variables?.email);
+      // The account was created by the server.
+      completeStep({ saved: "server" });
 
       const stored = getStoredAttribution();
 

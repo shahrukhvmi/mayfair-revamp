@@ -28,6 +28,7 @@ import useSignupStore from "@/store/signupStore";
 import PageLoader from "@/Components/PageLoader/PageLoader";
 import MetaLayout from "@/Meta/MetaLayout";
 import { meta_url } from "@/config/constants";
+import { completeStep } from "@/library/mayfairAnalytics";
 
 const ReviewAnswers = () => {
   const router = useRouter();
@@ -234,6 +235,8 @@ const ReviewAnswers = () => {
         setLastBmi(data?.data?.lastConsultation?.fields?.bmi);
       }
 
+      // Answers saved by the server.
+      completeStep({ saved: "server" });
       router.push("/gathering-data");
       return;
     },

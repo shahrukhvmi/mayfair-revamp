@@ -12,6 +12,7 @@ import BackButton from "@/Components/BackButton/BackButton";
 import usePatientInfoStore from "@/store/patientInfoStore";
 import MetaLayout from "@/Meta/MetaLayout";
 import { meta_url } from "@/config/constants";
+import { completeStep } from "@/library/mayfairAnalytics";
 
 const options = ["Yes", "No", "Prefer not to say"];
 
@@ -60,6 +61,7 @@ export default function ConfirmEthnicity() {
       ...patientInfo, // 🧠 keep old data
       ethnicity: data?.ethnicity,
     });
+    completeStep();
     setShowLoader(true);
     router.push("/calculate-bmi");
   };

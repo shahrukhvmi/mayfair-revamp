@@ -14,6 +14,7 @@ import "react-phone-input-2/lib/style.css";
 import MetaLayout from "@/Meta/MetaLayout";
 import { meta_url } from "@/config/constants";
 import useReturning from "@/store/useReturningPatient";
+import { completeStep } from "@/library/mayfairAnalytics";
 
 export default function SignUp() {
   const [showLoader, setShowLoader] = useState(false);
@@ -46,6 +47,7 @@ export default function SignUp() {
       ...patientInfo, // 🧠 keep old data
       phoneNo: data?.phoneNo, // 🆕 update or add phoneNo
     });
+    completeStep();
     setShowLoader(true);
     if (isReturningPatient) {
       router.push("/calculate-bmi/");

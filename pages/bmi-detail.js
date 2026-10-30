@@ -18,6 +18,7 @@ import { FaLessThan } from "react-icons/fa";
 import useReturning from "@/store/useReturningPatient";
 import MetaLayout from "@/Meta/MetaLayout";
 import { meta_url } from "@/config/constants";
+import { completeStep } from "@/library/mayfairAnalytics";
 
 const OTHER_CLINIC_CONSENT_LABEL =
   "I confirm that I am currently receiving weight loss medication from another clinic or pharmacy, I understand that I will be required to provide proof of this before my treatment is approved.";
@@ -205,6 +206,7 @@ export default function BmiDetail() {
     });
     setClinicChangeConsent(clinicChangeConsentText);
 
+    completeStep();
     setShowLoader(true);
 
     if (reorder == true && reorderStatus == false) {

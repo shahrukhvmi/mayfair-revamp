@@ -16,6 +16,7 @@ import MUISelectField from "@/Components/SelectField/SelectField";
 import { motion } from "framer-motion";
 import MetaLayout from "@/Meta/MetaLayout";
 import { meta_url } from "@/config/constants";
+import { completeStep } from "@/library/mayfairAnalytics";
 
 export default function GpDetail() {
   const [showLoader, setShowLoader] = useState(false);
@@ -180,6 +181,7 @@ export default function GpDetail() {
 
     setShowLoader(true);
     setGpDetails(payload);
+    completeStep();
     router.push("/confirmation-summary");
   };
 
