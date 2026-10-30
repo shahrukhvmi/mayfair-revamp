@@ -8,6 +8,8 @@ import { GetIdVerification } from "@/api/IdVerificationApi";
 import GetProductsApi from "@/api/getProducts";
 import ProductCard from "@/Components/ProductCard/ProdcutCard";
 import GetImageIsUplaod from "@/api/GetImageIsUplaod";
+import { GetTreatmentEvidence } from "@/api/TreatmentEvidenceApi";
+import useTreatmentEvidenceStore from "@/store/useTreatmentEvidenceStore";
 import { GetPrescriptionEvidence } from "@/api/PrescriptionEvidenceApi";
 import useAuthUserDetailStore from "@/store/useAuthUserDetailStore";
 import useReorderBackProcessStore from "@/store/useReorderBackProcess";
@@ -148,6 +150,7 @@ const MyAccount = () => {
   const { reorder } = useReorder();
   const { token } = useAuthStore();
   const { idVerificationUpload, setIdVerificationUpload } = useIdVerificationUploadStore();
+  const { setTreatmentEvidenceUploaded } = useTreatmentEvidenceStore();
   const { setExplainenationEvidence, setExplainenationEvidenceDetails } = useExplanationEvidenceStore();
 
   const router = useRouter();
@@ -310,13 +313,16 @@ const MyAccount = () => {
     let cancelled = false;
     const run = async () => {
       try {
-        const [imgRes, idRes] = await Promise.all([
+        const [imgRes, idRes, treatmentRes] = await Promise.all([
           GetImageIsUplaod({ reorder }),
           GetIdVerification({ reorder }),
+          // Separate catch so a failure here does not block the BMI / ID statuses
+          GetTreatmentEvidence().catch(() => null),
         ]);
         if (!cancelled) {
           setImageUploaded(imgRes?.data?.status);
           setIdVerificationUpload(idRes?.data?.status);
+          if (treatmentRes) setTreatmentEvidenceUploaded(treatmentRes?.data?.status);
         }
       } catch { } finally {
         if (!cancelled) setUploadStatusLoading(false);
@@ -358,11 +364,8 @@ const MyAccount = () => {
             </div>
           }
         />
-        <div className="grid grid-cols-12 gap-4">
-          <div className="col-span-12 sm:col-span-6">
-            {isDashboardRoute && <UploadTopPrompt isLoading={uploadStatusLoading} />}
-
-          </div>
+        <div>
+          {isDashboardRoute && <UploadTopPrompt isLoading={uploadStatusLoading} />}
         </div>
         {/* Alerts */}
 

@@ -8,6 +8,7 @@ import {
   UploadCloud,
   Camera,
   IdCard,
+  Pill,
   ShieldCheck,
   ClipboardCheck,
 } from "lucide-react";
@@ -15,6 +16,8 @@ import useImageUploadStore from "@/store/useImageUploadStore ";
 import useIdVerificationUploadStore from "@/store/useIdVerificationUploadStore";
 import { GetIdVerification } from "@/api/IdVerificationApi";
 import GetImageIsUplaod from "@/api/GetImageIsUplaod";
+import { GetTreatmentEvidence } from "@/api/TreatmentEvidenceApi";
+import useTreatmentEvidenceStore from "@/store/useTreatmentEvidenceStore";
 import GetUserOrderApi from "@/api/GetUserOrderApi";
 import useAuthStore from "@/store/authStore";
 import Fetcher from "@/library/Fetcher";
@@ -25,7 +28,6 @@ import useProductId from "@/store/useProductIdStore";
 import { trackCustomerLabsPurchased } from "@/config/CustomerLabs";
 import patientSource from "@/api/patientSource";
 import useReturning from "@/store/useReturningPatient";
-import BmiAlternativesModal from "../Modal/BmiAlternativesModal";
 import {
   alreadySent,
   markSent,
@@ -40,10 +42,7 @@ const VerificationCard = ({
   description,
   label,
   onClick,
-  alternativesText,
 }) => {
-  const [showAlternatives, setShowAlternatives] = useState(false);
-
   return (
     <section className="w-full overflow-hidden rounded-2xl border border-amber-200/70 bg-amber-50/40 shadow-[0_1px_4px_rgba(180,83,9,0.06)]">
       <div className="flex w-full flex-col gap-4 p-4 sm:p-5 lg:flex-row lg:items-center lg:justify-between lg:gap-6">
@@ -58,15 +57,6 @@ const VerificationCard = ({
           <p className="inter-reg-font mt-1 text-[16px] sm:text-[14px] leading-relaxed text-slate-500">
             {description}
           </p>
-          {alternativesText && (
-            <button
-              type="button"
-              onClick={() => setShowAlternatives(true)}
-              className="inter-medium-font mt-2.5 cursor-pointer text-left text-[16px] leading-snug text-[#47317c] underline underline-offset-4 transition-colors hover:text-[#392765]"
-            >
-              {alternativesText}
-            </button>
-          )}
         </div>
 
         <button
@@ -84,11 +74,6 @@ const VerificationCard = ({
           />
         </button>
       </div>
-
-      <BmiAlternativesModal
-        isOpen={showAlternatives}
-        onClose={() => setShowAlternatives(false)}
-      />
     </section>
   );
 };
@@ -117,12 +102,15 @@ const ThankYou = () => {
   const { imageUploaded, setImageUploaded } = useImageUploadStore();
   const { idVerificationUpload, setIdVerificationUpload } =
     useIdVerificationUploadStore();
+  const { treatmentEvidenceUploaded, setTreatmentEvidenceUploaded } =
+    useTreatmentEvidenceStore();
   useEffect(() => {
     const fetchImageStatus = async () => {
       try {
-        const [imageResult, idResult] = await Promise.allSettled([
+        const [imageResult, idResult, treatmentResult] = await Promise.allSettled([
           GetImageIsUplaod({ order_id: orderId }),
           GetIdVerification(),
+          GetTreatmentEvidence(),
         ]);
 
         if (imageResult.status === "fulfilled") {
@@ -131,11 +119,14 @@ const ThankYou = () => {
         if (idResult.status === "fulfilled") {
           setIdVerificationUpload(idResult.value?.data?.status);
         }
+        if (treatmentResult.status === "fulfilled") {
+          setTreatmentEvidenceUploaded(treatmentResult.value?.data?.status);
+        }
       } catch (error) {}
     };
 
     if (orderId) fetchImageStatus();
-  }, [orderId, setImageUploaded, setIdVerificationUpload]);
+  }, [orderId, setImageUploaded, setIdVerificationUpload, setTreatmentEvidenceUploaded]);
 
   useEffect(() => {
     const fetchUserOrder = async () => {
@@ -266,7 +257,7 @@ const ThankYou = () => {
   };
 
   const handleGoUpload = () => {
-    GO.push("/photo-upload");
+    GO.push("/bmi-verification");
   };
 
   return (
@@ -436,7 +427,7 @@ const ThankYou = () => {
               </table>
             </div>
           </div>
-          {(!imageUploaded || !idVerificationUpload) && (
+          {(!imageUploaded || !idVerificationUpload || !treatmentEvidenceUploaded) && (
             <section
               aria-labelledby="verification-heading"
               className="space-y-4"
@@ -467,9 +458,8 @@ const ThankYou = () => {
                   <VerificationCard
                     icon={Camera}
                     title="BMI Verification"
-                    description="Continue to upload a recent photo for the clinical team to verify your BMI. This may be required to process your order."
-                    label="Upload Photo"
-                    alternativesText="Don't prefer to send photos? See other ways to verify."
+                    description="Please verify your height and weight so the clinical team can confirm your BMI. This may be required to process your order."
+                    label="Verify Now"
                     onClick={handleGoUpload}
                   />
                 )}
@@ -480,6 +470,15 @@ const ThankYou = () => {
                     description="Please upload a valid proof of ID to verify your identity and complete your order."
                     label="Upload ID"
                     onClick={() => GO.push("/id-verification")}
+                  />
+                )}
+                {!treatmentEvidenceUploaded && (
+                  <VerificationCard
+                    icon={Pill}
+                    title="Proof of Current Treatment"
+                    description="As you are currently receiving weight loss medication from another clinic or pharmacy, please upload proof of your existing treatment. This is required before your treatment can be approved."
+                    label="Upload Proof"
+                    onClick={() => GO.push("/treatment-proof-upload")}
                   />
                 )}
               </div>

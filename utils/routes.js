@@ -29,6 +29,8 @@ export const publicRoutes = [
   "/re-order",
   "/payment",
   "/photo-upload",
+  "/treatment-proof-upload",
+  "/bmi-verification",
   "/id-verification",
   "/explanation-evidence",
 ];

@@ -14,7 +14,7 @@
 
 // https://www.onlineweightlossclinic.co.uk/start-consultation/login/?product_id=7&fromemail=testadmin88@gmail.com&type=abandoned-cart&eid=52
 
-const FoundayoProductId =8;
+const FoundayoProductId = 8;
 const WegovyPillProductId = 7;
 const serverType = process.env.NEXT_PUBLIC_SERVER_TYPE;
 // console.log(serverType, "SERVERRRrrrrrrrr");
@@ -43,4 +43,10 @@ switch (serverType) {
     meta_url = "https://www.mayfairweightlossclinic.co.uk/start-consultation/";
     break;
 }
-export { app_url, meta_url, passwordlink, FoundayoProductId, WegovyPillProductId };
+export {
+  app_url,
+  meta_url,
+  passwordlink,
+  FoundayoProductId,
+  WegovyPillProductId,
+};
