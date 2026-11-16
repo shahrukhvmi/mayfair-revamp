@@ -14,8 +14,10 @@
 
 // https://www.onlineweightlossclinic.co.uk/start-consultation/login/?product_id=7&fromemail=testadmin88@gmail.com&type=abandoned-cart&eid=52
 
-const FoundayoProductId =8;
+const FoundayoProductId = 8;
 const WegovyPillProductId = 7;
+const bmi_video_call_url =
+  "https://calendly.com/londonslimmingclinic/20min?primary_color=16A596&background_color=ffffff&hide_gdpr_banner=1";
 const serverType = process.env.NEXT_PUBLIC_SERVER_TYPE;
 // console.log(serverType, "SERVERRRrrrrrrrr");
 let app_url = "";
@@ -49,4 +51,11 @@ switch (serverType) {
 if (process.env.NEXT_PUBLIC_API_URL) {
   app_url = process.env.NEXT_PUBLIC_API_URL;
 }
-export { app_url, meta_url, passwordlink, FoundayoProductId, WegovyPillProductId };
+export {
+  app_url,
+  meta_url,
+  passwordlink,
+  FoundayoProductId,
+  WegovyPillProductId,
+  bmi_video_call_url,
+};
