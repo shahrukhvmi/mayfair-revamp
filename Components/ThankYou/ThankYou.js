@@ -6,7 +6,7 @@ import useCartStore from "@/store/useCartStore";
 import {
   ChevronRight,
   UploadCloud,
-  Camera,
+  Stethoscope,
   IdCard,
   ShieldCheck,
   ClipboardCheck,
@@ -26,6 +26,7 @@ import { trackCustomerLabsPurchased } from "@/config/CustomerLabs";
 import patientSource from "@/api/patientSource";
 import useReturning from "@/store/useReturningPatient";
 import BmiAlternativesModal from "../Modal/BmiAlternativesModal";
+import VerifyBmiModal from "../Modal/VerifyBmiModal";
 import {
   alreadySent,
   markSent,
@@ -41,6 +42,7 @@ const VerificationCard = ({
   label,
   onClick,
   alternativesText,
+  actionIcon: ActionIcon = UploadCloud,
 }) => {
   const [showAlternatives, setShowAlternatives] = useState(false);
 
@@ -74,7 +76,7 @@ const VerificationCard = ({
           onClick={onClick}
           className="inter-medium-font group inline-flex min-h-[42px] w-full shrink-0 cursor-pointer items-center justify-center gap-1.5 rounded-xl border border-amber-200 bg-amber-50 px-5 py-2 text-[15px] max-sm:text-[16px] text-amber-600 whitespace-nowrap transition-all duration-150 hover:bg-amber-100 active:scale-[0.98] lg:w-[190px]"
         >
-          <UploadCloud aria-hidden="true" size={14} strokeWidth={2.2} />
+          <ActionIcon aria-hidden="true" size={14} strokeWidth={2.2} />
           <span>{label}</span>
           <ChevronRight
             aria-hidden="true"
@@ -97,6 +99,7 @@ const ThankYou = () => {
   const { orderId, checkOut, setOrderId, setCheckOut } = useCartStore();
   const { token } = useAuthStore();
   const router = useRouter();
+  const [showVerifyBmi, setShowVerifyBmi] = useState(false);
   const [items, setItems] = useState(null);
   const { userData } = useUserDataStore();
   const { patientInfo } = usePatientInfoStore();
@@ -465,12 +468,13 @@ const ThankYou = () => {
               <div className="flex flex-col gap-3">
                 {!imageUploaded && (
                   <VerificationCard
-                    icon={Camera}
+                    icon={Stethoscope}
+                    actionIcon={ShieldCheck}
                     title="BMI Verification"
-                    description="Continue to upload a recent photo for the clinical team to verify your BMI. This may be required to process your order."
-                    label="Upload Photo"
+                    description="Please verify your BMI by uploading a recent photo or by connecting to your GP records, so our clinical team can review it. This may be required to process your order."
+                    label="Verify BMI"
                     alternativesText="Don't prefer to send photos? See other ways to verify."
-                    onClick={handleGoUpload}
+                    onClick={() => setShowVerifyBmi(true)}
                   />
                 )}
                 {!idVerificationUpload && (
@@ -547,6 +551,10 @@ const ThankYou = () => {
           </>
         </div>
       </div>
+      <VerifyBmiModal
+        isOpen={showVerifyBmi}
+        onClose={() => setShowVerifyBmi(false)}
+      />
     </div>
   );
 };

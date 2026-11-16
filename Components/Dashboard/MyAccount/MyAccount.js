@@ -8,7 +8,7 @@ import { GetIdVerification } from "@/api/IdVerificationApi";
 import GetProductsApi from "@/api/getProducts";
 import ProductCard from "@/Components/ProductCard/ProdcutCard";
 import GetImageIsUplaod from "@/api/GetImageIsUplaod";
-import { GetPrescriptionEvidence } from "@/api/PrescriptionEvidenceApi";
+// import { GetPrescriptionEvidence } from "@/api/PrescriptionEvidenceApi";
 import useAuthUserDetailStore from "@/store/useAuthUserDetailStore";
 import useReorderBackProcessStore from "@/store/useReorderBackProcess";
 import useProductId from "@/store/useProductIdStore";
@@ -326,16 +326,16 @@ const MyAccount = () => {
     return () => { cancelled = true; };
   }, [reorder]);
 
-  useEffect(() => {
-    const run = async () => {
-      try {
-        const r = await GetPrescriptionEvidence({ token });
-        setExplainenationEvidence(r?.data?.require_evidence);
-        setExplainenationEvidenceDetails(r?.data);
-      } catch { }
-    };
-    run();
-  }, []);
+  // useEffect(() => {
+  //   const run = async () => {
+  //     try {
+  //       const r = await GetPrescriptionEvidence({ token });
+  //       setExplainenationEvidence(r?.data?.require_evidence);
+  //       setExplainenationEvidenceDetails(r?.data);
+  //     } catch { }
+  //   };
+  //   run();
+  // }, []);
 
   return (
     <main className="inter-reg-font min-w-0 flex-1 bg-[#FBFBFD]">

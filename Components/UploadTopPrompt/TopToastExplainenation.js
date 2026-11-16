@@ -10,10 +10,10 @@ import toast from "react-hot-toast";
 import { useRouter } from "next/router";
 import NextButton from "@/Components/NextButton/NextButton";
 import useCartStore from "@/store/useCartStore";
-import {
-  GetPrescriptionEvidence,
-  PostPrescriptionEvidence,
-} from "@/api/PrescriptionEvidenceApi";
+// import {
+//   GetPrescriptionEvidence,
+//   PostPrescriptionEvidence,
+// } from "@/api/PrescriptionEvidenceApi";
 import useAuthStore from "@/store/authStore";
 
 const TopToastExplanation = () => {
@@ -132,14 +132,14 @@ const TopToastExplanation = () => {
     reset();
     setPreviewUrl(null);
   };
-  const GetEvidence = async () => {
-    try {
-      const res = await GetPrescriptionEvidence({ token });
-      setExplainenationEvidence(res?.data?.require_evidence);
-      setExplainenationEvidenceDetails(res?.data);
-    } catch (error) {
-    }
-  };
+  // const GetEvidence = async () => {
+  //   try {
+  //     const res = await GetPrescriptionEvidence({ token });
+  //     setExplainenationEvidence(res?.data?.require_evidence);
+  //     setExplainenationEvidenceDetails(res?.data);
+  //   } catch (error) {
+  //   }
+  // };
   const onSubmit = async (data) => {
     if (!data.description) {
       toast.error("Explanation is required.");
@@ -157,7 +157,7 @@ const TopToastExplanation = () => {
         payload.evidence = await toBase64(data.evidence);
       }
 
-      const res = await PostPrescriptionEvidence(payload);
+      // const res = await PostPrescriptionEvidence(payload);
       if (res?.status === 200 || res?.data?.success) {
         toast.success(
           "Thank you. Your information has been submitted for clinical review. Our healthcare team will process your order and contact you if any additional details are needed.",

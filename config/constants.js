@@ -49,4 +49,7 @@ switch (serverType) {
 if (process.env.NEXT_PUBLIC_API_URL) {
   app_url = process.env.NEXT_PUBLIC_API_URL;
 }
+// ORB (NHS GP records) connect link. Not available yet: while empty the
+// "Connect to My NHS GP Records" button saves the consent and shows a "coming soon" message.
+export const orb_connect_url = "";
 export { app_url, meta_url, passwordlink, FoundayoProductId, WegovyPillProductId };

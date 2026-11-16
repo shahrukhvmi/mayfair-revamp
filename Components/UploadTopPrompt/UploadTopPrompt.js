@@ -2,15 +2,17 @@ import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import {
-  Camera,
   ChevronRight,
   IdCard,
+  ShieldCheck,
+  Stethoscope,
   UploadCloud,
 } from "lucide-react";
 
 import useIdVerificationUploadStore from "@/store/useIdVerificationUploadStore";
 import useImageUploadStore from "@/store/useImageUploadStore ";
 import BmiAlternativesModal from "../Modal/BmiAlternativesModal";
+import VerifyBmiModal from "../Modal/VerifyBmiModal";
 
 const AlertBanner = ({
   icon: Icon,
@@ -19,8 +21,21 @@ const AlertBanner = ({
   buttonText,
   href,
   alternativesText,
+  opensVerifyBmi = false,
+  actionIcon: ActionIcon = UploadCloud,
 }) => {
   const [showAlternatives, setShowAlternatives] = useState(false);
+  const [showVerifyBmi, setShowVerifyBmi] = useState(false);
+
+  const actionClassName =
+    "inter-medium-font group inline-flex min-h-[38px] w-full shrink-0 cursor-pointer items-center justify-center gap-1.5 rounded-xl border bg-amber-50 border-amber-200 px-5 py-2 text-[15px] max-sm:text-[16px] text-amber-600 no-underline whitespace-nowrap transition-all duration-150 hover:bg-amber-100 active:scale-[0.98] lg:w-[190px]";
+  const actionContent = (
+    <>
+      <ActionIcon size={14} strokeWidth={2.2} />
+      <span>{buttonText}</span>
+      <ChevronRight size={13} strokeWidth={2.5} className="transition-transform duration-150 group-hover:translate-x-0.5" />
+    </>
+  );
 
   return (
     <section className="w-full overflow-hidden rounded-2xl border border-amber-200/70 bg-amber-50/40 shadow-[0_1px_4px_rgba(180,83,9,0.06)]">
@@ -53,19 +68,24 @@ const AlertBanner = ({
         </div>
 
         {/* Action */}
-        <Link
-          href={href}
-          className="inter-medium-font group inline-flex min-h-[38px] w-full shrink-0 items-center justify-center gap-1.5 rounded-xl border bg-amber-50 border border-amber-200 px-5 py-2 text-[15px] max-sm:text-[16px] text-amber-600 no-underline whitespace-nowrap transition-all duration-150 hover:bg-amber-100 active:scale-[0.98] lg:w-[190px]"
-        >
-          <UploadCloud size={14} strokeWidth={2.2} />
-          <span>{buttonText}</span>
-          <ChevronRight size={13} strokeWidth={2.5} className="transition-transform duration-150 group-hover:translate-x-0.5" />
-        </Link>
+        {opensVerifyBmi ? (
+          <button type="button" onClick={() => setShowVerifyBmi(true)} className={actionClassName}>
+            {actionContent}
+          </button>
+        ) : (
+          <Link href={href} className={actionClassName}>
+            {actionContent}
+          </Link>
+        )}
       </div>
 
       <BmiAlternativesModal
         isOpen={showAlternatives}
         onClose={() => setShowAlternatives(false)}
+      />
+      <VerifyBmiModal
+        isOpen={showVerifyBmi}
+        onClose={() => setShowVerifyBmi(false)}
       />
     </section>
   );
@@ -119,12 +139,14 @@ const UploadTopPrompt = ({ isLoading = false }) => {
     return (
       <div className="w-full">
         <AlertBanner
-          icon={Camera}
+          icon={Stethoscope}
+          actionIcon={ShieldCheck}
           title="BMI Verification"
-          description="Continue to upload a recent photo for the clinical team to verify your BMI. This may be required to process your order."
-          buttonText="Upload Photo"
+          description="Please verify your BMI by uploading a recent photo or by connecting to your GP records, so our clinical team can review it. This may be required to process your order."
+          buttonText="Verify BMI"
           href="/photo-upload"
           alternativesText="Don't prefer to send photos? See other ways to verify."
+          opensVerifyBmi
         />
       </div>
     );

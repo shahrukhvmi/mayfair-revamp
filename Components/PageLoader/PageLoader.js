@@ -1,5 +1,6 @@
 "use client";
 
+import ApplicationLogo from "@/config/ApplicationLogo";
 import { motion, useReducedMotion } from "framer-motion";
 
 export default function PageLoader({ message = "", children = null }) {
@@ -32,8 +33,8 @@ export default function PageLoader({ message = "", children = null }) {
           transition={{ duration: 1.8, repeat: Infinity, ease: "easeInOut" }}
           className="relative overflow-hidden"
         >
-          <img
-            src="../images/logo.svg"
+          <ApplicationLogo
+            loading="eager"
             alt="Mayfair Weight Loss Clinic"
             className="h-auto w-[138px] select-none drop-shadow-[0_6px_12px_rgba(71,49,124,0.12)] sm:w-[150px]"
           />
