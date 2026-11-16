@@ -6,6 +6,7 @@ import {
   Camera,
   ChevronRight,
   Lock,
+  PlayCircle,
   Stethoscope,
   X,
 } from "lucide-react";
@@ -13,7 +14,7 @@ import { FiCheck } from "react-icons/fi";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import toast from "react-hot-toast";
 
-import { orb_connect_url } from "@/config/constants";
+import { orb_connect_url, orb_guide_url } from "@/config/constants";
 import useCartStore from "@/store/useCartStore";
 import useAuthStore from "@/store/authStore";
 import { BMIGpRecordsORBPostCosent } from "@/api/bmiConsentApi";
@@ -227,6 +228,21 @@ const VerifyBmiDialog = ({ onClose }) => {
                 </>
               )}
             </button>
+
+            <p className="inter-reg-font mt-3 flex items-start justify-center gap-1.5 text-center text-[16px] leading-snug text-slate-500 sm:text-[14px]">
+              <PlayCircle aria-hidden="true" size={16} strokeWidth={1.9} className="mt-0.5 shrink-0 text-[#47317c]" />
+              <span>
+                Not sure how it works?{" "}
+                <a
+                  href={orb_guide_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inter-medium-font text-[#47317c] underline underline-offset-2 hover:text-[#392765]"
+                >
+                  Watch the step-by-step guide
+                </a>
+              </span>
+            </p>
           </>
         )}
       </div>

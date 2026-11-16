@@ -34,6 +34,7 @@ import useAbandonCardStore from "@/store/abandonCardStore";
 import normalizeConfirmationInfo from "@/utils/normalizeConfirmationInfo";
 import { isPregnancyBlocked, PREGNANCY_BLOCK_MESSAGE } from "@/utils/patientChecks";
 import { trackOrderCreated } from "@/library/mayfairAnalytics";
+import { uploadHighDoseEvidenceForOrder } from "@/utils/highDoseEvidence";
 
 const OrderSummary = ({
   isConcentCheck,
@@ -89,6 +90,7 @@ const OrderSummary = ({
   const [couponLoading, setCouponLoading] = useState(false);
   const [paymentData, setPaymentData] = useState(null);
   const [isButtonLoading, setIsButtonLoading] = useState(false);
+  const [documentFailed, setDocumentFailed] = useState(false);
 
   const handleApplyCoupon = async () => {
     setCouponLoading(true);
@@ -142,18 +144,40 @@ const OrderSummary = ({
 
   // handle Payment ✌✌
   const checkoutMutation = useMutation(sendStepData, {
-    onSuccess: (data) => {
+    onSuccess: async (data, variables) => {
       if (data) {
-        setPaymentData(data?.data?.paymentData);
-        setOrderId(data?.data?.paymentData?.order_id);
+        const newOrderId = data?.data?.paymentData?.order_id;
+        setOrderId(newOrderId);
         // Order exists, payment not yet attempted: recorded as pending, not paid.
         trackOrderCreated({
-          orderId: data?.data?.paymentData?.order_id,
+          orderId: newOrderId,
           value: finalTotal,
           currency: "GBP",
         });
-        clearCoupon();
         clearAbandonCard();
+
+        // High dose document (order/dosage-document) must be uploaded before
+        // the payment page opens (the button keeps its plain loading spinner
+        // meanwhile). It retries 3 times; if it still fails the patient is
+        // asked to select their dose again.
+        let uploaded = false;
+        try {
+          uploaded = await uploadHighDoseEvidenceForOrder(
+            newOrderId,
+            variables?.items,
+          );
+        } catch (err) {
+          console.error("Dosage document", err);
+        }
+
+        if (!uploaded) {
+          setIsButtonLoading(false);
+          setDocumentFailed(true);
+          return;
+        }
+
+        clearCoupon();
+        setPaymentData(data?.data?.paymentData);
       }
     },
     onError: (error) => {
@@ -301,6 +325,43 @@ const OrderSummary = ({
 
   return (
     <>
+      {documentFailed && (
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/40 px-4 py-6 backdrop-blur-sm">
+          <div
+            role="alertdialog"
+            aria-modal="true"
+            aria-labelledby="document-failed-heading"
+            aria-describedby="document-failed-text"
+            className="w-full max-w-[440px] rounded-[22px] bg-white p-6 text-center shadow-[0_28px_80px_rgba(30,20,60,0.22)] sm:p-7"
+          >
+            <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-red-50 text-red-500">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M12 8v5m0 3.5h.01M10.3 3.9 2.4 17.6A2 2 0 0 0 4.1 20.6h15.8a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            </div>
+            <h2
+              id="document-failed-heading"
+              className="inter-semibold-font mt-4 text-[19px] max-sm:text-[18px] text-slate-900"
+            >
+              Something went wrong
+            </h2>
+            <p
+              id="document-failed-text"
+              className="inter-reg-font mt-2 text-[14px] max-sm:text-[16px] leading-relaxed text-slate-600"
+            >
+              We couldn&apos;t upload your treatment evidence. We are taking you
+              back to dosage selection, kindly select your dose again.
+            </p>
+            <button
+              type="button"
+              onClick={() => router.push("/gathering-data")}
+              className="inter-semibold-font mt-6 inline-flex min-h-12 w-full cursor-pointer items-center justify-center rounded-xl bg-[#47317c] px-5 py-3 text-[15px] max-sm:text-[16px] text-white shadow-[0_8px_20px_rgba(71,49,124,0.22)] transition-colors hover:bg-[#3d2a6b]"
+            >
+              Continue
+            </button>
+          </div>
+        </div>
+      )}
       {paymentData ? (
         <PaymentPage paymentData={paymentData} />
       ) : (
