@@ -18,6 +18,7 @@ import useBmiStore from "@/store/bmiStore";
 import useConfirmationInfoStore from "@/store/confirmationInfoStore";
 import PaymentPage from "../PaymentSection/PaymentPage";
 import sendStepData from "@/api/stepsDataApi";
+import useCheckoutConsentStore from "@/store/checkoutConsentStore";
 import { useMutation } from "@tanstack/react-query";
 import useSignupStore from "@/store/signupStore";
 import useProductId from "@/store/useProductIdStore";
@@ -37,6 +38,7 @@ import { trackOrderCreated } from "@/library/mayfairAnalytics";
 
 const OrderSummary = ({
   isConcentCheck,
+  isBmiConsentCheck,
   // isPostalCheck,
   isShippingCheck,
   isBillingCheck,
@@ -294,6 +296,9 @@ const OrderSummary = ({
       ),
       reorder_concent: null,
       product_id: productId,
+      // "Important – BMI Verification Required" consent from checkout
+      // (separate key, own store).
+      checkoutConsent: useCheckoutConsentStore.getState().checkoutConsent,
     };
 
     checkoutMutation.mutate(formData);
@@ -518,6 +523,7 @@ const OrderSummary = ({
                       <NextButton loading={isButtonLoading}
                         disabled={
                           !isConcentCheck ||
+                          !isBmiConsentCheck ||
                           !isShippingCheck ||
                           !isBillingCheck ||
                           pregnancyBlocked

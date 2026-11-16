@@ -6,6 +6,7 @@ import SetAPassword from "@/Components/checkout/SetAPassword";
 import ShippingAddress from "@/Components/checkout/ShippingAddress";
 import BillingAddress from "@/Components/checkout/BillingAddress";
 import ProductConsent from "@/Components/checkout/ProductConsent";
+import BmiVerificationConsent from "@/Components/checkout/BmiVerificationConsent";
 import OrderSummary from "@/Components/checkout/OrderSummary";
 import usePasswordReset from "@/store/usePasswordReset";
 import useShippingOrBillingStore from "@/store/shipingOrbilling";
@@ -31,6 +32,7 @@ const Checkout = () => {
   const { reorder } = useReorder();
   const { billingSameAsShipping } = useShippingOrBillingStore();
   const [isConcentCheck, setIsConcentCheck] = useState(false);
+  const [isBmiConsentCheck, setIsBmiConsentCheck] = useState(false);
   // const [isPostalCheck, setIsPostalCheck] = useState(false);
   const [isShippingCheck, setIsShippingCheck] = useState(false);
   const [isBillingCheck, setIsBillingCheck] = useState(false);
@@ -43,6 +45,7 @@ const Checkout = () => {
   const addressRef = useRef(null);
   const billingRef = useRef(null);
   const paymentRef = useRef(null);
+  const bmiConsentRef = useRef(null);
   const summaryRef = useRef(null);
   const headingRef = useRef(null);
 
@@ -81,6 +84,7 @@ const Checkout = () => {
       addressRef,
       !billingSameAsShipping && billingRef,
       paymentRef,
+      bmiConsentRef,
       summaryRef,
     ].filter(Boolean);
   };
@@ -232,11 +236,21 @@ const Checkout = () => {
         )}
 
         {isConcentCheck && (
+        <motion.div ref={bmiConsentRef} initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35 }}>
+          <BmiVerificationConsent
+            onComplete={() => goToNextStep(consentStepIndex + 1)}
+            setIsBmiConsentCheck={setIsBmiConsentCheck}
+          />
+        </motion.div>
+        )}
+
+        {isConcentCheck && isBmiConsentCheck && (
         <motion.div ref={summaryRef} initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35 }}>
           <OrderSummary
             onComplete={isConcentCheck}
             // isPostalCheck={isPostalCheck}
             isConcentCheck={isConcentCheck}
+            isBmiConsentCheck={isBmiConsentCheck}
             isShippingCheck={isShippingCheck}
             isBillingCheck={isBillingCheck}
           />

@@ -1,4 +1,4 @@
-const SwitchTabs = ({ tabs, selectedTab, onTabChange }) => {
+const SwitchTabs = ({ tabs, selectedTab, onTabChange, className = "mb-8" }) => {
   const activeIndex = Math.max(
     0,
     tabs.findIndex((tab) => tab.value === selectedTab),
@@ -6,7 +6,7 @@ const SwitchTabs = ({ tabs, selectedTab, onTabChange }) => {
 
   return (
     <div
-      className="relative mb-8 grid w-full grid-cols-2 gap-1 rounded-xl border border-[#47317c]/10 bg-[#f0ecf6] p-1"
+      className={`relative ${className} grid w-full grid-cols-2 gap-1 rounded-xl border border-[#47317c]/10 bg-[#f0ecf6] p-1`}
       role="tablist"
       aria-label="Select measurement unit"
     >

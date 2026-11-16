@@ -19,6 +19,9 @@ import useReturning from "@/store/useReturningPatient";
 import MetaLayout from "@/Meta/MetaLayout";
 import { meta_url } from "@/config/constants";
 import { completeStep } from "@/library/mayfairAnalytics";
+import BmiConsentModal from "@/Components/Modal/BmiConsentModal";
+import useBmiConsentStore from "@/store/bmiConsentStore";
+import useSignupStore from "@/store/signupStore";
 
 const OTHER_CLINIC_CONSENT_LABEL =
   "I confirm that I am currently receiving weight loss medication from another clinic or pharmacy, I understand that I will be required to provide proof of this before my treatment is approved.";
@@ -32,6 +35,22 @@ export default function BmiDetail() {
   const { lastBmi } = useLastBmi();
   const { isReturningPatient } = useReturning();
   const router = useRouter();
+  const { setConsent } = useBmiConsentStore();
+  const { email } = useSignupStore();
+  // BMI is re-verified periodically (3/6/12 months), so consent is asked on
+  // every visit to this page instead of being remembered once per patient.
+  const [consentAccepted, setConsentAccepted] = useState(false);
+  const showConsent = !consentAccepted;
+
+  const handleConsentAccept = (consentContent) => {
+    setConsent({
+      ...consentContent,
+      accepted: true,
+      acceptedAt: new Date().toISOString(),
+      email: email || "",
+    });
+    setConsentAccepted(true);
+  };
 
   const {
     control,
@@ -223,6 +242,7 @@ export default function BmiDetail() {
   return (
     <>
       <MetaLayout canonical={`${meta_url}bmi-detail/`} />
+      <div inert={showConsent ? "" : undefined}>
       <StepsHeader />
       <FormWrapper heading={"Your BMI:"} percentage={"70"}>
         <PageAnimationWrapper>
@@ -538,6 +558,12 @@ export default function BmiDetail() {
           </form>
         </PageAnimationWrapper>
       </FormWrapper>
+      </div>
+      <BmiConsentModal
+        isOpen={showConsent}
+        onAccept={handleConsentAccept}
+        onBack={() => router.push("/calculate-bmi")}
+      />
     </>
   );
 }

@@ -49,4 +49,17 @@ switch (serverType) {
 if (process.env.NEXT_PUBLIC_API_URL) {
   app_url = process.env.NEXT_PUBLIC_API_URL;
 }
-export { app_url, meta_url, passwordlink, FoundayoProductId, WegovyPillProductId };
+// ORB (NHS GP records) connect link. Not available yet: while empty the
+// "Connect to My NHS GP Records" button shows a "coming soon" message.
+const orb_connect_url = "";
+const bmi_video_call_url =
+  "https://calendly.com/d/dws6-bk9-vth/bmi-consultation-call?primary_color=47317c&background_color=ffffff&hide_gdpr_banner=1";
+export {
+  app_url,
+  meta_url,
+  passwordlink,
+  FoundayoProductId,
+  WegovyPillProductId,
+  orb_connect_url,
+  bmi_video_call_url,
+};

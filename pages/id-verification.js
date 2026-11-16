@@ -28,6 +28,8 @@ import MUISelectField from "@/Components/SelectField/SelectField";
 import { heicTo, isHeic } from "heic-to"; // ✅ import heic converter
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import PageLoader from "@/Components/PageLoader/PageLoader";
+import VerifyBmiModal from "@/Components/Modal/VerifyBmiModal";
+import { getCurrentOrderId } from "@/utils/currentOrder";
 
 const IdVerification = () => {
 
@@ -238,7 +240,7 @@ const IdVerification = () => {
       if (res?.status === 200) {
         setOpen(true);
         setButtonLabel(
-          !imageUploaded ? "Upload full body photo" : "Return to Dashboard"
+          !imageUploaded ? "Verify BMI" : "Return to Dashboard"
         );
       }
     } catch (error) {
@@ -263,11 +265,14 @@ const IdVerification = () => {
   };
 
   const [isRedirecting, setIsRedirecting] = useState(false);
+  const [showVerifyBmi, setShowVerifyBmi] = useState(false);
   const handleRedirect = () => {
-    setIsRedirecting(true);
+    if (isRedirecting) return;
     if (!imageUploaded) {
-      GO.push("/photo-upload");
+      setOpen(false);
+      setShowVerifyBmi(true);
     } else {
+      setIsRedirecting(true);
       GO.push("/dashboard");
     }
   };
@@ -433,7 +438,7 @@ const IdVerification = () => {
                 {/* Message */}
                 <p className="text-md text-black text-center mt-3 mb-6 reg-font">
                   {!imageUploaded
-                    ? "Your ID Verification photo have been uploaded and are now under review by our prescribers. Seems like your full body photo is still pending. Please upload it to proceed."
+                    ? "Your ID Verification photo have been uploaded and are now under review by our prescribers. Seems like your BMI verification is still pending. Please complete it to proceed."
                     : "Your ID has been uploaded and are now under review by our prescribers. We’ll approve your order once the review is complete and notify you straight away."}
                 </p>
 
@@ -450,6 +455,12 @@ const IdVerification = () => {
             </motion.div>
           )}
         </AnimatePresence>
+        <VerifyBmiModal
+          isOpen={showVerifyBmi}
+          resolveOrderId={async () => orderIdGetUrl || getCurrentOrderId(orderId)}
+          onClose={() => GO.push("/dashboard")}
+          onUploaded={() => setImageUploaded(true)}
+        />
         <form
           onSubmit={handleSubmit(onSubmit)}
           className="max-w-3xl mx-auto my-auto px-6 sm:px-32 py-10 bg-white shadow-2xl rounded-3xl border border-gray-100"
