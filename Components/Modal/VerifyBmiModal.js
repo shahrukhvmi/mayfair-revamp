@@ -157,16 +157,16 @@ const VerifyBmiDialog = ({ onClose }) => {
             </p>
             <div className="mt-5 flex flex-col gap-3">
               <OptionCard
+                icon={Stethoscope}
+                title="Verify BMI using your GP records"
+                description="Allow us to securely access your relevant GP clinical records through ORB to verify your BMI."
+                onClick={() => setView("orb")}
+              />
+              <OptionCard
                 icon={Camera}
                 title="Verify BMI via photo upload"
                 description="Upload a recent photo for our clinical team to review and verify your BMI."
                 onClick={handlePhoto}
-              />
-              <OptionCard
-                icon={Stethoscope}
-                title="Verify BMI using your GP records"
-                description="Allow us to securely access your relevant GP clinical records through ORB to verify your height, weight, and BMI."
-                onClick={() => setView("orb")}
               />
             </div>
           </>
@@ -182,7 +182,7 @@ const VerifyBmiDialog = ({ onClose }) => {
             </h2>
             <p className="inter-reg-font mt-2 text-[16px] leading-relaxed text-slate-600">
               Allow us to securely access your relevant GP clinical records
-              through ORB to verify your height, weight, and BMI.
+              through ORB to verify your BMI.
             </p>
             <p className="inter-reg-font mt-3 flex items-start gap-2 text-[15px] leading-relaxed text-slate-500">
               <Lock aria-hidden="true" size={15} strokeWidth={1.9} className="mt-1 shrink-0 text-[#47317c]" />
@@ -232,7 +232,7 @@ const VerifyBmiDialog = ({ onClose }) => {
             <p className="inter-reg-font mt-3 flex items-start justify-center gap-1.5 text-center text-[16px] leading-snug text-slate-500 sm:text-[14px]">
               <PlayCircle aria-hidden="true" size={16} strokeWidth={1.9} className="mt-0.5 shrink-0 text-[#47317c]" />
               <span>
-                Not sure how it works?{" "}
+                Need help getting started?{" "}
                 <a
                   href={orb_guide_url}
                   target="_blank"
