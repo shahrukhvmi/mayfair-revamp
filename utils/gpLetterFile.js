@@ -2,7 +2,7 @@
 // file ke andar ke bytes bhi dekhte hain taake .bat ya .exe ko rename karke
 // .pdf ya .jpg bana dene se upload na ho sake.
 
-export const GP_LETTER_MAX_SIZE_MB = 30;
+export const GP_LETTER_MAX_SIZE_MB = 50;
 
 export const GP_LETTER_ACCEPT =
   ".pdf,.jpg,.jpeg,.png,.webp,.heic,.heif,.avif,application/pdf,image/jpeg,image/png,image/webp,image/heic,image/heif,image/avif";

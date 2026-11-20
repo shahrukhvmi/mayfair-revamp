@@ -38,24 +38,17 @@ export default function SignUp() {
 
   const router = useRouter();
   const [isSlow, setIsSlow] = useState(false);
-  const [isStuck, setIsStuck] = useState(false);
-  const [attempt, setAttempt] = useState(0);
   const targetRoute = useRef("");
 
-  // Loading feedback: slow-internet hint, then retry/back if it drags on
+  // Loading feedback: "please wait" message if it takes a while
   useEffect(() => {
     if (!showLoader) {
       setIsSlow(false);
-      setIsStuck(false);
       return;
     }
     const slowTimer = setTimeout(() => setIsSlow(true), 5000);
-    const stuckTimer = setTimeout(() => setIsStuck(true), 15000);
-    return () => {
-      clearTimeout(slowTimer);
-      clearTimeout(stuckTimer);
-    };
-  }, [showLoader, attempt]);
+    return () => clearTimeout(slowTimer);
+  }, [showLoader]);
 
   // Block browser back while navigating, and recover if navigation fails
   useEffect(() => {
@@ -94,11 +87,6 @@ export default function SignUp() {
     router.push(targetRoute.current);
   };
 
-  const retryNavigation = () => {
-    setIsStuck(false);
-    setAttempt((n) => n + 1);
-    router.push(targetRoute.current);
-  };
 
   const goBack = () => {
     Router.beforePopState(() => true);
@@ -155,28 +143,7 @@ className="relative"
               </form>
 
               {showLoader && (
-                <PageLoader
-                  message={isSlow ? "Your internet connection seems slow. Please wait…" : ""}
-                >
-                  {isStuck && (
-                    <div className="mt-3 flex w-full flex-col gap-2.5">
-                      <button
-                        type="button"
-                        onClick={retryNavigation}
-                        className="inter-medium-font min-h-[46px] w-full cursor-pointer rounded-xl bg-[#47317c] px-6 py-3 text-white transition-colors hover:bg-[#392765]"
-                      >
-                        Try again
-                      </button>
-                      <button
-                        type="button"
-                        onClick={goBack}
-                        className="inter-medium-font min-h-[46px] w-full cursor-pointer rounded-xl border border-[#47317c]/30 bg-white px-6 py-3 text-[#47317c] transition-colors hover:bg-[#47317c]/[0.04]"
-                      >
-                        Back
-                      </button>
-                    </div>
-                  )}
-                </PageLoader>
+                <PageLoader message={isSlow ? "Please wait, this may take a few moments…" : ""} />
               )}
             </div>
           </div>

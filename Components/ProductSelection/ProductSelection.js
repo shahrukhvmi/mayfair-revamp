@@ -115,7 +115,7 @@ const ProductSelection = ({ showProductSelection }) => {
       }
       const errors = data?.errors;
       const message = !err?.response
-        ? "Your internet connection seems slow or unavailable. Please try again."
+        ? "Something went wrong. Please try again in a few moments."
         : typeof errors === "string"
           ? errors
           : data?.message || "Something went wrong while loading treatments.";
@@ -152,7 +152,7 @@ const ProductSelection = ({ showProductSelection }) => {
     <div className="flex w-full flex-col gap-5">
       {isSlow && (
         <p className="inter-medium-font rounded-xl bg-amber-50 px-3 py-2 text-center text-[13px] text-amber-800">
-          Your internet connection seems slow. Please wait…
+          Please wait, this may take a few moments…
         </p>
       )}
       <div className="flex flex-col items-center">

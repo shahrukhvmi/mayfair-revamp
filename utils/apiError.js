@@ -12,8 +12,10 @@ export const handleApiError = (error, { clearToken, router } = {}) => {
     return true;
   }
 
+  // No response (server down, timeout, request blocked): usually not the
+  // patient's internet, so don't send them to check their wifi.
   if (!error?.response) {
-    toast.error("Connection problem. Please check your internet and try again.");
+    toast.error("Something went wrong. Please try again in a few moments.");
     return false;
   }
 

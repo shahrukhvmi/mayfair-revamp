@@ -180,7 +180,7 @@ const UploadBox = ({
 };
 
 const PhotoUpload = () => {
-  const MAX_SIZE_MB = 30;
+  const MAX_SIZE_MB = 50;
   const MAX_SIZE_BYTES = MAX_SIZE_MB * 1024 * 1024;
 
   const logError = (message) => {

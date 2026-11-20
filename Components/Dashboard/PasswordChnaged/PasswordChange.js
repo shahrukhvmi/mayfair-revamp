@@ -110,7 +110,7 @@ const PasswordChange = () => {
         errorObj && typeof errorObj === "object"
           ? Object.values(errorObj)?.[0]
           : !error?.response
-            ? "Your internet connection seems slow or unavailable. Please try again."
+            ? "Something went wrong. Please try again in a few moments."
             : "Something went wrong.";
 
       toast.error(message);

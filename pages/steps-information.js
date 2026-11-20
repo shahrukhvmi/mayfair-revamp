@@ -49,17 +49,6 @@ export default function StepsInformation() {
   }, []);
 
 
-  // If loading drags on, let the user retry or leave instead of waiting forever
-  const [isStuck, setIsStuck] = useState(false);
-  const [attempt, setAttempt] = useState(0);
-  useEffect(() => {
-    if (!showLoader) {
-      setIsStuck(false);
-      return;
-    }
-    const timer = setTimeout(() => setIsStuck(true), 15000);
-    return () => clearTimeout(timer);
-  }, [showLoader, attempt]);
 
   // Tell the user when loading is taking unusually long
   useEffect(() => {
@@ -126,7 +115,7 @@ export default function StepsInformation() {
     setShowLoader(false);
     setLoadError(
       !error?.response
-        ? "Your internet connection seems slow or unavailable. Please try again."
+        ? "Something went wrong. Please try again in a few moments."
         : error?.response?.data?.message || "Something went wrong. Please try again.",
     );
   };
@@ -254,32 +243,7 @@ export default function StepsInformation() {
 
       <main className="min-h-[calc(100vh-66px)] bg-[#FBFBFD]">
         {showLoader && (
-          <PageLoader
-            message={isSlow ? "Your internet connection seems slow. Please wait…" : ""}
-          >
-            {isStuck && (
-              <div className="mt-3 flex w-full flex-col gap-2.5">
-                <button
-                  type="button"
-                  onClick={() => {
-                    setIsStuck(false);
-                    setAttempt((n) => n + 1);
-                    loadUserData();
-                  }}
-                  className="inter-medium-font min-h-[46px] w-full cursor-pointer rounded-xl bg-[#47317c] px-6 py-3 text-white transition-colors hover:bg-[#392765]"
-                >
-                  Try again
-                </button>
-                <button
-                  type="button"
-                  onClick={goBack}
-                  className="inter-medium-font min-h-[46px] w-full cursor-pointer rounded-xl border border-[#47317c]/30 bg-white px-6 py-3 text-[#47317c] transition-colors hover:bg-[#47317c]/[0.04]"
-                >
-                  Back
-                </button>
-              </div>
-            )}
-          </PageLoader>
+          <PageLoader message={isSlow ? "Please wait, this may take a few moments…" : ""} />
         )}
 
         {!showLoader && loadError && (

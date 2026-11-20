@@ -85,16 +85,6 @@ export default function EmailConfirmation() {
   }, []);
 
 
-  // If loading drags on, let the user retry or leave instead of waiting forever
-  const [isStuck, setIsStuck] = useState(false);
-  useEffect(() => {
-    if (!showLoader) {
-      setIsStuck(false);
-      return;
-    }
-    const timer = setTimeout(() => setIsStuck(true), 15000);
-    return () => clearTimeout(timer);
-  }, [showLoader]);
 
   // Tell the user when loading is taking unusually long
   useEffect(() => {
@@ -153,7 +143,7 @@ export default function EmailConfirmation() {
       toast.error(
         emailError ||
           (!error?.response
-            ? "Your internet connection seems slow or unavailable. Please try again."
+            ? "Something went wrong. Please try again in a few moments."
             : error?.response?.data?.message || "Something went wrong. Please try again."),
       );
       setShowLoader(false);
@@ -217,7 +207,7 @@ export default function EmailConfirmation() {
               errorMsg && typeof errorMsg === "object"
                 ? Object.values(errorMsg)[0]
                 : !error?.response
-                  ? "Your internet connection seems slow or unavailable. Please try again."
+                  ? "Something went wrong. Please try again in a few moments."
                   : "Something went wrong.";
             toast.error(firstMsg);
             setShowLoader(false);
@@ -288,28 +278,7 @@ export default function EmailConfirmation() {
             </form>
 
             {showLoader && (
-              <PageLoader
-                message={isSlow ? "Your internet connection seems slow. Please wait…" : ""}
-              >
-            {isStuck && (
-              <div className="mt-3 flex w-full flex-col gap-2.5">
-                <button
-                  type="button"
-                  onClick={() => setShowLoader(false)}
-                  className="inter-medium-font min-h-[46px] w-full cursor-pointer rounded-xl bg-[#47317c] px-6 py-3 text-white transition-colors hover:bg-[#392765]"
-                >
-                  Cancel and try again
-                </button>
-                <button
-                  type="button"
-                  onClick={() => router.push("/signup")}
-                  className="inter-medium-font min-h-[46px] w-full cursor-pointer rounded-xl border border-[#47317c]/30 bg-white px-6 py-3 text-[#47317c] transition-colors hover:bg-[#47317c]/[0.04]"
-                >
-                  Back
-                </button>
-              </div>
-            )}
-          </PageLoader>
+              <PageLoader message={isSlow ? "Please wait, this may take a few moments…" : ""} />
             )}
           </div>
         </PageAnimationWrapper>

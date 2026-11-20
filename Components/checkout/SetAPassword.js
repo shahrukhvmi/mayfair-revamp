@@ -63,7 +63,7 @@ const SetAPassword = ({ isCompleted, onComplete }) => {
       } else {
         toast.error(
           !error?.response
-            ? "Your internet connection seems slow or unavailable. Please try again."
+            ? "Something went wrong. Please try again in a few moments."
             : error?.response?.statusText || "Something went wrong!",
         );
       }

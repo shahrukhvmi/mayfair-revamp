@@ -105,7 +105,7 @@ export default function LoginScreen() {
       } else {
         toast.error(
           !error?.response
-            ? "Your internet connection seems slow or unavailable. Please try again."
+            ? "Something went wrong. Please try again in a few moments."
             : "Something went wrong.",
         );
       }
@@ -146,7 +146,7 @@ export default function LoginScreen() {
       } else {
         toast.error(
           !error?.response
-            ? "Your internet connection seems slow or unavailable. Please try again."
+            ? "Something went wrong. Please try again in a few moments."
             : "Something went wrong.",
         );
       }
@@ -368,7 +368,7 @@ className="relative"
               errorMsg && typeof errorMsg === "object"
                 ? Object.values(errorMsg)[0]
                 : !error?.response
-                  ? "Your internet connection seems slow or unavailable. Please try again."
+                  ? "Something went wrong. Please try again in a few moments."
                   : "Something went wrong.";
             toast.error(firstMsg);
             setShowLoader(false);

@@ -14,7 +14,7 @@ const UploadBox = ({
   inputRef,
   title = "Upload a full-body photo",
   accept = "image/jpeg,image/jpg,image/png,image/webp,image/heic,image/heif,image/avif,application/pdf",
-  formatsText = "JPEG, PNG, WEBP, HEIC, HEIF, AVIF or PDF · Maximum 30 MB",
+  formatsText = "JPEG, PNG, WEBP, HEIC, HEIF, AVIF or PDF · Maximum 50 MB",
   removeTitle = "Remove photo",
 }) => {
   // ✅ FIX: Memoize blob URL — only created once per photo, not on every render
