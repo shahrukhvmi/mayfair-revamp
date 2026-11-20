@@ -1,5 +1,20 @@
 import StepsHeader from "@/layout/stepsHeader";
-import React, { Fragment, useEffect, useState } from "react";
+import React, { Fragment, useEffect, useRef, useState } from "react";
+import UploadBox from "@/Components/UploadBox/UploadBox";
+import {
+  GP_LETTER_ACCEPT,
+  GP_LETTER_FORMATS_TEXT,
+  convertHeicToJpeg,
+  getFileExtension,
+  validateGpLetterFile,
+} from "@/utils/gpLetterFile";
+import {
+  deleteHighDoseEvidence,
+  evidenceMatchesDose,
+  getHighDoseEvidence,
+  saveHighDoseEvidence,
+} from "@/utils/highDoseEvidence";
+import useReturning from "@/store/useReturningPatient";
 import { Inter } from "next/font/google";
 import { useForm } from "react-hook-form";
 import NextButton from "@/Components/NextButton/NextButton";
@@ -33,6 +48,14 @@ import { completeStep } from "@/library/mayfairAnalytics";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 
+// Documents accepted as proof of treatment from a previous clinic.
+const TREATMENT_EVIDENCE_OPTIONS = [
+  "A photo or copy of the prescription label on your medication pack, clearly showing your name and date of birth.",
+  "An email from your previous provider confirming that your prescription or order was approved.",
+  "A copy of a prescription from your previous prescriber confirming the medication and dose.",
+  "Letter from your doctor or clinic confirming the treatment, dose and the date it was prescribed to you.",
+];
+
 export default function DosageSelection() {
   const [isButtonLoading, setIsButtonLoading] = useState(false);
   const [abandonData, setAbandonData] = useState([]);
@@ -49,6 +72,7 @@ export default function DosageSelection() {
   } = useCartStore();
   const { productId } = useProductId();
   const { reorder } = useReorder();
+  const { isReturningPatient } = useReturning();
 
 
   const {
@@ -79,8 +103,20 @@ export default function DosageSelection() {
   }, [isExpiryRequired, clearErrors, setValue]);
 
   useEffect(() => {
-    items.doses.forEach((dose) => {
-      if (dose.product_concent && !dose.consentGiven) {
+    items.doses.forEach(async (dose) => {
+      if (!dose.product_concent) return;
+      if (!dose.consentGiven) {
+        removeItemCompletely(dose.id, "dose");
+        return;
+      }
+      // A confirmed high dose must still have its evidence file saved
+      // (e.g. it can be missing if the browser data was cleared).
+      try {
+        const entry = await getHighDoseEvidence(dose.id);
+        if (!evidenceMatchesDose(entry, dose)) {
+          removeItemCompletely(dose.id, "dose");
+        }
+      } catch (err) {
         removeItemCompletely(dose.id, "dose");
       }
     });
@@ -88,12 +124,59 @@ export default function DosageSelection() {
 
   const expiryConfirmed = watch("terms");
 
-  const allowed = variation?.allowed;
+  // New patients can order 1 pack in total, returning patients up to 4.
+  // A lower limit from the backend (variation.allowed) still applies.
+  const packLimit = isReturningPatient ? 4 : 1;
+  const allowed =
+    variation?.allowed > 0 ? Math.min(variation.allowed, packLimit) : packLimit;
   const [showDoseModal, setShowDoseModal] = useState(false);
   const [selectedDose, setSelectedDose] = useState(null);
   const [prevMedication, setPrevMedication] = useState("");
   const [prevDose, setPrevDose] = useState("");
   const [lastTakenDate, setLastTakenDate] = useState(null);
+  // Evidence of the previous treatment (mandatory for a higher dose).
+  // Saved per dose on confirm; sent to the backend once the order exists
+  // (see OrderSummary checkout success).
+  const [savingConsent, setSavingConsent] = useState(false);
+  const [evidenceFile, setEvidenceFile] = useState(null);
+  const [checkingEvidence, setCheckingEvidence] = useState(false);
+  const [evidenceError, setEvidenceError] = useState("");
+  const evidenceInputRef = useRef(null);
+
+  const clearEvidence = () => {
+    setEvidenceFile(null);
+    setEvidenceError("");
+    if (evidenceInputRef.current) evidenceInputRef.current.value = "";
+  };
+
+  const handleEvidenceChange = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    setCheckingEvidence(true);
+    setEvidenceError("");
+    try {
+      const error = await validateGpLetterFile(file);
+      if (error) {
+        clearEvidence();
+        setEvidenceError(error);
+        return;
+      }
+
+      const extension = getFileExtension(file.name);
+      setEvidenceFile(
+        extension === "heic" || extension === "heif"
+          ? await convertHeicToJpeg(file)
+          : file,
+      );
+    } catch (err) {
+      clearEvidence();
+      setEvidenceError("Something went wrong while processing this file.");
+    } finally {
+      setCheckingEvidence(false);
+    }
+  };
+
   const { abandonCard, extra } = useAbandonCardStore();
   const abandonCartMutation = useMutation(abandonCart, {
     onSuccess: (data) => {
@@ -360,7 +443,7 @@ export default function DosageSelection() {
               animate={{ y: 0, opacity: 1 }}
               exit={{ y: 60, opacity: 0 }}
               transition={{ type: "spring", stiffness: 300, damping: 28 }}
-              className="max-h-[calc(100dvh-48px)] w-full max-w-md overflow-y-auto rounded-[22px] border border-white/80 bg-white shadow-[0_28px_80px_rgba(30,20,60,0.22)]"
+              className="max-h-[calc(100dvh-48px)] w-full max-w-[640px] overflow-y-auto rounded-[22px] border border-white/80 bg-white shadow-[0_28px_80px_rgba(30,20,60,0.22)]"
             >
               <div className="relative border-b border-slate-100 bg-white px-6 py-5 pr-16">
                 <h2 className="max-sm:text-[18px] inter-semibold-font text-[19px] tracking-[-0.01em] text-slate-900">
@@ -371,9 +454,11 @@ export default function DosageSelection() {
                   aria-label="Close dosage confirmation"
                   onClick={() => {
                     removeItemCompletely(selectedDose?.id, "dose");
+                    deleteHighDoseEvidence(selectedDose?.id).catch(() => {});
                     setPrevMedication("");
                     setPrevDose("");
                     setLastTakenDate(null);
+                    clearEvidence();
                     setShowDoseModal(false);
                   }}
                   className="absolute right-4 top-1/2 flex h-9 w-9 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full border border-slate-200 bg-slate-50 text-slate-500 transition-all duration-150 hover:border-[#47317c]/20 hover:bg-[#f5f2fc] hover:text-[#47317c] active:scale-95"
@@ -390,29 +475,31 @@ export default function DosageSelection() {
                   </p>
                 )}
                 <div className="mt-5 space-y-4">
-                  <div>
-                    <label className="inter-medium-font mb-1 block text-[13px] max-sm:text-[16px] text-slate-700">
-                      Previous medication name
-                    </label>
-                    <input
-                      type="text"
-                      value={prevMedication}
-                      onChange={(e) => setPrevMedication(e.target.value)}
-                      placeholder="e.g. Ozempic, Mounjaro, Wegovy"
-                      className="inter-reg-font h-12 w-full rounded-xl border border-slate-200 bg-slate-50/50 px-3.5 text-[14px] max-sm:text-[16px] text-slate-800 outline-none transition-all placeholder:text-slate-400 hover:border-slate-300 focus:border-[#47317c] focus:bg-white focus:ring-4 focus:ring-[#47317c]/[0.08]"
-                    />
-                  </div>
-                  <div>
-                    <label className="inter-medium-font mb-1 block text-[13px] max-sm:text-[16px] text-slate-700">
-                      What dose were you on? (mg)
-                    </label>
-                    <input
-                      type="text"
-                      value={prevDose}
-                      onChange={(e) => setPrevDose(e.target.value)}
-                      placeholder="e.g. 2.5"
-                      className="inter-reg-font h-12 w-full rounded-xl border border-slate-200 bg-slate-50/50 px-3.5 text-[14px] max-sm:text-[16px] text-slate-800 outline-none transition-all placeholder:text-slate-400 hover:border-slate-300 focus:border-[#47317c] focus:bg-white focus:ring-4 focus:ring-[#47317c]/[0.08]"
-                    />
+                  <div className="grid gap-4 sm:grid-cols-2">
+                    <div>
+                      <label className="inter-medium-font mb-1 block text-[13px] max-sm:text-[16px] text-slate-700">
+                        Previous medication name
+                      </label>
+                      <input
+                        type="text"
+                        value={prevMedication}
+                        onChange={(e) => setPrevMedication(e.target.value)}
+                        placeholder="e.g. Ozempic, Mounjaro, Wegovy"
+                        className="inter-reg-font h-10 w-full rounded-xl border border-slate-200 bg-slate-50/50 px-3.5 text-[14px] max-sm:text-[16px] text-slate-800 outline-none transition-all placeholder:text-slate-400 hover:border-slate-300 focus:border-[#47317c] focus:bg-white focus:ring-4 focus:ring-[#47317c]/[0.08]"
+                      />
+                    </div>
+                    <div>
+                      <label className="inter-medium-font mb-1 block text-[13px] max-sm:text-[16px] text-slate-700">
+                        What dose were you on? (mg)
+                      </label>
+                      <input
+                        type="text"
+                        value={prevDose}
+                        onChange={(e) => setPrevDose(e.target.value)}
+                        placeholder="e.g. 2.5"
+                        className="inter-reg-font h-10 w-full rounded-xl border border-slate-200 bg-slate-50/50 px-3.5 text-[14px] max-sm:text-[16px] text-slate-800 outline-none transition-all placeholder:text-slate-400 hover:border-slate-300 focus:border-[#47317c] focus:bg-white focus:ring-4 focus:ring-[#47317c]/[0.08]"
+                      />
+                    </div>
                   </div>
                   <div>
                     <label className="inter-medium-font mb-1 block text-[13px] max-sm:text-[16px] text-slate-700">
@@ -434,13 +521,19 @@ export default function DosageSelection() {
                           textField: {
                             fullWidth: true,
                             placeholder: "DD/MM/YYYY",
+                            // Same look as the text inputs above (h-10, rounded-xl,
+                            // slate-200 border, slate-50/50 background, purple focus).
+                            // Pickers v8 renders its own field, hence the MuiPickers* classes.
                             sx: {
-                              "& .MuiOutlinedInput-root": {
-                                height: "48px",
+                              "& .MuiPickersOutlinedInput-root": {
+                                height: "40px",
                                 borderRadius: "12px",
+                                paddingLeft: "14px",
+                                paddingRight: "10px",
                                 backgroundColor: "rgba(248, 250, 252, 0.5)",
-                                fontFamily: "var(--font-inter)",
+                                fontFamily: "inherit",
                                 fontSize: { xs: "16px", sm: "14px" },
+                                color: "#1e293b",
                                 transition: "all 150ms ease",
                                 "&:hover": { backgroundColor: "#fff" },
                                 "&.Mui-focused": {
@@ -448,10 +541,27 @@ export default function DosageSelection() {
                                   boxShadow: "0 0 0 4px rgba(71, 49, 124, 0.08)",
                                 },
                               },
-                              "& .MuiOutlinedInput-notchedOutline": { borderColor: "#e2e8f0" },
-                              "& .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline": { borderColor: "#cbd5e1" },
-                              "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": { borderColor: "#47317c", borderWidth: "1px" },
-                              "& .MuiIconButton-root": { color: "#64748b" },
+                              "& .MuiPickersSectionList-root": {
+                                paddingTop: 0,
+                                paddingBottom: 0,
+                                fontFamily: "inherit",
+                                fontSize: "inherit",
+                                // Empty: same grey as the text inputs' placeholder
+                                ...(!lastTakenDate && { color: "#94a3b8", opacity: 1 }),
+                              },
+                              "& .MuiPickersOutlinedInput-notchedOutline": {
+                                borderColor: "#e2e8f0",
+                                borderWidth: "1px",
+                              },
+                              "& .MuiPickersOutlinedInput-root:hover .MuiPickersOutlinedInput-notchedOutline": {
+                                borderColor: "#cbd5e1",
+                              },
+                              "& .MuiPickersOutlinedInput-root.Mui-focused .MuiPickersOutlinedInput-notchedOutline": {
+                                borderColor: "#47317c",
+                                borderWidth: "1px",
+                              },
+                              "& .MuiIconButton-root": { color: "#64748b", padding: "4px", marginRight: 0 },
+                              "& .MuiSvgIcon-root": { fontSize: "20px" },
                             },
                           },
                           desktopPaper: {
@@ -466,21 +576,79 @@ export default function DosageSelection() {
                       />
                     </LocalizationProvider>
                   </div>
+                  <div>
+                    <p className="inter-medium-font block text-[13px] max-sm:text-[16px] text-slate-700">
+                      Evidence of your previous treatment
+                    </p>
+                    <div className="mt-2 rounded-xl border border-[#47317c]/10 bg-[#f8f6fc] px-4 py-3.5">
+                      <p className="inter-reg-font text-[13.5px] max-sm:text-[16px] leading-[1.6] text-slate-600">
+                        Please upload one of the following:
+                      </p>
+                      <ul className="inter-reg-font mt-2 list-disc space-y-1.5 pl-5 text-[13.5px] max-sm:text-[16px] leading-[1.6] text-slate-600 marker:text-[#47317c]">
+                        {TREATMENT_EVIDENCE_OPTIONS.map((option) => (
+                          <li key={option}>{option}</li>
+                        ))}
+                      </ul>
+                    </div>
+                    <div className="mt-4">
+                      <UploadBox
+                        label="Treatment evidence"
+                        title="Upload your evidence"
+                        photo={evidenceFile}
+                        type="treatmentEvidence"
+                        loadingPhoto={checkingEvidence}
+                        onUpload={handleEvidenceChange}
+                        onRemove={clearEvidence}
+                        inputRef={evidenceInputRef}
+                        accept={GP_LETTER_ACCEPT}
+                        formatsText={GP_LETTER_FORMATS_TEXT}
+                        removeTitle="Remove file"
+                      />
+                    </div>
+                    {evidenceError && (
+                      <p role="alert" className="inter-reg-font mt-2 text-[13px] max-sm:text-[16px] text-red-600">
+                        {evidenceError}
+                      </p>
+                    )}
+                  </div>
                 </div>
               </div>
               <div className="px-6 pb-6">
                 <button
                   type="button"
-                  disabled={!prevMedication || !prevDose || !lastTakenDate}
-                  onClick={() => {
-                    setConsentGiven(selectedDose?.id, {
+                  disabled={
+                    !prevMedication ||
+                    !prevDose ||
+                    !lastTakenDate ||
+                    !evidenceFile ||
+                    checkingEvidence ||
+                    savingConsent
+                  }
+                  onClick={async () => {
+                    const medicationData = {
                       medication_name: prevMedication,
                       dosage: prevDose,
                       dosage_time: format(lastTakenDate, "dd/MM/yyyy"),
-                    });
+                    };
+                    setSavingConsent(true);
+                    try {
+                      await saveHighDoseEvidence(selectedDose?.id, {
+                        ...medicationData,
+                        file: evidenceFile,
+                      });
+                    } catch (err) {
+                      setEvidenceError(
+                        "We couldn't save your file. Please try again.",
+                      );
+                      return;
+                    } finally {
+                      setSavingConsent(false);
+                    }
+                    setConsentGiven(selectedDose?.id, medicationData);
                     setPrevMedication("");
                     setPrevDose("");
                     setLastTakenDate(null);
+                    clearEvidence();
                     setShowDoseModal(false);
                   }}
                   className="inter-semibold-font inline-flex min-h-12 w-full cursor-pointer items-center justify-center rounded-xl bg-[#47317c] px-5 py-3 text-[14px] max-sm:text-[16px] text-white shadow-[0_8px_20px_rgba(71,49,124,0.22)] transition-all duration-150 hover:-translate-y-0.5 hover:bg-[#3d2a6b] hover:shadow-[0_10px_24px_rgba(71,49,124,0.28)] active:translate-y-0 active:scale-[0.99] disabled:cursor-not-allowed disabled:bg-[#c8c1da] disabled:shadow-none disabled:hover:translate-y-0"

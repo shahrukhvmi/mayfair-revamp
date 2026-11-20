@@ -7,7 +7,7 @@ import { orb_connect_url } from "@/config/constants";
 import useOrbConsentStore from "@/store/orbConsentStore";
 
 export const ORB_CONSENT_TEXT =
-  "I consent to London Slimming Clinic obtaining access to my relevant GP medical records through ORB for the purpose of verifying my BMI and treatment eligibility.";
+  "I consent to Mayfair Weight Loss Clinic obtaining access to my relevant GP medical records through ORB for the purpose of verifying my BMI and treatment eligibility.";
 
 const OrbConsentDialog = ({ onClose, onAgree }) => {
   const [checked, setChecked] = useState(false);

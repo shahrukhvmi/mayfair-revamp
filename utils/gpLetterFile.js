@@ -74,3 +74,16 @@ export const validateGpLetterFile = async (file) => {
 
   return null;
 };
+
+// HEIC browser mein preview nahi hota, is liye photo upload ki tarah JPEG mein convert
+export const convertHeicToJpeg = async (file) => {
+  const { heicTo } = await import("heic-to");
+  try {
+    const blob = await heicTo({ blob: file, toType: "image/jpeg", quality: 0.9 });
+    return new File([blob], file.name.replace(/\.(heic|heif)$/i, ".jpg"), {
+      type: "image/jpeg",
+    });
+  } catch (err) {
+    return file;
+  }
+};
