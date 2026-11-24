@@ -3,7 +3,6 @@ import { useForm, useWatch } from "react-hook-form";
 import SectionWrapper from "./SectionWrapper";
 import SectionHeader from "./SectionHeader";
 import { FiCheck, FiX, FiEye, FiEyeOff } from "react-icons/fi";
-import useSignupStore from "@/store/signupStore";
 import { useMutation } from "@tanstack/react-query";
 import GuardedLoader from "@/Components/PageLoader/GuardedLoader";
 import toast from "react-hot-toast";
@@ -16,7 +15,6 @@ const SetAPassword = ({ isCompleted, onComplete }) => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const { isPasswordReset, setIsPasswordReset } = usePasswordReset();
-  const { email } = useSignupStore();
 
   const {
     register,
@@ -76,9 +74,10 @@ const SetAPassword = ({ isCompleted, onComplete }) => {
       return;
     }
 
+    // No email or company_id. The API identifies the account from the bearer
+    // token Fetcher attaches; sending an identity in the body was exactly how
+    // the old endpoint let anyone set anyone else's password.
     mutate({
-      company_id: 1,
-      email: email,
       password: password,
       password_confirmation: confirmPassword,
     });
