@@ -23,10 +23,9 @@ const ConsentDialog = ({ onAccept, onBack }) => {
     };
   }, []);
 
-  const handleChange = (e) => setChecked(e.target.checked);
-
-  const handleContinue = () => {
-    if (!checked) return;
+  const handleChange = (e) => {
+    if (!e.target.checked) return;
+    setChecked(true);
     onAccept(BMI_CONSENT);
   };
 
@@ -79,7 +78,7 @@ const ConsentDialog = ({ onAccept, onBack }) => {
             className="peer sr-only"
           />
           <span
-            className={`mt-0.5 flex h-5 w-5 items-center justify-center rounded-[4px] border-2 transition-all duration-150 group-hover:border-[#47317c]/60 peer-focus-visible:ring-2 peer-focus-visible:ring-[#47317c]/40 peer-focus-visible:ring-offset-2 ${
+            className={`mt-0.5 flex h-5 w-5 items-center justify-center rounded-xl border-2 transition-all duration-150 group-hover:border-[#47317c]/60 peer-focus-visible:ring-2 peer-focus-visible:ring-[#47317c]/40 peer-focus-visible:ring-offset-2 ${
               checked
                 ? "border-[#47317c] bg-[#47317c]"
                 : "border-slate-300 bg-white"
@@ -95,19 +94,6 @@ const ConsentDialog = ({ onAccept, onBack }) => {
             {BMI_CONSENT.confirmation}
           </span>
         </label>
-
-        <button
-          type="button"
-          onClick={handleContinue}
-          disabled={!checked}
-          className={`inter-semibold-font mt-5 flex min-h-[54px] w-full items-center justify-center rounded-xl px-6 py-3 text-[16px] transition-all duration-200 ${
-            checked
-              ? "cursor-pointer bg-[#47317c] text-white shadow-[0_8px_20px_rgba(71,49,124,0.18)] hover:bg-[#392765] active:scale-[0.99]"
-              : "cursor-not-allowed bg-slate-200 text-slate-400"
-          }`}
-        >
-          Continue
-        </button>
       </div>
     </motion.div>
   );
