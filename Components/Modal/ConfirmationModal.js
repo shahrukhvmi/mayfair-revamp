@@ -2,7 +2,7 @@ import React from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
 const ConfirmationModal = ({ showModal, onConfirm, onCancel, removeItem }) => {
-  if (!showModal) return null; // Don't render if modal isn't visible
+  if (!showModal) return null; // Don't render if modal isn't visible.
 
   return (
     <AnimatePresence>
