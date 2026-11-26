@@ -49,13 +49,9 @@ switch (serverType) {
 if (process.env.NEXT_PUBLIC_API_URL) {
   app_url = process.env.NEXT_PUBLIC_API_URL;
 }
-// ORB (NHS GP records) self-registration link. The "Connect to My NHS GP Records"
-// button opens it in a new tab. (If it is ever emptied, the button shows a
-// "coming soon" message instead.)
-const orb_connect_url =
-  "https://app.orbforhealth.com/selfregistration/clinic?clinic=mayfair-weight-loss-clinic-";
-// ORB's patient guide (how to register and share NHS GP records).
-const orb_guide_url = "https://orbforhealth.com/mayfair/";
+// ORB (NHS GP records) connect link. Not available yet: while empty the
+// "Connect to My NHS GP Records" button shows a "coming soon" message.
+const orb_connect_url = "";
 const bmi_video_call_url =
   "https://calendly.com/d/dws6-bk9-vth/bmi-consultation-call?primary_color=47317c&background_color=ffffff&hide_gdpr_banner=1";
 export {
@@ -65,6 +61,5 @@ export {
   FoundayoProductId,
   WegovyPillProductId,
   orb_connect_url,
-  orb_guide_url,
   bmi_video_call_url,
 };

@@ -8,7 +8,6 @@ import {
   Clock,
   FileText,
   Lock,
-  PlayCircle,
   ShieldCheck,
   Stethoscope,
   UploadCloud,
@@ -23,9 +22,7 @@ import { ImageUplaodApi } from "@/api/ImageUploadApi";
 import UploadPhotoLogs from "@/api/UploadLogsApi";
 import NextButton from "@/Components/NextButton/NextButton";
 import UploadBox from "@/Components/UploadBox/UploadBox";
-import { bmi_video_call_url, orb_connect_url, orb_guide_url } from "@/config/constants";
-import { BmiVideoCallBookingSession } from "@/api/BmiVideoCallBookingApi";
-import useAuthStore from "@/store/authStore";
+import { bmi_video_call_url, orb_connect_url } from "@/config/constants";
 import { BmiVideoUploadApi, BMI_VIDEO_ENDPOINT } from "@/api/BmiVideoUploadApi";
 import {
   BMI_VIDEO_ACCEPT,
@@ -51,13 +48,11 @@ export const BMI_VIDEO_REQUIREMENTS =
 export const GP_LETTER_REQUIREMENTS =
   "A letter from your GP or pharmacist confirming your height and weight. This must include your full name and date of birth, be printed on official headed paper or bear a pharmacy stamp, and be signed by a qualified healthcare professional.";
 
-const OptionCard = ({ icon: Icon, title, description, onClick, loading = false, disabled = false }) => (
+const OptionCard = ({ icon: Icon, title, description, onClick }) => (
   <button
     type="button"
     onClick={onClick}
-    disabled={disabled || loading}
-    aria-busy={loading}
-    className="group flex w-full cursor-pointer items-center gap-4 rounded-xl border border-[#47317c]/15 bg-white p-4 text-left transition-all duration-150 hover:border-[#47317c]/40 hover:bg-[#f5f2fc] active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-60 disabled:active:scale-100 sm:p-5"
+    className="group flex w-full cursor-pointer items-center gap-4 rounded-xl border border-[#47317c]/15 bg-white p-4 text-left transition-all duration-150 hover:border-[#47317c]/40 hover:bg-[#f5f2fc] active:scale-[0.99] sm:p-5"
   >
     <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-[#47317c]/10 text-[#47317c]">
       <Icon aria-hidden="true" size={22} strokeWidth={1.8} />
@@ -70,16 +65,12 @@ const OptionCard = ({ icon: Icon, title, description, onClick, loading = false, 
         {description}
       </span>
     </span>
-    {loading ? (
-      <AiOutlineLoading3Quarters aria-hidden="true" className="h-[18px] w-[18px] shrink-0 animate-spin text-[#47317c]" />
-    ) : (
-      <ChevronRight
-        aria-hidden="true"
-        size={18}
-        strokeWidth={2.2}
-        className="shrink-0 text-[#47317c] transition-transform duration-150 group-hover:translate-x-0.5"
-      />
-    )}
+    <ChevronRight
+      aria-hidden="true"
+      size={18}
+      strokeWidth={2.2}
+      className="shrink-0 text-[#47317c] transition-transform duration-150 group-hover:translate-x-0.5"
+    />
   </button>
 );
 
@@ -143,8 +134,6 @@ const VerifyBmiDialog = ({ orderId, resolveOrderId, onClose, onUploaded }) => {
   const [checkingFile, setCheckingFile] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [orbChecked, setOrbChecked] = useState(false);
-  const [startingCall, setStartingCall] = useState(false);
-  const clearToken = useAuthStore((state) => state.clearToken);
   const [video, setVideo] = useState(null);
   const [uploadedKind, setUploadedKind] = useState("letter");
   const videoInputRef = useRef(null);
@@ -260,33 +249,6 @@ const VerifyBmiDialog = ({ orderId, resolveOrderId, onClose, onUploaded }) => {
       clearVideo();
     } finally {
       setUploading(false);
-    }
-  };
-
-  // Video call: the booking-session API is hit first (the backend's Calendly
-  // webhook does the rest), then the same Calendly link opens. If the API
-  // fails the calendar does not open, so no booking is made without a session.
-  const handleVideoCall = async () => {
-    if (startingCall) return;
-
-    setStartingCall(true);
-    try {
-      await BmiVideoCallBookingSession();
-      setView("calendly");
-    } catch (error) {
-      if (error?.response?.status === 401) {
-        toast.error("Session Expired");
-        clearToken();
-        onClose();
-        router.replace("/login");
-      } else {
-        toast.error(
-          error?.response?.data?.message ||
-            "We couldn't open the booking calendar. Please try again.",
-        );
-      }
-    } finally {
-      setStartingCall(false);
     }
   };
 
@@ -432,25 +394,22 @@ const VerifyBmiDialog = ({ orderId, resolveOrderId, onClose, onUploaded }) => {
             </p>
             <div className="mt-5 flex flex-col gap-3">
               <OptionCard
-                icon={Stethoscope}
-                title="Verify BMI using ORB"
-                description="Allow us to securely access your relevant GP clinical records through ORB to verify your BMI."
-                onClick={() => setView("orb")}
-                disabled={startingCall}
-              />
-              <OptionCard
                 icon={Video}
                 title="Verify BMI via video call scheduling"
                 description="Book a video call with a healthcare professional, who will confirm your height and weight."
-                onClick={handleVideoCall}
-                loading={startingCall}
+                onClick={() => setView("calendly")}
               />
               <OptionCard
                 icon={FileText}
                 title="Verify BMI via GP letter"
                 description="Already have an approved letter from your GP? Upload it for our clinical team to review."
                 onClick={() => setView("letter")}
-                disabled={startingCall}
+              />
+              <OptionCard
+                icon={Stethoscope}
+                title="Verify BMI using your GP records"
+                description="Allow us to securely access your relevant GP clinical records through ORB to verify your height, weight and BMI."
+                onClick={() => setView("orb")}
               />
             </div>
           </>
@@ -544,11 +503,11 @@ const VerifyBmiDialog = ({ orderId, resolveOrderId, onClose, onUploaded }) => {
               id="verify-bmi-heading"
               className="inter-semibold-font pr-10 text-[20px] leading-snug tracking-[-0.01em] text-slate-900 sm:text-[22px]"
             >
-              Verify BMI using ORB
+              Verify BMI using your GP records
             </h2>
             <p className="inter-reg-font mt-2 text-[16px] leading-relaxed text-slate-600">
               Allow us to securely access your relevant GP clinical records
-              through ORB to verify your BMI.
+              through ORB to verify your height, weight and BMI.
             </p>
             <p className="inter-reg-font mt-3 flex items-start gap-2 text-[15px] leading-relaxed text-slate-500">
               <Lock aria-hidden="true" size={15} strokeWidth={1.9} className="mt-1 shrink-0 text-[#47317c]" />
@@ -586,21 +545,6 @@ const VerifyBmiDialog = ({ orderId, resolveOrderId, onClose, onUploaded }) => {
               Connect to My NHS GP Records
               <ArrowUpRight aria-hidden="true" size={17} strokeWidth={2.2} />
             </button>
-
-            <p className="inter-reg-font mt-3 flex items-start justify-center gap-1.5 text-center text-[16px] leading-snug text-slate-500 sm:text-[14px]">
-              <PlayCircle aria-hidden="true" size={16} strokeWidth={1.9} className="mt-0.5 shrink-0 text-[#47317c]" />
-              <span>
-                Need help getting started?{" "}
-                <a
-                  href={orb_guide_url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inter-medium-font text-[#47317c] underline underline-offset-2 hover:text-[#392765]"
-                >
-                  Watch the step-by-step guide
-                </a>
-              </span>
-            </p>
           </>
         )}
 
