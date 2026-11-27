@@ -9,10 +9,8 @@ import {
   validateGpLetterFile,
 } from "@/utils/gpLetterFile";
 import {
-  deleteHighDoseEvidence,
-  evidenceMatchesDose,
-  getHighDoseEvidence,
-  saveHighDoseEvidence,
+  hasHighDoseEvidence,
+  uploadHighDoseEvidence,
 } from "@/utils/highDoseEvidence";
 import useReturning from "@/store/useReturningPatient";
 import { Inter } from "next/font/google";
@@ -103,20 +101,12 @@ export default function DosageSelection() {
   }, [isExpiryRequired, clearErrors, setValue]);
 
   useEffect(() => {
-    items.doses.forEach(async (dose) => {
+    // A high dose stays in the cart only once it was confirmed and its
+    // evidence uploaded (upload_token). Carts saved before this change have
+    // no token, so the patient selects that dose again.
+    items.doses.forEach((dose) => {
       if (!dose.product_concent) return;
-      if (!dose.consentGiven) {
-        removeItemCompletely(dose.id, "dose");
-        return;
-      }
-      // A confirmed high dose must still have its evidence file saved
-      // (e.g. it can be missing if the browser data was cleared).
-      try {
-        const entry = await getHighDoseEvidence(dose.id);
-        if (!evidenceMatchesDose(entry, dose)) {
-          removeItemCompletely(dose.id, "dose");
-        }
-      } catch (err) {
+      if (!hasHighDoseEvidence(dose)) {
         removeItemCompletely(dose.id, "dose");
       }
     });
@@ -138,6 +128,20 @@ export default function DosageSelection() {
   // Saved per dose on confirm; sent to the backend once the order exists
   // (see OrderSummary checkout success).
   const [savingConsent, setSavingConsent] = useState(false);
+  // Short "document uploaded" confirmation shown after the evidence upload.
+  const [showUploadSuccess, setShowUploadSuccess] = useState(false);
+  const uploadSuccessTimer = useRef(null);
+
+  useEffect(() => () => clearTimeout(uploadSuccessTimer.current), []);
+
+  const flashUploadSuccess = () => {
+    clearTimeout(uploadSuccessTimer.current);
+    setShowUploadSuccess(true);
+    uploadSuccessTimer.current = setTimeout(
+      () => setShowUploadSuccess(false),
+      2800,
+    );
+  };
   const [evidenceFile, setEvidenceFile] = useState(null);
   const [checkingEvidence, setCheckingEvidence] = useState(false);
   const [evidenceError, setEvidenceError] = useState("");
@@ -452,9 +456,11 @@ export default function DosageSelection() {
                 <button
                   type="button"
                   aria-label="Close dosage confirmation"
+                  // Not while the evidence is uploading: its token would be
+                  // left behind for a dose that is no longer in the cart.
+                  disabled={savingConsent}
                   onClick={() => {
                     removeItemCompletely(selectedDose?.id, "dose");
-                    deleteHighDoseEvidence(selectedDose?.id).catch(() => {});
                     setPrevMedication("");
                     setPrevDose("");
                     setLastTakenDate(null);
@@ -631,38 +637,111 @@ export default function DosageSelection() {
                       dosage_time: format(lastTakenDate, "dd/MM/yyyy"),
                     };
                     setSavingConsent(true);
+                    setEvidenceError("");
+                    let uploadToken;
                     try {
-                      await saveHighDoseEvidence(selectedDose?.id, {
-                        ...medicationData,
-                        file: evidenceFile,
-                      });
+                      // POST order/dosage-document/pending (item_id, evidence)
+                      uploadToken = await uploadHighDoseEvidence(
+                        selectedDose?.id,
+                        evidenceFile,
+                      );
                     } catch (err) {
+                      const data = err?.response?.data;
+                      const fieldError =
+                        data?.errors && typeof data.errors === "object"
+                          ? Object.values(data.errors).flat()[0]
+                          : null;
                       setEvidenceError(
-                        "We couldn't save your file. Please try again.",
+                        fieldError ||
+                          data?.message ||
+                          "We couldn't upload your file. Please try again.",
                       );
                       return;
                     } finally {
                       setSavingConsent(false);
                     }
-                    setConsentGiven(selectedDose?.id, medicationData);
+                    // The token goes to order/consultationMayfair with the
+                    // cart items at checkout.
+                    setConsentGiven(selectedDose?.id, {
+                      ...medicationData,
+                      upload_token: uploadToken,
+                    });
                     setPrevMedication("");
                     setPrevDose("");
                     setLastTakenDate(null);
                     clearEvidence();
                     setShowDoseModal(false);
+                    flashUploadSuccess();
                   }}
                   className="inter-semibold-font inline-flex min-h-12 w-full cursor-pointer items-center justify-center rounded-xl bg-[#47317c] px-5 py-3 text-[14px] max-sm:text-[16px] text-white shadow-[0_8px_20px_rgba(71,49,124,0.22)] transition-all duration-150 hover:-translate-y-0.5 hover:bg-[#3d2a6b] hover:shadow-[0_10px_24px_rgba(71,49,124,0.28)] active:translate-y-0 active:scale-[0.99] disabled:cursor-not-allowed disabled:bg-[#c8c1da] disabled:shadow-none disabled:hover:translate-y-0"
                 >
-                  {productId == FoundayoProductId ||
-                  productId == WegovyPillProductId
-                    ? "I confirm this dose"
-                    : "I Confirm"}
+                  {savingConsent
+                    ? "Uploading…"
+                    : productId == FoundayoProductId ||
+                        productId == WegovyPillProductId
+                      ? "I confirm this dose"
+                      : "I Confirm"}
                 </button>
               </div>
             </motion.div>
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* Evidence uploaded: big animated check at the top centre. */}
+      {/* Centred by this static wrapper: framer-motion owns the card's transform. */}
+      <div className="pointer-events-none fixed inset-x-0 top-6 z-[10000] flex justify-center px-4">
+      <AnimatePresence>
+        {showUploadSuccess && (
+          <motion.div
+            key="upload-success"
+            role="status"
+            aria-live="polite"
+            initial={{ opacity: 0, y: -40, scale: 0.9 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -30, scale: 0.95 }}
+            transition={{ type: "spring", stiffness: 320, damping: 24 }}
+            onClick={() => setShowUploadSuccess(false)}
+            className="pointer-events-auto flex w-full max-w-[340px] cursor-pointer flex-col items-center rounded-[22px] border border-[#47317c]/10 bg-white px-6 py-6 text-center shadow-[0_24px_60px_rgba(71,49,124,0.25)]"
+          >
+            <div className="relative flex h-20 w-20 items-center justify-center">
+              <motion.span
+                aria-hidden="true"
+                className="absolute inset-0 rounded-full bg-[#47317c]/15"
+                initial={{ scale: 0.6, opacity: 0.9 }}
+                animate={{ scale: 1.45, opacity: 0 }}
+                transition={{ duration: 1.1, ease: "easeOut", delay: 0.15 }}
+              />
+              <motion.div
+                className="flex h-20 w-20 items-center justify-center rounded-full bg-[#47317c] shadow-[0_10px_28px_rgba(71,49,124,0.35)]"
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                transition={{ type: "spring", stiffness: 260, damping: 15, delay: 0.05 }}
+              >
+                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <motion.path
+                    d="M5 12.5l4.2 4.2L19 7"
+                    stroke="white"
+                    strokeWidth="2.6"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    initial={{ pathLength: 0 }}
+                    animate={{ pathLength: 1 }}
+                    transition={{ duration: 0.45, ease: "easeOut", delay: 0.3 }}
+                  />
+                </svg>
+              </motion.div>
+            </div>
+            <p className="inter-semibold-font mt-4 text-[17px] text-slate-900">
+              Your document is uploaded
+            </p>
+            <p className="inter-reg-font mt-1 text-[13.5px] max-sm:text-[15px] text-slate-500">
+              Your treatment evidence has been received.
+            </p>
+          </motion.div>
+        )}
+      </AnimatePresence>
+      </div>
 
       <StepsHeader />
 

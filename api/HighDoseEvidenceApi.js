@@ -1,11 +1,22 @@
 import Fetcher from "@/library/Fetcher";
 
-// POST /api/order/dosage-document (app_url already ends with /api/)
-export const HIGH_DOSE_EVIDENCE_ENDPOINT = "order/dosage-document";
+// High dose evidence is uploaded on the dosage page, before an order exists.
+// The returned upload_token is kept on the cart item and goes to
+// order/consultationMayfair with the items.
 
-// data: FormData with order_id, item_id, medication_name, dosage, dosage_time, evidence
-export const HighDoseEvidenceUpload = async (data) => {
-  return Fetcher.post(HIGH_DOSE_EVIDENCE_ENDPOINT, data);
+// POST /api/order/dosage-document/pending — FormData: item_id, evidence
+// Response: { status, pending_evidence: { upload_token, item_id, name,
+// mime_type, size, expires_at }, message }
+export const uploadPendingDosageDocument = async (data) => {
+  return Fetcher.post("order/dosage-document/pending", data);
 };
 
-export default { HighDoseEvidenceUpload };
+// DELETE /api/order/dosage-document/pending/{upload_token}
+// Called when the patient removes the dose completely.
+export const deletePendingDosageDocument = async (uploadToken) => {
+  return Fetcher.delete(
+    `order/dosage-document/pending/${encodeURIComponent(uploadToken)}`,
+  );
+};
+
+export default { uploadPendingDosageDocument, deletePendingDosageDocument };

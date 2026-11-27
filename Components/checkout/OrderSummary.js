@@ -34,7 +34,6 @@ import useAbandonCardStore from "@/store/abandonCardStore";
 import normalizeConfirmationInfo from "@/utils/normalizeConfirmationInfo";
 import { isPregnancyBlocked, PREGNANCY_BLOCK_MESSAGE } from "@/utils/patientChecks";
 import { trackOrderCreated } from "@/library/mayfairAnalytics";
-import { uploadHighDoseEvidenceForOrder } from "@/utils/highDoseEvidence";
 
 const OrderSummary = ({
   isConcentCheck,
@@ -90,7 +89,9 @@ const OrderSummary = ({
   const [couponLoading, setCouponLoading] = useState(false);
   const [paymentData, setPaymentData] = useState(null);
   const [isButtonLoading, setIsButtonLoading] = useState(false);
-  const [documentFailed, setDocumentFailed] = useState(false);
+  // consultationMayfair said a high dose's evidence (upload_token) expired or
+  // is no longer valid: the message is shown in a popup.
+  const [evidenceExpiredMessage, setEvidenceExpiredMessage] = useState("");
 
   const handleApplyCoupon = async () => {
     setCouponLoading(true);
@@ -144,46 +145,27 @@ const OrderSummary = ({
 
   // handle Payment ✌✌
   const checkoutMutation = useMutation(sendStepData, {
-    onSuccess: async (data, variables) => {
+    onSuccess: (data) => {
       if (data) {
-        const newOrderId = data?.data?.paymentData?.order_id;
-        setOrderId(newOrderId);
+        setPaymentData(data?.data?.paymentData);
+        setOrderId(data?.data?.paymentData?.order_id);
         // Order exists, payment not yet attempted: recorded as pending, not paid.
         trackOrderCreated({
-          orderId: newOrderId,
+          orderId: data?.data?.paymentData?.order_id,
           value: finalTotal,
           currency: "GBP",
         });
-        clearAbandonCard();
-
-        // High dose document (order/dosage-document) must be uploaded before
-        // the payment page opens (the button keeps its plain loading spinner
-        // meanwhile). It retries 3 times; if it still fails the patient is
-        // asked to select their dose again.
-        let uploaded = false;
-        try {
-          uploaded = await uploadHighDoseEvidenceForOrder(
-            newOrderId,
-            variables?.items,
-          );
-        } catch (err) {
-          console.error("Dosage document", err);
-        }
-
-        if (!uploaded) {
-          setIsButtonLoading(false);
-          setDocumentFailed(true);
-          return;
-        }
-
         clearCoupon();
-        setPaymentData(data?.data?.paymentData);
+        clearAbandonCard();
       }
     },
     onError: (error) => {
       const errors = error?.response?.data?.original?.errors;
       const product_error = error?.response?.data?.errors?.Product;
       const singleOutOfStock = error?.response?.data?.errors?.OutOfStock;
+      // High dose evidence (upload_token) expired or no longer valid.
+      const dosageEvidenceError =
+        error?.response?.data?.errors?.DosageEvidence;
 
       if (error?.response?.data?.message == "Unauthenticated.") {
         toast.error("Session Expired");
@@ -226,6 +208,14 @@ const OrderSummary = ({
             ? errorMessage.forEach(showError)
             : showError(errorMessage);
         });
+      } else if (dosageEvidenceError) {
+        setIsButtonLoading(false);
+        setEvidenceExpiredMessage(
+          (Array.isArray(dosageEvidenceError)
+            ? dosageEvidenceError
+            : [dosageEvidenceError]
+          ).join(" "),
+        );
       } else if (singleOutOfStock && typeof singleOutOfStock === "object") {
         setIsButtonLoading(false);
         Object.keys(singleOutOfStock).forEach((key) => {
@@ -325,39 +315,41 @@ const OrderSummary = ({
 
   return (
     <>
-      {documentFailed && (
+      {evidenceExpiredMessage && (
         <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/40 px-4 py-6 backdrop-blur-sm">
           <div
             role="alertdialog"
             aria-modal="true"
-            aria-labelledby="document-failed-heading"
-            aria-describedby="document-failed-text"
-            className="w-full max-w-[440px] rounded-[22px] bg-white p-6 text-center shadow-[0_28px_80px_rgba(30,20,60,0.22)] sm:p-7"
+            aria-labelledby="evidence-expired-heading"
+            aria-describedby="evidence-expired-text"
+            className="w-full max-w-[420px] rounded-[22px] bg-white p-6 text-center shadow-[0_28px_80px_rgba(30,20,60,0.22)] sm:p-7"
           >
-            <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-red-50 text-red-500">
+            <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-amber-50 text-amber-500">
               <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                <path d="M12 8v5m0 3.5h.01M10.3 3.9 2.4 17.6A2 2 0 0 0 4.1 20.6h15.8a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+                <path d="M12 7v5l3 2m6-2a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
             </div>
             <h2
-              id="document-failed-heading"
+              id="evidence-expired-heading"
               className="inter-semibold-font mt-4 text-[19px] max-sm:text-[18px] text-slate-900"
             >
-              Something went wrong
+              Please upload your evidence again
             </h2>
             <p
-              id="document-failed-text"
+              id="evidence-expired-text"
               className="inter-reg-font mt-2 text-[14px] max-sm:text-[16px] leading-relaxed text-slate-600"
             >
-              We couldn&apos;t upload your treatment evidence. We are taking you
-              back to dosage selection, kindly select your dose again.
+              {evidenceExpiredMessage}
             </p>
             <button
               type="button"
+              autoFocus
+              // gathering-data clears the cart and loads the doses again, so
+              // the patient selects the dose and uploads the evidence afresh.
               onClick={() => router.push("/gathering-data")}
               className="inter-semibold-font mt-6 inline-flex min-h-12 w-full cursor-pointer items-center justify-center rounded-xl bg-[#47317c] px-5 py-3 text-[15px] max-sm:text-[16px] text-white shadow-[0_8px_20px_rgba(71,49,124,0.22)] transition-colors hover:bg-[#3d2a6b]"
             >
-              Continue
+              Select dose again
             </button>
           </div>
         </div>

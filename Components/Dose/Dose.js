@@ -12,6 +12,7 @@ import { MdDelete } from "react-icons/md";
 import moment from "moment/moment";
 import ConfirmationModal from "../Modal/ConfirmationModal";
 import useCartStore from "@/store/useCartStore";
+import { releaseHighDoseEvidence } from "@/utils/highDoseEvidence";
 import { getNotified } from "@/api/GetNotified";
 import RemoveAbandonCartApi from "@/api/RemoveAbandonCartApi";
 import { useMutation } from "@tanstack/react-query";
@@ -96,7 +97,14 @@ const Dose = ({
 
   const handleDelete = () => {
     setShowModal(false);
+    // The dose leaves the cart completely: its pending high dose evidence is
+    // removed too (DELETE order/dosage-document/pending/{upload_token}).
+    // Lowering the quantity keeps the dose, so it keeps its evidence.
+    const uploadToken = useCartStore
+      .getState()
+      .items?.doses?.find((item) => item.id === doseData?.id)?.upload_token;
     removeItemCompletely(doseData?.id, "doses");
+    releaseHighDoseEvidence(uploadToken);
 
     if (onDoseRemoved) {
       onDoseRemoved(doseData?.id);

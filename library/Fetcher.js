@@ -70,6 +70,10 @@ class Fetcher {
   put = (route, params, extra) => {
     return this.axiosSetup.put(route, params, extra);
   };
+
+  delete = (route, config) => {
+    return this.axiosSetup.delete(route, config);
+  };
 }
 
 export default new Fetcher();
